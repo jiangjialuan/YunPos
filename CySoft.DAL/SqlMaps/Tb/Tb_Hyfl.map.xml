@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_Hyfl"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tb_Hyfl" type="CySoft.Model.Tb.Tb_Hyfl,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="idList">
+          db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+        <isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+        <isNotNull prepend="and" property="id_masteruser">db.[id_masteruser]=#id_masteruser#</isNotNull>
+        <isNotNull prepend="and" property="bm">db.[bm]=#bm#</isNotNull>
+        <isNotNull prepend="and" property="mc">db.[mc]=#mc#</isNotNull>
+        <isNotNull prepend="and" property="sort_id">db.[sort_id]=#sort_id#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="flag_delete">db.[flag_delete]=#flag_delete#</isNotNull>
+        <isNotNull prepend="and" property="nlast">db.[nlast]=#nlast#</isNotNull>
+
+        <isNotNull prepend="and" property="flag_yhlx">db.[flag_yhlx]=#flag_yhlx#</isNotNull>
+        <isNotNull prepend="and" property="zk">db.[zk]=#zk#</isNotNull>
+
+        
+
+        <isNotNull prepend="and" property="keyword">
+          ( db.bm like #keyword# or db.mc like #keyword# )
+        </isNotNull>
+        
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_masteruser">db.[id_masteruser]=#new_id_masteruser#</isNotNull>
+        <isNotNull prepend="," property="new_bm">db.[bm]=#new_bm#</isNotNull>
+        <isNotNull prepend="," property="new_mc">db.[mc]=#new_mc#</isNotNull>
+        <isNotNull prepend="," property="new_sort_id">db.[sort_id]=#new_sort_id#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+        <isNotNull prepend="," property="new_flag_delete">db.[flag_delete]=#new_flag_delete#</isNotNull>
+        <isNotNull prepend="," property="new_nlast">db.[nlast]=#new_nlast#</isNotNull>
+
+        <isNotNull prepend="," property="new_flag_yhlx">db.[flag_yhlx]=#new_flag_yhlx#</isNotNull>
+        <isNotNull prepend="," property="new_zk">db.[zk]=#new_zk#</isNotNull>
+        
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[tb_hyfl]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_Hyfl">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[sort_id],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.flag_yhlx,db.zk from <include refid="Table"/> as db
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_Hyfl">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_Hyfl">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[sort_id],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.flag_yhlx,db.zk  from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+  </statements>
+</sqlMap>
+

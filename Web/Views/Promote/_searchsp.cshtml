@@ -1,0 +1,51 @@
+﻿@using CySoft.Model.Other
+@{
+    var pageList = ViewData["pn"] as PageList<SelectSpModel>;
+    var beginRowNum = pageList.PageIndex * pageList.PageSize + 1;
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th style="width: 75px;">
+                <label class="i-checks m-b-none">
+                    <input type="checkbox" onclick="$.DHB.func.selectAllThis(this);">
+                    <i></i>
+                </label>
+            </th>
+            <th>商品编码</th>
+            <th>商品名称</th>
+            <th>单位</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            if (pageList.Any())
+            {
+                foreach (var item in pageList)
+                {
+                    <tr style="cursor: pointer">
+                        <td>
+                            <label class="i-checks m-b-none">
+                                <input onclick="app.promote.selectsp(this)" type="checkbox" name="_ck_sp" value="@item.id" data-bm="@item.bm"
+                                       data-mc="@item.mc" data-jj="@item.dj_jh" data-tm="@item.barcode" data-lsj="@item.dj_ls" data-dw="@item.dw"/>
+                                <i></i>@beginRowNum
+                            </label>
+                        </td>
+                        <td>@item.bm</td>
+                        <td>@item.mc</td>
+                        <td>@item.dw</td>
+                    </tr>
+                    beginRowNum++;
+                }
+            }
+        }
+    </tbody>
+
+</table>
+
+<script type="text/javascript">
+    app.c.public_data['promote/searchsp'] = app.c.public_data['promote/searchsp'] || {};
+    app.c.public_data['promote/searchsp']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['promote/searchsp']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['promote/searchsp']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E0FC16C4-EB3C-4BC6-9EA9-B8BE46692359}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CySoft.DAL</RootNamespace>
+    <AssemblyName>CySoft.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Web\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Apache.Ibatis.Common, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Apache.Ibatis.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.Ibatis.DataMapper, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Apache.Ibatis.DataMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\BaseDAL.cs" />
+    <Compile Include="Base\IBatisDAL.cs" />
+    <Compile Include="FaqDAL.cs" />
+    <Compile Include="Info_UserDAL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tb_Gys_DAL.cs" />
+    <Compile Include="Tb_KhflDAL.cs" />
+    <Compile Include="Tb_ShopDAL.cs" />
+    <Compile Include="Tb_ShopspDAL.cs" />
+    <Compile Include="Tb_SpDAL.cs" />
+    <Compile Include="Tb_GysflDAL.cs" />
+    <Compile Include="Tb_SpflDAL.cs" />
+    <Compile Include="Tb_Sp_SkuDAL.cs" />
+    <Compile Include="Tb_Sp_DjDAL.cs" />
+    <Compile Include="Tb_UserDAL.cs" />
+    <Compile Include="Td_Hy_Czrule_1DAL.cs" />
+    <Compile Include="Td_Hy_Cz_1DAL.cs" />
+    <Compile Include="Td_Kc_Kspd_2DAL.cs" />
+    <Compile Include="Td_Ls_1DAL.cs" />
+    <Compile Include="Td_Promote_2DAL.cs" />
+    <Compile Include="Td_Sale_Order_BodyDAL.cs" />
+    <Compile Include="Ts_LogDAL.cs" />
+    <Compile Include="Td_Sale_Order_HeadDAL.cs" />
+    <Compile Include="Td_Sale_Out_BodyDAL.cs" />
+    <Compile Include="Tb_Gys_Cgs_CheckDAL.cs" />
+    <Compile Include="Td_sale_payDAL.cs" />
+    <Compile Include="Ts_param_businessDAL.cs" />
+    <Compile Include="Tz_Hy_JeDAL.cs" />
+    <Compile Include="Tz_Hy_Je_FlowDAL.cs" />
+    <Compile Include="Tb_Hy_JfruleDAL.cs" />
+    <Compile Include="Tz_Hy_Jf_FlowDAL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CySoft.IDAL\CySoft.IDAL.csproj">
+      <Project>{76CD450C-470B-4D37-9A56-5B08FB056082}</Project>
+      <Name>CySoft.IDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Model\CySoft.Model.csproj">
+      <Project>{48225337-7E00-43F0-A2AB-E19DB332F6C9}</Project>
+      <Name>CySoft.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Utility\CySoft.Utility.csproj">
+      <Project>{26C05CD0-58EE-4721-A3E0-DD0F66F9FDC0}</Project>
+      <Name>CySoft.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Configs\providers.config">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configs\SqlMap.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Base\DataTools.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Configs\DALObjects.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Districts.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Gys.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Log.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Account.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_User.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Number_Max.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Cgs.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_City.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_County.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Province.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Role.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Role_Function.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_User_Role.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Cgs_Level.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Codingrule.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Spfl.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Cgs_Shdz.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Expand_Template.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Expand.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_unit.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Hy.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_sp_info.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Pic.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Sku.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Dj.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Td\Td_sale_order_body.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Td\Td_sale_cart.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Td\Td_sale_out_head.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Td\Td_sale_order_head.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Td\Td_sale_out_body.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Max_Billcode.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Flag.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Sale_Order_Log.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Param.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Function.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Td\Td_sale_pay.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Faq.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Favorites.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_param_business.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_User_Accredit.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Info.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlMaps\Tb\Info_Type.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Info_User.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_User_Checkin.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_User_pic.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Sku_Push.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Sku_Fd.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Td\Td_Sale_Order_Fd.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Td\Td_Xs_Th_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Xs_Th_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Xs_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Xs_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Xs_Dd_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Xs_Dd_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Ys_Flow.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Ys_Jsc.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Ys.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Sk_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Sk_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Notice.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Parm_Gsjg.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Hy_Czrule_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Hy_Jf_Flow.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Hy_Jf.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Hy_Je_Flow.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Hy_Je.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Jxc_Flow.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Yf_Jsc_Gx.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Parm_Terrace.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Tp_Pos_Machine.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Syszt_Pos.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Syszt_Db.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Lszd.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Parm_Shop.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Sp_Qc.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Ts\Ts_Parm.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tz\Tz_Sp_Kc.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Barcode_Pic.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Pay\CertifiedFile.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Pay\RegisterPay.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Role_Module.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="SqlMaps\Pay\RegisterPayLog.map.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <EmbeddedResource Include="SqlMaps\Pay\YeePay_Banks.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Pay\YeePay_City.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlMaps\Pay\YeePay_Trade.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlMaps\Pay\WeChatAccount.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Advertis.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Advertis_Log.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_User_Openid.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Dw.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Pos_Function.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Role_Pos_Function.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Pos_Role_Module.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Pay.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Shop.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Shopsp.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Shopsp_Exportdata.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Shopsp_Qc_Md.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_User.map - 复制.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_User_Shop.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Pay_Config.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Promote.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Promote_Shop.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Promote_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Promote_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Promote_Sort.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Promote_Largess.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Gysfl.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Shop_Shop.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Jh_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Ticket.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Jh_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Hyfl.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Hy_Shop.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Jh_Th_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Fk_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Fk_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ls_Jb_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ls_Jb_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ls_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ls_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Jh_Th_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Ck_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Ck_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Hy_Cz_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Hy_Cz_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Kc_Kspd_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Kc_Kspd_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Jh_Dd_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Jh_Dd_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Rk_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Rk_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Fpck_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Fpck_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Fprk_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Fprk_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Hy_Czrule.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Hy_Czrule_Zssp.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Sq_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Sq_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Dbck_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Dbck_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Dbrk_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Dbrk_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Cktzd_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Cktzd_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Fpsq_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Fpsq_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Fptzd_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Ps_Fptzd_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Hy_Jfrule.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Hy_Jfconvertsp.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Kc_Sltz_1.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Td\Td_Kc_Sltz_2.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Khfl.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Kh.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Jgzh.map.xml" />
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Fgcf.map.xml" />
+    <Content Include="SqlMaps\Td\Td_Saler_Out_Relation.map.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlMaps\Tb\Tb_Sp_Cgs.map.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

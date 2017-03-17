@@ -1,0 +1,1325 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    //var selectListSPFL = ViewData["selectListSPFL"] as List<CySoft.Model.Tb_Spfl>;
+    //selectListSPFL = selectListSPFL ?? new List<CySoft.Model.Tb_Spfl>();
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+    var selectListCZFS = (ViewData["selectListCZFS"] as List<Ts_Flag>) ?? new List<Ts_Flag>();//计价方式 下拉值
+    var selectListDW = (ViewData["selectListDW"] as List<Tb_Dw>) ?? new List<Tb_Dw>();//单位 下拉值
+
+    var selectListShop = (ViewData["selectListShop"] as List<Tb_Shop>) ?? new List<Tb_Shop>();//商品门店 下拉值
+    var selectListSPFLJsonStr = ViewData["selectListSPFLJsonStr"] == null ? "" : ViewData["selectListSPFLJsonStr"].ToString();//商品分类JsonStr 用于绑定分类下拉框
+    var copySP = (ViewData["Tb_Shopsp_Get"] as Tb_Shopsp_Get) ?? new Tb_Shopsp_Get() { Shop = new Tb_Shop(), ShopSP = new Tb_Shopsp(), Kc = new CySoft.Model.Tz.Tz_Sp_Kc(), ShopSP_DBZ = new List<Tb_Shopsp>() };//新增/复制/编辑/详细 的对象实体
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+
+    var optinList = "";//用于js控制的单位option
+    foreach (var item in selectListDW.OrderBy(d => d.dw))
+    { optinList += Html.Raw("<li value=\"" + item.dw + "\">" + item.dw + "</li>"); }
+
+    var viewType = ViewData["viewType"] == null ? "Edit" : ViewData["viewType"].ToString();//页面类型  Add：添加  Edit:编辑页  Detail:详细页 Copy：复制
+    var from = ViewData["from"] == null ? "" : ViewData["from"].ToString();//来源页面
+    var page = ViewData["page"] == null ? "0" : ViewData["page"].ToString();//列表页码
+    var showDBZ = ViewData["showDBZ"] == null ? "0" : ViewData["showDBZ"].ToString();//显示多包装
+    var editDBZ = ViewData["editDBZ"] == null ? "0" : ViewData["editDBZ"].ToString();//可编辑多包装
+    var editQC = ViewData["editQC"] == null ? "0" : ViewData["editQC"].ToString();//可编期初
+    if (viewType.ToLower() == "copy") { copySP.Qc = null; copySP.ShopSP.flag_state = 1; }//当复制商品时清空期初
+
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+    var dw = selectListDW.OrderBy(d => d.dw).FirstOrDefault() == null ? "" : selectListDW.OrderBy(d => d.dw).FirstOrDefault().dw;
+    var id_spfl = ViewData["id_spfl"] == null ? "" : ViewData["id_spfl"].ToString();//商品分类
+    var add_dw = ViewData["dw"] == null ? "" : ViewData["dw"].ToString();//新增时商品单位
+
+}
+<script src="~/static/js/linq.js"></script>
+
+
+<script type="text/javascript">
+
+    $(function () {
+        $('div[contentID="shopsp/add"]').attr({ controller: 'shopsp', action: 'add' });
+        app.c.public_data['shopsp/add'] = app.c.public_data['shopsp/add'] || {};
+        app.c.public_data['shopsp/add']['once'] = false;
+        app.shopsp = app.shopsp || {};
+    });
+</script>
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品管理', id: 'shopsp/list', nocache: '0' }); ">商品管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">新增商品</a>
+</div>
+
+
+<div class="col" id="add_shop">
+    <div class="panel panel-default comform">
+        <!-- 头部选项卡 -->
+        <div class="main-head" style="position:relative; display:none;">
+            <!--基础-->
+            <ul id="goods-tab" class="clearfix menu-list" tab="goods-tab">
+                <li class="selected-tab" onclick="$.DHB.func.tab(this);" style="width: 32px;"><a href="javascript:;">基础</a></li>
+            </ul>
+            <!--帮助文案-->
+            <label class="copy d-i-b  m-l-none" style="position: relative;left: 305px; top: -43px; display: none;">
+                <a class="icon-question tool"></a>
+                <div style="display: none;" class="popover fade bottom in tool-box">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>库存下限：当此商品的库存低于库存下限时，会被醒目地展示出来。</p><p>库存上限：当此商品的库存高于安全库存时，会被醒目地展示出来。</p>
+                        <p>安全库存：当此商品的库存低于安全库存时，会被醒目地展示出来。</p><p>设置数值大小要求：库存下限《安全库存《库存上限</p>
+                        <p>
+                            注意：设置0或者不设置，即不启用此功能
+                            <a href="javascript:;" class="tool-link">查看更多帮助</a>
+                        </p>
+                    </div>
+                </div>
+            </label>
+
+        </div>
+
+        <form novalidate="novalidate" @*action="/shopsp/add"*@ id="fm-goods-add" onkeypress="if(event.keyCode==13||event.which==13){return false;}" class="client-box">
+            <!-- start main-content -->
+            <div id="goods-main" class="main-content" tabcontent="goods-tab">
+                <!-- 基础 -->
+                <div style="overflow:visible;">
+                    <div class="col-sm-12" id="basic_info">
+                        <!-- 基本信息 -->
+                        <div class="fixed-input-group col-sm-8 f-l">
+                            <h2 class="form_title"><span>基本信息</span></h2>
+                            <div class="col-sm-12">
+
+                                <!-- 商品条码 -->
+                                <div class="input-item-2 clearfix add-client form_line col-sm-3" style="overflow:visible;">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">* </em><span>商品条码：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control  cominput user-input {required:true}" maxlength="40" id="barcode" name="barcode" placeholder="输入条码/点击按钮生成" type="text" value="@copySP.ShopSP.barcode" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.barcode_search(this) }" onkeyup="app.shopsp.checkbarcode(this)" onafterpaste="app.shopsp.checkbarcode(this)">
+                                        </label>
+
+                                        <button class="btn btn-info w-xs new_shengcheng" type="button" onclick="app.shopsp.createbarcode(this,'barcode','bm','1');">生成</button>
+
+                                    </div>
+                                </div>
+                                <!-- 商品编码 -->
+                                <div class="input-item-2 clearfix add-client form_line  col-sm-3" style="overflow:visible;">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">* </em><span>商品编码：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control  cominput user-input {required:true,messages:{required:&#39;输入商品编码&#39;}} valid" maxlength="40" id="bm" name="bm" type="text" value="@copySP.ShopSP.bm" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <!-- 商品名称 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-6" style="overflow:visible;">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">* </em><span>商品名称：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control  cominput user-input {maxlength:80,required:true,messages:{required:&#39;请输入商品名称最多八十个字&#39;}} valid" maxlength="80" name="mc" id="mc" placeholder="请输入商品名称最多八十个字" type="text" value="@copySP.ShopSP.mc" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" style="width:524px;">
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- 计价方式 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">* </em> <span>计价方式：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <div class="selct_data" style="padding-left:1px; padding-left:1px !important; width:auto;">
+                                                @{int firstczfs = 0;}
+                                                @foreach (var item in selectListCZFS.OrderBy(d => d.listsort))
+                                                {
+                                                    if (copySP.ShopSP == null || copySP.ShopSP.flag_czfs == null)
+                                                    {
+                                                        if (firstczfs == 0)
+                                                        {
+                                                            <label class="i-checks showIcon" style="margin-top:0px;">
+                                                                <input name="flag_czfs" value="@item.listdata" checked="checked" type="radio" onclick="app.shopsp.createbarcode(this,'barcode','bm','1');"><i>@item.listdisplay</i>
+                                                            </label>
+                                                        }
+                                                        else
+                                                        {
+                                                            <label class="i-checks showIcon" style="margin-top:0px;">
+                                                                <input name="flag_czfs" value="@item.listdata" type="radio" onclick="app.shopsp.createbarcode(this,'barcode','bm','1');"><i>@item.listdisplay</i>
+                                                            </label>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        var czfsChecked = copySP.ShopSP.flag_czfs == item.listdata ? "checked=\"checked\"" : "";
+                                                        <label class="i-checks showIcon" style="margin-top:0px;">
+                                                            <input name="flag_czfs" value="@item.listdata" @czfsChecked type="radio" onclick="app.shopsp.createbarcode(this,'barcode','bm','1');"><i>@item.listdisplay</i>
+                                                        </label>
+                                                    }
+                                                    firstczfs++;
+                                                }
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- 商品分类 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3" style="overflow:visible;">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">* </em><span>商品分类：</span>
+                                        </label>
+
+                                        <label class="m-l-xs1" id="tree-id_spfl"></label>
+
+                                    </div>
+                                </div>
+                                <!-- 默认供应商 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag"> </em><span>默认供应商：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input type="hidden" name="id_gys" id="id_gys" value="@(string.IsNullOrEmpty(copySP.ShopSP.id_gys)?"":copySP.ShopSP.id_gys)" />
+                                            <input type="text" readonly onclick="$.DHB.client.select_gys({ 'gys_name': 'gys_name', 'gys_id': 'gys_id', 'gys_callback': 'app.shopsp.add_gys_callback' });" name="gys_name" id="gys_name" value="@(string.IsNullOrEmpty(copySP.ShopSP.name_gys)?"":copySP.ShopSP.name_gys)" /><span class="right_icon fa fa-user"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <!-- 商品单位 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3" style="overflow:visible;">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">* </em><span>商品单位：</span>
+                                        </label>
+                                        <label class="m-l-xs1" id="addshop_dw">
+                                            @*<select id="dw" name="dw" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择商品单位&#39;}} valid">*@
+                                            <select id="dw" name="dw" class="btn-group bootstrap-select user-input  select2_ form-control input-sm {required:true,messages:{required:&#39;请选择商品单位&#39;}} valid ">
+                                                @foreach (var item in selectListDW.OrderBy(d => d.dw))
+                                                {
+                                                    var dwChecked="";
+                                                    if (viewType.ToLower() == "add")
+                                                    {
+                                                        dwChecked = add_dw.Trim() == item.dw ? "selected=\"selected\"" : "";
+
+                                                    }else
+                                                    {
+                                                        dwChecked = copySP.ShopSP.dw.Trim() == item.dw ? "selected=\"selected\"" : "";
+                                                    }
+                                                    <option value="@item.dw" @dwChecked>@item.dw</option>
+                                                }
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- 保持期 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <span>保质期：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+
+                                            <input class="form-control user-input { number:true,maxlength:11,messages:{required:&#39;请输入保质期&#39;} }" name="yxq" id="yxq" placeholder="" maxlength="40" type="text" value="@copySP.ShopSP.yxq" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                        </label><span class="right_icon">天</span>
+                                    </div>
+
+                                </div>
+
+
+                                <!-- 产地 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">&nbsp; </em><span>产地：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input " name="cd" id="cd" placeholder="" maxlength="40" type="text" value="@copySP.ShopSP.cd" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                                <!-- 生命周期 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3" style="overflow:visible;">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">&nbsp; </em><span>商品状态：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <select name="flag_state" id="flag_state" style="width:80px;">
+                                                @foreach (var item in selectListState.OrderBy(d => d.listsort))
+                                                {
+                                                    var stateChecked = copySP.ShopSP.flag_state == item.listdata ? "selected=\"selected\"" : "";
+                                                    <option value="@item.listdata" @stateChecked>@item.listdisplay</option>
+                                                }
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- 备注 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-6">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">&nbsp; </em><span>备注：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <textarea class="form-control user-input " name="bz" id="bz" placeholder="" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" style="width:524px; height:30px !important;">@copySP.ShopSP.bz</textarea>
+                                        </label>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                        <!-- 商品图片 -->
+                        <div class="fixed-input-group col-sm-4 f-l">
+                            @*<h2 class="form_title"><span>商品图片</span></h2>*@
+                            <div class="input-item-1 clearfix">
+
+                                <div class="add-img m-t">
+                                    <ol id="img-list" class="clearfix m-l-xxl m-b-none">
+                                        <li style="opacity: 1; z-index: auto; top: 0px; left: 0px;" id="img-list-1" @*onmouseenter="app.goods.img_list_enter(this);" onmouseleave="app.goods.img_list_leave(this);"*@ class="cover">
+                                            <div class="wrap-img">
+                                                <img id="img_pic_path" name="img_pic_path" src="@Html.Raw(string.IsNullOrEmpty(copySP.ShopSP.pic_path) ? "/static/images/default.jpg" : copySP.ShopSP.pic_path)" alt="">
+                                            </div>
+                                        </li>
+                                        <li class="@*add-img-icon*@ ">
+                                            <p class="btn btn-info w-xs " onclick="app.shopsp.single_uploadimage();" id_="ignore-add-img"><i class="fa fa-cloud-upload"></i>添加图片</p>
+                                            <h2><em>（建议图片尺寸800*800px，大小≤6MB，支持JPG、PNG、JPEG）</em></h2>
+                                        </li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                            <input name="pic_path" id="pic_path" type="hidden" autocomplete="off" value="@Html.Raw(string.IsNullOrEmpty(copySP.ShopSP.pic_path) ? "/static/images/default.jpg" : copySP.ShopSP.pic_path)">
+                        </div>
+                    </div>
+
+
+                </div>
+                <!-- 价格信息 -->
+                <div class="fixed-input-group col-sm-12" id="price_info">
+                    <h2 class="form_title"><span>价格信息</span></h2>
+                    <div class="form_content">
+                        <div class="input-item-2 clearfix add-client  form_line f-l col-sm-3">
+                            <!-- 进货价 -->
+                            <div style="width: 100% !important">
+                                <label class="item-2-label comlabel">
+                                    <span>进货价：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input { required:true,number:true,maxlength:11,messages:{required:&#39;请输入进货价&#39;} } valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" min="0" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" maxlength="11" name="dj_jh" id="dj_jh" placeholder="进货价" type="text" value="@copySP.ShopSP.dj_jh.Digit((int)digit["dj_digit"])" onkeypress="if (event.keyCode==13 || event.which==13) { app.shopsp.onkeydown(this) }">
+                                </label>
+                            </div>
+                        </div>
+                        <!-- 零售价 -->
+                        <div class="input-item-2 clearfix add-client  form_line  col-sm-3 f-l">
+                            <div style="width: 100% !important">
+                                <label class="item-2-label comlabel">
+                                    <span>零售价：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input {required:true,number:true,maxlength:11,messages:{required:&#39;请输入零售价&#39;}} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" min="0" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" maxlength="11" name="dj_ls" id="dj_ls" placeholder="零售价" type="text" value="@copySP.ShopSP.dj_ls.Digit((int)digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                </label>
+                            </div>
+                        </div>
+                        <!-- 会员价 -->
+                        <div class="input-item-2 clearfix add-client  form_line  col-sm-3 f-l">
+                            <div style="width: 100% !important">
+                                <label class="item-2-label comlabel">
+                                    <span>会员价：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input {required:true,number:true,maxlength:11,messages:{required:&#39;请输入会员价&#39;}} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" min="0" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" maxlength="11" name="dj_hy" id="dj_hy" placeholder="会员价" type="text" value="@copySP.ShopSP.dj_hy.Digit((int)digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+
+                                </label>
+                            </div>
+                        </div>
+                        <!-- 配送价 -->
+                        <div class="input-item-2 clearfix add-client  form_line  col-sm-3 f-l">
+                            <div style="width: 100% !important">
+                                <label class="item-2-label comlabel">
+                                    <span>配送价：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input {required:true,number:true,maxlength:11,messages:{required:&#39;请输入配送价&#39;}} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" min="0" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" maxlength="11" name="dj_ps" id="dj_ps" placeholder="配送价" type="text" value="@copySP.ShopSP.dj_ps.Digit((int)digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 批发价 -->
+                        <div class="input-item-2 clearfix add-client  form_line col-sm-3 f-l">
+                            <div style="width: 100% !important">
+                                <label class="item-2-label comlabel">
+                                    <span>批发价：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input {required:true,number:true,maxlength:11,messages:{required:&#39;请输入批发价&#39;}} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" min="0" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" maxlength="11" name="dj_pf" id="dj_pf" placeholder="批发价" type="text" value="@copySP.ShopSP.dj_pf.Digit((int)digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                </label>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <!-- 商品门店 -->
+                <div class="fixed-input-group hidden">
+                    <h2 class="form_title"><span>商品门店</span></h2>
+                    <div class="table_list form_content">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed; border-collapse:separate;">
+                            <thead>
+                                <tr style="height:10px;">
+                                    <th width="5%" class="table-p-l-sm table-p-r-xsm-fixed">
+                                        <label class="i-checks m-b-none">
+                                            <input type="checkbox" onclick="$.DHB.func.selectAllThis(this);">
+                                            <i>
+                                            </i>
+                                        </label>
+                                    </th>
+                                    <th width="10%">编码</th>
+                                    <th width="10%">门店名称</th>
+                                </tr>
+                            </thead>
+                            <tbody id="template">
+                                @{int index = 1;
+                                    foreach (var item in selectListShop)
+                                    {
+                                        <tr id="row-shop-id-@item.id" class="tr-status-finished">
+                                            <td class="table-p-l-sm table-p-r-xsm-fixed" style="height:10px;padding-bottom:0px;padding-top:0px;">
+                                                <label class="i-checks m-b-none">
+                                                    <input type="checkbox" name="client_id[]" good="@item.id" value="@item.id">
+                                                    <i>
+                                                    </i>@(index++)
+                                                </label>
+                                            </td>
+                                            <td style="height:12px;padding-bottom:2px;padding-top:2px;">
+                                                @item.bm
+                                            </td>
+                                            <td style="height:10px;padding-bottom:0px;padding-top:0px;">
+                                                @item.mc
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!-- 多包装 -->
+                <div class="fixed-input-group col-sm-12" id="shopsp_DBZ">
+                    <h2 class="form_title"><span>多包装</span> <button class="btn btn-info w-xs f-r" type="button" onclick="app.shopsp.adddbz(this)" style=" margin-right:20px;"><i class=" fa fa-plus " style="margin-right:5px;font-size:14px;"></i>新增</button></h2>
+                    <div class="input-item-1 clearfix">
+                        <input name="dbznum" id="dbznum" value="0" type="hidden">
+
+                        <div style="display: block;" id="multi-price-box" class="table_list form_content">
+                            <table class="table table-bordered order-detail table-sm" id="dbz_table" name="dbz_table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px;" class="hidden"></th>
+                                        <th style="width:125px;">条形码</th>
+                                        <th width="100">编码</th>
+                                        <th style="width:40%" class="text-center">名称</th>
+                                        <th style="width:5%" class="text-center">单位</th>
+                                        <th style="width:5%" class="text-center">转换率</th>
+                                        <th toggle="" style="width:5%; display: table-cell;" class="text-center">进货价</th>
+                                        <th toggle="" style="width:5%; display: table-cell;" class="text-center">零售价</th>
+                                        <th toggle="" style="width:5%; display: table-cell;" class="text-center">会员价</th>
+                                        <th toggle="" style="width:5%; display: table-cell;" class="text-center">配送价</th>
+                                        <th toggle="" style="width:5%; display: table-cell;" class="text-center">批发价</th>
+                                        <th style="width:50px;text-align:center;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dbz_data">
+                                    <!-- 此处动态加载数据 -->
+                                    @foreach (var item in copySP.ShopSP_DBZ)
+                                    {
+                                        <tr data-options="guid">
+                                            <td style="text-align:center;" class="hidden"><span>@item.id</span><input name="id" type="hidden" value="@item.id"><input name="info_type" type="hidden" value="edit">
+                                                <input name="pic_path_copy" type="hidden" value="@item.pic_path">
+                                            </td>
+                                            <td><div class="width200"><input style="width:130px;" class="form-control f-l {required:true,messages:{required:&#39;请输入商品条码&#39;}}" name="barcode" id="barcode_@item.id" value="@item.barcode" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" onkeyup=" app.shopsp.checkbarcode(this)" onafterpaste="app.shopsp.checkbarcode(this)"><button class="btn btn-info new_shengcheng f-l" type="button" onclick="app.shopsp.createbarcode(this,'barcode_@item.id','bm_@item.id','')">生成</button></div></td>
+                                            <td><input class="form-control f-l w-150" type="text" name="bm" id="bm_@item.id" value="@item.bm" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" /></td>
+                                            <td><input class="form-control  {maxlength:80,required:true,messages:{required:&#39;请输入商品名称&#39;}} valid" name="mc" value="@item.mc" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td>
+                                                <div class="dw_container">
+                                                    <div class="dw_title"><span value="@item.dw">@item.dw</span><i class="fa fa-sort-desc"></i></div>
+                                                    <div class="dw_main">
+                                                        <div class="dw_search"><input type="text" name="dw_search" onkeyup="app.shopsp.dw_search_dbz(this)"></div>
+                                                        <div class="dw_list">
+                                                            <ul id="dw_@item.id" name="dw" class="">
+                                                                @foreach (var item_dw in selectListDW.OrderBy(d => d.dw))
+                                                                {
+                                                                    // var dwChecked = item.dw == item_dw.dw ? "selected=\"selected\"" : "";
+                                                                    <li value="@item_dw.dw">@item_dw.dw</li>;
+                                                                }
+                                                            </ul>
+                                                            <p style="display:none;">没有找到匹配的项</p>
+                                                        </div>
+                                                        <div class="dw_footer" onclick="app.shopsp.dw_more(this)">+新增更多</div>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                            <td><input class="form-control {required:true,number:true,maxlength:11,messages:{required:&#39;请输入转换率&#39;}} valid" name="zhl" value="@item.zhl.Digit(int.Parse(digit["dj_digit"].ToString()))" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入进货价&#39;}} valid" name="dj_jh" value="@item.dj_jh.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])" onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入零售价&#39;}} valid" name="dj_ls" value="@item.dj_ls.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])" onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入会员价&#39;}} valid" name="dj_hy" value="@item.dj_hy.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])" onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入配送价&#39;}} valid" name="dj_ps" value="@item.dj_ps.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])" onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入批发价&#39;}} valid" name="dj_pf" value="@item.dj_pf.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])" onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td style="text-align:center;">
+
+                                                
+                                                <a onclick="app.shopsp.choice_spec_del(this);" class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 库存预警 -->
+                <div class="fixed-input-group  col-sm-6">
+                    <h2 class="form_title"><span>库存预警</span></h2>
+                    <div class=" form_content">
+                        <div class="input-item-2 clearfix  form_line col-sm-3">
+                            <div style="width: 100% !important">
+                                <label class="item-2-label">
+                                    <span>最低库存量：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input {min:0} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, '@digit["sl_digit"]')" id="sl_kc_min" name="sl_kc_min" placeholder="库存小于这个数会提醒" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" type="text" value="@copySP.ShopSP.sl_kc_min.Digit((int)digit["sl_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" />
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-item-2 clearfix col-sm-3 form_line">
+                            <div style="width: 100% !important">
+                                <label class="item-2-label">
+                                    <span>最高库存量：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input {min:0} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, '@digit["sl_digit"]')" id="sl_kc_max" name="sl_kc_max" placeholder="库存超过这个数会提醒" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" type="text" value="@copySP.ShopSP.sl_kc_max.Digit((int)digit["sl_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 期初 -->
+                <div class="fixed-input-group  col-sm-6" id="shopsp_QC">
+                    <h2 class="form_title"><span>期初信息</span></h2>
+                    <div class="form_content">
+                        <div class="input-item-2 clearfix col-sm-3 form_line">
+                            <div style="width: 100% !important">
+                                <label class="item-2-label">
+                                    <span>期初数量：</span>
+                                </label>
+                                <label class="m-l-xs1">
+
+                                    <input class="form-control user-input {min:0}" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, '@digit["sl_digit"]')" id="sl_qc" name="sl_qc" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" placeholder="" type="text" value="@(copySP.Qc==null?"":copySP.Qc.sl_qc.Digit((int)digit["sl_digit"]).ToString())" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-item-2 clearfix col-sm-3 form_line">
+                            <div style="width: 100% !important">
+                                <label class="item-2-label">
+                                    <span>期初金额：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input {min:0}" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, '@digit["je_digit"]')" id="je_qc" name="je_qc" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" placeholder="" type="text" value="@(copySP.Qc==null?"":copySP.Qc.je_qc.Digit((int)digit["je_digit"]).ToString())" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="height:30px; overflow:hidden; width:100%;">&nbsp;</div>
+
+            </div>
+
+            @*</div>*@
+            <!-- end main-content -->
+            <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+                <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                <input name="dbzList" id="dbzList" value="" autocomplete="off" type="hidden">
+                <input name="sp_qc" id="sp_qc" value="" autocomplete="off" type="hidden">
+                <input name="viewType" id="viewType" value="@viewType" autocomplete="off" type="hidden">
+                <input name="id" id="id" value="@copySP.ShopSP.id" autocomplete="off" type="hidden">
+
+                @if (viewType == "Add")
+                {
+                    if (IsPermissionShow("add", actionlist))
+                    {
+                        <button type="submit" class="btn w-138 btn-info" onclick="$(_ + '#is_need_new').val(''); app.shopsp.check_goods_yes('btn-goods-add1');" id="btn-goods-add1" data-loading-text="保存中...">保存回到列表页</button>
+                        <button type="submit" class="btn w-138 btn-info" onclick="$(_ + '#is_need_new').val('1'); app.shopsp.check_goods_yes('btn-goods-add2');" id="btn-goods-add2" data-loading-text="保存中...">保存并继续新增</button>
+                    }
+                    
+
+                }
+                else if (viewType == "Copy")
+                {
+                    if (IsPermissionShow("add", actionlist))
+                    {
+                        <button type="submit" class="btn w-138 btn-info" onclick="$(_ + '#is_need_new').val(''); app.shopsp.check_goods_yes('btn-goods-add1');" id="btn-goods-add1" data-loading-text="保存中...">保存回到列表页</button>
+                    }
+                   
+
+                }
+                else if (viewType == "Edit")
+                {
+                    if (IsPermissionShow("edit", actionlist))
+                    {
+                        <button type="submit" class="btn w-138 btn-info" onclick="$(_ + '#is_need_new').val(''); app.shopsp.check_goods_yes('btn-goods-add1');" id="btn-goods-add1" data-loading-text="保存中...">保存回到列表页</button>
+                    }
+                    
+
+                }
+                else if (viewType == "Detail")
+                {
+                    if (IsPermissionShow("edit", actionlist))
+                    {
+                        <button type="button" class="btn w-138 btn-info" onclick="$.fn.menuTab.deleteMenu('shopsp/detail');$.fn.menuTab.load({ url: '/shopsp/edit?from=detail&id=@copySP.ShopSP.id', 'title': '商品编辑', id: 'shopsp/add', nocache: '1' }); " id="btn-goods-edit" data-loading-text="编辑中...">编辑商品</button>
+                    }
+                    
+
+                }
+
+                @if (from == "search")
+                {
+                    <button type="button" class="btn w-xs btn-default" title="返回" onclick="app.shopsp.back(this);">返回</button>
+                }
+                else
+                {
+                    <button type="button" class="btn w-xs btn-default" title="全部商品" onclick="$.fn.menuTab.deleteMenu('shopsp/add'); $.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品管理', id: 'shopsp/list', nocache: '1' });">返回</button>
+                }
+
+            </footer>
+        </form>
+
+
+
+    </div>
+
+</div>
+
+<style>
+    .test {
+        width: 30px;
+    }
+</style>
+
+
+<script type="text/javascript">
+    var spflTree, treeData;
+    //$.DHB._ = function () {
+    //    app.c.public_data['shopsp/addgoods'] = app.c.public_data['shopsp/addgoods'] || {};
+    //    if (app.c.public_data['shopsp/addgoods']['once'] === false) {
+    //        app.c.public_data['shopsp/addgoods']['once'] = true;
+    //    }
+    //};
+
+
+
+    app.shopsp = app.shopsp || {};
+    app.shopsp.add = app.shopsp.add || {};
+
+    app.shopsp.back = function (e) {
+
+
+        if ($.cookie("prePage") != null && $.cookie("prePage") != undefined) {
+            //
+            //$.fn.menuTab.load({ url: $.DHB.U($.cookie("prePage")), 'title': $.cookie("prePage_title"), id: 'shopsp/list', nocache: '0' });
+            history.go(-1);
+            $.fn.menuTab.deleteMenu('shopsp/add');
+        } else {
+            $.fn.menuTab.deleteMenu('shopsp/add');
+        }
+
+    }
+
+    $(function () {
+        setTimeout(function () {
+
+            // 绑定商品单位
+            var objDW = $(_ + 'select[name="dw"]').prev();
+            objDW.find('ul').css('padding-bottom', '30px');
+            objDW.append('<div class="list-group dhb-more"><a class="media list-group-item list-group-item-more">+ 新增更多</a></div>');
+            objDW.find('.dhb-more').bind('click', function (e) {
+                $.DHB.dialog({ 'url': $.DHB.U('/dw/add?other_add=1'), 'id': 'dialog-dw' });
+                objDW.parents('.btn-group').removeClass('open');
+                e.stopPropagation();
+                return false;
+            });
+
+        }, 200);
+
+    });
+
+    app.shopsp.add_ready = function () {
+        ////console.log('@showDBZ');
+        ////console.log('@editDBZ');
+        ////console.log('@editQC');
+
+        if ('@showDBZ' == "0") {
+
+            $('#shopsp_DBZ', _).hide();
+        }
+        if ('@editDBZ' == "0") {
+            $('#dbz_table', _).find('input[type=text]').attr('readonly', 'readonly');
+            $('#dbz_table', _).find('button').attr('disabled', 'disabled');
+            $('#dbz_table', _).find('a').removeAttr('onclick');
+        }
+        if ('@editQC' == "0") {
+            $('#shopsp_QC input', _).attr('readonly', 'readonly');
+        }
+        ////console.log('@viewType');
+        if ('@viewType' == 'Detail') {
+
+            $('input[type=text]', _).attr('readonly', 'readonly').css({ 'border': 'none', 'text-align': 'left' });
+            $('input[name=gys_name]').next('span').hide();
+            $('input[name=yxq]', _).parent().next('span').hide();
+            $('input[name=yxq]', _).val($('input[name=yxq]').val() + '天');
+            $('textarea', _).attr('readonly', 'readonly').css({ 'border': 'none', 'text-align': 'left' });
+            $('select', _).attr('disabled', 'disabled').addClass('disabled');
+            $('input[type=radio]', _).attr('disabled', 'disabled');
+            $('button', _).not('footer button').hide();
+            $('a,input', _).removeAttr('onclick');
+            $('p[id_=ignore-add-img]', _).hide();
+            var selectListSPFLJsonStr = '@Html.Raw(selectListSPFLJsonStr)';
+            spflTree = JSON.parse(selectListSPFLJsonStr);
+            ////console.log('@copySP.ShopSP.id_spfl');
+            ////console.log(spflTree);
+            for (var i = 0; i < spflTree.length; i++) {
+                //
+                if (spflTree[i].id == '@copySP.ShopSP.id_spfl') {
+                    $('#tree-id_spfl').html(spflTree[i].name);
+                    break;
+                }
+            }
+
+
+        } else {
+            if ('@viewType' == 'Edit') {
+
+            } else {
+                $('#barcode', _).blur(function () {
+                    app.shopsp.barcode_search(this);
+                })
+                $('#shopsp_DBZ').on('blur', 'input[name=barcode]', function () {
+                    app.shopsp.barcode_search_child(this);
+
+                })
+            }
+
+            $('#shopsp_DBZ').on('click', '.dw_title', function () {
+                app.shopsp.dw_request_total(app.shopsp.dw_title_click, $(this));
+                $(this).siblings('.dw_main').show();
+
+            })
+
+            //
+            //绑定商品分类
+            var selectListSPFLJsonStr = '@Html.Raw(selectListSPFLJsonStr)';
+            spflTree = JSON.parse(selectListSPFLJsonStr);
+            treeData = {
+                el: '#tree-id_spfl', title: '请选择商品分类', name: 'id_spfl', value: '', data: spflTree, width: 200, callback: function (cur, el) {
+                    el.find('button').removeClass('error');
+                }, class: '{required:true,messages:{required:&#39;请选择商品分类&#39;}} valid', more: true, has_title: false
+            };
+            if ('@viewType' == 'Add') {
+
+                if ('@id_spfl' == '0' || '@id_spfl'=='') {
+                    treeData.value = '';
+                } else {
+                    treeData.value = '@id_spfl';
+                    localStorage.removeItem("id_spfl");
+                    localStorage.removeItem("dw");
+                }
+
+            } else {
+                treeData.value = '@copySP.ShopSP.id_spfl';
+            }
+
+
+
+            $.DHB.tree(treeData);
+            $(_ + "#tree-id_spfl .dhb-more").bind('click', function () {
+                $.DHB.dialog({ 'url': $.DHB.U('/spfl/add?goods=1'), 'id': 'dialog-category' });
+            });
+
+        }
+        app.shopsp.check_goods_yes = function (btn) {
+            //表单提交
+            $('#fm-goods-add', _).validate({
+                submitHandler: function (form) {
+                    $('button[type=submit]', _).attr('disabled', 'disabled')
+                    var $btn = $('#' + btn);
+                    var obj_list = [], flag;
+                    if (parseFloat($('#sl_kc_max', _).val()) < parseFloat($('#sl_kc_min', _).val())) {
+                        $.DHB.message({ 'content': "最高库存量不得小于最低库存量", "type": "i" });
+                        $('button[type=submit]', _).removeAttr('disabled');
+                        return false;
+                    }
+                    $('#dbz_table>tbody>tr', _).each(function (i, item) {
+                        if ($(this).find('input[name=barcode]').val() == "") {
+                            flag = false;
+                            var errStr = "<label  class='error kk' style='top:25px;left:0px;'>条形码不能为空！</label>";
+                            $(this).find('input[name=barcode]').addClass('error').after(errStr);
+                            $('button[type=submit]', _).removeAttr('disabled');
+                            return false;
+                        } else if ($(this).find('input[name=bm]').val() == "") {
+                            flag = false;
+                            var errStr = "<label  class='error kk'>编码不能为空！</label>";
+                            $(this).find('input[name=bm]').addClass('error').after(errStr);
+                            $('button[type=submit]', _).removeAttr('disabled');
+                            return false;
+                        } else if ($(this).find('input[name=mc]').val() == "") {
+                            var errStr = "<label  class='error kk'>名称码不能为空！</label>";
+                            $(this).find('input[name=mc]').addClass('error').after(errStr);
+                            $('button[type=submit]', _).removeAttr('disabled');
+                            flag = false;
+                            return false;
+                        } else {
+                            var obj = {};
+                            obj.id = $(this).find('input[name=id]').val();
+                            obj.info_type = $(this).find('input[name=info_type]').val();
+                            obj.barcode = $(this).find('input[name=barcode]').val();
+                            obj.bm = $(this).find('input[name=bm]').val();
+                            obj.mc = $(this).find('input[name=mc]').val();
+                            obj.dw = app.str_del_bank($(this).find('.dw_container .dw_title span').attr('value'));
+                            obj.zhl = $(this).find('input[name=zhl]').val();
+                            obj.dj_jh = $(this).find('input[name=dj_jh]').val();
+                            obj.dj_ls = $(this).find('input[name=dj_ls]').val();
+                            obj.dj_hy = $(this).find('input[name=dj_hy]').val();
+                            obj.dj_ps = $(this).find('input[name=dj_ps]').val();
+                            obj.dj_pf = $(this).find('input[name=dj_pf]').val();  //'0';
+                            obj.pic_path = $(this).find('input[name=pic_path_copy]').val();
+                            obj_list.push(obj);
+                            flag = true;
+                        }
+
+                    });
+                    if (flag || flag == undefined) {
+                        $(_ + '#dbzList').val(JSON.stringify(obj_list))
+                        $(_ + '#sp_qc').val('{"sl_qc":"' + $(_ + '#sl_qc').val() + '","je_qc":"' + $(_ + '#je_qc').val() + '" }')
+                        var smData = $('#fm-goods-add', _).serializeJson();
+                        smData.barcode = $('#barcode', _).val();
+                        smData.bm = $('#bm', _).val();
+                        smData.mc = $('#mc', _).val();
+                        smData.cd = $('#cd', _).val();
+                        smData.dj_jh = $('#dj_jh', _).val();
+                        smData.dj_ls = $('#dj_ls', _).val();
+                        smData.dw = $('#dw', _).val();
+                        smData.sl_kc_min = $('#sl_kc_min', _).val();
+                        smData.sl_kc_max = $('#sl_kc_max', _).val();
+                        smData.dj_hy = $('#dj_hy', _).val();
+                        smData.yxq = $('#yxq', _).val();
+                        smData.dj_ps = $('#dj_ps', _).val();
+                        smData.dj_pf = $('#dj_pf', _).val();
+                        smData.bz = $('#bz', _).val();
+                        smData.viewType = $('#viewType', _).val();
+                        smData.id = $('#id', _).val();
+                        window.localStorage.setItem('id_spfl', smData.id_spfl);
+                        window.localStorage.setItem('dw', smData.dw);
+                        var viewType = $('#viewType').val();
+                        var action = '/shopsp/add'; //$fm.attr('action'),
+                        if (viewType == 'Add' || viewType == 'Copy') {
+                            action = '/shopsp/add';
+                        } else if (viewType == 'Edit') {
+                            action = '/shopsp/edit';
+                        }
+                        smData.dw = $('#dw', _).siblings('button').find('.filter-option').html();
+
+                        var options = {
+                            data: smData,
+                            url: $.DHB.U(action),
+                            type: "POST",
+                            datatype: 'json',
+                            beforeSend: function () { },
+                            success: function (data, textStatus, jqXHR) {
+                                $btn.button("reset");
+                                if (data.status == "success") {
+                                    $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                                    if ($(_ + '#is_need_new').val() != '1') {
+                                        $.fn.menuTab.deleteMenu('shopsp/add');
+                                        $.fn.menuTab.deleteMenu('shopsp/edit');
+                                        $.fn.menuTab.deleteMenu('shopsp/copy');
+                                        $.DHB.url('shopsp/list', 'cache', '商品资料');
+                                    }
+                                    else {
+                                        $.fn.menuTab.deleteMenu('shopsp/add');
+                                        $.fn.menuTab.load({ url: '/shopsp/add?id_spfl=' + window.localStorage.getItem('id_spfl') + '&dw=' + window.localStorage.getItem('dw') + '&from=@from', 'title': '新增商品', id: 'shopsp/add', nocache: '0' });
+                                    }
+                                }
+                                else {
+                                    var errStr = "<label for=\"" + data.data.name + "\" class='error'>" + data.message + "</label>"
+                                    if (data.data.id == "" && data.data.name == "") {
+                                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                                        $btn.button('reset');
+                                        $('button[type=submit]', _).removeAttr('disabled');
+                                    } else if (data.data.id == "" && data.data.name != "") {
+                                        if (data.data.name == 'id_spfl') {
+                                            $('#dhb-treeview-id_spfl').focus().after(errStr).find('button').css("border", '1px solid red');
+                                        } else {
+                                            $("#" + data.data.name).css("border", '1px solid red').focus().after(errStr);
+                                        }
+                                        $('button[type=submit]', _).removeAttr('disabled');
+                                    } else if (data.data.id != "" && data.data.name != "") {
+                                        $('#dbz_table>tbody>tr', _).find('td input[value=' + data.data.id + ']').parents('tr').find('input[name=' + data.data.name + ']').css("border", '1px solid red').focus().after(errStr);
+                                        $('button[type=submit]', _).removeAttr('disabled');
+                                    }
+                                }
+                            },
+                            complete: function (XHR, TS) { $btn.button("reset"); }
+                        };
+                        app.httpAjax.post(options)
+
+                    }
+
+
+                }
+            });
+
+        }
+
+
+
+
+    }
+
+    //生成条码
+    app.shopsp.createbarcode = function (obj, name, bm_name, flag_cz) {
+
+
+        var smData = $('#fm-goods-add').serializeJson();
+        var flag_czfs = "";
+        if (flag_cz == "1") {
+            flag_czfs = smData.flag_czfs;
+        }
+        var options = {
+            data: {
+                flag_czfs: flag_czfs
+            },
+            url: $.DHB.U('/shopsp/createbarcode'),
+            type: "POST",
+            datatype: 'json',
+            beforeSend: function () { },
+            success: function (ret, textStatus, jqXHR) {
+                if (ret.Success) {
+                    $(_ + "#" + name).val(ret.Data);
+                    $(_ + "#" + name).attr('old-data', ret.Data);
+
+                    if (bm_name != '' && '@digit["spbm_copy_barcode"].ToString()' == '1') {
+                        $(_ + "#" + bm_name).val(ret.Data);
+                        $(_ + "#" + bm_name).attr('old-data', ret.Data);
+                    }
+                }
+            },
+            complete: function (XHR, TS) { }
+        };
+        app.httpAjax.post(options)
+
+        $(obj).prev('label.error').hide();
+        $(obj).prev('label.error').css('border', '1px solid #c6cedb')
+    }
+
+    //商品分类管理
+    app.shopsp.spfllist = function () {
+        $.fn.menuTab.load({ url: '/spfl/list', 'title': '商品分类管理', id: 'spfl/list', nocache: '0' });
+    }
+
+    //商品单位管理
+    app.shopsp.dwlist = function () {
+        $.fn.menuTab.load({ url: '/dw/list', 'title': '商品单位管理', id: 'dw/list', nocache: '0' });
+    }
+
+    //新增多包装
+    app.shopsp.adddbz = function (obj, data) {
+        if (data == "" || data == undefined) {
+            var guid = NewGuid();
+            var dw_cs = '@dw', zhl_val = 1, dj_jh_val = 0.0, dj_ls_val = 0.0, dj_hy_val = 0.0, dj_ps_val = 0.0, dj_pf_val = 0.0, borcode_val = "", bm_val = '', mc_val = '', pic_path_copy = '';
+        } else {
+            var guid = data.id;
+            var dw_cs = data.dw, zhl_val = limit_num(data.zhl, '@digit["dj_digit"]'), dj_jh_val = limit_num(data.dj_jh, '@digit["dj_digit"]'), dj_ls_val = limit_num(data.dj_ls, '@digit["dj_digit"]'), dj_hy_val = limit_num(data.dj_hy, '@digit["dj_digit"]'), dj_ps_val = limit_num(data.dj_ps, '@digit["dj_digit"]'), dj_pf_val = limit_num(data.dj_pf, '@digit["dj_digit"]'), borcode_val = data.barcode, bm_val = data.bm, mc_val = data.mc, pic_path_copy = data.pic_path;
+        }
+        $(obj).trigger('blur');
+        var option = '@Html.Raw(optinList)';
+        var resultHtml = '';
+        resultHtml += '<tr data-options="guid">';
+        resultHtml += '<td style="text-align:center;" class="hidden"><span>' + guid + '<span><input name="id" type="hidden" value="' + guid + '"><input name="info_type" type="hidden" value="add">';
+        resultHtml += '    <input name="pic_path_copy" type="hidden" value="' + pic_path_copy + '">';
+        resultHtml += '        </td>';
+        resultHtml += '<td><div class="width200"><input style="width:130px;" class="form-control f-l " name="barcode" id="barcode_' + guid + '"  value="' + borcode_val + '" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.barcode_search_child(this) }"  onkeyup="app.shopsp.checkbarcode(this)" onafterpaste="app.shopsp.checkbarcode(this)" ><button class="btn btn-info new_shengcheng f-l" type="button" onclick="app.shopsp.createbarcode(this,\'barcode_' + guid + '\',\'bm_' + guid + '\',\'\')">生成</button></div></td>';
+        resultHtml += '<td><input class="form-control f-l w-150" type="text" name="bm" id="bm_' + guid + '"  value="' + bm_val + '"onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" /></td>';
+        resultHtml += '<td><input class="form-control" name="mc" value="' + mc_val + '" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td>';
+        resultHtml += '<div class="dw_container">';
+        resultHtml += '<div class="dw_title"><span value="' + dw_cs + '">' + dw_cs + '</span><i class="fa fa-sort-desc"></i></div>';
+        resultHtml += '<div class="dw_main">';
+        resultHtml += '<div class="dw_search"><input type="text" name="dw_search" onkeyup="app.shopsp.dw_search_dbz(this)"></div>';
+        resultHtml += '<div class="dw_list">';
+        resultHtml += '<ul id="dw_' + guid + '" name="dw" class="" >';
+        resultHtml += option;
+        resultHtml += '</ul>';
+        resultHtml += '<p style="display:none;">没有找到匹配的项</p>'
+        resultHtml += '</div>';
+        resultHtml += '<div class="dw_footer" onclick="app.shopsp.dw_more(this)">+新增更多</div>'
+        resultHtml += '</div>';
+        resultHtml += '</div>';
+        resultHtml += '</td>';
+        resultHtml += '<td><input class="form-control {required:true,number:true,maxlength:11,messages:{required:&#39;请输入转换率&#39;}} valid" value="' + zhl_val + '" name="zhl" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入进货价&#39;}} valid" name="dj_jh" maxlength="11" type="text" value="' + dj_jh_val + '"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入零售价&#39;}} valid" name="dj_ls" maxlength="11" type="text" value="' + dj_ls_val + '" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入会员价&#39;}} valid" name="dj_hy" maxlength="11" type="text" value="' + dj_hy_val + '"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入配送价&#39;}} valid" name="dj_ps" maxlength="11" type="text"  value="' + dj_ps_val + '" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入批发价&#39;}} valid" name="dj_pf" maxlength="11" type="text"  value="' + dj_pf_val + '" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+
+        resultHtml += '<td style="text-align:center;">';
+        resultHtml += '<a onclick="app.shopsp.choice_spec_del(this);"  class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a>';
+        resultHtml += '</td>';
+        resultHtml += '</tr>';
+        $(_ + "#dbznum").val(guid);
+        $(_ + "#dbz_table>tbody").append(resultHtml);
+    };
+
+    //子商品输入条码培育资料
+    app.shopsp.barcode_search_child = function (e) {
+        var barcode_val = $(e).val();
+        var $tr = $(e).parents('tr');
+
+        var options = {
+            data: {
+                barcode: barcode_val
+            },
+            url: $.DHB.U('/ShopSp/GetBarcodeInfo'),
+            type: "POST",
+            datatype: 'json',
+            beforeSend: function () { },
+            success: function (data, textStatus, jqXHR) {
+                if (data.Success == true) {
+                    if (typeof (data.Data) != undefined && data.Data != null) {
+                        if (data.Data.ShopSP != null && data.Data.ShopSP != undefined) {
+                            if (data.Level == 1) {
+                                var id_sp_master = '@string.Format(copySP.ShopSP.id_sp==null?"": copySP.ShopSP.id_sp)';
+                                if (data.Data.ShopSP.id_sp == data.Data.ShopSP.id_kcsp || data.Data.ShopSPMaster.id_sp != id_sp_master) {
+                                    $.DHB.message({ content: "该商品已经是" + data.Data.ShopSP.mc + "的多包装商品", time: 2000, type: 'i' });
+                                    return;
+
+                                } else {
+                                    $tr.find('input[name=bm]', _).val(data.Data.ShopSP.bm);
+                                    $tr.find('input[name=zhl]', _).val(parseFloat(data.Data.ShopSP.zhl).toFixed('@digit["je_digit"]'));
+                                    $tr.find('input[name=dj_jh]', _).val(parseFloat(data.Data.ShopSP.dj_jh).toFixed('@digit["je_digit"]'));
+                                    $tr.find('input[name=dj_hy]', _).val(parseFloat(data.Data.ShopSP.dj_hy).toFixed('@digit["je_digit"]'));
+                                    $tr.find('input[name=dj_ps]', _).val(parseFloat(data.Data.ShopSP.dj_ps).toFixed('@digit["je_digit"]'));
+                                    $tr.find('input[name=dj_pf]', _).val(parseFloat(data.Data.ShopSP.dj_pf).toFixed('@digit["je_digit"]'));
+                                }
+                            }
+                            $tr.find('input[name=dj_ls]', _).val(parseFloat(data.Data.ShopSP.dj_ls).toFixed('@digit["je_digit"]'));
+                            $tr.find('input[name=bm]', _).val(data.Data.ShopSP.bm);
+                            $tr.find('input[name=barcode]', _).val(data.Data.ShopSP.barcode);
+                            $tr.find('input[name=mc]', _).val(data.Data.ShopSP.mc);
+                            $tr.find('.dw_title span', _).html(data.Data.ShopSP.dw);
+                            $tr.find('.dw_title span', _).attr('value', data.Data.ShopSP.dw);
+                            $tr.find('input[name=pic_path_copy]', _).val(data.Data.ShopSP.pic_path);
+                        }
+                    } else {
+                        $tr.find('input[name=bm]', _).val(barcode_val);
+                        $tr.find('input[name=mc]', _).focus();
+                    }
+                } else {
+                    $.DHB.message({ content: data.Message[0], time: 1500, type: "i" });
+                }
+            },
+            complete: function (XHR, TS) { }
+        };
+        app.httpAjax.post(options)
+
+    }
+    //主商品输入条形码填充资料
+    app.shopsp.barcode_search = function (e) {
+
+        $e = $(e);
+        var barcode_val = $(e).val();
+
+        var options = {
+            data: {
+                barcode: barcode_val
+            },
+            url: $.DHB.U('/ShopSp/GetBarcodeInfo'),
+            type: "POST",
+            datatype: 'json',
+            beforeSend: function () { },
+            success: function (data, textStatus, jqXHR) {
+
+                if (data.Success == true) {
+                    if (data.Data != null && data.Data != undefined) {
+                        if (data.Data.ShopSP != null && data.Data.ShopSP != undefined) {
+                            if (data.Level == 1) {
+                                if (data.Data.ShopSP.id_sp != data.Data.ShopSP.id_kcsp) {
+                                    $.DHB.message({ content: "该条码已经是商品" + data.Data.ShopSPMaster.mc + "的多包装", time: 1500, type: "i" });
+                                    return;
+                                }
+                                $('#barcode', _).val(data.Data.ShopSP.barcode);
+                                $('#bm', _).val(data.Data.ShopSP.bm);
+                                $('#mc', _).val(data.Data.ShopSP.mc);
+                                $('input[name=flag_czfs]', _).each(function (i, e) {
+                                    if ($(e).attr('value') == data.Data.ShopSP.flag_czfs) {
+                                        $(e).attr('checked', "checked");
+                                    } else {
+                                        $(e).removeAttr('checked');
+                                    }
+                                });
+                                $('input[name=id_spfl]', _).val(data.Data.ShopSP.id_spfl);
+                                $('input[name=id_spfl]', _).siblings('.dropdown-menu').find('ul li').each(function (i, e) {
+                                    if ($(e).attr('data-href') == data.Data.ShopSP.id_spfl) {
+                                        $('input[name=id_spfl]', _).parent().find('button').find('span:first').html($(e).html());
+                                    }
+                                })
+                                $('#cd', _).val(data.Data.ShopSP.cd);
+                                $('#id_gys', _).val(data.Data.ShopSP.id_gys);
+                                $('#id_gys', _).siblings('input').val(data.Data.ShopSP.name_gys);
+                                $('#dw', _).find('option[value=' + data.Data.ShopSP.dw + ']').attr('selected', true);
+                                $('#dw', _).siblings('button').find('span:first').html(data.Data.ShopSP.dw);
+                                $('#yxq', _).val(data.Data.ShopSP.yxq);
+                                $('#flag_state', _).find('option[value=' + data.Data.ShopSP.flag_state + ']').attr('selected', true);
+                                $('#bz', _).val(data.Data.ShopSP.bz);
+                                $('#img_pic_path', _).attr('src', data.Data.ShopSP.pic_path);
+                                $('#pic_path', _).val(data.Data.ShopSP.pic_path);
+                                //价格信息
+                                $('#dj_jh', _).val(parseFloat(data.Data.ShopSP.dj_jh).toFixed('@digit["je_digit"]'));
+                                $('#dj_ls', _).val(parseFloat(data.Data.ShopSP.dj_ls).toFixed('@digit["je_digit"]'));
+                                $('#dj_hy', _).val(parseFloat(data.Data.ShopSP.dj_hy).toFixed('@digit["je_digit"]'));
+                                $('#dj_ps', _).val(parseFloat(data.Data.ShopSP.dj_ps).toFixed('@digit["je_digit"]'));
+                                $('#dj_pf', _).val(parseFloat(data.Data.ShopSP.dj_pf).toFixed('@digit["je_digit"]'));
+                                //多包装信息
+                                $('#shopsp_DBZ table tbody', _).html('');
+                                for (var i = 0; i < data.Data.ShopSP_DBZ.length; i++) {
+                                    app.shopsp.adddbz("", data.Data.ShopSP_DBZ[i]);
+                                }
+                            }
+                            else if (data.Level == 2) {
+                                $('#barcode', _).val(data.Data.ShopSP.barcode);
+                                $('#bm', _).val(data.Data.ShopSP.bm);
+                                $('#mc', _).val(data.Data.ShopSP.mc);
+                                $('#dw', _).find('option[value=' + data.Data.ShopSP.dw + ']').attr('selected', true);
+                                $('#dw', _).siblings('button').find('span:first').html(data.Data.ShopSP.dw);
+                                $('#pic_path', _).val(data.Data.ShopSP.pic_path);
+                                $('#img_pic_path', _).attr('src', data.Data.ShopSP.pic_path);
+                                $('#dj_ls', _).val(parseFloat(data.Data.ShopSP.dj_ls).toFixed('@digit["je_digit"]'));
+                            }
+                        }
+                    } else {
+                        $('#bm', _).val($e.val());
+                        $('#mc', _).focus();
+                    }
+                } else {
+                    $.DHB.message({ content: data.Message[0], time: 1500, type: "i" });
+                }
+            },
+            complete: function (XHR, TS) { }
+        };
+        app.httpAjax.post(options)
+
+
+    }
+
+
+    //多包装单位接口
+    app.shopsp.dw_request_total = function (fun, e) {
+        var resultHtml = ""; var i;
+        app.request($.DHB.U('/dw/getdw'), {}, function (data) {
+            var dw_data = Enumerable.From(data).OrderBy("x=>x.dw").ToArray()
+            //console.log(dw_data)
+            dw_data = data;
+            ////console.log(data)
+            ////console.log(data.length)
+            //console.log(dw_data)
+            for (i = 0; i < dw_data.length; i++) {
+                resultHtml += "<li value='" + dw_data[i].dw + "' >" + dw_data[i].dw + "</li>";
+            }
+
+            fun(resultHtml, e)
+        }, function () {
+            //console.log("i");
+        });
+    }
+    $('#shopsp_DBZ').on('mouseleave', '.dw_container', function () {
+        $(this).find('.dw_main').hide();
+    })
+
+    $('#shopsp_DBZ').on('click', '.dw_list li', function () {
+        $(this).parents('.dw_main').hide();
+        $(this).addClass('active').siblings().removeClass('active');
+        $(this).parents('.dw_container').find('span').html($(this).text()).attr('value', $(this).attr('value'));
+
+    })
+    app.shopsp.dw_title_click = function (dwlist, e) {
+        $(e).siblings('.dw_main').find('ul').html(dwlist);
+        ////console.log();
+    }
+
+    app.shopsp.dw_more = function (e) {
+        $.cookie("add_dw", "dbz");
+        $.DHB.dialog({ 'url': $.DHB.U('/dw/add?other_add=1'), 'id': 'dialog-dw' });
+        $(e).parents('.dw_main').hide();
+    }
+
+    app.shopsp.dw_search_dbz = function (e) {
+
+        var str = $(e).val();
+        if ($(e).parent().siblings('.dw_list').find('ul li:contains(' + str + ')').length != 0 && str != '' && str != undefined) {
+            $(e).parent().siblings('.dw_list').find('p').hide();
+            $(e).parent().siblings('.dw_list').find('ul li:contains(' + str + ')').addClass('active').show().siblings('li').hide();
+        } else if (str != '' && str != undefined) {
+            $(e).parent().siblings('.dw_list').find('ul li').hide();
+            $(e).parent().siblings('.dw_list').find('p').show()
+        } else {
+            $(e).parent().siblings('.dw_list').find('p').hide();
+            $(e).parent().siblings('.dw_list').find('ul li').show();
+        }
+
+        //$("p:contains(is)")
+    }
+    //删除多包装的数据
+    app.shopsp.choice_spec_del = function (el) {
+        $tr = $(el).parents('tr');
+        if ($tr.find('input[name=info_type]').val() == "edit" && '@viewType.ToLower()' == 'edit') {
+            var goods_id = $tr.find('td.hidden span').html();
+            ////console.log(goods_id);
+            $.messager.confirm("确认信息", "<p>没发生任何业务的商品才能删除。</p><p>您确认删除选中商品？</p>", function () {
+                $.post("/shopsp/delete", { spIDs: goods_id }, function (json) {
+                    if (json.status == 'success') {
+                        $.DHB.message({ content: json.message, 'time': 4000, type: (json.status == 'success' ? 's' : 'e') });
+                        $tr.remove();
+                    } else {
+                        $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e'), time: 0 });
+                    }
+
+
+                }, 'json');
+            });
+
+        } else {
+            $tr.remove();
+        }
+    }
+
+
+
+
+    //上传图片
+    app.shopsp.single_uploadimage = function () {
+        $.DHB.singleUpload({ 'config': 'excel', 'callback': 'app.shopsp.verify_single_uploadimage', 'allowed': 'jpg,png,jpeg' });
+    }
+    $('#dbz_table input[name=barcode]').keyup(function () {
+        if ($(this).val() != '') {
+            $(this).next('label').remove();
+            $(this).css('border', '1px solid #c6cedb')
+        }
+    });
+
+    //上传图片回调
+    app.shopsp.verify_single_uploadimage = function (files) {
+        if (typeof (files) != 'undefined') {
+            $(_ + '#pic_path').val(files);
+            $(_ + '#img_pic_path').attr("src", files);
+        }
+    }
+
+    //验证位数
+    jQuery.validator.addMethod("check_maxlength",
+            function (value, element) {
+                if (value) {
+                    if (value.length !== 6) {
+                        return false;
+                    }
+                }
+                return true;
+            }, "字符长度只能为6位！"
+    );
+
+    jQuery.validator.addMethod("check_email",
+            function (value, element) {
+                var filter = /^([a-zA-Z0-9_\.\-])+@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if (value) {
+                    if (filter.test(value)) return true;
+                    return false;
+                }
+                return true;
+            }, "邮箱格式不正确！"
+        );
+
+    app.shopsp.onblur = function (e, num) {
+        var data = $(e).val();
+        $(e).val(limit_num($.trim(data), num));
+    };
+
+    app.shopsp.onfocus = function (e) {
+        $(e).select();
+    };
+
+    app.shopsp.onkeydown = function (e) {
+        var inputs = $(_ + '#fm-goods-add').find('input[type="text"]');
+        var idx = inputs.index(e); // 获取当前焦点输入框所处的位置
+        if (idx == inputs.length - 1) // 判断是否是最后一个输入框
+        {
+            return false;// 取消默认的提交行为
+        } else {
+            inputs[idx + 1].focus(); // 设置焦点
+            inputs[idx + 1].select(); // 选中
+        }
+    };
+
+    //选择供应商回调函数
+    app.shopsp.add_gys_callback = function (selectVal) {
+        selectVal = selectVal || '';
+        var selectValTem = selectVal.split('|');
+        if (selectValTem[0] != 'undefined' && selectValTem[0] != '') {
+            $('input[id=id_gys]', _).val(selectValTem[0]);
+        }
+        if (selectValTem[1] != 'undefined' && selectValTem[1] != '') {
+            $('input[id=gys_name]', _).val(selectValTem[1]);
+        }
+    }
+
+    app.shopsp.checkbarcode = function (obj) {
+        //如果是上下左右Tab按键 回车 不处理
+        var event = arguments.callee.caller.arguments[0] || window.event;//消除浏览器差异
+        if (typeof (event) != 'undefined') {
+            var keyCode = event.keyCode;
+            if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40 || keyCode == 9 || keyCode == 13 || keyCode == 8) {
+                return false;
+            }
+        }
+        var value = new String($(obj).val().replace(/\s+/g, ""));
+        if (isNaN(value) || value.indexOf(".") != -1) {
+            $.DHB.message({ 'content': '仅允许输入数字', 'time': 4000, 'type': 'i' });
+            var old_data = $(obj).attr('old-data');
+            if (typeof (old_data) == 'undefined') { old_data = ''; }
+            value = old_data;
+            $(obj).val(value);
+        }
+        value = value + "";
+        $(obj).attr('old-data', value);
+    }
+
+</script>

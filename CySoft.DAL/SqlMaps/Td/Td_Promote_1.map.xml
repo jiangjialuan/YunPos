@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Td_Promote_1"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Td_Promote_1" type="CySoft.Model.Td.Td_Promote_1,CySoft.Model" />
+    <typeAlias alias="Td_Promote_1WithUserName" type="CySoft.Model.Td.Td_Promote_1WithUserName,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="idList">
+          db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+        <isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+        <isNotNull prepend="and" property="id_masteruser">db.[id_masteruser]=#id_masteruser#</isNotNull>
+        <isNotNull prepend="and" property="rq">db.[rq]=#rq#</isNotNull>
+        <isNotNull prepend="and" property="dh">db.[dh]=#dh#</isNotNull>
+        <isNotNull prepend="and" property="start_rq">Datediff(day,#start_rq#,db.[rq]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq">Datediff(day,db.[rq],Convert(date,#end_rq#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_shop">db.[id_shop]=#id_shop#</isNotNull>
+        <isNotNull prepend="and" property="id_shopList">
+          db.[id_shop] in <iterate property="id_shopList" conjunction="," open="(" close=")">#id_shopList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id_jbr">db.[id_jbr]=#id_jbr#</isNotNull>
+        <isNotNull prepend="and" property="yxj_id">db.[yxj_id]=#yxj_id#</isNotNull>
+        <isNotNull prepend="and" property="day_b">db.[day_b]=#day_b#</isNotNull>
+        <isNotNull prepend="and" property="not_begin">db.[day_b]>#not_begin#</isNotNull>
+        <isNotNull prepend="and" property="current_day">db.[day_b]<![CDATA[ <= ]]>#current_day# and db.[day_e]>=#current_day#</isNotNull>
+        <isNotNull prepend="and" property="start_day_b">Datediff(day,#start_day_b#,db.[day_b]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_day_b">Datediff(day,db.[day_b],Convert(date,#end_day_b#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="day_e">db.[day_e]=#day_e#</isNotNull>
+        <isNotNull prepend="and" property="had_end">db.[day_e]<![CDATA[ < ]]>#had_end#</isNotNull>
+        <isNotNull prepend="and" property="start_day_e">Datediff(day,#start_day_e#,db.[day_e]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_day_e">Datediff(day,db.[day_e],Convert(date,#end_day_e#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="time_b">db.[time_b]=#time_b#</isNotNull>
+        <isNotNull prepend="and" property="time_e">db.[time_e]=#time_e#</isNotNull>
+        <isNotNull prepend="and" property="flag_rqfw">db.[flag_rqfw]=#flag_rqfw#</isNotNull>
+        <isNotNull prepend="and" property="weeks">db.[weeks]=#weeks#</isNotNull>
+        <isNotNull prepend="and" property="days">db.[days]=#days#</isNotNull>
+        <isNotNull prepend="and" property="rule_name">db.[rule_name]=#rule_name#</isNotNull>
+        <isNotNull prepend="and" property="s_rule_name">(db.[rule_name] like #s_rule_name# or db.[dh] like #s_rule_name#)</isNotNull>
+        <isNotNull prepend="and" property="style">db.[style]=#style#</isNotNull>
+        <isNotNull prepend="and" property="examine">db.[examine]=#examine#</isNotNull>
+        <isNotNull prepend="and" property="preferential">db.[preferential]=#preferential#</isNotNull>
+        <isNotNull prepend="and" property="strategy">db.[strategy]=#strategy#</isNotNull>
+        <isNotNull prepend="and" property="sl_largess_1">db.[sl_largess_1]=#sl_largess_1#</isNotNull>
+        <isNotNull prepend="and" property="sl_largess_2">db.[sl_largess_2]=#sl_largess_2#</isNotNull>
+        <isNotNull prepend="and" property="sl_largess_3">db.[sl_largess_3]=#sl_largess_3#</isNotNull>
+        <isNotNull prepend="and" property="sd1">db.[sd1]=#sd1#</isNotNull>
+        <isNotNull prepend="and" property="sd2">db.[sd2]=#sd2#</isNotNull>
+        <isNotNull prepend="and" property="sd3">db.[sd3]=#sd3#</isNotNull>
+        <isNotNull prepend="and" property="condition_1">db.[condition_1]=#condition_1#</isNotNull>
+        <isNotNull prepend="and" property="condition_2">db.[condition_2]=#condition_2#</isNotNull>
+        <isNotNull prepend="and" property="condition_3">db.[condition_3]=#condition_3#</isNotNull>
+        <isNotNull prepend="and" property="result_1">db.[result_1]=#result_1#</isNotNull>
+        <isNotNull prepend="and" property="result_2">db.[result_2]=#result_2#</isNotNull>
+        <isNotNull prepend="and" property="result_3">db.[result_3]=#result_3#</isNotNull>
+        <isNotNull prepend="and" property="zh_condition_1">db.[zh_condition_1]=#zh_condition_1#</isNotNull>
+        <isNotNull prepend="and" property="flag_zsz">db.[flag_zsz]=#flag_zsz#</isNotNull>
+        <isNotNull prepend="and" property="flag_moling">db.[flag_moling]=#flag_moling#</isNotNull>
+        <isNotNull prepend="and" property="bz">db.[bz]=#bz#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="flag_delete">db.[flag_delete]=#flag_delete#</isNotNull>
+        <isNotNull prepend="and" property="flag_sh">db.[flag_sh]=#flag_sh#</isNotNull>
+        <isNotNull prepend="and" property="s_flag_sh">db.[flag_sh]=#s_flag_sh#</isNotNull>
+        <isNotNull prepend="and" property="id_user_sh">db.[id_user_sh]=#id_user_sh#</isNotNull>
+        <isNotNull prepend="and" property="rq_sh">db.[rq_sh]=#rq_sh#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_sh">Datediff(day,#start_rq_sh#,db.[rq_sh]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_sh">Datediff(day,db.[rq_sh],Convert(date,#end_rq_sh#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="bm_djlx">db.[bm_djlx]=#bm_djlx#</isNotNull>
+        <isNotNull prepend="and" property="s_bm_djlx">db.[bm_djlx]=#s_bm_djlx#</isNotNull>
+        <isNotNull prepend="and" property="id_hyfl_list">db.[id_hyfl_list]=#id_hyfl_list#</isNotNull>
+        <isNotNull prepend="and" property="flag_cancel">db.[flag_cancel]=#flag_cancel#</isNotNull>
+        <isNotNull prepend="and" property="id_shop_current">
+          (db.[id_shop]=#id_shop_current# or (db.[id_shop]<![CDATA[ <> ]]>#id_shop_current# and db.[flag_sh]=1 ))
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_masteruser">db.[id_masteruser]=#new_id_masteruser#</isNotNull>
+        <isNotNull prepend="," property="new_dh">db.[dh]=#new_dh#</isNotNull>
+        <isNotNull prepend="," property="new_rq">db.[rq]=#new_rq#</isNotNull>
+        <isNotNull prepend="," property="new_id_shop">db.[id_shop]=#new_id_shop#</isNotNull>
+        <isNotNull prepend="," property="new_id_jbr">db.[id_jbr]=#new_id_jbr#</isNotNull>
+        <isNotNull prepend="," property="new_yxj_id">db.[yxj_id]=#new_yxj_id#</isNotNull>
+        <isNotNull prepend="," property="new_day_b">db.[day_b]=#new_day_b#</isNotNull>
+        <isNotNull prepend="," property="new_day_e">db.[day_e]=#new_day_e#</isNotNull>
+        <isNotNull prepend="," property="new_time_b">db.[time_b]=#new_time_b#</isNotNull>
+        <isNotNull prepend="," property="new_time_e">db.[time_e]=#new_time_e#</isNotNull>
+        <isNotNull prepend="," property="new_flag_rqfw">db.[flag_rqfw]=#new_flag_rqfw#</isNotNull>
+        <isNotNull prepend="," property="new_weeks">db.[weeks]=#new_weeks#</isNotNull>
+        <isNotNull prepend="," property="new_days">db.[days]=#new_days#</isNotNull>
+        <isNotNull prepend="," property="new_rule_name">db.[rule_name]=#new_rule_name#</isNotNull>
+        <isNotNull prepend="," property="new_style">db.[style]=#new_style#</isNotNull>
+        <isNotNull prepend="," property="new_examine">db.[examine]=#new_examine#</isNotNull>
+        <isNotNull prepend="," property="new_preferential">db.[preferential]=#new_preferential#</isNotNull>
+        <isNotNull prepend="," property="new_strategy">db.[strategy]=#new_strategy#</isNotNull>
+        <isNotNull prepend="," property="new_sl_largess_1">db.[sl_largess_1]=#new_sl_largess_1#</isNotNull>
+        <isNotNull prepend="," property="new_sl_largess_2">db.[sl_largess_2]=#new_sl_largess_2#</isNotNull>
+        <isNotNull prepend="," property="new_sl_largess_3">db.[sl_largess_3]=#new_sl_largess_3#</isNotNull>
+        <isNotNull prepend="," property="new_sd1">db.[sd1]=#new_sd1#</isNotNull>
+        <isNotNull prepend="," property="new_sd2">db.[sd2]=#new_sd2#</isNotNull>
+        <isNotNull prepend="," property="new_sd3">db.[sd3]=#new_sd3#</isNotNull>
+        <isNotNull prepend="," property="new_condition_1">db.[condition_1]=#new_condition_1#</isNotNull>
+        <isNotNull prepend="," property="new_condition_2">db.[condition_2]=#new_condition_2#</isNotNull>
+        <isNotNull prepend="," property="new_condition_3">db.[condition_3]=#new_condition_3#</isNotNull>
+        <isNotNull prepend="," property="new_result_1">db.[result_1]=#new_result_1#</isNotNull>
+        <isNotNull prepend="," property="new_result_2">db.[result_2]=#new_result_2#</isNotNull>
+        <isNotNull prepend="," property="new_result_3">db.[result_3]=#new_result_3#</isNotNull>
+        <isNotNull prepend="," property="new_zh_condition_1">db.[zh_condition_1]=#new_zh_condition_1#</isNotNull>
+        <isNotNull prepend="," property="new_flag_zsz">db.[flag_zsz]=#new_flag_zsz#</isNotNull>
+        <isNotNull prepend="," property="new_flag_moling">db.[flag_moling]=#new_flag_moling#</isNotNull>
+        <isNotNull prepend="," property="new_bz">db.[bz]=#new_bz#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+        <isNotNull prepend="," property="new_flag_delete">db.[flag_delete]=#new_flag_delete#</isNotNull>
+        <isNotNull prepend="," property="new_flag_sh">db.[flag_sh]=#new_flag_sh#</isNotNull>
+        <isNotNull prepend="," property="new_id_user_sh">db.[id_user_sh]=#new_id_user_sh#</isNotNull>
+        <isNotNull prepend="," property="new_rq_sh">db.[rq_sh]=#new_rq_sh#</isNotNull>
+        <isNotNull prepend="," property="new_bm_djlx">db.[bm_djlx]=#new_bm_djlx#</isNotNull>
+        <isNotNull prepend="," property="new_id_hyfl_list">db.[id_hyfl_list]=#new_id_hyfl_list#</isNotNull>
+        <isNotNull prepend="," property="new_flag_cancel">db.[flag_cancel]=#new_flag_cancel#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[td_promote_1]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Td_Promote_1">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_masteruser],db.[id],db.[rq],db.[id_shop],db.[id_jbr],db.[yxj_id],db.[day_b],db.[day_e],db.[time_b],db.[time_e],db.[flag_rqfw],db.[weeks],db.[days],db.[rule_name],db.[style],db.[examine],db.[preferential],db.[strategy],db.[sl_largess_1],db.[sl_largess_2],db.[sl_largess_3],db.[sd1],db.[sd2],db.[sd3],db.[condition_1],db.[condition_2],db.[condition_3],db.[result_1],db.[result_2],db.[result_3],db.[zh_condition_1],db.[flag_zsz],db.[flag_moling],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[flag_sh],db.[id_user_sh],db.[rq_sh],db.[bm_djlx],db.[dh],db.[flag_cancel],db.[id_hyfl_list] from <include refid="Table"/> as db
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Td_Promote_1WithUserName">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.*,u.username zdr,u1.username shr from <include refid="Table"/> as db
+      left join tb_user u on db.id_create=u.id
+      left join tb_user u1 on db.id_user_sh=u1.id
+      <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Td_Promote_1">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_masteruser],db.[id],db.[rq],db.[id_shop],db.[id_jbr],db.[yxj_id],db.[day_b],db.[day_e],db.[time_b],db.[time_e],db.[flag_rqfw],db.[weeks],db.[days],db.[rule_name],db.[style],db.[examine],db.[preferential],db.[strategy],db.[sl_largess_1],db.[sl_largess_2],db.[sl_largess_3],db.[sd1],db.[sd2],db.[sd3],db.[condition_1],db.[condition_2],db.[condition_3],db.[result_1],db.[result_2],db.[result_3],db.[zh_condition_1],db.[flag_zsz],db.[flag_moling],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[flag_sh],db.[id_user_sh],db.[rq_sh],db.[bm_djlx],db.[dh],db.[flag_cancel],db.[id_hyfl_list] from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+  </statements>
+</sqlMap>
+

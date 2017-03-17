@@ -1,0 +1,6 @@
+D:\CySoft_YunPos\廖冬\Web\bin\CySoft.IBLL.dll.config
+D:\CySoft_YunPos\廖冬\Web\bin\CySoft.IBLL.dll
+D:\CySoft_YunPos\廖冬\Web\bin\CySoft.IBLL.pdb
+D:\CySoft_YunPos\廖冬\CySoft.IBLL\obj\Debug\CySoft.IBLL.csprojResolveAssemblyReference.cache
+D:\CySoft_YunPos\廖冬\CySoft.IBLL\obj\Debug\CySoft.IBLL.dll
+D:\CySoft_YunPos\廖冬\CySoft.IBLL\obj\Debug\CySoft.IBLL.pdb

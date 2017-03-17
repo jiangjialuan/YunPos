@@ -1,0 +1,167 @@
+﻿Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,691 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,705 [7] DEBUG [(null)] - Close Connection "5285728" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,706 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,708 [7] DEBUG [(null)] - Close Connection "40211317" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,725 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,727 [7] DEBUG [(null)] - Close Connection "918981" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,746 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,747 [7] DEBUG [(null)] - Close Connection "2811517" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,749 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,750 [7] DEBUG [(null)] - Close Connection "25671228" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,759 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,760 [7] DEBUG [(null)] - Close Connection "45675003" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,761 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,762 [7] DEBUG [(null)] - Close Connection "30880108" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,764 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,765 [7] DEBUG [(null)] - Close Connection "12410622" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,766 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,767 [7] DEBUG [(null)] - Close Connection "6897344" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,768 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,769 [7] DEBUG [(null)] - Close Connection "26285762" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,770 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,771 [7] DEBUG [(null)] - Close Connection "62123797" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,791 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,793 [7] DEBUG [(null)] - Close Connection "22144276" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,796 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,797 [7] DEBUG [(null)] - Close Connection "21938440" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,798 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,799 [7] DEBUG [(null)] - Close Connection "52879899" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,820 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,821 [7] DEBUG [(null)] - Close Connection "17739021" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,822 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,824 [7] DEBUG [(null)] - Close Connection "48516787" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,825 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,826 [7] DEBUG [(null)] - Close Connection "57550105" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,834 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,839 [7] DEBUG [(null)] - Close Connection "8605387" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,860 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,862 [7] DEBUG [(null)] - Close Connection "57949900" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,909 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,910 [7] DEBUG [(null)] - Close Connection "43660775" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,911 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,912 [7] DEBUG [(null)] - Close Connection "31519444" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,913 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,914 [7] DEBUG [(null)] - Close Connection "32045471" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,914 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,915 [7] DEBUG [(null)] - Close Connection "50867614" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,917 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,918 [7] DEBUG [(null)] - Close Connection "51114685" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,924 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:13:33,925 [7] DEBUG [(null)] - Close Connection "54133491" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:13:35,872 [7] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:13:50,925 [7] ERROR [(null)] - Begin transaction failed
+Apache.Ibatis.DataMapper.Exceptions.DataMapperException: Unable to open connection to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0". ---> System.InvalidOperationException: 超时时间已到。超时时间已到，但是尚未从池中获取连接。出现这种情况可能是因为所有池连接均在使用，并且达到了最大池大小。
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   在 Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction.Begin(IsolationLevel isolationLevel)
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:14:09,681 [6] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:14:24,684 [6] ERROR [(null)] - Begin transaction failed
+Apache.Ibatis.DataMapper.Exceptions.DataMapperException: Unable to open connection to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0". ---> System.InvalidOperationException: 超时时间已到。超时时间已到，但是尚未从池中获取连接。出现这种情况可能是因为所有池连接均在使用，并且达到了最大池大小。
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   在 Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction.Begin(IsolationLevel isolationLevel)
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:17:25,026 [12] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:17:55,059 [12] ERROR [(null)] - Begin transaction failed
+Apache.Ibatis.DataMapper.Exceptions.DataMapperException: Unable to open connection to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0". ---> System.InvalidOperationException: 超时时间已到。超时时间已到，但是尚未从池中获取连接。出现这种情况可能是因为所有池连接均在使用，并且达到了最大池大小。
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   在 Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction.Begin(IsolationLevel isolationLevel)
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:33:27,435 [23] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,219 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,233 [3] DEBUG [(null)] - Close Connection "19977632" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,234 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,235 [3] DEBUG [(null)] - Close Connection "4075431" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,251 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,252 [3] DEBUG [(null)] - Close Connection "16206813" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,268 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,270 [3] DEBUG [(null)] - Close Connection "12503360" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,271 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,272 [3] DEBUG [(null)] - Close Connection "11230531" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,281 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,282 [3] DEBUG [(null)] - Close Connection "4648940" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,283 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,284 [3] DEBUG [(null)] - Close Connection "11923121" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,285 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,286 [3] DEBUG [(null)] - Close Connection "1366466" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,287 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,288 [3] DEBUG [(null)] - Close Connection "23229923" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,290 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,290 [3] DEBUG [(null)] - Close Connection "59364376" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,292 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,293 [3] DEBUG [(null)] - Close Connection "2561446" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,309 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,310 [3] DEBUG [(null)] - Close Connection "26357696" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,312 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,313 [3] DEBUG [(null)] - Close Connection "42365711" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,314 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,315 [3] DEBUG [(null)] - Close Connection "49128461" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,334 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,335 [3] DEBUG [(null)] - Close Connection "58336428" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,336 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,338 [3] DEBUG [(null)] - Close Connection "52195183" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,340 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,341 [3] DEBUG [(null)] - Close Connection "14902886" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,345 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,346 [3] DEBUG [(null)] - Close Connection "47067357" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,360 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,361 [3] DEBUG [(null)] - Close Connection "59844342" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,376 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,379 [3] DEBUG [(null)] - Close Connection "45483889" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,381 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,382 [3] DEBUG [(null)] - Close Connection "35028611" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,383 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,385 [3] DEBUG [(null)] - Close Connection "56939250" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,387 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,388 [3] DEBUG [(null)] - Close Connection "28443157" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,391 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,392 [3] DEBUG [(null)] - Close Connection "20579105" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,404 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-01-25 10:36:49,405 [3] DEBUG [(null)] - Close Connection "32270619" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:36:51,271 [3] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:37:06,351 [3] ERROR [(null)] - Begin transaction failed
+Apache.Ibatis.DataMapper.Exceptions.DataMapperException: Unable to open connection to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0". ---> System.InvalidOperationException: 超时时间已到。超时时间已到，但是尚未从池中获取连接。出现这种情况可能是因为所有池连接均在使用，并且达到了最大池大小。
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   在 Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction.Begin(IsolationLevel isolationLevel)
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:37:25,513 [3] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:37:40,516 [3] ERROR [(null)] - Begin transaction failed
+Apache.Ibatis.DataMapper.Exceptions.DataMapperException: Unable to open connection to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0". ---> System.InvalidOperationException: 超时时间已到。超时时间已到，但是尚未从池中获取连接。出现这种情况可能是因为所有池连接均在使用，并且达到了最大池大小。
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 Apache.Ibatis.DataMapper.Session.DataMapperSession.OpenConnection()
+   在 Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction.Begin(IsolationLevel isolationLevel)
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-01-25 10:45:54,623 [14] DEBUG [(null)] - begin transaction

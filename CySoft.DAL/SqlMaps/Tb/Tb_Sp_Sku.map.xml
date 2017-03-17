@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_Sp_Sku"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tb_Sp_Sku" type="CySoft.Model.Tb.Tb_Sp_Sku,CySoft.Model" />
+	  <typeAlias alias="Tb_Sp_Sku_Query" type="CySoft.Model.Tb.Tb_Sp_Sku_Query,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <isParameterPresent>
+        where 1=1
+        <isNotNull prepend="and" property="idList">
+          db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+        <isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+        <isNotNull prepend="and" property="id_sp">db.[id_sp]=#id_sp#</isNotNull>
+        <isNotNull prepend="and" property="bm">db.[bm]=#bm#</isNotNull>
+        <isNotNull prepend="and" property="unit">db.[unit]=#unit#</isNotNull>
+        <isNotNull prepend="and" property="flag_stop">db.[flag_stop]=#flag_stop#</isNotNull>
+        <isNotNull prepend="and" property="barcode">db.[barcode]=#barcode#</isNotNull>
+        <isNotNull prepend="and" property="description">db.[description]=#description#</isNotNull>
+        <isNotNull prepend="and" property="photo_min2">db.[photo_min2]=#photo_min2#</isNotNull>
+        <isNotNull prepend="and" property="photo_min">db.[photo_min]=#photo_min#</isNotNull>
+        <isNotNull prepend="and" property="photo">db.[photo]=#photo#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="keywords">db.[keywords]=#keywords#</isNotNull>
+      </isParameterPresent>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_sp">db.[id_sp]=#new_id_sp#</isNotNull>
+        <isNotNull prepend="," property="new_bm">db.[bm]=#new_bm#</isNotNull>
+        <isNotNull prepend="," property="new_unit">db.[unit]=#new_unit#</isNotNull>
+        <isNotNull prepend="," property="new_flag_stop">db.[flag_stop]=#new_flag_stop#</isNotNull>
+        <isNotNull prepend="," property="new_barcode">db.[barcode]=#new_barcode#</isNotNull>
+        <isNotNull prepend="," property="new_description">db.[description]=#new_description#</isNotNull>
+        <isNotNull prepend="," property="new_photo_min2">db.[photo_min2]=#new_photo_min2#</isNotNull>
+        <isNotNull prepend="," property="new_photo_min">db.[photo_min]=#new_photo_min#</isNotNull>
+        <isNotNull prepend="," property="new_photo">db.[photo]=#new_photo#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+        <isNotNull prepend="," property="new_keywords">db.[keywords]=#new_keywords#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Tb_sp_sku]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete a FROM tb_sp_dj a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sku)
+      delete a FROM Tb_sp_expand a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sku)
+      delete a FROM tb_gys_sp a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sku)
+      delete a FROM tb_sp_info a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sku)
+      delete db from <include refid="Table"/> as db <include refid="Where"/> 
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="GetNextKey" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      select (isnull(max(db.id),0)+1) as value from <include refid="Table"/> as db <include refid="Where"/>
+    </select>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Sku">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id],db.[id_sp],db.[bm],db.[unit],db.[flag_stop],db.[barcode],isnull(info.[description],'')description,db.[photo_min2],db.[photo_min],db.[photo],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      left join tb_sp_info info on db.id=info.id_sku
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Sku">
+      set nocount on
+      <include refid="NoLock" />
+      select t.*,isnull(info.[description],'')description from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t
+      left join tb_sp_info info on t.id=info.id_sku
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Sku">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id],db.[id_sp],db.[bm],db.[unit],db.[flag_stop],db.[barcode],isnull(info.[description],'')description,db.[photo_min2],db.[photo_min],db.[photo],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      left join tb_sp_info info on db.id=info.id_sku
+      <include refid="Where"/>
+    </select>
+
+	  <select id="QueryList1" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Sku_Query">
+		  set nocount on
+		  <include refid="NoLock" />
+      select  sp.id,db.id as id_sku,db.unit,db.barcode,gsp.flag_stop,gsp.flag_up,db.[keywords],gsp.sort_id,gsp.id_spfl,spfl.name as name_spfl,
+      (case isnull(gsp.bm_Interface,'') when '' then db.bm else gsp.bm_Interface end) as bm_Interface,
+      <isNotNull property="baseurl">#baseurl#+</isNotNull>db.photo_min as photo_min,<isNotNull property="baseurl">#baseurl#+</isNotNull>db.photo as photo,<isNotNull property="baseurl">#baseurl#+</isNotNull>db.photo_min2 as photo_min2
+      <isNotNull prepend="," property="id_cgs">isnull(isnull(spcgs.dj_dh,dj.dj_dh),gsp.dj_base) as dj</isNotNull>
+		  <isNull prepend="," property="id_cgs">gsp.dj_base as dj</isNull>
+		  ,gsp.sl_kc,gsp.dj_base
+		  <isNotNull prepend="," property="id_cgs">isnull(dj.sl_dh_min,0.0) as sl_dh_min</isNotNull>
+	      <isNull prepend="," property="id_cgs">0.0 as sl_dh_min</isNull>
+      ,isnull(info.[description],'')description
+      <isNotNull prepend="," property="id_user">isnull(favor.val,0) as flag_favorites</isNotNull>
+      <isNull prepend="," property="id_user">0 flag_favorites</isNull>
+      from <include refid="Table"/> as db
+		  left join Tb_sp as sp on sp.id = db.id_sp
+		  <isNotNull prepend="left join" property="id_cgs">
+        Tb_gys_cgs as gc on gc.id_gys = #id_gys# and gc.id_cgs = #id_cgs#
+        left join Tb_sp_dj as dj on dj.id_gys = #id_gys# and dj.id_sku = db.id and dj.id_cgs_level = gc.id_cgs_level
+        LEFT JOIN Tb_sp_cgs spcgs ON dj.id_sku=spcgs.id_sku AND spcgs.id_gys=dj.id_gys and spcgs.id_cgs=#id_cgs#
+      </isNotNull>
+      <isNotNull  property="id_user">
+        left join (select count(1)val,id_sp from Tb_sp_Favorites where id_user=#id_user# and id_gys=#id_gys# group by id_sp)favor on favor.id_sp=db.id_sp
+      </isNotNull>
+      left join tb_sp_info info on db.id=info.id_sku
+      left join Tb_gys_sp as gsp on gsp.id_sku = db.id
+      left join tb_spfl spfl on spfl.id=gsp.id_spfl
+      <isNotNull prepend="and" property="flag_stop">gsp.flag_stop = #flag_stop#</isNotNull>
+		  <isNotNull prepend="and" property="flag_up">gsp.flag_up = #flag_up#</isNotNull>
+		  where db.id_sp = #id_sp#   and gsp.id_gys = #id_gys#
+	  </select>
+
+  </statements>
+</sqlMap>
+

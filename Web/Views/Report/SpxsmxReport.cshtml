@@ -1,0 +1,226 @@
+﻿@{ 
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var report_idshop = ViewData["loginInfo.id_shop"];
+}
+<input type="hidden" pagesize value="10" />
+<input type="hidden" page value="1" />
+
+<div class="col" id="spxsmxreport">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-12 pull-right m-t">
+                            <div class="row">
+                                @*<div class="jh_add_title page-header mar-ts">
+                                    <h3 class="mar-t10 mar-b0">商品销售流水</h3>
+                                </div>*@
+                                <form class="filter-form" action="/report/spxsmxreport">
+                                    <div class="@*col-xs-10*@ pull-right  @*search_box*@">
+                                        <div class="search-box-container">
+
+                                            <div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                @*<label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">&nbsp; </em>日期：
+                                                    </span>
+                                                </label>*@
+                                                <div class="clear-padding f-l">
+                                                    <div class="btn-group">
+                                                        <input type="text" name="rq_begin" id="rq_begin" value="" class="btn btn-default btn-sm m-l-none text-left w-85"  readonly>
+                                                        @*<input type="text" v-model="amDate.rq_begin" name="rq_begin" id="rq_begin" class="btn btn-default btn-sm m-l-none text-left w-85" readonly>*@
+                                                        <button type="button" class="btn btn-default disabled btn-sm"><i class="glyphicon glyphicon-calendar" style="min-width: 7%;"></i></button>         
+                                                        <input type="text" name="rq_end" id="rq_end" value="" class="btn btn-default btn-sm m-l-none text-left w-85" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                @*<label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">&nbsp; </em>门店名称：
+                                                    </span>
+                                                </label>*@
+                                                <div class="clear-padding f-l" id="spxsmxreportapi_idshop" style="width:115px;">
+                                                    
+                                                        <select id="id_shop" name="id_shop" class="form-control input-sm box-shawn user-input search-result" style="width: 115px;" v-model="selected">
+                                                            <option value="">全部</option>
+                                                            <option v-for="option in getshop"  v-bind:value="option.id_shop">
+                                                                {{ option.mc }}
+                                                            </option>
+                                                        </select>
+                                                </div>
+                                            </div>
+
+                                            @*<div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">&nbsp; </em>收银员：
+                                                    </span>
+                                                </label>
+                                                <div class="clear-padding f-l" id="spxsmxreportapi_getuser" style="width:115px;">  
+                                                    <select id="id_user" name="id_user" class="form-control input-sm box-shawn user-input search-result" style="width: 115px;">
+                                                        <option value="">请选择收银员</option>
+                                                        <option v-for="option in getuser" v-bind:value="option.id">{{option.username}}</option>
+                                                    </select>  
+                                                </div>
+                                            </div>*@
+                                            @*<div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">&nbsp; </em>商品分类：
+                                                    </span>
+                                                </label>
+                                                <div class="clear-padding f-l">
+                                                    <div class="1" style="position: relative;" id="shopfl_box">
+                                                        <input type="text" value="" id="shopfl" class="form-control input-sm search-h inline v-middle search-result search" placeholder="选择商品分类" readonly="readonly" />
+                                                        <input type="hidden" name="id_spfl" id="fldata"/>
+                                                        <span  class="clear_button">
+                                                            <i class="fa fa-times-circle"></i>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">&nbsp; </em>选择商品：
+                                                    </span>
+                                                </label>
+                                                <div class="clear-padding f-l">
+                                                    <div class="1" style="position: relative;" id="id_sp_box">
+                                                        <input type="hidden" name="id_sp" id="id_sp" />
+                                                        <input type="text" value="" class="form-control input-sm search-h inline v-middle search-result search" id="s_id_shopsp_mc" placeholder="选择商品"  readonly="readonly" />
+                                                        <span  class="clear_button">
+                                                            <i class="fa fa-times-circle"></i>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            </div>*@
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <div class="clear-padding f-l">
+                                                    <input class="form-control user-input valid" style="width :150px;" maxlength="80" id="dh" name="dh" placeholder="单号" type="text" value="">
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                @*<label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">&nbsp; </em>商品条码：
+                                                    </span>
+                                                </label>*@
+                                                <div class="clear-padding f-l">
+                                                    <input class="form-control user-input valid" style="width :150px;" maxlength="80" id="barcode" name="barcode" placeholder="商品条码" type="text" value="">
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                @*<label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">&nbsp; </em>商品名称：
+                                                    </span>
+                                                </label>*@
+                                                <div class="clear-padding f-l">
+                                                    <input class="form-control user-input valid"  style="width :150px;" maxlength="80" id="mc_sp" name="mc_sp" placeholder="商品名称" type="text" value="">
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm m-b" style="margin-top: 7px">
+                                                <span>
+                                                    <button type="button"  id="btn-search" class="btn btn-info">
+                                                        <i class="fa fa-search">查询</i>
+                                                    </button>
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                        @*<div class="m-b">&nbsp;</div>*@
+
+                                    </div>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clear"></div>
+                    <div class="shopsp_cont">
+                    
+                        <div class="right_table col-xs-12 table_list datatable_basic">
+                            
+                                <table class="table m-b-none row1 selectAll-table status-box one-line" style="table-layout: fixed" id="report-spxsmxreport-lis">
+                                    <thead>
+                                        <tr>
+                                            <th width="50" class="table-p-l-sm table-p-r-xsm-fixed">序</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">日期</th>
+                                            <th width="70" class="table-p-l-sm table-p-r-xsm-fixed">星期</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">门店</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">单号</th>
+                                            <th width="200" class="table-p-l-sm table-p-r-xsm-fixed">商品名称</th>
+                                            <th width="70" class="table-p-l-sm table-p-r-xsm-fixed">单位</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">数量</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">单价</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">金额</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">折扣</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">优惠金额</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">应收金额</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">会员姓名</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">会员手机号</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">会员积分</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">促销数量</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">商品条码</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">商品分类</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="font-bold">合计：</td>
+                                            <td></td>
+                                            <td class="sl_xs font-bold"></td>
+                                            <td></td>
+                                            <td class="je font-bold"></td>
+                                            <td></td>
+                                            <td class="je_yh font-bold"></td>
+                                            <td class="je_xs font-bold"></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="sl_cs font-bold"></td>
+                                            <td></td>
+                                            <td></td>
+                                            
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                
+                            <div class="datatables_footer">&nbsp;</div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    app.report = app.report || {};
+    app.report.spxsmxreport = app.report.spxsmxreport || {};
+    if ('@digit["sl_digit"]' == null || '@digit["sl_digit"]' == '' || '@digit["sl_digit"]' == undefined) {
+        app.report.spxsmxreport.digit = 2;
+    } else {
+        app.report.spxsmxreport.digit = "@digit["sl_digit"]"
+    }
+    app.report.spxsmxreport.report_idshop = "@report_idshop";
+
+</script>
+@*<script src="~/static/js/vue/vue.js"></script>
+<script src="~/static/js/report/jquery.dataTables.js"></script>*@
+<script src="~/static/js/report/spxsmxreport.js"></script>
+

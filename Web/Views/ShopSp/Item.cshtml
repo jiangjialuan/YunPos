@@ -1,0 +1,342 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    var copySP = ViewData["Tb_Shopsp_Get"] as Tb_Shopsp_Get; 
+    copySP = copySP ?? new Tb_Shopsp_Get() { Shop = new Tb_Shop(), ShopSP = new Tb_Shopsp(), Kc = new CySoft.Model.Tz.Tz_Sp_Kc(), Qc = new CySoft.Model.Td.Td_Sp_Qc() };
+    copySP.Shop = copySP.Shop ?? new Tb_Shop();
+    copySP.Kc = copySP.Kc ?? new CySoft.Model.Tz.Tz_Sp_Kc();
+    copySP.Qc = copySP.Qc ?? new CySoft.Model.Td.Td_Sp_Qc();
+    var selectListCZFS = ViewData["selectListCZFS"] as List<Ts_Flag>; selectListCZFS = selectListCZFS ?? new List<Ts_Flag>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="shopsp/addgoods"]').attr({ controller: 'shopsp', action: 'addgoods' });
+        app.c.public_data['shopsp/addgoods'] = app.c.public_data['shopsp/addgoods'] || {};
+        app.c.public_data['shopsp/addgoods']['once'] = false;
+        app.shopsp = app.shopsp || {};
+    });
+</script>
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品管理', id: 'shopsp/list', nocache: '0' }); ">商品管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">商品详细</a>
+</div>
+
+
+<div class="col" style="min-width: 1110px;">
+    <div class="panel panel-default ">
+        <!-- 头部选项卡 -->
+        <div class="main-head hidden" style="position:relative;">
+            <!--基础-->
+            <ul id="goods-tab" class="clearfix menu-list" tab="goods-tab">
+                <li class="selected-tab" onclick="$.DHB.func.tab(this);" style="width: 32px;"><a href="javascript:;">基础</a></li>
+            </ul>
+            <!--帮助文案-->
+            <label class="copy d-i-b  m-l-none" style="position: relative;left: 305px; top: -43px; display: none;">
+                <a class="icon-question tool"></a>
+                <div style="display: none;" class="popover fade bottom in tool-box">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>库存下限：当此商品的库存低于库存下限时，会被醒目地展示出来。</p><p>库存上限：当此商品的库存高于安全库存时，会被醒目地展示出来。</p>
+                        <p>安全库存：当此商品的库存低于安全库存时，会被醒目地展示出来。</p><p>设置数值大小要求：库存下限《安全库存《库存上限</p>
+                        <p>
+                            注意：设置0或者不设置，即不启用此功能
+                            <a href="javascript:;" class="tool-link">查看更多帮助</a>
+                        </p>
+                    </div>
+                </div>
+            </label>
+
+        </div>
+
+        <form novalidate="novalidate" action="/shopsp/add" id="fm-goods-add" class="comform">
+            <!-- start main-content -->
+            <div id="goods-main" class="main-content" tabcontent="goods-tab">
+                <!-- 基础 -->
+                <div class="m-b" style="overflow:hidden;">
+                    <div class="col-sm-12 padding_lr">
+                        <!-- 基本信息 -->
+                        <div class="fixed-input-group col-sm-6">
+                            <h2 class="form_title "><span>基本信息</span></h2>
+                            <div class=" form_content">
+                                <div class="input-item-2 clearfix add-client form_line">
+                                    <!-- 商品条码 -->
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>商品条码：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.barcode
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- 商品名称 -->
+                                <div class="input-item-2 clearfix add-client form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>商品名称：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.mc
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- 计价方式 -->
+                                <div class="input-item-2 clearfix add-client form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em> <span>计价方式：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @{int firstczfs = 0;}
+                                            @foreach (var item in selectListCZFS.OrderBy(d => d.listsort))
+                                            {
+                                                if (copySP.ShopSP == null || copySP.ShopSP.flag_czfs == null)
+                                                {
+                                                    if (firstczfs == 0)
+                                                    {
+                                                        <label class="i-checks showIcon">
+                                                            <input name="flag_czfs" value="@item.listdata" checked="checked" type="radio" disabled="disabled"><i></i>@item.listdisplay
+                                                        </label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label class="i-checks showIcon">
+                                                            <input name="flag_czfs" value="@item.listdata" type="radio" disabled="disabled"><i></i>@item.listdisplay
+                                                        </label>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    var czfsChecked = copySP.ShopSP.flag_czfs == item.listdata ? "checked=\"checked\"" : "";
+                                                    <label class="i-checks showIcon">
+                                                        <input name="flag_czfs" value="@item.listdata" @czfsChecked type="radio" disabled="disabled"><i></i>@item.listdisplay
+                                                    </label>
+                                                }
+                                                firstczfs++;
+                                            }
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- 商品分类 -->
+                                <div class="input-item-2 clearfix add-client form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>商品分类：</span>
+                                        </label>
+
+                                        <label class="m-l-xs1" id="tree-id_spfl">
+                                            @copySP.Spfl.mc
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <!-- 商品单位 -->
+                                <div class="input-item-2 clearfix add-client form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>商品单位：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.dw
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <!-- 产地 -->
+                                <div class="input-item-2 clearfix add-client form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <span>商品产地：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.cd
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- 商品图片 -->
+                        <div class="fixed-input-group col-sm-6">
+                            <h2 class="form_title"><span>商品图片</span></h2>
+                            <div class="form_content">
+                                <div class="input-item-1 clearfix">
+                                    <div class="add-img">
+                                        <ol id="img-list" class="clearfix m-l-xxl m-b-none">
+                                            <li style="opacity: 1; z-index: auto; top: 0px; left: 0px;" id="img-list-1" onmouseenter="app.goods.img_list_enter(this);" onmouseleave="app.goods.img_list_leave(this);" class="cover">
+                                                <div class="wrap-img">
+                                                    <img id="img_pic_path" name="img_pic_path" src="@Html.Raw(string.IsNullOrEmpty(copySP.ShopSP.pic_path) ? "/static/images/default.jpg" : copySP.ShopSP.pic_path)" alt="">
+                                                </div>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <input name="pic_path" id="pic_path" type="hidden" autocomplete="off" value="@Html.Raw(string.IsNullOrEmpty(copySP.ShopSP.pic_path) ? "/static/images/default.jpg" : copySP.ShopSP.pic_path)">
+                                <h2><em>（建议图片尺寸800*800px，大小≤6MB，支持JPG、PNG、JPEG）</em></h2>
+                            </div>
+
+                        </div>
+</div>
+                        <!-- 价格信息 -->
+                        <div class="fixed-input-group col-sm-6">
+                            <h2 class="form_title"><span>价格信息</span></h2>
+                            <div class=" form_content">
+                                <div class="input-item-2 clearfix add-client  form_line">
+                                    <!-- 进货价 -->
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>进  货  价：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.dj_jh.Digit((int)digit["dj_digit"])
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- 零售价 -->
+                                <div class="input-item-2 clearfix add-client  form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>零  售  价：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.dj_ls.Digit((int)digit["dj_digit"])
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- 会员价 -->
+                                <div class="input-item-2 clearfix add-client  form_line">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>会  员  价：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.dj_hy.Digit((int)digit["dj_digit"])
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    <!-- 多包装 -->
+                    <div class="fixed-input-group col-sm-12">
+                        <h2 class="form_title"><span>多包装</span></h2>
+                        <div class="input-item-1 clearfix">
+                            <input name="dbznum" id="dbznum" value="0" type="hidden">
+
+                            <div style="display: block;" id="multi-price-box" class="table_list form_content">
+                                <table class="table table-bordered order-detail table-sm" id="dbz_table" name="dbz_table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:50px;" class="hidden"></th>
+                                            <th style="width:125px;">条形码</th>
+                                            <th style="width:40%" class="text-center">名称</th>
+                                            <th style="width:5%" class="text-center">单位</th>
+                                            <th style="width:5%" class="text-center">转换率</th>
+                                            <th toggle="" style="width:10%; display: table-cell;" class="text-center">进货价</th>
+                                            <th toggle="" style="width:10%; display: table-cell;" class="text-center">零售价</th>
+                                            <th toggle="" style="width:10%; display: table-cell;" class="text-center">会员价</th>
+                                            <th style="width:50px;text-align:center;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- 此处动态加载数据 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                        <!-- 库存预警 -->
+                        <div class="fixed-input-group col-sm-6">
+                            <h2 class="form_title"><span>库存预警</span></h2>
+                            <div class="form_content">
+                                <div class="input-item-2 clearfix add-client  form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <span>最低库存量：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.sl_kc_min.Digit((int)digit["sl_digit"])
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix add-client  form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <span>最高库存量：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @copySP.ShopSP.sl_kc_max.Digit((int)digit["sl_digit"])
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- 期初 -->
+                        <div class="fixed-input-group col-sm-6">
+                            <h2 class="form_title"><span>期初信息</span></h2>
+                            <div class="form_content">
+                                <div class="input-item-2 clearfix add-client  form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <span>期初数量：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @Html.Raw(copySP.Qc.sl_qc == null ? 0m.Digit((int)digit["sl_digit"]) : copySP.Qc.sl_qc.Digit((int)digit["sl_digit"]))
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix add-client  form_line">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <span>期初金额：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @Html.Raw(copySP.Qc.je_qc == null ? 0m.Digit((int)digit["je_digit"]) : copySP.Qc.je_qc.Digit((int)digit["je_digit"]))
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+            </div>
+            <!-- end main-content -->
+            <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+                <button type="button" class="btn w-138 btn-info" onclick="$.fn.menuTab.load({ url: '/shopsp/edit?from=detail&id=@copySP.ShopSP.id', 'title': '商品编辑', id: 'shopsp/edit', nocache: '0' }); " id="btn-goods-edit" data-loading-text="编辑中...">编辑商品</button>&nbsp;&nbsp;
+                <button type="button" class="btn w-xs btn-default" title="全部商品" onclick="$.fn.menuTab.deleteMenu('shopsp/detail'); $.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品管理', id: 'shopsp/list', nocache: '1' }); ">返回</button>
+            </footer>
+        </form>
+
+    </div>
+
+</div>
+
+
+
+
+<script type="text/javascript">
+
+    $.DHB._ = function () {
+        app.c.public_data['shopsp/addgoods'] = app.c.public_data['shopsp/addgoods'] || {};
+        if (app.c.public_data['shopsp/addgoods']['once'] === false) {
+            app.c.public_data['shopsp/addgoods']['once'] = true;
+        }
+    };
+
+    app.shopsp = app.shopsp || {};
+
+</script>

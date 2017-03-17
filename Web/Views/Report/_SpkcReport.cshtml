@@ -1,0 +1,91 @@
+﻿@using System.Collections
+@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Utility
+@{
+    var _result = ViewData["_result_"] as ProcedureOutQueryResult;
+    _result = _result ?? new ProcedureOutQueryResult();
+    var spkc_data = _result.rList;
+    var pageSize = Convert.ToInt32(string.Format("{0}", ViewData["pageSize"] ?? "10"));
+    var page = Convert.ToInt32(string.Format("{0}", ViewData["page"] ?? "1"));
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+            @{
+                List<string> orderKeysName = new List<string>()
+                                        {
+                                            "商品条码","商品名称","商品单位","门店名称","库存数量","库存单价","库存金额"
+                                        };
+                List<string> orderKeys = new List<string>()
+                                        {
+                                            "barcode","mc_sp","dw","mc_shop","sl_qm","dj_cb","je_cb"
+                                        };
+                if (orderKeysName.Any())
+                {
+                    foreach (var v in orderKeysName)
+                    {
+                        <th width="110" class="table-p-l-sm table-p-r-xsm-fixed">@v</th>
+                    }
+                }
+            }
+        </tr>
+    </thead>
+    <tbody id="reportlist-main-tbody">
+        @{
+            if (spkc_data != null && spkc_data.Count > 0)
+            {
+                var index = page * pageSize + 1;
+                foreach (var item in spkc_data)
+                {
+                    var hashtab = item as Hashtable;
+                    if (hashtab != null && hashtab.Count > 0)
+                    {
+                        <tr>
+                            <td><a class="list-link">@(index++)</a></td>
+                            @foreach (var key in orderKeys)
+                            {
+                                if (key.Contains("je") || key.Contains("dj"))
+                                {
+                                    var v = string.Format("{0}", hashtab[key]);
+                                    decimal d = 0;
+                                    decimal.TryParse(v, out d);
+                                    decimal? nd = d;
+                                    <td class="align_right"><a class="list-link">@nd.Digit((int)digit["je_digit"])</a></td>
+                                }
+                                else if (key.Contains("sl"))
+                                {
+                                    var v = string.Format("{0}", hashtab[key]);
+                                    decimal d = 0;
+                                    decimal.TryParse(v, out d);
+                                    decimal? nd = d;
+                                    <td class="align_right"><a class="list-link">@nd.Digit((int)digit["sl_digit"])</a></td>
+                                }
+                                else
+                                {
+                                    <td><a class="list-link">@hashtab[key]</a></td>
+                                }
+                            }
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+
+</table>
+
+
+
+
+
+
+
+<script type="text/javascript">
+    app.c.public_data['report/spkcreport'] = app.c.public_data['report/spkcreport'] || {};
+    app.c.public_data['report/spkcreport']['_row_total_'] = '@_result.outstr';
+    app.c.public_data['report/spkcreport']['_page_size_'] = '@pageSize';
+    app.c.public_data['report/spkcreport']['_current_page_'] = '@(page)';
+</script>

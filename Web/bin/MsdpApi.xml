@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MsdpApi</name>
+    </assembly>
+    <members>
+        <member name="M:MsdpApi.Msdp.SkInit(System.String,System.String,System.String,System.Int32,System.String,System.Int32,System.String,System.String)">
+            <summary>
+            验证登录
+            </summary>
+            <param name="host">服务器连接列表。例如：服务器1:端口1;服务器2:端口2;服务器3:端口3</param>
+            <param name="userName">用户名</param>
+            <param name="password">密码</param>
+            <param name="proxyMode">代理类型。0-不使用代理,1-HTTP代理,2-SOCK4代理,3-SOCK5代理</param>
+            <param name="proxyHost">代理主机</param>
+            <param name="proxyPort">代理主机端口</param>
+            <param name="proxyUserName">代理登录用户名</param>
+            <param name="proxyPassword">代理登录密码</param>
+            <returns>返回值。0 表示成功，7011 密码错误，7010 无此用户</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.SkLogout">
+            <summary>
+            退出登录
+            </summary>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.SkMultiSend(System.Int32,System.String,System.String,System.String,System.String,System.String@,System.String@,System.Int32@,System.Int32@)">
+            <summary>
+            多功能群发短信
+            </summary>
+            <param name="contentType">内容类型。中英混合短信格式码101，WapPush格式码69(信息内容格式为“WAP网址\r\n\r\n介绍信息”），免提短信格式码6，超长短信格式码70。如果是超长短信，账号需要开通此功能，且通道和手机支持才能使用。</param>
+            <param name="datetime">日期时间。日期和时间分隔符与系统时期时间常量设置相关,一般为“2005-09-12 14:30:23”。为空代表即时发送。</param>
+            <param name="expandNo">扩展号码。您的特服代码为0888008，想让此条短信的发送者为088800800，则AExNo的值为00即可；可填,值为空则默认为您的特服代码。注意：并不是所有的通道均支持。纯数字的字符串，长度小于9,完整的特服号码长度小于17，在商讯·中国分配的特服代码后附加的数字需要特别申请。为空代表不带扩展发送。</param>
+            <param name="mobileList">目的手机号。号码以回车换行分开，例如："1393905****\r\n1394905****"</param>
+            <param name="message">短信内容。如果大于一条，内容自动切割,末尾加序号（X），X值为1--9，移动60（包括分隔符和短信序号，不包括企业简称）；联通70个字、小灵通45个字（包括企业简称、冒号和短信序号）。如果是超长短信，不能超过240个字符。</param>
+            <param name="successList">成功手机列表</param>
+            <param name="failureList">失败手机列表</param>
+            <param name="successCount">成功手机数量</param>
+            <param name="failureCount">失败手机数量</param>
+            <returns>返回值。-1 调用组件出现异常，但是不影响继续调用组件，0 表示成功，7061 表示部分号码或全部号码群发被拒绝，7001 表示数据校验错误，7035 表示短信内容无效，-2 号码为空 或 发送内容为空，-3 wappush发送格式不正确</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.SkReceive(System.String,System.String@,System.Int32@)">
+            <summary>
+            接收上行短信
+            </summary>
+            <param name="messageId">短信上行序列号。返回大于此“位置”值的所有上行短信信息，“位置”指XML信息包中的 位置 元素的值</param>
+            <param name="message">返回XML格式数据包，每次返回的XML信息包最大为10个“我的客户反馈信息”元素，如果用户想每次都读取新的上行短信息，此值设为上次读取的最后一条短信息“位置”值即可。</param>
+            <param name="messageSize">54表示没有上行短信</param>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.SkMassSendMMS(System.String,System.String,System.String,System.String,System.String@,System.String@,System.Int32@,System.Int32@)">
+            <summary>
+            群发彩信
+            </summary>
+            <param name="datetime">日期时间。日期和时间分隔符与系统时期时间常量设置相关,一般为"2005-09-12 14:30:23"。为空代表即时发送。</param>
+            <param name="expandNo">扩展号码。您的特服代码为0888008，想让此条短信的发送者为088800800，则AExNo的值为00即可；可填,值为空则默认为您的特服代码。注意：并不是所有的通道均支持。纯数字的字符串，长度小于9,完整的特服号码长度小于17，在商讯·中国分配的特服代码后附加的数字需要特别申请。为空代表不带扩展发送。</param>
+            <param name="mobileList">目的手机号。号码以回车换行分开，例如："1393905****\r\n1394905****"</param>
+            <param name="mms">彩信内容。xml格式的字符串（详细看帮助文档）</param>
+            <param name="successList">成功手机列表</param>
+            <param name="failureList">失败手机列表</param>
+            <param name="successCount">成功手机数量</param>
+            <param name="failureCount">失败手机数量</param>
+            <returns>返回值。0 表示成功，7035 短信内容无效，7030 短信类型无效，或者功能未开通，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.SkCheckContent(System.String,System.String@)">
+            <summary>
+            检查内容合法性
+            </summary>
+            <param name="message">检查的短信内容</param>
+            <param name="errorText">返回错误的原因。当函数返回7035时，此参数则列出非法的关键字</param>
+            <returns>返回值。0 表示成功，7035 短信内容无效，-1 调用组件出现异常，但是不影响继续调用组件</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.SkModifyPwd(System.String)">
+            <summary>
+            修改密码
+            </summary>
+            <param name="newPassword">新密码</param>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.SkQueryAccu(System.Int32@)">
+            <summary>
+            查询余额
+            </summary>
+            <param name="freePointsr">剩余点数</param>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.SkSwapUserInfo(System.String,System.Int32@)">
+            <summary>
+            得到用户属性信息
+            </summary>
+            <param name="userInfo">用户信息。返回以回车换行为分割用户属性信息。</param>
+            <param name="userInfoSize">用户信息大小</param>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.Msdp.Init">
+            <summary>
+            初始化
+            </summary>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkInit(System.String,System.String,System.String,System.Int32,System.String,System.Int32,System.String,System.String)">
+            <summary>
+            验证登录
+            </summary>
+            <param name="host">服务器连接列表。例如：服务器1:端口1;服务器2:端口2;服务器3:端口3</param>
+            <param name="userName">用户名</param>
+            <param name="password">密码</param>
+            <param name="proxyMode">代理类型。0-不使用代理,1-HTTP代理,2-SOCK4代理,3-SOCK5代理</param>
+            <param name="proxyHost">代理主机</param>
+            <param name="proxyPort">代理主机端口</param>
+            <param name="proxyUserName">代理登录用户名</param>
+            <param name="proxyPassword">代理登录密码</param>
+            <returns>返回值。0 表示成功，7011 密码错误，7010 无此用户</returns>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkLogout">
+            <summary>
+            退出登录
+            </summary>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkMultiSend(System.Int32,System.String,System.String,System.String,System.String,System.Byte[],System.Byte[],System.Int32@,System.Int32@)">
+            <summary>
+            多功能群发短信
+            </summary>
+            <param name="contentType">内容类型。中英混合短信格式码101，WapPush格式码69(信息内容格式为“WAP网址\r\n\r\n介绍信息”），免提短信格式码6，超长短信格式码70。如果是超长短信，账号需要开通此功能，且通道和手机支持才能使用。</param>
+            <param name="datetime">日期时间。日期和时间分隔符与系统时期时间常量设置相关,一般为“2005-09-12 14:30:23”。为空代表即时发送。</param>
+            <param name="expandNo">扩展号码。您的特服代码为0888008，想让此条短信的发送者为088800800，则AExNo的值为00即可；可填,值为空则默认为您的特服代码。注意：并不是所有的通道均支持。纯数字的字符串，长度小于9,完整的特服号码长度小于17，在商讯·中国分配的特服代码后附加的数字需要特别申请。为空代表不带扩展发送。</param>
+            <param name="mobileList">目的手机号。号码以回车换行分开，例如："1393905****\r\n1394905****"</param>
+            <param name="message">短信内容。如果大于一条，内容自动切割,末尾加序号（X），X值为1--9，移动60（包括分隔符和短信序号，不包括企业简称）；联通70个字、小灵通45个字（包括企业简称、冒号和短信序号）。如果是超长短信，不能超过240个字符。</param>
+            <param name="successList">成功手机列表</param>
+            <param name="failureList">失败手机列表</param>
+            <param name="successCount">成功手机数量</param>
+            <param name="failureCount">失败手机数量</param>
+            <returns>返回值。-1 调用组件出现异常，但是不影响继续调用组件，0 表示成功，7061 表示部分号码或全部号码群发被拒绝，7001 表示数据校验错误，7035 表示短信内容无效，-2 号码为空 或 发送内容为空，-3 wappush发送格式不正确</returns>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkReceive(System.String,System.String@,System.Int32@)">
+            <summary>
+            接收上行短信
+            </summary>
+            <param name="messageId">短信上行序列号。返回大于此“位置”值的所有上行短信信息，“位置”指XML信息包中的 位置 元素的值</param>
+            <param name="message">返回XML格式数据包，每次返回的XML信息包最大为10个“我的客户反馈信息”元素，如果用户想每次都读取新的上行短信息，此值设为上次读取的最后一条短信息“位置”值即可。</param>
+            <param name="messageSize">54表示没有上行短信</param>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkMassSendMMS(System.String,System.String,System.String,System.String,System.Byte[],System.Byte[],System.Int32@,System.Int32@)">
+            <summary>
+            群发彩信
+            </summary>
+            <param name="datetime">日期时间。日期和时间分隔符与系统时期时间常量设置相关,一般为"2005-09-12 14:30:23"。为空代表即时发送。</param>
+            <param name="expandNo">扩展号码。您的特服代码为0888008，想让此条短信的发送者为088800800，则AExNo的值为00即可；可填,值为空则默认为您的特服代码。注意：并不是所有的通道均支持。纯数字的字符串，长度小于9,完整的特服号码长度小于17，在商讯·中国分配的特服代码后附加的数字需要特别申请。为空代表不带扩展发送。</param>
+            <param name="mobileList">目的手机号。号码以回车换行分开，例如："1393905****\r\n1394905****"</param>
+            <param name="mms">彩信内容。xml格式的字符串（详细看帮助文档）</param>
+            <param name="successList">成功手机列表</param>
+            <param name="failureList">失败手机列表</param>
+            <param name="successCount">成功手机数量</param>
+            <param name="failureCount">失败手机数量</param>
+            <returns>返回值。0 表示成功，7035 短信内容无效，7030 短信类型无效，或者功能未开通，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkCheckContent(System.String,System.String@)">
+            <summary>
+            检查内容合法性
+            </summary>
+            <param name="message">检查的短信内容</param>
+            <param name="errorText">返回错误的原因。当函数返回7035时，此参数则列出非法的关键字</param>
+            <returns>返回值。0 表示成功，7035 短信内容无效，-1 调用组件出现异常，但是不影响继续调用组件</returns>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkModifyPwd(System.String)">
+            <summary>
+            修改密码
+            </summary>
+            <param name="newPassword">新密码</param>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkQueryAccu(System.Int32@)">
+            <summary>
+            查询余额
+            </summary>
+            <param name="freePointsr">剩余点数</param>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+        <member name="M:MsdpApi.MsdpExtern.SkSwapUserInfo(System.String,System.Int32@)">
+            <summary>
+            得到用户属性信息
+            </summary>
+            <param name="userInfo">用户信息。返回以回车换行为分割用户属性信息。</param>
+            <param name="userInfoSize">用户信息大小</param>
+            <returns>返回值。0 表示成功，-1 调用组件出现异常，但是不影响继续调用组件。</returns>
+        </member>
+    </members>
+</doc>

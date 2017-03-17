@@ -1,0 +1,181 @@
+
+     
+
+.box_shadow(@x:2px,@y:1px,@blur:2px,@color:#c6cedb){
+    box-shadow:@arguments;
+}
+.border(@top:1px,@right:1px,@bottom:1px,@left:1px,@color:#c6cedb){
+border-top:@top solid @color;
+border-right:@right solid @color;
+border-bottom:@bottom solid @color;
+border-left:@left solid @color;
+}
+.border_radius(@left:4px,@right:4px,@right_d:4px,@left_d:4px){
+    border-radius:@arguments;
+}
+.margin(@top:20px,@right:20px,@bottom:20px,@left:20px){
+    margin:@arguments;
+}
+.padding(@top:20px,@right:20px,@bottom:20px,@left:20px){
+    padding:@arguments;
+}
+
+.width(@width){
+    width:@width;
+}
+.height(@hei:30px){
+    height:@hei;
+}
+.display(@dis:inline-block){
+    display:@dis;
+}
+.text_align(@align:center){
+    text-align:@align;
+}
+.line_height(@hei:30px){
+    line-height:@hei;
+}
+
+
+.com_input{
+    .width(200px);
+    .height(30px);
+    .line_height(30px);
+    .border_radius(2px,2px,2px,2px);
+    .border(1px,1px,1px,1px,#c6cedb);
+    .padding(2px,2px,2px,2px);
+}
+.table_icon{
+    .width(28px);
+    .height(28px);
+    .line_height(28px);
+    .display(inline-block);
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+#jh_add .input-group,#dh_add .input-group{
+        .width(151px);
+        input{
+            .width(123px);
+        }
+        span{
+            float:left;
+        }
+        
+    }
+
+
+
+#CZRuleSet{
+    
+    .p-l-75{
+        .col-sm-3{
+            .width(200px);
+            padding:0px;
+
+        }
+        .col-sm-12{
+            padding:0px;
+        }
+    }
+    .li_list{
+        ul{
+            width:100%;
+            overflow:hidden;
+            display:block;
+            .border(1px,1px,1px,1px,#c6cedb);
+            .border_radius;
+            li{
+                .width(100%);
+                overflow:hidden;
+                display:block;
+                .margin(0px 0px 20px 0px);
+                padding:20px 20px 0px 20px;
+                .box_shadow;
+                .width200{
+                    width:auto;
+                    margin-right:40px;
+                }
+                &:last-of-type{
+                    box-shadow:none;
+                }
+                
+                div{
+                    .margin(0px,20px,10px,0px);
+                    label{
+                    color:#333;
+                    .display(inline-block);
+                    }
+                    input[type=text]{
+                        border:none;
+                        background:none;
+                        .text_align(left);
+                        .width(120px);
+                        .display(inline-block);
+                    }
+                    input[type=text].w_80{
+                       .width(70px);
+                    }
+                    select{
+                        .display(inline-block);
+                    }
+                }
+                
+
+            }
+            
+        }
+    }
+}
+#czruleset_add{
+    .comform{
+        .padding20{
+            overflow:hidden;
+            margin-bottom:10px;
+            label{
+                .display(inline-block);
+                .text_align(right);
+                .line_height(30px);
+                .width(120px);
+                
+            }
+        }
+        .table_list{
+            padding:20px;
+        }
+        .m-b{
+            .margin(0px,0px,10px,0px);
+            .display(inline-block);
+            label.f-l{
+                .display(inline-block);
+                .text_align(right);
+                .line_height(30px);
+                .width(120px);
+            }
+            input{
+                .display(inline-block);
+                .border(1px,1px,1px,1px,#c6cedb);
+                &:extend(.com_input);
+                width:130px;
+            }
+        }
+        a.fa{
+            &:extend(.table_icon);
+       }
+        
+    }  
+}
+#add_shop{
+    #dbz_data{
+        .width200{
+            position:relative;
+        }
+    }
+    
+}
+.search_box{
+    .border(1px,1px,1px,1px);
+    .width(100%);
+    .padding(0px,0px,0px,0px);
+}
+

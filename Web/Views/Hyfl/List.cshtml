@@ -1,0 +1,357 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tb_Hyfl>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    string sort = ViewData["sort"].ToString();
+    var yhlxSelect = ViewData["YHLXSelect"] as List<Ts_Flag>;
+    yhlxSelect = yhlxSelect ?? new List<Ts_Flag>();
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="hyfl/list"]').attr({ controller: 'hyfl', action: 'list' });
+        app.c.public_data['hyfl/list'] = app.c.public_data['hyfl/list'] || {};
+        app.c.public_data['hyfl/list']['once'] = false;
+        app.hyfl = app.hyfl || {};
+    });
+</script>
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        类别管理
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>1、查找你所有的会员类别管理信息</p>
+                        <p>2、添加会员类别信息</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+
+<script>
+    app.c.public_data['hyfl/list'] = app.c.public_data['hyfl/list'] || {};
+    app.c.public_data['hyfl/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['hyfl/list']['threemenu'] === false) {
+            app.c.public_data['hyfl/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/hyfl/list">
+                                    <div class="col-xs-10 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <!-- 内容搜索 -->
+                                                <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                    <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="text" value="" onkeypress="app.search.trigger_search_hyfl_list(event);" class="form-control input-sm search-h inline v-middle search-result search" name="keyword" id="keyword" style="width: 250px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="编码/名称" ondblclick="app.search.search_item_clear_hyfl_list(this);" /><span><button type="button" onclick="app.search.do_search_hyfl_list(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span>
+                                                        <span onclick="app.search.search_item_clear_hyfl_list(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;">
+                                                            <i class="fa fa-times-circle"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            app.c.public_data['hyfl/list'] = app.c.public_data['hyfl/list'] || {};
+                                            app.c.public_data['hyfl/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'hyfl/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' + currentSearch + '===false){app.search.search_dw_list();' + currentSearch + '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            app.search.search_dw_list = function () {
+                                                app.c.public_data['hyfl/list'] = app.c.public_data['hyfl/list'] || {};
+                                                app.c.public_data['hyfl/list']['_row_total_'] = '@pageList.ItemCount';
+                                                app.c.public_data['hyfl/list']['_page_size_'] = '@pageList.PageSize';
+                                                app.c.public_data['hyfl/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                app.search.do_search_pagination_dw_list();
+                                            }
+
+                                            app.search.trigger_search_hyfl_list = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_hyfl_list();
+                                                    event.preventDefault();
+                                                }
+                                            }
+
+                                            //查询
+                                            app.search.do_search_hyfl_list = function (el, isExport) {
+                                                isExport = isExport || 0;
+                                                var v = $(_ + ".filter-form").serialize();
+                                                var url = '/hyfl/list?_search_=1&' + v;
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    url = $.DHB.U(url);
+                                                    window.location.href = url;
+                                                }
+                                                else {
+                                                    var options = {
+                                                        url: $.DHB.U(url),
+                                                        datatype: 'html',
+                                                        beforeSend: function () {
+                                                            $.DHB.showButterbar();
+                                                        },
+                                                        success: function (data, textStatus, jqXHR) {
+                                                            if ($('#hyfl-list-list-fresh-box', _).length > 0) {
+                                                                $('#hyfl-list-list-fresh-box', _).html(data);
+                                                            }
+                                                            var curSearchcallback = 'app.hyfl.list_search_callback';
+                                                            var curListcallback = 'app.hyfl.list_listready';
+                                                            eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                                                            eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                            app.search.do_search_pagination_dw_list();
+                                                        },
+                                                        complete: function (XHR, TS) {
+                                                            $.DHB.closeButterbar();
+                                                        }
+                                                    };
+                                                    app.httpAjax.post(options)
+                                                }
+                                                return false;
+                                            };
+
+                                            //分页
+                                            app.search.do_search_pagination_dw_list = function () {
+                                                $.DHB.func.pagination({
+                                                    module_name: 'Manager',
+                                                    controller_name: 'hyfl',
+                                                    action_name: 'list',
+                                                    ready_once: false
+                                                });
+                                            }
+
+
+                                            app.search.search_item_clear_hyfl_list = function (el) {
+                                                $(el).parents('form').find('input').val('');
+                                                app.search.do_search_hyfl_list();
+                                            }
+
+                                        </script>
+                                    </div>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="@sort" />
+                                </form>
+                            </div>
+                        </div>
+                        @if (isAdd)
+                        {
+
+                            <div class="col-xs-2 pull-left">
+                                <button class="btn m-t-12 m-b-sm btn-sm btn-info btn-addon w-xs" style="float:left" onclick="app.hyfl.add(this)" title="新增类别" href="javascript:void(0);"> <span class="fa fa-plus btn_icon"></span>新增类别 </button>
+                            </div>
+                        }
+                    </div>
+                    <!--数据表格-->
+                    @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                    <div id="hyfl-list-list-fresh-box" class="table_list table_max_h">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+                                    <th width="30%">编码</th>
+                                    <th width="30%">类别名称</th>
+                                    <th width="30%">排序</th>
+                                    <th width="30%" class="text-center">优惠类型</th>
+                                    <th width="30%" class="text-center">折扣</th>
+                                    <th width="110" class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dwlist-main-tbody">
+                                @{
+                                    if (pageList == null || pageList.Count == 0)
+                                    {
+                                <tr>
+                                    <td colspan="7" align="center">
+                                        <img src="~/static/images/nodata.png" class="table_nodata">
+                                    </td>
+                                </tr>
+                                    }
+                                    else
+                                    {
+                                        var list = pageList.Items;
+                                        if (list != null && list.Any())
+                                        {
+                                            int index = 1;
+                                            foreach (var item in list)
+                                            {
+                                <tr id="row-hyfl-id-@item.id" class="tr-status-finished">
+                                    <td class="text-center">
+                                        @(index++)
+                                    </td>
+                                    <td><a class="list-link">@item.bm</a></td>
+                                    <td><a class="list-link">@item.mc</a></td>
+                                    <td><a class="list-link">@item.sort_id</a></td>
+                                    <td class="text-center">@string.Format(yhlxSelect.Where(d => d.listdata == item.flag_yhlx).Count() > 0 ? yhlxSelect.Where(d => d.listdata == item.flag_yhlx).FirstOrDefault().listdisplay : "")</td>
+
+                                    <td class="text-center">@item.zk</td>
+                                    <td class="list-operate">
+                                        <div class="look-out1">
+                                            <div class="second-height-operate">
+                                                @if (isEdit)
+                                                                {
+                                                <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.hyfl.edit('@item.id',this)" title="编辑"></a>
+                                                                }
+                                                @if (isDel)
+                                                                {
+                                                <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.hyfl.del('@item.id',this)" title="删除"></a>
+                                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--页脚-->
+                    <footer class="panel-footer">
+                        <div class="dropup d-i-b" style="position: relative">
+                        </div>&nbsp;
+                        <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    
+    app.hyfl = app.hyfl || {};
+
+    //分页回调
+    app.hyfl.list_pagination_callback = function (data, textStatus, idx, jq) {
+        app.hyfl.list_search_callback(data, textStatus);
+    };
+
+    //查询回调
+    app.hyfl.list_search_callback = function (data, textStatus) {
+        var sort_array = $('.table a[data-sort]', _);
+        var $current_sort = ($('#hid_sort', _).val().toLowerCase()).split(' ', 2);       //这是当前排序
+        //绑定UI
+        sort_array.each(function (index, obj) {
+            
+            var $current = $(obj);
+            if ($current.attr('data-sort') === $current_sort[0]) {
+                $current.attr('data-dir', $current_sort[1]);
+                if ($current_sort[1] === 'asc')
+                    $current.append(app.sort_icon.asc);      //升序
+                else
+                    $current.append(app.sort_icon.desc);     //降序
+            }
+            else {
+                $current.append(app.sort_icon.sort);
+            }
+        });
+
+        //绑定事件
+        sort_array.off('click').on('click', function (e) {
+            
+            var e = e || event;
+            var $current = $(e.target);//获取当前点击派序列
+            var _dir = 'desc';
+            if ($.trim($current.attr('data-dir')).length == 0 || $.trim($current.attr('data-dir')) === 'asc') {
+                $current.attr('data-dir', _dir);
+            }
+            else {
+                _dir = 'asc';
+                $current.attr('data-dir', _dir);
+            }
+            $('#hid_sort', _).val($current.attr('data-sort') + ' ' + _dir);
+            app.search.do_search_hyfl_list();
+        });
+    };
+
+    //编辑类别
+    app.hyfl.edit = function (id, obj) {
+        $(obj).trigger('blur');
+        $.DHB.dialog({ 'title': '编辑类别', 'url': $.DHB.U('hyfl/edit?id=' + id), 'id': 'dialog-hyfl' });
+    };
+
+    //新增类别
+    app.hyfl.add = function (obj) {
+        $(obj).trigger('blur');
+        $.DHB.dialog({ 'title': '新增类别', 'url': $.DHB.U('hyfl/add'), 'id': 'dialog-hyfl' });
+    };
+
+    //删除类别
+    app.hyfl.del = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定删除吗?", function () {
+
+            var options = {
+                data: {
+                    id: id
+                },
+                url: $.DHB.U('/hyfl/delete'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('hyfl/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options)
+
+        });
+    };
+
+
+</script>  

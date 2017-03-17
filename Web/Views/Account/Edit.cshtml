@@ -1,0 +1,709 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@{
+    Layout = null;
+    Hashtable ht = ViewData["Model"] as Hashtable;
+    Tb_User_Query userModel = new Tb_User_Query();
+    if (ht != null && ht.ContainsKey("user"))
+    {
+        userModel = ht["user"] as Tb_User_Query;
+    }
+
+    List<Tb_User_Role_Query> roleModel = new List<Tb_User_Role_Query>();
+    if (ht != null && ht.ContainsKey("roles"))
+    {
+        roleModel = ht["roles"] as List<Tb_User_Role_Query>;
+    }
+
+    string flag_edit = (ViewData["flag_edit"] ?? "Add").ToString();
+    string addressInfo = userModel.name_province + "-" + userModel.name_city + "-" + userModel.name_county;
+    //var shopList = ViewData["shopList"] as IList<ShopSelectModel>;
+    //shopList = shopList ?? new List<ShopSelectModel>();
+
+    var shopList = ViewData["shopList"] as IList<Tb_User_ShopWithShopMc>;
+    shopList = shopList ?? new List<Tb_User_ShopWithShopMc>();
+
+    var userShopList = ViewData["userShopList"] as IList<Tb_User_ShopWithShopMc>;
+    userShopList = userShopList ?? new List<Tb_User_ShopWithShopMc>();
+
+    var id_shop_master = ViewData["id_shop_master"] == null ? "" : ViewData["id_shop_master"].ToString();
+    var id_shop = ViewData["id_shop"] == null ? "" : ViewData["id_shop"].ToString();
+    var id_user_master = ViewData["id_user_master"] == null ? "" : ViewData["id_user_master"].ToString();
+    var allowShopSelect = "";
+    if (id_user_master != "" && id_user_master == userModel.id)
+    {
+        allowShopSelect = "disabled=\"disabled\"";
+    }
+    var version = ViewData["version"];// 10 单店  连锁 20
+}
+
+
+
+
+<div class="wrap-tab-contentbox" contentid="account/edit" controller="account" action="edit">
+    <script type="text/javascript">
+        //console.log('@version');
+        $(function () {
+            $('div[contentID="account/edit"]').attr({ controller: 'account', action: 'edit' });
+            app.c.public_data['account/edit'] = app.c.public_data['account/edit'] || {};
+            app.c.public_data['account/edit']['once'] = false;
+            app.account = app.account || {};
+        });
+
+    </script>
+    <input pagesize="" value="" type="hidden">
+    <input page="" value="" type="hidden">
+    <div class="contentbox-header">
+        <a onclick="$.fn.menuTab.load({ url: '/account/list', 'title': '员工管理', id: 'account/list', nocache: '0' }); ">员工管理</a>
+        &gt;
+        <a class="" onclick="$.DHB.refresh();">@Html.Raw(flag_edit.ToLower() == "update" ? "员工编辑" : "新增员工")</a>
+    </div>
+
+    <div class="col">
+        <div class="panel panel-default comform pad-20-rl mar-b">
+            <div class="main-content">
+                <form novalidate="novalidate" class="client-box" id="update_summary_form">
+                    <div class="row">
+                        <div class="col-xs-12">
+                        </div>
+                    </div>
+                    <!--登录信息-->
+                    <div class="fixed-input-group dis-table">
+                        <h2 class="form_title"><span>登录信息</span></h2>
+
+                        @*<div class="col-sm-12 form_content">
+                                <div class="input-item-2 clearfix add-client">
+                                    <div>
+                                        <label class="lab-w88">
+                                            <em class="tag">* </em><span>所属门店：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <select id="id_shop" name="id_shop" onchange="app.account.id_shop_onchange(this);" @allowShopSelect class="form-control input-sm box-shawn user-input search-result select2">
+                                                @foreach (var item in shopList.OrderBy(d => d.rq_create))
+                                                {
+                                                    var shopChecked = userModel.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                    if (item.id_shop == id_shop_master && id_shop_master != id_shop)
+                                                    { }
+                                                    else
+                                                    {
+                                                        <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </label>
+
+                                        <label class="copy d-i-b l-h-30 m-l-none" id="copy" style="position: relative">
+                                            <a class="" style="position: relative;left: 3px;">（单据默认门店或收银门店）</a>
+                                            <div class="popover fade bottom in tool-box" style="left: -20px; width: auto; display: none;">
+                                                <div class="arrow" style="left: 36px;"></div>
+                                                <div class="popover-content">
+                                                    <p style="width: 644px;"></p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>*@
+
+
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="lab-w88">
+                                    <span></span>
+                                </label>
+                                <label class="m-l-xs1">
+
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <em class="tag">* </em> <span>所属门店：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <select id="id_shop" name="id_shop" onchange="app.account.id_shop_onchange(this);" @allowShopSelect class="form-control input-sm box-shawn user-input search-result select2" style="width:200px;">
+                                        @foreach (var item in shopList.OrderBy(d => d.rq_create))
+                                        {
+                                            var shopChecked = userModel.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                            if (item.id_shop == id_shop_master && id_shop_master != id_shop)
+                                            { }
+                                            else
+                                            {
+                                                <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                            }
+                                        }
+                                    </select>
+                                </label>
+
+                                <label class="copy d-i-b l-h-30 m-l-none" id="copy" style="position: relative">
+                                    <a class="icon-question tool" style="position: relative;left: 3px;"></a>
+                                    <div class="popover fade bottom in tool-box" style="left: -20px; width: auto; display: none;">
+                                        <div class="arrow" style="left: 36px;"></div>
+                                        <div class="popover-content">
+                                            <p style="width: 644px;">此门店为单据默认门店或收银门店</p>
+
+                                        </div>
+                                    </div>
+                                </label>
+
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="lab-w88">
+                                    <em class="tag">* </em><span>登录账号：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input" name="username" id="username" value="@userModel.username" placeholder="必须由4-20位数字和字母组成" type="text" @Html.Raw(flag_edit.ToLower() == "update" ? " disabled style='border:none;'" : "")>
+                                </label>
+                            </div>
+                        </div>
+
+                        @if (flag_edit.ToLower() == "update")
+                        {
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="lab-w88">
+                                        <span>主用户：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <label>
+                                            @Html.Raw(userModel.flag_master.ToString() == "1" ? "是" : "否")
+                                        </label>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="lab-w88">
+                                        <span>用户状态：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        @Html.Raw(userModel.flag_state.ToString() == "Yes" ? "停用" : "正常")
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="lab-w88">
+                                        <em class="tag">* </em><span>登录密码：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input" type="password" name="password" id="password" value="" placeholder="密码长度不能少于6位">
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="lab-w88">
+                                        <em class="tag">* </em><span>密码确认：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input" type="password" name="confirmpwd" id="confirmpwd" value="" placeholder="必须与登录密码一致">
+                                    </label>
+                                </div>
+                            </div>
+
+                        }
+
+
+                    </div>
+
+                    <!--联系人-->
+                    <div class="fixed-input-group dis-table">
+                        <h2 class="form_title"><span>基本信息</span></h2>
+                        <div class="col-sm-12 form_content">
+                            <div class="input-item-2 clearfix add-client">
+
+                                <div class="pad-b15">
+                                    <label class="lab-w88">
+                                        <em class="tag">* </em><span>姓名：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input" name="name" id="name" value="@userModel.name" placeholder="请输入联系人姓名" type="text">
+                                    </label>
+                                </div>
+
+                                <div class="pad-b15">
+                                    <label class="add-client lab-w88">
+                                        @*<em class="tag">* </em>*@  <span>手机号码：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input @allowShopSelect class="form-control user-input {required:true,messages:{required:&#39;请输入联系人手机号码&#39;}isPhone:true}" name="phone" id="phone" value="@userModel.phone" placeholder="请输入联系人手机号码" type="text">
+                                    </label>
+                                </div>
+
+                                <div class="pad-b15">
+                                    <label class="add-client lab-w88">
+                                        <span>电话号码：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input" name="tel" value="@userModel.tel" placeholder="请输入联系人电话号码" type="text">
+                                    </label>
+                                </div>
+
+                                <div class="pad-b15">
+                                    <label class="add-client lab-w88">
+                                        <span>QQ：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input" name="qq" value="@userModel.qq" placeholder="请输入QQ" type="text">
+                                    </label>
+                                </div>
+
+                                <div class="pad-b15">
+                                    <label class="lab-w88 add-client">
+                                        <span>电子邮箱：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input" name="email" value="@userModel.email" placeholder="请输入电子邮箱" type="text">
+                                    </label>
+                                </div>
+
+                                <!--<div>
+                                    <label class="lab-w88 add-client">
+                                        <span>公司：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input" name="companyname" value="@userModel.companyname" placeholder="请输入公司名称" type="text">
+                                    </label>
+                                </div>-->
+
+                                <div class="pad-b15">
+                                    <label class="lab-w88">
+                                        <span>职务：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input" name="job" value="@userModel.job" placeholder="请输入职务" type="text">
+                                    </label>
+                                </div>
+
+
+
+                                <div class="pad-b4">
+                                    <label class="lab-w88">
+                                        <span>联系地址：</span>
+                                    </label>
+                                    <div class="item-div w-400 m-l-xs1" style="position:relative;">
+                                        <div style="position:relative;" onmouseleave="$(this).find('span').hide();" onmouseenter="$(this).find('span').show();" class="dhb-citybox-box">
+                                            <script type="text/javascript">
+                                                setTimeout(function () {
+                                                    var objCity = $(_ + '.dhb-citybox-box #dhbcity-area_id_field');
+                                                    objCity.click(function (e) { e.stopPropagation(); });
+
+                                                }, 200);
+                                            </script>
+                                            <input id="dhbcity-area_id_field" class="citybox-input-name form-control " style="" readonly="true" onclick="$.DHB.city({'id':'dhbcity-area_id_field','field':'city_id','level':'3','value':'0','position':'auto','callback':'','iscity':'0'},this);" placeholder="" type="text" value="@addressInfo">
+                                            <span style="z-index: 8; position: absolute; top: 1px; right: 1px; padding: 1px 1px 3px 3px; cursor: pointer; display: none; color:#d5d3d5;width:19px;height:27px;background:#fff;" onclick="$.DHB.clear_select_city(this,'');"><i class="fa fa-times-circle"></i></span>
+                                            <input name="city_id" class="city-validate " value="@userModel.id_city" type="hidden">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="input-item-2 clearfix add-client">
+                                    <div>
+                                        <label class="lab-w88">
+                                            <span></span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input" name="address" value="@userModel.address" placeholder="详细地址，如：广东省广州市天河区五山路10号" type="text">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--所属业务员-->
+                    <div class="fixed-input-group m-b-none dis-table">
+                        <h2 class="form_title"><span>业务信息</span></h2>
+                        <div class="col-sm-12 form_content">
+
+                            <div class="input-item-2 clearfix add-client">
+
+                                <div class="showIcon">
+                                    <label class="lab-w88">
+                                        <span style="width: 70px !important;">所属角色：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        @foreach (var item in roleModel)
+                                        {
+                                            <label class="i-checks">
+                                                @if (userModel.flag_master.ToString() == "1" && item.id_role == ((int)CySoft.Model.Enums.Enums.TbRoleFixedRoleId.SysManager).ToString())
+                                                {
+                                                    <input data-group="id_roles" value="@item.id_role" type="checkbox" checked="checked" disabled="disabled">
+                                                }
+                                                else
+                                                {
+                                                    <input data-group="id_roles" value="@item.id_role" type="checkbox" @Html.Raw(item.isChecked ? "checked=\"checked\"" : "")>
+                                                }
+                                                <i></i>@item.name_role
+                                            </label>
+                                        }
+                                    </label>
+
+                                    <label class="copy d-i-b  m-l-none" id="copy" style="position: relative;">
+                                        <i class="icon-question tool iconImg" style="position: relative;"></i>
+                                        <div class="popover fade bottom in tool-box">
+                                            <div class="arrow"></div>
+                                            <div class="popover-content">
+                                                <p>设置该员工专属的角色，不同角色拥有不同权限，如：</p>
+                                                <p>1、管理员拥有分配角色/账户权限</p>
+                                                <p>2、收银员拥有收银权限</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fixed-input-group m-b-none dis-table" id="shop_md" @Html.Raw(@version.ToString() == "10" ? "style='display:none'" : "")>
+                        <h2 class="form_title"><span>门店信息</span></h2>
+                        <div class="col-sm-12 form_content">
+                            <div class="input-item-2 clearfix add-client">
+                                <div class="showIcon">
+                                    <label class="lab-w88 lab-w2 dis-table">
+                                        <span style="width: 70px !important;">用户管理门店：</span>
+                                    </label>
+
+                                    <div class="ove-h">
+                                        <div class="selct_shop ove-no">
+                                            <div class="selct_shop_head selct_bor"><label class="i-checks showIcon"><input name="id_shops_all" id="id_shops_all" type="checkbox" onclick="selectAll(this)"><i></i>全选</label></div>
+                                            <div class="selct_bor max262">
+                                                <div class="selct_shop_item ove-sc max269" id="selct_shop_item">
+
+                                                    @*如果不是主门店的话 主门店不显示*@
+                                                    @foreach (var item in shopList)
+                                                    {
+                                                        if (item.id_shop == id_shop_master)
+                                                        {
+                                                            <div id="div_id_shop_master" style="display:@(userModel.id_shop != id_shop_master ? "none" : "block");">
+                                                                <label class="i-checks showIcon item_blank1">
+                                                                    <input data-group="id_shops" value="@item.id_shop" type="checkbox" @(userShopList.Any(a => a.id_shop == item.id_shop) ? "checked='checked'" : "")><i></i>@item.mc
+                                                                </label>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <label class="i-checks showIcon item_blank1">
+                                                                <input data-group="id_shops" value="@item.id_shop" type="checkbox" @(userShopList.Any(a => a.id_shop == item.id_shop) ? "checked='checked'" : "")><i></i>@item.mc
+                                                            </label>
+                                                        }
+
+
+                                                        @*if (userModel.id_shop != id_shop_master)
+                                                            {
+                                                                if (item.id != id_shop_master)
+                                                                {
+                                                              <label class="i-checks showIcon item_blank1">
+                                                                  <input  data-group="id_shops"  value="@item.id" type="checkbox" @(userShopList.Any(a => a.id_shop == item.id) ? "checked='checked'" : "")><i></i>@item.mc
+                                                              </label>
+                                                              }
+                                                            }
+                                                            else
+                                                            {
+                                                              <label class="i-checks showIcon item_blank1">
+                                                                  <input data-group="id_shops" value="@item.id" type="checkbox" @(userShopList.Any(a => a.id_shop == item.id) ? "checked='checked'" : "")><i></i>@item.mc
+                                                              </label>
+                                                            }*@
+                                                    }
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <input name="id" id="id" value="@ViewData["ID"]" type="hidden">
+                    <input name="flag_master" id="flag_master" value="@userModel.flag_master" type="hidden">
+
+                    <footer class="panel-footer lter need-footer-fixed need-footer-fixed-box text-l">
+                        <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                        <button class="btn w-xs btn-info m-l-none" type="button" id="submit-button" onclick="app.account.check_yes('submit-button');" data-loading-text="正在提交...">
+                            确定
+                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn w-xs btn-default" type="button" onclick="$.fn.menuTab.deleteMenu('account/edit'); $.fn.menuTab.load({ url: '/account/list', 'title': '员工管理', id: 'account/list', nocache: '0' }); ">
+                            取消
+                        </button>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+<script>
+
+
+    app.account.edit_ready = function () {
+        if ('@flag_edit.ToLower()' == 'add') {
+            //$(_ + "#id_shops_all").click();
+            $(_ + "#selct_shop_item").find("INPUT[type='checkbox']").each(function (index, item) {
+                item.checked = false;
+            })
+        }
+    };
+    app.account.edit_ready = function () {
+        $(_ + "#username").blur(function () {
+            app.account.username_lz($(this).val(), this);
+        })
+    }
+
+    app.account.username_lz = function (str, obj) {
+        // var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{4,20}$/;
+        var reg = /^[0-9A-Za-z]{4,20}$/;
+        if (str == '' || str == undefined) {
+            $.DHB.message({ 'content': '登录帐号不能为空！', 'type': 'i' });
+            return;
+        } else if (!reg.test(str)) {
+            $.DHB.message({ 'content': '登录帐号必须由4-20位数字或字母组成！', 'type': 'i' });
+            //$(obj).val('');
+            //$(obj).focus();
+            return;
+        }
+    }
+
+    //表单提交
+    app.account.check_yes = function (btn) {
+        //$.DHB.checkForm("update_summary_form", function () { });
+
+
+        //setTimeout(function () {
+        //app.account.username_lz($(_ + "#username").val(), $(_ + "#username"))
+        //var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{4,20}$/;
+        var reg = /^[0-9A-Za-z]{4,20}$/;
+        if (!$(_ + "#username").val()) {
+            $.DHB.message({ 'content': '登录帐号不能为空！', 'type': 'i' });
+            return;
+        } else if (!reg.test($(_ + "#username").val())) {
+            $.DHB.message({ 'content': '登录帐号必须由4-20位数字或字母组成！', 'type': 'i' });
+            //$(obj).val('');
+            //$(obj).focus();
+            return;
+        }
+
+        if ('@flag_edit' == 'add') {
+            if (!$(_ + "#password").val()) {
+                $.DHB.message({ 'content': '密码不能为空！', 'type': 'i' });
+                return;
+            }
+            else if (!$(_ + "#confirmpwd").val()) {
+                $.DHB.message({ 'content': '确认密码不能为空！', 'type': 'i' });
+                return;
+            } else if ($(_ + "#password").val().toString().length < 6) {
+                $.DHB.message({ 'content': '密码长度不能少于6位！', 'type': 'i' });
+                return;
+            }
+        }
+
+        if (!$(_ + "#name").val()) {
+            $.DHB.message({ 'content': '联系人姓名不能为空！', 'type': 'i' });
+        }
+            //else if (!$(_ + "#phone").val()) {
+            //    $.DHB.message({ 'content': '手机不能为空！', 'type': 'i' });
+            //}
+        else {
+            var id_shops = "";
+
+            $("input[data-group=id_shops]").each(function (index, item) {
+                if (item.checked === true) {
+                    id_shops += $(item).val() + ",";
+                }
+            });
+            var id_roles = "";
+            $("input[data-group=id_roles]").each(function (index, item) {
+                if (item.checked === true) {
+                    id_roles += $(item).val() + ",";
+                }
+            });
+            //
+
+            var id_shop = '';
+            var allowShopSelect = '@allowShopSelect';
+            if (allowShopSelect != '') {
+                id_shop = '&id_shop=' + $(_ + '#id_shop').val();
+            }
+
+            $("#" + btn, _).button("loading");
+
+            @*$.post(
+                $.DHB.U('account/@flag_edit')
+                , $("#update_summary_form", _).serialize() + "&id_shops=" + id_shops + "&id_roles=" + id_roles + id_shop
+                ,
+                    function (data) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                            $.fn.menuTab.deleteMenu('account/edit');
+                            $.fn.menuTab.load({ url: '/account/list', 'title': '员工管理', id: 'account/list', nocache: '1' });
+                        } else {
+
+                            if (data.level == '3' && data.data != '') {
+
+                                $.messager.confirm("系统提示", data.message, function () {
+
+                                    $.post(
+                                            $.DHB.U('account/init'),
+                                             "id=" + data.data,
+                                            function (data) {
+                                                if (data.status == "success") {
+                                                    $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                                    $.DHB.url('account/list', 'cache');
+                                                }
+                                                else {
+                                                    $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                                }
+                                            }, 'json'
+                                            );
+                                });
+
+                                $("#" + btn, _).button('reset');
+                            }
+                            else {
+                                $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                                $("#" + btn, _).button('reset');
+                            }
+                        }
+                    }, 'json'
+           );*@
+
+            var options = {
+                data: $("#update_summary_form", _).serialize() + "&id_shops=" + id_shops + "&id_roles=" + id_roles + id_shop,
+                url: $.DHB.U('account/@flag_edit'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                        $.fn.menuTab.deleteMenu('account/edit');
+                        $.fn.menuTab.load({ url: '/account/list', 'title': '员工管理', id: 'account/list', nocache: '1' });
+                    } else {
+
+                        if (data.level == '3' && data.data != '') {
+
+                            $.messager.confirm("系统提示", data.message, function () {
+
+                                $.post(
+                                        $.DHB.U('account/init'),
+                                         "id=" + data.data,
+                                        function (data) {
+                                            if (data.status == "success") {
+                                                $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                                $.DHB.url('account/list', 'cache');
+                                            }
+                                            else {
+                                                $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                            }
+                                        }, 'json'
+                                        );
+                            });
+
+                            $("#" + btn, _).button('reset');
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                            $("#" + btn, _).button('reset');
+                        }
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options);
+
+
+
+        }
+        //}, 400);
+    }
+
+
+    function selectAll(e) {
+        if (e.checked) {
+            $(_ + "#selct_shop_item").find("INPUT[type='checkbox']").each(function (index, item) {
+                var value = $(item).val();
+                var id_shop = $(_ + "#id_shop").val();
+                if (value == '@id_shop_master' && id_shop != '@id_shop_master') {
+                    item.checked = false;
+                } else {
+                    item.checked = true;
+                }
+            })
+        } else {
+            $(_ + "#selct_shop_item").find("INPUT[type='checkbox']").each(function (index, item) {
+                item.checked = false;
+            })
+        }
+
+    }
+
+    function invertSelect() {
+        $("INPUT[type='checkbox']").each(function () {
+            if ($(this).attr('checked')) {
+                $(this).attr('checked', false);
+                $(this).parents('.checkbox').find('span').removeClass('checked');
+            } else {
+                $(this).attr('checked', true);
+                $(this).parents('.checkbox').find('span').addClass('checked');
+            }
+        });
+    }
+
+
+
+    //门店下拉选中改变事件
+    app.account.id_shop_onchange = function (e) {
+        var id_shop = $(_ + "#id_shop").val();
+        if (id_shop == '@id_shop_master') {
+            $("#div_id_shop_master").css('display', 'block');
+        } else {
+            $("#div_id_shop_master").css('display', 'none');
+            $("#div_id_shop_master").find('input[data-group="id_shops"]').each(function (index, item) {
+                item.checked = false;
+            });
+        }
+    };
+
+
+
+</script>

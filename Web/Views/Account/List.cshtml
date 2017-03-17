@@ -1,0 +1,493 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "员工管理";
+    PageList<CySoft.Model.Tb.Tb_User_Query> pageList = ViewData["PageList"] as PageList<CySoft.Model.Tb.Tb_User_Query>;
+    var DataPurview = ViewData["_DataPurview_"] as List<string>;
+    var IsDataShow = ViewData["_IsDataShow_"] as Func<string, List<string>, bool>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+    var id_user_master = ViewData["id_user_master"] == null ? "" : ViewData["id_user_master"].ToString();
+
+
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="account/list"]').attr({ controller: 'account', action: 'list' });
+        app.c.public_data['account/list'] = app.c.public_data['account/list'] || {};
+        app.c.public_data['account/list']['once'] = false;
+        app.qc = app.qc || {};
+        //$(".table tr:nth-child(even)").css("background", "#fffedc");
+    });
+</script>
+
+@*<input type="hidden" pagesize value="" />
+<input type="hidden" page value="" />*@
+
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        员工管理
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script>
+    app.c.public_data['account/list'] = app.c.public_data['account/list'] || {};
+    app.c.public_data['account/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['account/list']['threemenu'] === false) {
+            app.c.public_data['account/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+
+
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/account/list">
+                                    <div class="col-xs-10 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <!-- 内容搜索 -->
+                                                <div class="pull-right m-r-sm" style="margin-top:7px">
+                                                    <div class="1" style="position:relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="text" value="" onkeypress="app.search.trigger_search_client_client(event);" class="form-control input-sm search-h inline v-middle search-result search" name="keyword" id="keyword" style="width:250px;border-right:none;border-radius: 2px 0 0 2px;" placeholder="账号/姓名/手机号" ondblclick="app.search.search_item_clear_client_client(this);" onblur="app.search.do_search_client_client(this);" /><span><button type="button" onclick="app.search.do_search_client_client(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span><span onclick="app.search.search_item_clear_client_client(this);" style="display:none;position:absolute;right:27px;top:4px;padding:2px 2px 2px 4px;cursor:pointer;color:#d5d3d5;width:19px;height:25px;background:#fff;"><i class="fa fa-times-circle"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <script>
+                                            app.c.public_data['account/list'] = app.c.public_data['account/list'] || {};
+                                            app.c.public_data['account/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'account/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' + currentSearch + '===false){app.search.search_client_client();' + currentSearch + '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            //TODO：分页参数
+                                            app.search.search_client_client = function () {
+                                                app.c.public_data["account/list"] = app.c.public_data['account/list'] || {};
+                                                app.c.public_data['account/list']['_row_total_'] = '@pageList.ItemCount',
+                                                app.c.public_data['account/list']['_page_size_'] = '@pageList.PageSize',
+                                                app.c.public_data['account/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                app.search.do_search_pagination_client_client();
+                                            }
+                                            app.search.trigger_search_client_client = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_client_client();
+                                                    event.preventDefault();
+                                                }
+                                            }
+                                            app.search.do_search_client_client = function (el, isExport) {
+
+                                                isExport = isExport || 0;
+
+                                                var url = '/account/list?_search_=1&' + $(_ + ".filter-form").serialize();
+
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    window.location.href = $.DHB.U(url);
+                                                }
+                                                else {
+
+                                                    var options = {
+                                                        url: $.DHB.U(url),
+                                                        datatype: 'html',
+                                                        beforeSend: function () {
+                                                            $.DHB.showButterbar();
+                                                        },
+                                                        success: function (data, textStatus, jqXHR) {
+                                                            if ($('#account-list-list-fresh-box', _).length > 0) {
+                                                                $('#account-list-list-fresh-box', _).html(data);
+                                                            }
+                                                            app.search.do_search_pagination_client_client();
+                                                        },
+                                                        complete: function (XHR, TS) {
+                                                            debugger;
+                                                            $.DHB.closeButterbar();
+                                                        }
+                                                    };
+                                                    app.httpAjax.post(options)
+
+
+                                                }
+                                                return false;
+                                            }
+
+                                            //分页
+                                            app.search.do_search_pagination_client_client = function () {
+                                                $.DHB.func.pagination({ module_name: 'Manager', controller_name: 'account', action_name: 'list', ready_once: false });
+                                            }
+
+                                            app.search.do_search_option_client_client = function (el) {
+                                                if ($(el).attr('class') != '') {
+                                                    $(el).find('span').each(function () {
+                                                        if ($(this).attr('class') == '') {
+                                                            $(this).attr('class', 'order-active');
+                                                        } else {
+                                                            $(this).attr('class', '');
+                                                        }
+                                                    });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el).parents('.btn-group').find('input:eq(0)').val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el).parents('.btn-group').find('button span:eq(0)').html(selectA.html());
+
+                                                app.search.do_search_client_client();
+                                            }
+
+                                            app.search.search_enter = function (el) {
+                                                if (app.c.public_data['account/list']['search_all'] === false) {
+                                                    $(el).parents('.search-box-container').find(".bootstrap-select ul.dropdown-menu").each(function () {
+                                                        var ts = $(this).find('li:first() span:first()');
+                                                        ts.text('全部');
+                                                    });
+                                                    app.c.public_data['account/list']['search_all'] = true;
+                                                }
+                                            }
+
+                                            app.search.search_leave = function (el) {
+                                            }
+
+                                            app.search.search_client_clear_client_client = function (el) {
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_client_client();
+                                            }
+
+                                            app.search.search_item_clear_client_client = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                par.find("select.select2_").selectpicker({ liveSearch: true }).selectpicker('refresh');
+                                                par.find("select.select2").selectpicker('refresh');
+                                                app.search.do_search_client_client();
+                                            }
+
+
+                                            //删除
+                                            app.search.del = function (obj, id) {
+                                                $(obj).trigger('blur');
+                                                $.messager.confirm("提示", "确定删除吗?", function () {
+
+                                                    //$.post($.DHB.U('/account/delete'),
+                                                    //    {
+                                                    //        id: id
+                                                    //    },
+                                                    //    function (data) {
+                                                    //        if (data.status == "success") {
+                                                    //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                                    //            $("#row-user-id-" + id).remove();
+                                                    //        }
+                                                    //        else {
+                                                    //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                                    //        }
+                                                    //    }, 'json');
+
+
+                                                    var options = {
+                                                        data: {
+                                                            id: id
+                                                        },
+                                                        url: $.DHB.U('/account/delete'),
+                                                        type: "POST",
+                                                        datatype: 'json',
+                                                        beforeSend: function () { },
+                                                        success: function (data, textStatus, jqXHR) {
+                                                            if (data.status == "success") {
+                                                                $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                                                $("#row-user-id-" + id).remove();
+                                                            }
+                                                            else {
+                                                                $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                                            }
+                                                        },
+                                                        complete: function (XHR, TS) { }
+                                                    };
+                                                    app.httpAjax.post(options);
+
+
+                                                });
+                                            };
+
+                                            //启用
+                                            app.search.active = function (obj, id) {
+                                                $(obj).trigger('blur');
+                                                $.messager.confirm("提示", "确定启用此员工吗?", function () {
+
+                                                    //$.post($.DHB.U('/account/active'),
+                                                    //    {
+                                                    //        id: id
+                                                    //    },
+                                                    //    function (data) {
+                                                    //        if (data.status == "success") {
+                                                    //            $.DHB.message({ 'content': data.message, 'time': 3000, 'type': 's' });
+                                                    //            $.DHB.refresh();
+                                                    //        }
+                                                    //        else {
+                                                    //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                                    //        }
+                                                    //    }, 'json');
+                                                  
+                                                    var options = {
+                                                        data: {
+                                                            id: id
+                                                        },
+                                                        url: $.DHB.U('/account/active'),
+                                                        type: "POST",
+                                                        datatype: 'json',
+                                                        beforeSend: function () { },
+                                                        success: function (data, textStatus, jqXHR) {
+                                                            if (data.status == "success") {
+                                                                $.DHB.message({ 'content': data.message, 'time': 3000, 'type': 's' });
+                                                                $.DHB.refresh();
+                                                            }
+                                                            else {
+                                                                $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                                            }
+                                                        },
+                                                        complete: function (XHR, TS) { }
+                                                    };
+                                                    app.httpAjax.post(options);
+
+
+                                                });
+                                            };
+
+                                            //停用
+                                            app.search.stop = function (obj, id) {
+                                                $(obj).trigger('blur');
+                                                $.messager.confirm("提示", "确定停用此员工吗?", function () {
+
+
+                                                    var options = {
+                                                        data: {
+                                                            id: id
+                                                        },
+                                                        url: $.DHB.U('/account/stop'),
+                                                        type: "POST",
+                                                        datatype: 'json',
+                                                        beforeSend: function () { },
+                                                        success: function (data, textStatus, jqXHR) {
+                                                            if (data.status == "success") {
+                                                                $.DHB.message({ 'content': data.message, 'time': 3000, 'type': 's' });
+                                                                $.DHB.refresh();
+                                                            }
+                                                            else {
+                                                                $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                                            }
+                                                        },
+                                                        complete: function (XHR, TS) { }
+                                                    };
+                                                    app.httpAjax.post(options);
+
+                                                });
+                                            };
+
+                                            //重置密码
+                                            app.search.czpwd = function (obj, id) {
+                                                $(obj).trigger('blur');
+
+                                                $.DHB.dialog({
+                                                    'title': '重置密码',
+                                                    'url': $.DHB.U('account/czpwd?id_user=' + id),
+                                                    'id': 'dialog_CZPwd'
+                                                });
+
+                                            };
+
+                                        </script>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-xs-2 pull-left">
+                            <div class="btn-group m-t-12 f-l">
+                                <button type="button" class="btn btn-info" onclick="$.fn.menuTab.load({ url: '/account/edit?flag_edit=add', 'title': '新增员工', id: 'account/edit', nocache: '0' }); "><span class="fa fa-plus btn_icon"></span>新增员工</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--数据表格-->
+                    @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                    <div id="account-list-list-fresh-box" class="table_list table_max_h">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line stockManager" @*onmouseover="$.DHB.func.listOperate(this);"*@ style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                                        序号
+                                    </th>
+                                    <th width="150">所属门店</th>
+                                    <th width="150">登录账号</th>
+                                    <th width="90">姓名</th>
+                                    <th width="100">手机号</th>
+                                    <th width="160">邮箱</th>
+                                    <th class="dis-no" width="">公司</th>
+                                    <th width="60" class="text-center">主用户</th>
+                                    <th width="50">状态</th>
+                                    <th width="215" class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accountlist-main-tbody">
+                                @if (pageList == null || pageList.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="8" align="center">
+                                            <img src="~/static/images/nodata.png" class="table_nodata">
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    int index = 1;
+                                    foreach (var item in pageList.OrderByDescending(d => d.rq_create))
+                                    {
+                                        <tr id="row-user-id-@item.id" class="tr-status-finished">
+                                            <td class="text-center">
+                                                @(index++)
+                                            </td>
+                                            @*增加门店*@
+                                            <td>@item.name_shop</td>
+                                            <td>
+                                                <a class="list-link" onclick="$.fn.menuTab.load({ url: '/account/detail?id=@item.id', 'title': '员工详情', id: 'account/list', nocache: '0' }); ">
+                                                    @item.username
+                                                </a>
+                                            </td>
+                                            <td>@item.name</td>
+                                            <td>@item.phone</td>
+                                            <td>@item.email</td>
+                                            <td class="dis-no">@item.companyname</td>
+                                            <td class="text-center">@Html.Raw(item.flag_master.ToString() == "1" ? "是" : "否")</td>
+                                            <td>@Html.Raw(item.flag_state.ToString() != "1" ? "停用" : "正常")</td>
+                                            <td class="list-operate">
+                                                @*<p class="cut-out invisible">
+                                                        &nbsp;
+                                                    </p>*@
+                                                <div class="look-out1">
+                                                    <div class="second-height-operate">
+
+                                                        @if (IsPermissionShow("list", actionlist))
+                                                        {
+                                                            <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="$.fn.menuTab.load({ url: '/account/detail?id=@item.id', 'title': '员工详情', id: 'account/detail', nocache: '1' }); " title="查看"></a>
+                                                        }
+
+                                                        @if (IsPermissionShow("edit", actionlist))
+                                                        {
+                                                            <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="$.fn.menuTab.load({ url: '/account/edit?flag_edit=update&id=@item.id', 'title': '员工编辑', id: 'account/edit', nocache: '0' });" title="编辑"></a>
+                                                        }
+
+                                                        @if (item.flag_master.ToString() != "1")
+                                                        {
+                                                            if (IsPermissionShow("delete", actionlist))
+                                                            {
+                                                            <a class="bg-state bg-state-info fa fa-trash" onclick="app.search.del(this,'@item.id');" title="删除"></a>
+                                                            }
+                                                            if (item.flag_state.ToString() != "1"&& IsPermissionShow("active", actionlist))
+                                                            {
+                                                                <a class="bg-state bg-state-info" onclick="app.search.active(this,'@item.id');">启用</a>
+                                                            }
+                                                            else if(IsPermissionShow("stop", actionlist))
+                                                            {
+                                                                <a class="bg-state bg-state-info fa fa-minus-square" onclick="app.search.stop(this,'@item.id');" title="停用"></a>
+                                                            }
+                                                        }
+                                                        
+                                                        @if (id_user_master != item.id)
+                                                        {
+                                                            if (IsPermissionShow("czpwd", actionlist))
+                                                            {
+                                                                <a class="bg-state bg-state-info fa fa-user" href="javascript:;" onclick="app.search.czpwd(this,'@item.id')" title="重置密码"></a>
+                                                            }
+                                                        }
+                                                        
+
+
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--页脚-->
+                    <footer class="panel-footer">
+                        <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+                @*<footer class="panel-footer padder-lg padder-v need-footer-fixed need-footer-fixed-box">
+                        <button class="btn w-110 btn-info m-l-none m-r" type="button" onclick="$.fn.menuTab.load({ url: '/account/edit?flag_edit=add', 'title': '新增员工', id: 'account/list', nocache: '0' });">
+                            新增员工
+                        </button>
+                    </footer>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(function () {
+        var $tab = $(_);
+        $tab.find('.hide-btn').on('click', function () {
+            var flag = this.checked;
+            app.search.do_search_client_client(this);
+        });
+    });
+
+
+    @*var s = '@CySoft.Utility.JSON.Serialize(pageList)'
+    console.log(s);*@
+
+</script>

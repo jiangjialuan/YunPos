@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_Sp"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+	  <typeAlias alias="Tb_Sp" type="CySoft.Model.Tb.Tb_Sp,CySoft.Model" />
+	  <typeAlias alias="Tb_Sp_Query" type="CySoft.Model.Tb.Tb_Sp_Query,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <isParameterPresent>
+      where 1=1
+        <isNotNull prepend="and" property="idList">
+          db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+        <isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+        <isNotNull prepend="and" property="flag_stop">db.[flag_stop]=#flag_stop#</isNotNull>
+        <isNotNull prepend="and" property="mc">db.[mc]=#mc#</isNotNull>
+        <isNotNull prepend="and" property="keywords">db.[keywords]=#keywords#</isNotNull>
+        <isNotNull prepend="and" property="cd">db.[cd]=#cd#</isNotNull>
+        <isNotNull prepend="and" property="brand">db.[brand]=#brand#</isNotNull>
+        <isNotNull prepend="and" property="id_gys_create">db.[id_gys_create]=#id_gys_create#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_sku">
+          EXISTS(SELECT 1 FROM Tb_sp_sku WHERE id_sp=db.id AND id=#id_sku#)
+        </isNotNull>
+      </isParameterPresent>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_flag_stop">db.[flag_stop]=#new_flag_stop#</isNotNull>
+        <isNotNull prepend="," property="new_mc">db.[mc]=#new_mc#</isNotNull>
+        <isNotNull prepend="," property="new_keywords">db.[keywords]=#new_keywords#</isNotNull>
+        <isNotNull prepend="," property="new_cd">db.[cd]=#new_cd#</isNotNull>
+        <isNotNull prepend="," property="new_brand">db.[brand]=#new_brand#</isNotNull>
+        <isNotNull prepend="," property="new_id_gys_create">db.[id_gys_create]=#new_id_gys_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Tb_sp]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete a FROM tb_sp_dj a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sp)
+      delete a FROM Tb_sp_expand a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sp)
+      delete a FROM Tb_sp_info a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sp)
+      delete a FROM Tb_sp_pic a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sp)
+      delete a FROM Tb_sp_sku a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sp)
+      delete a FROM tb_gys_sp a WHERE EXISTS(SELECT 1 FROM <include refid="Table"/> as db <include refid="Where"/> and db.id=a.id_sp)
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="GetNextKey" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      select (isnull(max(db.id),0)+1) as value from <include refid="Table"/> as db <include refid="Where"/>
+    </select>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id],db.[flag_stop],db.[mc],db.[keywords],db.[cd],db.[brand],db.[id_gys_create],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id],db.[flag_stop],db.[mc],db.[keywords],db.[cd],db.[brand],db.[id_gys_create],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+	  <sql id="QueryOrder">
+		  <dynamic prepend="order by">
+			  <isNull property="sort">db.[id_sp] asc</isNull>
+			  <isNotNull property="sort">
+				  $sort$
+				  <isNotNull property="dir">
+					  <isEqual compareValue="asc" property="dir">asc</isEqual>
+					  <isEqual compareValue="desc" property="dir">desc</isEqual>
+				  </isNotNull>
+			  </isNotNull>
+		  </dynamic>
+	  </sql>
+
+    <sql id="QueryOrderForList">
+      <dynamic prepend="order by">
+        <isNotNull property="id_gys">
+          gyssp.sort_id desc,
+        </isNotNull>
+        <isNull property="sort">db.[id_sp] asc</isNull>
+        <isNotNull property="sort">
+          $sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+	  
+	 
+	  <select id="QueryCountOfService" parameterClass="System.Collections.IDictionary" resultClass="int">
+		  set nocount on
+		  <include refid="NoLock" />
+      select count(1) as value
+      FROM Tb_sp sp
+      inner JOIN  (SELECT gsp.id_sp,count(1)count_sku,min(gsp.id_sku)id_sku,gsp.id_gys,min(gsp.dj_base)dj_base FROM Tb_gys_sp gsp WHERE gsp.flag_stop=0  <isNotNull property="flag_up">and gsp.flag_up = #flag_up#</isNotNull>
+      GROUP BY gsp.id_sp,gsp.id_gys)gyssp ON sp.id=gyssp.id_sp
+      left join Tb_gys_sp gsp on gsp.id_sp=sp.id and gsp.id_gys=gyssp.id_gys and gsp.id_sku=gyssp.id_sku  <isNotNull property="flag_up">and  gsp.flag_up = #flag_up#</isNotNull>
+      left join tb_sp_sku sku on sku.id=gyssp.id_sku
+      LEFT JOIN (SELECT a.id_gys,a.id_sku,min(a.dj_dh)dj_dh FROM Tb_sp_dj a GROUP BY a.id_gys,a.id_sku)dj ON dj.id_gys=gyssp.id_gys AND dj.id_sku=gyssp.id_sku
+      <isNotNull property="id_cgs">
+        inner join Tb_gys_cgs gcgx on gcgx.id_gys= gsp.id_gys  AND gcgx.flag_stop=0
+        LEFT JOIN Tb_sp_dj cdj ON cdj.id_sku=gyssp.id_sku AND cdj.id_gys=gyssp.id_gys AND cdj.id_cgs_level=gcgx.id_cgs_level
+        LEFT JOIN Tb_sp_cgs mdj ON gyssp.id_sku=mdj.id_sku AND gyssp.id_gys=mdj.id_gys and mdj.id_cgs= gcgx.id_cgs
+      </isNotNull>
+      <isNotNull property="id_spfl">left join Tb_spfl as fl on fl.id = gsp.id_spfl</isNotNull>
+      where
+      sp.flag_stop = 0 and sku.flag_stop = 0  AND gsp.flag_stop=0
+     <isNotNull property="id_gys"> and gyssp.id_gys=#id_gys# </isNotNull>
+    <isNotNull property="id_cgs"> and gcgx.id_cgs=#id_cgs# </isNotNull>
+    <isNotNull property="id_spfl"> and exists(select 1 from Tb_spfl as spfl where spfl.id = #id_spfl# and fl.path+'/' like  spfl.path+'/%')</isNotNull>
+    <isNotNull property="keyword"> and (sp.mc like #keyword# or gsp.bm_Interface like #keyword# or sku.bm like #keyword# OR sku.barcode LIKE #keyword# OR sku.keywords LIKE #keyword#)</isNotNull>
+    <isNotNull property="mc"> and sp.mc like #mc#</isNotNull>
+    <isNotNull property="bm_Interface"> and (gsp.bm_Interface like #bm_Interface# or sku.bm like #bm_Interface#)</isNotNull>
+    <isNotNull property="barcode"> and sku.barcode like #barcode#</isNotNull>
+	  </select>
+    
+    <select id="QueryPageOfService" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (
+      SELECT
+      row_number() over(<include refid="QueryOrder" />)rownumber,sp.id as id,gyssp.id_sku,
+      (case isnull(gsp.bm_Interface,'') when '' then sku.bm else gsp.bm_Interface end) as bm_Interface,
+      sp.mc as name,
+      CASE isnull(sku.photo_min2,'') WHEN '' THEN '' ELSE <isNotNull property="baseurl">#baseurl#+</isNotNull> + sku.photo_min2 end photo_min2,
+      CASE isnull(sku.photo,'') WHEN '' THEN '' ELSE <isNotNull property="baseurl">#baseurl#+</isNotNull> + sku.photo end photo,
+      <isNotNull property="id_cgs">
+        isnull(mdj.dj_dh, isnull(cdj.dj_dh,gsp.dj_base)) as dj,
+        gcgx.alias_gys,
+        isnull(tsc.sl,0.0) AS gwcsl,
+      </isNotNull>
+      <isNull  property="id_cgs">
+        isnull(dj.dj_dh,gsp.dj_base) as dj,
+        '' as alias_gys,
+      </isNull>
+      <isNotNull property="id_user">
+        isnull(favr.id_sp,0)flag_Favorites,
+      </isNotNull>
+      <isNull property="id_user">
+        0 flag_Favorites,
+      </isNull>
+      gsp.id_gys,
+      isnull(gyssp.count_sku,0) as count_sku
+      FROM Tb_sp sp
+      inner JOIN  (SELECT gsp.id_sp,count(1) as count_sku,min(gsp.id_sku)id_sku,gsp.id_gys,min(gsp.dj_base)dj_base FROM Tb_gys_sp gsp WHERE gsp.flag_stop=0<isNotNull property="flag_up"> and gsp.flag_up = #flag_up#</isNotNull>
+      GROUP BY gsp.id_sp,gsp.id_gys)gyssp ON sp.id=gyssp.id_sp
+      left join Tb_gys_sp gsp on gsp.id_sp=sp.id and gsp.id_gys=gyssp.id_gys and gsp.id_sku=gyssp.id_sku<isNotNull property="flag_up"> and  gsp.flag_up = #flag_up#</isNotNull>
+      left join tb_sp_sku sku on sku.id=gyssp.id_sku
+      LEFT JOIN (SELECT a.id_gys,a.id_sku,min(a.dj_dh)dj_dh FROM Tb_sp_dj a GROUP BY a.id_gys,a.id_sku)dj ON dj.id_gys=gyssp.id_gys AND dj.id_sku=gyssp.id_sku
+      <isNotNull property="id_cgs">
+        inner join Tb_gys_cgs gcgx on gcgx.id_gys= gsp.id_gys  AND gcgx.flag_stop=0
+        LEFT JOIN Tb_sp_dj cdj ON cdj.id_sku=gyssp.id_sku AND cdj.id_gys=gyssp.id_gys AND cdj.id_cgs_level=gcgx.id_cgs_level
+        LEFT JOIN Tb_sp_cgs mdj ON gyssp.id_sku=mdj.id_sku AND gyssp.id_gys=mdj.id_gys and mdj.id_cgs= gcgx.id_cgs
+        LEFT JOIN Td_sale_cart tsc ON sku.id=tsc.id_sku AND gsp.id_gys=tsc.id_gys AND tsc.id_cgs=gcgx.id_cgs AND sp.id=tsc.id_sp
+      </isNotNull>
+      <isNotNull property="id_spfl">
+        left join Tb_spfl as fl on fl.id = gsp.id_spfl
+      </isNotNull>
+      <isNotNull property="id_user">
+        left join Tb_sp_Favorites as favr on favr.id_user = #id_user# and favr.id_sp=sp.id and favr.id_gys=gyssp.id_gys
+      </isNotNull>
+      where  sp.flag_stop = 0 and sku.flag_stop = 0 AND gsp.flag_stop=0
+      <isNotNull property="id_gys"> and gyssp.id_gys=#id_gys# </isNotNull>
+      <isNotNull property="id_cgs"> and gcgx.id_cgs=#id_cgs# </isNotNull>
+      <isNotNull property="id_spfl"> and exists(select 1 from Tb_spfl as spfl where spfl.id = #id_spfl# and fl.path+'/' like  spfl.path+'/%')</isNotNull>
+      <isNotNull property="keyword"> and (sp.mc like #keyword# or gsp.bm_Interface like #keyword# or sku.bm like #keyword#  OR sku.barcode LIKE #keyword# or sku.keywords like #keyword#)</isNotNull>
+      <isNotNull property="mc"> and sp.mc like #mc#</isNotNull>
+      <isNotNull property="bm_Interface"> and (gsp.bm_Interface like #bm_Interface# or sku.bm like #bm_Interface#)</isNotNull>
+      <isNotNull property="barcode"> and sku.barcode like #barcode#</isNotNull>
+      ) as t
+      <include refid="RowBetween" />
+    </select>
+    
+    <select id="QueryCountOfOrder" parameterClass="System.Collections.IDictionary" resultClass="int">
+		  set nocount on
+		  <include refid="NoLock" />
+      select count(1) as value
+      FROM tb_sp_sku spsku
+      left join tb_sp sp on sp.id=spsku.id_sp
+      inner join Tb_gys_sp gyssp on spsku.id=id_sku
+      LEFT JOIN Tb_sp_dj dj on dj.id_gys=gyssp.id_gys AND dj.id_sku=gyssp.id_sku
+      
+      <isNotNull property="id_cgs">
+        inner join Tb_gys_cgs gcgx on gcgx.id_gys= gyssp.id_gys  AND gcgx.flag_stop=0 and gcgx.id_cgs_level=dj.id_cgs_level
+        LEFT JOIN Tb_sp_dj cdj ON cdj.id_sku=gyssp.id_sku AND cdj.id_gys=gyssp.id_gys AND cdj.id_cgs_level=gcgx.id_cgs_level
+        LEFT JOIN Tb_sp_cgs mdj ON gyssp.id_sku=mdj.id_sku AND gyssp.id_gys=mdj.id_gys and mdj.id_cgs= gcgx.id_cgs
+      </isNotNull>
+      <isNotNull property="id_spfl">
+        left join Tb_spfl as fl on fl.id = gyssp.id_spfl
+      </isNotNull>
+      where sp.flag_stop = 0 and spsku.flag_stop = 0 and gyssp.flag_stop=0
+      <isNotNull property="id_gys"> and gyssp.id_gys=#id_gys# </isNotNull>
+      <isNotNull property="id_cgs"> and gcgx.id_cgs=#id_cgs# </isNotNull>
+      <isNotNull property="id_spfl"> and exists(select 1 from Tb_spfl as spfl where spfl.id = #id_spfl# and fl.path+'/' like  spfl.path+'/%')</isNotNull>
+      <isNotNull property="keyword"> and (sp.mc like #keyword# or gyssp.bm_Interface like #keyword# or spsku.bm like #keyword#  OR spsku.barcode LIKE #keyword# or spsku.keywords like #keyword#)</isNotNull>
+      <isNotNull property="mc"> and sp.mc like #mc#</isNotNull>
+      <isNotNull property="bm_Interface"> and (gyssp.bm_Interface like #bm_Interface# or spsku.bm like #bm_Interface#)</isNotNull>
+      <isNotNull property="barcode"> and spsku.barcode like #barcode#</isNotNull>
+	  </select>
+    
+    <select id="QueryPageOfOrder" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (
+      
+      SELECT
+      row_number() over(<include refid="QueryOrderForList" />) rownumber,
+      sp.id,
+      spsku.id as id_sku,
+      gyssp.sl_kc,
+      (case isnull(gyssp.bm_Interface,'') when '' then spsku.bm else gyssp.bm_Interface end) as bm_Interface,
+      (case isnull(mdj.dj_dh,0) when 0 then dj.dj_dh else mdj.dj_dh end) as dj,
+      (case isnull(mdj.sl_dh_min,0) when 0 then dj.sl_dh_min else mdj.sl_dh_min end) as sl_dh_min,
+      sp.mc as name ,
+      gcgx.alias_gys,
+      CASE isnull(spsku.photo_min2,'') WHEN '' THEN '' ELSE <isNotNull property="baseurl">#baseurl#+</isNotNull> + spsku.photo_min2 end photo_min2,
+      CASE isnull(spsku.photo,'') WHEN '' THEN '' ELSE <isNotNull property="baseurl">#baseurl#+</isNotNull> + spsku.photo end photo,
+      <!--<isNotNull property="id_cgs">
+        isnull(mdj.dj_dh, isnull(cdj.dj_dh,gsp.dj_base)) as dj,
+        gcgx.alias_gys,
+      </isNotNull>-->
+      <!--<isNull  property="id_cgs">
+        isnull(dj.dj_dh,gsp.dj_base) as dj,
+        '' as alias_gys,
+      </isNull>-->
+      <!--<isNotNull property="id_user">
+        isnull(favr.id_sp,0)flag_Favorites,
+      </isNotNull>
+      <isNull property="id_user">
+        0 flag_Favorites,
+      </isNull>-->
+      gyssp.id_gys,
+      gyssp.flag_up,
+      count(cart.id_sku) as gwc,
+      cart.sl as gwcsl,
+      count(sc.id_sp) as flag_Favorites,
+      gcgx.id_user_master_gys
+      FROM tb_sp_sku spsku
+      left join tb_sp sp on sp.id=spsku.id_sp
+      inner join Tb_gys_sp gyssp on spsku.id=id_sku
+      LEFT JOIN Tb_sp_dj dj on dj.id_gys=gyssp.id_gys AND dj.id_sku=gyssp.id_sku
+      <isNotNull property="id_cgs">
+        inner join Tb_gys_cgs gcgx on gcgx.id_gys= gyssp.id_gys  AND gcgx.flag_stop=0 and gcgx.id_cgs_level=dj.id_cgs_level
+        <!--left join Ts_param_business tspb on gcgx.id_user_master_gys=tspb.id_user_master-->
+        LEFT JOIN Tb_sp_dj cdj ON cdj.id_sku=gyssp.id_sku AND cdj.id_gys=gyssp.id_gys AND cdj.id_cgs_level=gcgx.id_cgs_level
+        LEFT JOIN Tb_sp_cgs mdj ON gyssp.id_sku=mdj.id_sku AND gyssp.id_gys=mdj.id_gys and mdj.id_cgs= gcgx.id_cgs
+        left join Td_sale_cart as cart on cart.id_sku = spsku.id and cart.id_cgs=gcgx.id_cgs
+        left join Tb_sp_Favorites as sc on sc.id_sp = sp.id and sc.id_gys=gcgx.id_gys
+      </isNotNull>
+      <isNotNull property="id_spfl">
+        left join Tb_spfl as fl on fl.id = gyssp.id_spfl
+      </isNotNull>
+      <isNotNull property="id_user">
+        left join Tb_sp_Favorites as favr on favr.id_user = #id_user# and favr.id_sp=sp.id and favr.id_gys=gyssp.id_gys
+      </isNotNull>
+      where sp.flag_stop = 0 and spsku.flag_stop = 0 and gyssp.flag_stop=0  <!--and  tspb.bm='sp_kc_flag'  and  tspb.val='1'-->
+      <isNotNull property="id_gys"> and gyssp.id_gys=#id_gys# </isNotNull>
+      <isNotNull property="id_cgs"> and gcgx.id_cgs=#id_cgs# </isNotNull>
+      <isNotNull property="id_spfl"> and exists(select 1 from Tb_spfl as spfl where spfl.id = #id_spfl# and fl.path+'/' like  spfl.path+'/%')</isNotNull>
+      <isNotNull property="keyword"> and (sp.mc like #keyword# or gyssp.bm_Interface like #keyword# or spsku.bm like #keyword#  OR spsku.barcode LIKE #keyword# or spsku.keywords like #keyword# )</isNotNull>
+      <isNotNull property="mc"> and sp.mc like #mc#</isNotNull>
+      <isNotNull property="bm_Interface"> and (gyssp.bm_Interface like #bm_Interface# or spsku.bm like #bm_Interface#)</isNotNull>
+      <isNotNull property="barcode"> and spsku.barcode like #barcode#</isNotNull>
+      <isNotNull property="flag_up"> and gyssp.flag_up=#flag_up# </isNotNull>
+      GROUP BY sp.id,spsku.id,dj.sl_dh_min,gyssp.sl_kc,spsku.bm,sp.mc,gyssp.id_gys,spsku.photo_min2,spsku.photo,dj.dj_dh,gcgx.alias_gys,gyssp.flag_up,cart.sl,gcgx.id_user_master_gys,gyssp.bm_Interface
+      ,mdj.dj_dh,mdj.sl_dh_min 
+       <isNotNull property="id_gys">,gyssp.sort_id</isNotNull>
+      <isNotNull property="sort">
+        , $sort$
+      </isNotNull>
+      ) as t
+      <include refid="RowBetween" />
+    </select>
+    
+    <!--<select id="QueryPageOfServiceForSearch" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Query">
+      select t.* from (
+      select row_number() over(<include refid="QueryOrder" />) as rownumber,db.id_sp as id,db.id_sku,
+      (case isnull(gsp.bm_Interface,'') when '' then sku.bm else gsp.bm_Interface end) as bm_Interface,
+      sp.mc as name,gyscgs.alias_gys,
+      <isNotNull property="baseurl">#baseurl#+</isNotNull>sku.photo_min2 as photo_min2,
+      <isNotNull property="baseurl">#baseurl#+</isNotNull>sku.photo as photo,
+      isnull(skuc.count_sku,0) as count_sku,
+      gsp.id_gys,
+      <isNotNull property="id_cgs">
+        isnull(mdj.dj_dh, gsp.dj_base) as dj
+      </isNotNull>
+      <isNull  property="id_cgs">
+        gsp.dj_base as dj
+      </isNull>
+      from (select min(id) as id_sku,id_sp from Tb_sp_sku as a where flag_stop = 0 <isNotNull property="flag_up">AND EXISTS(SELECT 1 FROM tb_gys_sp WHERE a.id_sp=id_sp AND flag_up=#flag_up#)</isNotNull> group by id_sp) as db
+      left join Tb_sp as sp on sp.id = db.id_sp
+      left join Tb_gys_sp as gsp on gsp.id_sku = db.id_sku
+      left join Tb_gys_cgs gyscgs on gyscgs.id_gys=gsp.id_gys and gyscgs.id_cgs=#id_cgs#
+      left join Tb_sp_sku  as sku on sku.id = gsp.id_sku
+      left join (select count(1) as count_sku,id_sp from Tb_gys_sp as b where flag_stop = 0
+      <isNotNull property="flag_up">and flag_up = #flag_up#</isNotNull>
+      and exists(select 1 from Tb_sp_sku as c where c.id = b.id_sku and c.flag_stop = 0)
+      group by id_sp) as skuc on skuc.id_sp = db.id_sp
+      <isNotNull property="id_cgs">
+        left join (select isnull(min(c.dj_dh),min(b.dj_dh)) as dj_dh,b.id_sp from Tb_sp_dj as b
+        LEFT JOIN Tb_sp_cgs c ON b.id_sku=c.id_sku AND b.id_gys=c.id_gys and c.id_cgs=#id_cgs#
+        left join Tb_gys_cgs gyscgs on gyscgs.id_gys=c.id_gys and c.id_cgs=gyscgs.id_cgs
+        where b.id_cgs_level =gyscgs.id_cgs_level group by b.id_sp) as mdj on mdj.id_sp = db.id_sp
+      </isNotNull>
+      <isNotNull property="id_spfl">left join Tb_spfl as fl on fl.id = gsp.id_spfl</isNotNull>
+      where gsp.flag_stop = 0 and sku.flag_stop = 0 and gyscgs.id_cgs=#id_cgs#
+      <isNotNull property="id_gys">and gyscgs.id_gys=#id_gys#</isNotNull>
+      <isNotNull property="id_spfl">and exists(select 1 from Tb_spfl as spfl where spfl.id = #id_spfl# and fl.path+'/' like  spfl.path+'/%')</isNotNull>
+      <isNotNull property="keyword">and (sp.mc like #keyword# or gsp.bm_Interface like #keyword# or sku.bm like #keyword#)</isNotNull>
+      <isNotNull property="mc">and sp.mc like #mc#</isNotNull>
+      <isNotNull property="bm_Interface">and (gsp.bm_Interface like #bm_Interface# or sku.bm like #bm_Interface#)</isNotNull>
+      <isNotNull property="barcode">and (sku.barcode like #barcode#)</isNotNull>
+      ) as t
+      <include refid="RowBetween" />
+    </select>-->
+    <select id="UpGysSp" parameterClass="System.Collections.IDictionary" resultClass="int">
+      update gyssp
+      <dynamic prepend="set">
+      <isNotNull prepend="," property="bm_Interface">gyssp.bm_Interface=#bm_Interface#</isNotNull>
+      <isNotNull prepend="," property="dj_base">gyssp.dj_base=#dj_base#</isNotNull>
+      <isNotNull prepend="," property="flag_up">gyssp.flag_up=#flag_up#</isNotNull>
+      <isNotNull prepend="," property="id_edit">gyssp.id_edit=#id_edit#</isNotNull>
+      <isNotNull prepend="," property="rq_edit">gyssp.rq_edit=#rq_edit#</isNotNull>
+      <isNotNull prepend="," property="fl_name">spfl.name=#fl_name#</isNotNull>
+      <isNotNull prepend="," property="sp_mc">sp.mc=#sp_mc#</isNotNull>
+      <isNotNull prepend="," property="id_edit">sp.id_edit=#id_edit#</isNotNull>
+      <isNotNull prepend="," property="rq_edit">sp.rq_edit=#rq_edit#</isNotNull>
+      <!--<isNotNull prepend="," property="name_spec">setp.mc=#name_spec#</isNotNull>
+      <isNotNull prepend="," property="val">spe.val=#val#</isNotNull>-->
+      <isNotNull prepend="," property="bm">sku.bm=#bm#</isNotNull>
+      <isNotNull prepend="," property="unit">sku.unit=#unit#</isNotNull>
+      <isNotNull prepend="," property="barcode">sku.barcode=#barcode#</isNotNull>
+        <isNotNull prepend="," property="id_edit">sku.id_edit=#id_edit#</isNotNull>
+        <isNotNull prepend="," property="rq_edit">sku.rq_edit=#rq_edit#</isNotNull>
+    </dynamic>
+      from Tb_gys_sp  gyssp,Tb_spfl  spfl,Tb_sp  sp,Tb_sp_sku  sku
+      where 1=1
+      <isNotNull property="id_gys">
+         and gyssp.id_gys=#id_gys#
+      </isNotNull>
+      <isNotNull property="fl_id">
+         and spfl.id=#fl_id#
+      </isNotNull>
+      <isNotNull property="id_sku">
+        and gyssp.id_sku=#id_sku#  and sku.id=#id_sku#
+      </isNotNull>
+      <isNotNull property="id_sp">
+        and sp.id=#id_sp#
+      </isNotNull>
+    </select>
+  </statements>
+</sqlMap>
+

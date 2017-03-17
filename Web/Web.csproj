@@ -1,0 +1,1465 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A9940D51-4E16-4BFA-987C-8514BE203FA7}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Web</RootNamespace>
+    <AssemblyName>Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>true</IISExpressUseClassicPipelineMode>
+    <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UseGlobalApplicationHostFile />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.Ibatis.Common, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Apache.Ibatis.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.Ibatis.Common.Logging.Log4Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Apache.Ibatis.Common.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.Ibatis.DataMapper, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Apache.Ibatis.DataMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\lib\IBatis.Net\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="CySoft.Frame, Version=1.0.0.18457, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\CySoft\CySoft.Frame.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Web">
+      <HintPath>..\..\lib\Spring.Net\Spring.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\System.Web\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Web\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Web\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Web\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Web\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Web\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Web\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Web\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\System.Web\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="ThoughtWorks.QRCode, Version=1.0.4778.30637, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ThoughtWorks.QRCode.1.1.0\lib\ThoughtWorks.QRCode.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\BundleExtensions.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrlProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Brower.html" />
+    <Content Include="CyApp.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Down\YUNPOS.exe" />
+    <Content Include="favicon——1.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\Error\404error.jpg" />
+    <Content Include="Images\Error\500error.jpg" />
+    <Content Include="Images\Error\noPurviewError.jpg" />
+    <Content Include="favicon.ico" />
+    <Content Include="Images\icon6.png" />
+    <Content Include="Images\icon\icon6.png" />
+    <Content Include="Images\icon\image.png" />
+    <Content Include="manager\img\login\app_code.png" />
+    <Content Include="manager\img\login\app_weixin.png" />
+    <Content Include="manager\img\login\close_btn.png" />
+    <Content Include="manager\img\login\icon.png" />
+    <Content Include="manager\img\login\icon_hover.png" />
+    <Content Include="manager\img\login\login-bg.jpg" />
+    <Content Include="manager\img\login\login-logo.png" />
+    <Content Include="manager\img\login\login-logo_OLD.png" />
+    <Content Include="manager\img\login\login.css" />
+    <Content Include="manager\img\login\login_bg.jpg" />
+    <Content Include="manager\img\login\login_icon.png" />
+    <Content Include="manager\img\login\login_login.png" />
+    <Content Include="manager\img\login\login_v1.css" />
+    <Content Include="manager\img\login\portal-icon-2.png" />
+    <Content Include="manager\img\login\validatecode.316668ff.png" />
+    <Content Include="manager\js\register\validate.js" />
+    <Content Include="robots.txt" />
+    <Content Include="static\bootstrap\Bootstrap-select.css" />
+    <Content Include="static\bootstrap\bootstrap.css" />
+    <Content Include="static\bootstrap\bootstrap.min.css" />
+    <Content Include="static\css\animate\animate.css" />
+    <Content Include="static\css\bootstrap\bootstrap.min.css" />
+    <Content Include="Down\YUNPOS.apk" />
+    <Content Include="Down\android-ipad-YUNPOS.apk" />
+    <None Include="Properties\PublishProfiles\youpos_web.pubxml" />
+    <None Include="Properties\PublishProfiles\youpos_web_ld.pubxml" />
+    <None Include="static\css\common\common.less" />
+    <Content Include="static\css\common\modify.css" />
+    <Content Include="static\css\datepicker\datepicker3.css" />
+    <Content Include="static\css\global\core.css" />
+    <Content Include="static\css\global\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="static\css\global\font_awesome.min.css" />
+    <Content Include="static\css\common\common.css" />
+    <Content Include="static\css\register\register.css" />
+    <Content Include="static\cy-1.0.0.css" />
+    <Content Include="static\home.css" />
+    <Content Include="static\images\app_code.png" />
+    <Content Include="static\images\app_weixin.png" />
+    <Content Include="static\images\bar.png" />
+    <Content Include="static\images\close_btn.png" />
+    <Content Include="static\images\default.jpg" />
+    <Content Include="static\images\default1.png" />
+    <Content Include="static\images\default10.png" />
+    <Content Include="static\images\default11.png" />
+    <Content Include="static\images\default2.png" />
+    <Content Include="static\images\default3.png" />
+    <Content Include="static\images\default4.png" />
+    <Content Include="static\images\default6.png" />
+    <Content Include="static\images\default7.png" />
+    <Content Include="static\images\default8.png" />
+    <Content Include="static\images\default9.png" />
+    <Content Include="static\images\icon.png" />
+    <Content Include="static\images\icon1.png" />
+    <Content Include="static\images\icon2.png" />
+    <Content Include="static\images\icon5.png" />
+    <Content Include="static\images\index.png" />
+    <Content Include="static\images\load3.gif" />
+    <Content Include="static\images\loadmenu.gif" />
+    <Content Include="static\images\logo.png" />
+    <Content Include="static\images\logo_OLD.png" />
+    <Content Include="static\images\logo_preview.jpg" />
+    <Content Include="static\images\menu-coin.png" />
+    <Content Include="static\images\menu-coin_.png" />
+    <Content Include="static\images\new_logo.png" />
+    <Content Include="static\images\new_logol.png" />
+    <Content Include="static\images\new_logor.png" />
+    <Content Include="static\images\nodata.png" />
+    <Content Include="static\images\note-coin.png" />
+    <Content Include="static\images\register\stores.png" />
+    <Content Include="static\images\register\stores0.jpg" />
+    <Content Include="static\images\sales_management.png" />
+    <Content Include="static\images\sidebar-active .png" />
+    <Content Include="static\images\pay_logo.png" />
+    <Content Include="static\images\preview.png" />
+    <Content Include="static\images\re-note-coin.png" />
+    <Content Include="static\images\refresh.png" />
+    <Content Include="static\images\register\login-bg.jpg" />
+    <Content Include="static\images\online-active.png" />
+    <Content Include="static\images\tabline.png" />
+    <Content Include="static\images\yes.png" />
+    <Content Include="static\images\home_no_data.jpg" />
+    <Content Include="static\js\underscore\underscore.min.js" />
+    <Content Include="static\js\business\xsth_detail.js" />
+    <Content Include="static\js\business\xsth.js" />
+    <Content Include="static\js\business\xsck.js" />
+    <Content Include="static\js\business\xsck_detail.js" />
+    <Content Include="static\js\business\xs_detail.js" />
+    <Content Include="static\js\business\xs.js" />
+    <Content Include="static\js\gysfl\khflList .js" />
+    <Content Include="static\js\gysfl\gysflList.js" />
+    <Content Include="static\js\promote\tjadd.js" />
+    <Content Include="static\js\promote\zhadd.js" />
+    <Content Include="static\js\promote\billhgadd.js" />
+    <Content Include="static\js\promote\dzhgadd.js" />
+    <Content Include="static\js\promote\billmsadd.js" />
+    <Content Include="static\js\promote\spflmsadd.js" />
+    <Content Include="static\js\promote\dzmsadd.js" />
+    <Content Include="static\js\promote\dpmsadd.js" />
+    <Content Include="static\js\promote\sdzkadd.js" />
+    <Content Include="static\js\promote\billzkadd.js" />
+    <Content Include="static\js\promote\dzzkadd.js" />
+    <Content Include="static\js\promote\spflzkadd.js" />
+    <Content Include="static\js\promote\dpzkadd.js" />
+    <Content Include="static\js\ps\pssqSearchList.js" />
+    <Content Include="static\js\ps\psfptzd.js" />
+    <Content Include="static\js\ps\psfprkAdd.js" />
+    <Content Include="static\js\ps\psckAdd.js" />
+    <Content Include="static\js\ps\pssqAdd.js" />
+    <Content Include="static\js\app\Login.js" />
+    <Content Include="static\js\app\Reset.js" />
+    <Content Include="static\js\app\Register.js" />
+    <Content Include="static\js\app\Login_v1.js" />
+    <Content Include="static\js\artTemplate\template-debug.js" />
+    <Content Include="static\js\artTemplate\template.js" />
+    <Content Include="static\js\base-8bb574f0e3.js" />
+    <Content Include="static\js\bootstrap-treeview\bootstrap-treeview.js" />
+    <Content Include="static\js\bootstrap-treeview\bootstrap-treeview.min.css" />
+    <Content Include="static\js\bootstrap-treeview\bootstrap-treeview.min.js" />
+    <Content Include="static\js\jquery\jquery.jsonp.js" />
+    <Content Include="static\js\kindeditor\changelog.txt" />
+    <Content Include="static\js\kindeditor\docs\_static\file.png" />
+    <Content Include="static\js\kindeditor\docs\_static\firebug_upload_json.gif" />
+    <Content Include="static\js\kindeditor\docs\_templates\classy\layout.html" />
+    <Content Include="static\js\kindeditor\Gruntfile.js" />
+    <Content Include="static\js\kindeditor\kindeditor-all-min.js" />
+    <Content Include="static\js\kindeditor\kindeditor-all.js" />
+    <Content Include="static\js\kindeditor\lang\ar.js" />
+    <Content Include="static\js\kindeditor\lang\en.js" />
+    <Content Include="static\js\kindeditor\lang\ko.js" />
+    <Content Include="static\js\kindeditor\lang\ru.js" />
+    <Content Include="static\js\kindeditor\lang\zh-CN.js" />
+    <Content Include="static\js\kindeditor\lang\zh-TW.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\background.html" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\contentScript.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\firebug-lite-beta.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\firebug.jpg" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\firebug128.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\firebug16.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\firebug24.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\firebug24_disabled.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\firebug32.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\firebug48.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\googleChrome.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\license.txt" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\blank.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\buttonBg.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\buttonBgHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\detach.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\detachHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\disable.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\disable.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\disableHover.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\disableHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\down.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\downActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\downHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\errorIcon-sm.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\errorIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\errorIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\firebug-1.3a2.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\firebug.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\firebug.html" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\firebug.IE6.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\firebug.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\group.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\infoIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\infoIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\loading_16.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\min.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\minHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\off.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\offHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\pixel_transparent.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\roundCorner.svg" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\search.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\search.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\shadow.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\shadow2.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\shadowAlpha.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\sprite.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabHoverLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabHoverMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabHoverRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabMenuCheckbox.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabMenuPin.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabMenuRadio.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabMenuTarget.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabMenuTargetHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tabRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\textEditorBorders.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\textEditorBorders.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\textEditorCorners.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\textEditorCorners.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\titlebarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\toolbarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tree_close.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\tree_open.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\up.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\upActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\upHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\warningIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\skin\xp\warningIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\background.html" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\contentScript.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\firebug-lite.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\firebug.jpg" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\firebug128.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\firebug16.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\firebug24.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\firebug24_disabled.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\firebug32.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\firebug48.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\googleChrome.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\license.txt" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\blank.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\buttonBg.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\buttonBgHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\detach.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\detachHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\disable.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\disable.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\disableHover.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\disableHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\down.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\downActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\downHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\errorIcon-sm.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\errorIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\errorIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\firebug-1.3a2.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\firebug.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\firebug.html" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\firebug.IE6.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\firebug.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\group.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\infoIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\infoIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\loading_16.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\min.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\minHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\off.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\offHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\pixel_transparent.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\roundCorner.svg" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\search.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\search.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\shadow.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\shadow2.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\shadowAlpha.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\sprite.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabHoverLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabHoverMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabHoverRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabMenuCheckbox.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabMenuPin.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabMenuRadio.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabMenuTarget.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabMenuTargetHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tabRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\textEditorBorders.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\textEditorBorders.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\textEditorCorners.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\textEditorCorners.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\titlebarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\toolbarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tree_close.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\tree_open.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\up.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\upActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\upHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\warningIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\skin\xp\warningIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\firebug-lite-beta.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\firebug-lite-debug.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\firebug-lite.js" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\license.txt" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\blank.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\buttonBg.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\buttonBgHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\detach.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\detachHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\disable.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\disable.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\disableHover.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\disableHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\down.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\downActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\downHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\errorIcon-sm.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\errorIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\errorIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\firebug.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\firebug.html" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\firebug.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\group.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\infoIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\infoIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\loading_16.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\min.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\minHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\off.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\offHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\pixel_transparent.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\roundCorner.svg" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\search.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\search.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\shadow.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\shadow2.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\shadowAlpha.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\sprite.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabHoverLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabHoverMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabHoverRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabMenuCheckbox.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabMenuPin.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabMenuRadio.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabMenuTarget.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabMenuTargetHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tabRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\textEditorBorders.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\textEditorBorders.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\textEditorCorners.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\textEditorCorners.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\titlebarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\toolbarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tree_close.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\tree_open.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\twistyClosed.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\twistyOpen.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\up.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\upActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\upHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\warningIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\classic\warningIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\blank.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\buttonBg.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\buttonBgHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\close.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\closeHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\detach.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\detachHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\disable.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\disable.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\disableHover.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\disableHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\down.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\downActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\downHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\errorIcon-sm.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\errorIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\errorIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\firebug.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\firebug.html" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\firebug.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\group.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\infoIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\infoIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\loading_16.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\min.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\minHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\off.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\offHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\pixel_transparent.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\roundCorner.svg" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\search.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\search.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\shadow.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\shadow2.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\shadowAlpha.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\sprite.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabHoverLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabHoverMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabHoverRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabMenuCheckbox.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabMenuPin.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabMenuRadio.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabMenuTarget.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabMenuTargetHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tabRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\textEditorBorders.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\textEditorBorders.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\textEditorCorners.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\textEditorCorners.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\titlebarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\toolbarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tree_close.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\tree_open.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\twistyClosed.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\twistyOpen.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\up.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\upActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\upHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\warningIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\light\warningIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\blank.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\buttonBg.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\buttonBgHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\detach.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\detachHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\disable.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\disable.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\disableHover.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\disableHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\down.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\downActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\downHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\errorIcon-sm.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\errorIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\errorIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\firebug-1.3a2.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\firebug.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\firebug.html" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\firebug.IE6.css" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\firebug.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\group.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\infoIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\infoIcon.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\loading_16.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\min.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\minHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\off.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\offHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\pixel_transparent.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\roundCorner.svg" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\search.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\search.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\shadow.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\shadow2.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\shadowAlpha.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\sprite.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabHoverLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabHoverMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabHoverRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabLeft.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabMenuCheckbox.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabMenuPin.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabMenuRadio.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabMenuTarget.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabMenuTargetHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tabRight.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\textEditorBorders.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\textEditorBorders.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\textEditorCorners.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\textEditorCorners.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\titlebarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\toolbarMid.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tree_close.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\tree_open.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\up.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\upActive.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\upHover.png" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\warningIcon.gif" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\skin\xp\warningIcon.png" />
+    <Content Include="static\js\kindeditor\lib\jquery.min.js" />
+    <Content Include="static\js\kindeditor\lib\qunit\qunit.css" />
+    <Content Include="static\js\kindeditor\lib\qunit\qunit.js" />
+    <Content Include="static\js\kindeditor\license.txt" />
+    <Content Include="static\js\kindeditor\plugins\anchor\anchor.js" />
+    <Content Include="static\js\kindeditor\plugins\autoheight\autoheight.js" />
+    <Content Include="static\js\kindeditor\plugins\baidumap\baidumap.js" />
+    <Content Include="static\js\kindeditor\plugins\baidumap\index.html" />
+    <Content Include="static\js\kindeditor\plugins\baidumap\map.html" />
+    <Content Include="static\js\kindeditor\plugins\clearhtml\clearhtml.js" />
+    <Content Include="static\js\kindeditor\plugins\code\code.js" />
+    <Content Include="static\js\kindeditor\plugins\code\prettify.css" />
+    <Content Include="static\js\kindeditor\plugins\code\prettify.js" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\emoticons.js" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\0.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\1.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\10.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\100.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\101.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\102.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\103.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\104.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\105.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\106.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\107.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\108.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\109.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\11.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\110.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\111.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\112.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\113.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\114.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\115.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\116.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\117.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\118.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\119.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\12.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\120.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\121.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\122.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\123.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\124.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\125.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\126.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\127.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\128.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\129.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\13.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\130.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\131.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\132.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\133.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\134.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\14.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\15.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\16.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\17.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\18.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\19.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\2.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\20.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\21.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\22.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\23.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\24.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\25.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\26.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\27.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\28.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\29.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\3.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\30.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\31.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\32.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\33.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\34.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\35.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\36.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\37.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\38.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\39.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\4.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\40.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\41.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\42.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\43.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\44.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\45.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\46.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\47.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\48.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\49.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\5.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\50.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\51.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\52.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\53.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\54.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\55.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\56.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\57.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\58.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\59.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\6.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\60.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\61.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\62.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\63.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\64.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\65.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\66.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\67.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\68.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\69.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\7.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\70.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\71.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\72.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\73.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\74.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\75.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\76.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\77.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\78.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\79.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\8.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\80.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\81.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\82.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\83.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\84.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\85.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\86.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\87.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\88.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\89.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\9.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\90.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\91.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\92.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\93.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\94.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\95.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\96.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\97.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\98.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\99.gif" />
+    <Content Include="static\js\kindeditor\plugins\emoticons\images\static.gif" />
+    <Content Include="static\js\kindeditor\plugins\filemanager\filemanager.js" />
+    <Content Include="static\js\kindeditor\plugins\filemanager\images\file-16.gif" />
+    <Content Include="static\js\kindeditor\plugins\filemanager\images\file-64.gif" />
+    <Content Include="static\js\kindeditor\plugins\filemanager\images\folder-16.gif" />
+    <Content Include="static\js\kindeditor\plugins\filemanager\images\folder-64.gif" />
+    <Content Include="static\js\kindeditor\plugins\filemanager\images\go-up.gif" />
+    <Content Include="static\js\kindeditor\plugins\fixtoolbar\fixtoolbar.js" />
+    <Content Include="static\js\kindeditor\plugins\flash\flash.js" />
+    <Content Include="static\js\kindeditor\plugins\image\image.js" />
+    <Content Include="static\js\kindeditor\plugins\image\images\align_left.gif" />
+    <Content Include="static\js\kindeditor\plugins\image\images\align_right.gif" />
+    <Content Include="static\js\kindeditor\plugins\image\images\align_top.gif" />
+    <Content Include="static\js\kindeditor\plugins\image\images\refresh.png" />
+    <Content Include="static\js\kindeditor\plugins\insertfile\insertfile.js" />
+    <Content Include="static\js\kindeditor\plugins\lineheight\lineheight.js" />
+    <Content Include="static\js\kindeditor\plugins\link\link.js" />
+    <Content Include="static\js\kindeditor\plugins\map\map.html" />
+    <Content Include="static\js\kindeditor\plugins\map\map.js" />
+    <Content Include="static\js\kindeditor\plugins\media\media.js" />
+    <Content Include="static\js\kindeditor\plugins\multiimage\images\image.png" />
+    <Content Include="static\js\kindeditor\plugins\multiimage\images\select-files-en.png" />
+    <Content Include="static\js\kindeditor\plugins\multiimage\images\select-files-zh-CN.png" />
+    <Content Include="static\js\kindeditor\plugins\multiimage\images\swfupload.swf" />
+    <Content Include="static\js\kindeditor\plugins\multiimage\multiimage.js" />
+    <Content Include="static\js\kindeditor\plugins\pagebreak\pagebreak.js" />
+    <Content Include="static\js\kindeditor\plugins\plainpaste\plainpaste.js" />
+    <Content Include="static\js\kindeditor\plugins\preview\preview.js" />
+    <Content Include="static\js\kindeditor\plugins\quickformat\quickformat.js" />
+    <Content Include="static\js\kindeditor\plugins\table\table.js" />
+    <Content Include="static\js\kindeditor\plugins\template\html\1.html" />
+    <Content Include="static\js\kindeditor\plugins\template\html\2.html" />
+    <Content Include="static\js\kindeditor\plugins\template\html\3.html" />
+    <Content Include="static\js\kindeditor\plugins\template\template.js" />
+    <Content Include="static\js\kindeditor\plugins\wordpaste\wordpaste.js" />
+    <Content Include="static\js\kindeditor\src\ajax.js" />
+    <Content Include="static\js\kindeditor\src\cmd.js" />
+    <Content Include="static\js\kindeditor\src\colorpicker.js" />
+    <Content Include="static\js\kindeditor\src\config.js" />
+    <Content Include="static\js\kindeditor\src\core.js" />
+    <Content Include="static\js\kindeditor\src\dialog.js" />
+    <Content Include="static\js\kindeditor\src\edit.js" />
+    <Content Include="static\js\kindeditor\src\event.js" />
+    <Content Include="static\js\kindeditor\src\footer.js" />
+    <Content Include="static\js\kindeditor\src\header.js" />
+    <Content Include="static\js\kindeditor\src\html.js" />
+    <Content Include="static\js\kindeditor\src\main.js" />
+    <Content Include="static\js\kindeditor\src\menu.js" />
+    <Content Include="static\js\kindeditor\src\node.js" />
+    <Content Include="static\js\kindeditor\src\range.js" />
+    <Content Include="static\js\kindeditor\src\selector.js" />
+    <Content Include="static\js\kindeditor\src\tabs.js" />
+    <Content Include="static\js\kindeditor\src\toolbar.js" />
+    <Content Include="static\js\kindeditor\src\uploadbutton.js" />
+    <Content Include="static\js\kindeditor\src\widget.js" />
+    <Content Include="static\js\kindeditor\themes\common\anchor.gif" />
+    <Content Include="static\js\kindeditor\themes\common\blank.gif" />
+    <Content Include="static\js\kindeditor\themes\common\flash.gif" />
+    <Content Include="static\js\kindeditor\themes\common\loading.gif" />
+    <Content Include="static\js\kindeditor\themes\common\media.gif" />
+    <Content Include="static\js\kindeditor\themes\common\rm.gif" />
+    <Content Include="static\js\kindeditor\themes\default\background.png" />
+    <Content Include="static\js\kindeditor\themes\default\default.css" />
+    <Content Include="static\js\kindeditor\themes\default\default.png" />
+    <Content Include="static\js\kindeditor\themes\qq\editor.gif" />
+    <Content Include="static\js\kindeditor\themes\qq\qq.css" />
+    <Content Include="static\js\kindeditor\themes\simple\simple.css" />
+    <Content Include="static\js\report\shopysreport.js" />
+    <Content Include="static\js\report\jquery.dataTables.js" />
+    <Content Include="static\js\report\spjhhzreport.js" />
+    <Content Include="static\js\report\pssqcrkmxreport.js" />
+    <Content Include="static\js\report\pscrkmxreport.js" />
+    <Content Include="static\js\report\psdbcrkmxreport.js" />
+    <Content Include="static\js\business\ps.js" />
+    <Content Include="static\js\business\jh.js" />
+    <Content Include="static\js\business\dh.js" />
+    <Content Include="static\js\highcharts\highcharts.js" />
+    <Content Include="static\js\highcharts\highcharts_new.js" />
+    <Content Include="static\js\highcharts\highchart_exporting.js" />
+    <Content Include="static\js\home-source.js" />
+    <Content Include="static\js\home.js" />
+    <Content Include="static\js\common\jquery-2.1.1.js" />
+    <Content Include="static\js\jquery\jcrop\Jcrop.gif" />
+    <Content Include="static\js\jquery\jquery.form.js" />
+    <Content Include="static\js\jquery\jcrop\jquery.Jcrop.min.js" />
+    <Content Include="static\js\jquery\jquery.js" />
+    <Content Include="static\js\jquery\jquery.min.js" />
+    <Content Include="static\js\jquery\nestable\jquery.nestable.js" />
+    <Content Include="static\js\jquery\plupload\js\jquery.plupload.queue\img\backgrounds.gif" />
+    <Content Include="static\js\jquery\plupload\js\jquery.plupload.queue\img\buttons-disabled.png" />
+    <Content Include="static\js\jquery\plupload\js\jquery.plupload.queue\img\buttons.png" />
+    <Content Include="static\js\jquery\plupload\js\jquery.plupload.queue\img\delete.gif" />
+    <Content Include="static\js\jquery\plupload\js\jquery.plupload.queue\img\done.gif" />
+    <Content Include="static\js\jquery\plupload\js\jquery.plupload.queue\img\error.gif" />
+    <Content Include="static\js\jquery\plupload\js\jquery.plupload.queue\img\transp50.png" />
+    <Content Include="static\js\jquery\plupload\js\uploadall.js" />
+    <Content Include="static\js\jstree\jstree.js" />
+    <Content Include="static\js\jstree\jstree.min.js" />
+    <Content Include="static\js\jstree\themes\default-dark\32px.png" />
+    <Content Include="static\js\jstree\themes\default-dark\40px.png" />
+    <Content Include="static\js\jstree\themes\default-dark\style.css" />
+    <Content Include="static\js\jstree\themes\default-dark\style.min.css" />
+    <Content Include="static\js\jstree\themes\default-dark\throbber.gif" />
+    <Content Include="static\js\jstree\themes\default\32px.png" />
+    <Content Include="static\js\jstree\themes\default\40px.png" />
+    <Content Include="static\js\jstree\themes\default\style.css" />
+    <Content Include="static\js\jstree\themes\default\style.min.css" />
+    <Content Include="static\js\jstree\themes\default\throbber.gif" />
+    <Content Include="static\js\jstree\themes\proton\30px.png" />
+    <Content Include="static\js\jstree\themes\proton\32px.png" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.svg" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.svg" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.svg" />
+    <Content Include="static\js\jstree\themes\proton\style.css" />
+    <Content Include="static\js\jstree\themes\proton\style.min.css" />
+    <Content Include="static\js\jstree\themes\proton\throbber.gif" />
+    <Content Include="static\js\kindeditor\kindeditor_all_min.js" />
+    <Content Include="static\js\less\less.min.js" />
+    <Content Include="static\js\linq.js" />
+    <Content Include="static\js\My97DatePicker\calendar.js" />
+    <Content Include="static\js\My97DatePicker\lang\en.js" />
+    <Content Include="static\js\My97DatePicker\lang\zh-cn.js" />
+    <Content Include="static\js\My97DatePicker\lang\zh-tw.js" />
+    <Content Include="static\js\My97DatePicker\skin\datePicker.gif" />
+    <Content Include="static\js\My97DatePicker\skin\default\datepicker.css" />
+    <Content Include="static\js\My97DatePicker\skin\default\img.gif" />
+    <Content Include="static\js\My97DatePicker\skin\WdatePicker.css" />
+    <Content Include="static\js\My97DatePicker\skin\whyGreen\bg.jpg" />
+    <Content Include="static\js\My97DatePicker\skin\whyGreen\datepicker.css" />
+    <Content Include="static\js\My97DatePicker\skin\whyGreen\img.gif" />
+    <Content Include="static\js\My97DatePicker\WdatePicker.js" />
+    <Content Include="static\js\placeholder\placeholder.js" />
+    <Content Include="static\js\report\spxshzreport.js" />
+    <Content Include="static\js\report\SkhzReport.js" />
+    <Content Include="static\js\report\spcrkhzreport.js" />
+    <Content Include="static\js\report\GysfkReport.js" />
+    <Content Include="static\js\report\SpkcReport.js" />
+    <Content Include="static\js\report\JhddrkmxReport.js" />
+    <Content Include="static\js\report\SpjhmxReport.js" />
+    <Content Include="static\js\report\HyczxflsReport.js" />
+    <Content Include="static\js\report\HyczmxReport.js" />
+    <Content Include="static\js\report\KcsltzmxReport.js" />
+    <Content Include="static\js\report\spxsmxreport.js" />
+    <Content Include="static\js\report\XshzshopReport.js" />
+    <Content Include="static\js\report\XshzshopdayReport.js" />
+    <Content Include="static\js\report\KckspdmxReport.js" />
+    <Content Include="static\js\report\SpxsranklistReport.js" />
+    <Content Include="static\js\report\UsersklsReport.js" />
+    <Content Include="static\js\require.js\2.2.0\require.js" />
+    <Content Include="static\js\require.js\2.2.0\require.min.js" />
+    <Content Include="static\js\shopSp\shopSpList.js" />
+    <Content Include="static\js\spin\spin.min.js" />
+    <Content Include="static\js\common\template.min.js" />
+    <Content Include="static\js\util.js" />
+    <Content Include="static\js\vue\vue-source.js" />
+    <Content Include="static\js\vue\vue.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\RoleModule\List.cshtml" />
+    <Content Include="Views\Pssq\_List.cshtml" />
+    <Content Include="Views\Pssq\_SearchList.cshtml" />
+    <Content Include="Views\Pssq\Edit.cshtml" />
+    <Content Include="Views\Pssq\List.cshtml" />
+    <Content Include="Views\Pssq\SearchList.cshtml" />
+    <Content Include="Views\Pscktzd\_List.cshtml" />
+    <Content Include="Views\Pscktzd\_SearchList.cshtml" />
+    <Content Include="Views\Pscktzd\Edit.cshtml" />
+    <Content Include="Views\Pscktzd\List.cshtml" />
+    <Content Include="Views\Pscktzd\SearchList.cshtml" />
+    <Content Include="Views\HYCZRule\Add2.cshtml" />
+    <Content Include="Views\HYCZRule\Add.cshtml" />
+    <Content Include="Views\Psfpsq\_List.cshtml" />
+    <Content Include="Views\Psfpsq\Edit.cshtml" />
+    <Content Include="Views\Psfpsq\List.cshtml" />
+    <Content Include="Views\Psrk\_SearchList.cshtml" />
+    <Content Include="Views\Psrk\SearchList.cshtml" />
+    <Content Include="Views\Psfptzd\_List.cshtml" />
+    <Content Include="Views\Psfptzd\_SearchList.cshtml" />
+    <Content Include="Views\Psfptzd\Edit.cshtml" />
+    <Content Include="Views\Psfptzd\List.cshtml" />
+    <Content Include="Views\Psfptzd\SearchList.cshtml" />
+    <Content Include="Views\Psfpsq\_SearchList.cshtml" />
+    <Content Include="Views\Psfpsq\SearchList.cshtml" />
+    <Content Include="Views\Report\_SpkcReport.cshtml" />
+    <Content Include="Views\Psdbck\_List.cshtml" />
+    <Content Include="Views\Psdbck\_SearchList.cshtml" />
+    <Content Include="Views\Psdbck\Edit.cshtml" />
+    <Content Include="Views\Psdbck\List.cshtml" />
+    <Content Include="Views\Psdbck\SearchList.cshtml" />
+    <Content Include="Views\Psdbrk\_List.cshtml" />
+    <Content Include="Views\Psdbrk\_SearchList.cshtml" />
+    <Content Include="Views\Psdbrk\Edit.cshtml" />
+    <Content Include="Views\Psdbrk\List.cshtml" />
+    <Content Include="Views\Psdbrk\SearchList.cshtml" />
+    <Content Include="Views\ShopSp\Add.cshtml" />
+    <Content Include="Views\ShopSp\Add_.cshtml" />
+    <Content Include="Views\ShopSp\SearchForPs.cshtml" />
+    <Content Include="Views\ShopSp\_SearchForPs.cshtml" />
+    <Content Include="Views\Report\_SpxshzReport.cshtml" />
+    <Content Include="Views\Report\old_SpxshzReport.cshtml" />
+    <Content Include="Views\Report\_SpxsmxReport.cshtml" />
+    <Content Include="Views\Report\old_SpxsmxReport.cshtml" />
+    <Content Include="Views\Kcpd\_List.cshtml" />
+    <Content Include="Views\Kcpd\List.cshtml" />
+    <Content Include="Views\Kcpd\Edit.cshtml" />
+    <Content Include="Views\Gys\ImportIn.cshtml" />
+    <Content Include="Views\Jh\Add_old.cshtml" />
+    <Content Include="Views\Th\ImportIn.cshtml" />
+    <Content Include="Views\Kcpd\Detial.cshtml" />
+    <Content Include="Views\Report\old_SkhzReport.cshtml" />
+    <Content Include="Views\Report\_SkhzReport.cshtml" />
+    <Content Include="Views\Report\old_SpcrkhzReport.cshtml" />
+    <Content Include="Views\Report\_SpcrkhzReport.cshtml" />
+    <Content Include="Views\Report\old_GysfkReport.cshtml" />
+    <Content Include="Views\Report\_GysfkReport.cshtml" />
+    <Content Include="Views\Kcpd\ImportIn.cshtml" />
+    <Content Include="Views\Pssq\Detial.cshtml" />
+    <Content Include="Views\Psrk\Detial.cshtml" />
+    <Content Include="Views\Psfptzd\Detial.cshtml" />
+    <Content Include="Views\Psfpsq\Detial.cshtml" />
+    <Content Include="Views\Psfprk\Detial.cshtml" />
+    <Content Include="Views\Psfpck\Detial.cshtml" />
+    <Content Include="Views\Psdbrk\Detial.cshtml" />
+    <Content Include="Views\Psdbck\Detial.cshtml" />
+    <Content Include="Views\Pscktzd\Detial.cshtml" />
+    <Content Include="Views\Psck\Detial.cshtml" />
+    <Content Include="Views\Pssq\ImportIn.cshtml" />
+    <Content Include="Views\Iframe\Index.cshtml" />
+    <Content Include="Views\Iframe\ShowA.cshtml" />
+    <Content Include="Views\Kcsltzd\_List.cshtml" />
+    <Content Include="Views\Kcsltzd\List.cshtml" />
+    <Content Include="Views\Kcsltzd\Edit.cshtml" />
+    <Content Include="Views\Kcsltzd\ImportIn.cshtml" />
+    <Content Include="Views\Iframe\SetShop.cshtml" />
+    <Content Include="Views\Kcsltzd\Detial.cshtml" />
+    <Content Include="Views\Report\old_Spjhhzreport.cshtml" />
+    <Content Include="Views\Report\Spjhhzreport.cshtml" />
+    <Content Include="Views\ShopManager\Set.cshtml" />
+    <Content Include="Views\Report\PscrkmxReport.cshtml" />
+    <Content Include="Views\Report\PssqcrkmxReport.cshtml" />
+    <Content Include="Views\Report\PsdbcrkmxReport.cshtml" />
+    <Content Include="Views\Report\SpxshzReport.cshtml" />
+    <Content Include="Views\Report\UsersklsReport.cshtml" />
+    <Content Include="Views\Report\SkhzReport.cshtml" />
+    <Content Include="Views\Report\SpcrkhzReport.cshtml" />
+    <Content Include="Views\Report\gysfkreport.cshtml" />
+    <Content Include="Views\Report\SpkcReport.cshtml" />
+    <Content Include="Views\Report\JhddrkmxReport.cshtml" />
+    <Content Include="Views\Report\SpjhmxReport.cshtml" />
+    <Content Include="Views\Report\HyczxflsReport.cshtml" />
+    <Content Include="Views\Report\HyczmxReport.cshtml" />
+    <Content Include="Views\Report\KckspdmxReport.cshtml" />
+    <Content Include="Views\Report\KcsltzmxReport.cshtml" />
+    <Content Include="Views\Report\SpxsmxReport.cshtml" />
+    <Content Include="Views\Report\SpxsranklistReport.cshtml" />
+    <Content Include="Views\Report\XshzshopdayReport.cshtml" />
+    <Content Include="Views\Report\XshzshopReport.cshtml" />
+    <Content Include="Views\ShopManager\Test.cshtml" />
+    <Content Include="Views\Notice\List.cshtml" />
+    <Content Include="Views\Notice\_Notice_Edit.cshtml" />
+    <Content Include="Views\Notice\_List.cshtml" />
+    <Content Include="Views\Notice\Detail.cshtml" />
+    <Content Include="Views\Khfl\oList.cshtml" />
+    <Content Include="Views\Khfl\Edit.cshtml" />
+    <Content Include="Views\Khfl\ImportIn.cshtml" />
+    <Content Include="Views\Kh\List.cshtml" />
+    <Content Include="Views\Kh\_List.cshtml" />
+    <Content Include="Views\Kh\_Edit.cshtml" />
+    <Content Include="Views\Kh\Detail.cshtml" />
+    <Content Include="Views\Shop\Add.cshtml" />
+    <Content Include="Views\Kh\ImportIn.cshtml" />
+    <Content Include="Views\Kh\Search.cshtml" />
+    <Content Include="Views\Kh\_Search.cshtml" />
+    <Content Include="Views\Sk\List.cshtml" />
+    <Content Include="Views\Sk\_List.cshtml" />
+    <Content Include="Views\Sk\Add.cshtml" />
+    <Content Include="Views\Sk\_Add.cshtml" />
+    <Content Include="Views\Report\shopysreport.cshtml" />
+    <Content Include="Views\Xs\_List.cshtml" />
+    <Content Include="Views\Xs\List.cshtml" />
+    <Content Include="Views\Xs\Add.cshtml" />
+    <Content Include="Views\Xs\Detail.cshtml" />
+    <Content Include="Views\Xs\ImportIn.cshtml" />
+    <Content Include="Views\Xsck\List.cshtml" />
+    <Content Include="Views\Xsck\_List.cshtml" />
+    <Content Include="Views\Xsck\Add.cshtml" />
+    <Content Include="Views\Xsck\Detail.cshtml" />
+    <Content Include="Views\Xsck\ImportIn.cshtml" />
+    <Content Include="Views\Xs\Search.cshtml" />
+    <Content Include="Views\Xs\_Search.cshtml" />
+    <Content Include="Views\Xsth\List.cshtml" />
+    <Content Include="Views\Xsth\_List.cshtml" />
+    <Content Include="Views\Xsth\Add.cshtml" />
+    <Content Include="Views\Xsth\Detail.cshtml" />
+    <Content Include="Views\Xsth\ImportIn.cshtml" />
+    <Content Include="Views\Xsck\_Search.cshtml" />
+    <Content Include="Views\Xsck\Search.cshtml" />
+    <Content Include="Views\ShopSp\Spzhcf.cshtml" />
+    <Content Include="Views\Shop\CZYzm.cshtml" />
+    <Content Include="Views\Gysfl\List.cshtml" />
+    <Content Include="Views\Khfl\List.cshtml" />
+    <Content Include="Views\ShopSp\Spcfzh.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="static\js\kindeditor\asp.net\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CySoft.BLL\CySoft.BLL.csproj">
+      <Project>{35946CDE-D42D-465A-AEBA-4183E33E77B0}</Project>
+      <Name>CySoft.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Controllers\CySoft.Controllers.csproj">
+      <Project>{439BDFD4-44D7-40CF-883D-67AAD9787AF4}</Project>
+      <Name>CySoft.Controllers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.DAL\CySoft.DAL.csproj">
+      <Project>{e0fc16c4-eb3c-4bc6-9ea9-b8be46692359}</Project>
+      <Name>CySoft.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.IBLL\CySoft.IBLL.csproj">
+      <Project>{C6F971E2-F9E0-40B3-BF32-C3EB27088199}</Project>
+      <Name>CySoft.IBLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Model\CySoft.Model.csproj">
+      <Project>{48225337-7E00-43F0-A2AB-E19DB332F6C9}</Project>
+      <Name>CySoft.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Utility\CySoft.Utility.csproj">
+      <Project>{26C05CD0-58EE-4721-A3E0-DD0F66F9FDC0}</Project>
+      <Name>CySoft.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="static\css\global\fonts\fontawesome-webfont.eot" />
+    <Content Include="static\css\global\fonts\fontawesome-webfont.woff" />
+    <Content Include="static\css\global\fonts\Simple-Line-Icons.ttf" />
+    <Content Include="static\css\global\fonts\Simple-Line-Icons.woff" />
+    <Content Include="static\css\global\fonts\sourcesanspro\sourcesanspro-bold.woff" />
+    <Content Include="static\css\global\fonts\sourcesanspro\sourcesanspro-light.woff" />
+    <Content Include="static\css\global\fonts\sourcesanspro\sourcesanspro.woff" />
+    <Content Include="static\js\artTemplate\aui-artTemplate-3.0.1-15-gb31492f.zip" />
+    <Content Include="static\js\artTemplate\syntax-simple.md" />
+    <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Error\Mobile.cshtml" />
+    <Content Include="Views\Error\_404Error.cshtml" />
+    <Content Include="Views\Error\_500Error.cshtml" />
+    <Content Include="Views\Error\_noPurviewError.cshtml" />
+    <Content Include="Views\Manager\Home.cshtml" />
+    <Content Include="Views\Manager\Index.cshtml" />
+    <Content Include="Views\Account\Login_v1.cshtml" />
+    <Content Include="Views\Manager\_Index.cshtml" />
+    <Content Include="Views\Manager\ProfileInfo.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Member\Add.cshtml" />
+    <Content Include="Views\Member\List.cshtml" />
+    <Content Include="Views\PartialView\AreaGetCity.cshtml" />
+    <Content Include="Views\PartialView\AreaGetCounty.cshtml" />
+    <Content Include="Views\PartialView\AreaIndex.cshtml" />
+    <Content Include="Views\PartialView\MemberList.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shop\PartialView\P_ShopList.cshtml" />
+    <Content Include="Views\Shop\ShopList.cshtml" />
+    <Content Include="Views\Shop\ShopList2.cshtml" />
+    <Content Include="Views\Shop\ShopSP.cshtml" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Goods\_Spfl_List.cshtml" />
+    <Content Include="Views\Goods\_Spfl_Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Test\SP.cshtml" />
+    <Content Include="Views\Dw\List.cshtml" />
+    <Content Include="Views\Qc\List.cshtml" />
+    <Content Include="Views\Dw\_List.cshtml" />
+    <Content Include="Views\Qc\_List.cshtml" />
+    <Content Include="Views\Account\List.cshtml" />
+    <Content Include="Views\Account\_List.cshtml" />
+    <Content Include="Views\Account\Detail.cshtml" />
+    <Content Include="Views\Dw\_Dw_Edit.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\PayType\List.cshtml" />
+    <Content Include="Views\PayType\_List.cshtml" />
+    <Content Include="Views\PayType\_PayType_Edit.cshtml" />
+    <Content Include="Views\Shop\ShopInfo.cshtml" />
+    <Content Include="Views\RoleSetting\RoleList.cshtml" />
+    <Content Include="Views\RoleSetting\_List.cshtml" />
+    <Content Include="Views\ShopSp\List.cshtml" />
+    <Content Include="Views\ShopSp\_List.cshtml" />
+    <Content Include="Views\RoleSetting\_RoleSetting_Edit.cshtml" />
+    <Content Include="Views\RoleSetting\_RoleModule_Edit.cshtml" />
+    <Content Include="Views\FunctionManage\old_List.cshtml" />
+    <Content Include="Views\FunctionManage\_Edit.cshtml" />
+    <Content Include="Views\RoleModule\o_List.cshtml" />
+    <Content Include="Views\RoleModule\_List.cshtml" />
+    <Content Include="Views\Account\MyInfo.cshtml" />
+    <Content Include="Views\Account\Reset.cshtml" />
+    <Content Include="Views\RoleModule\_Edit.cshtml" />
+    <Content Include="Views\RoleSetting\List.cshtml" />
+    <Content Include="Views\RoleSetting\_Platform_Role_Edit.cshtml" />
+    <Content Include="Views\RoleSetting\_RoleList.cshtml" />
+    <Content Include="Views\PosFunction\List.cshtml" />
+    <Content Include="Views\PosFunction\_List.cshtml" />
+    <Content Include="Views\PosFunction\_Edit.cshtml" />
+    <Content Include="Views\ShopSp\ImportGoods.cshtml" />
+    <Content Include="Views\Utility\UploadFiles.cshtml" />
+    <Content Include="Views\RoleSetting\_Bind_Pos_Function.cshtml" />
+    <Content Include="Views\ShopSp\_AddGoods.cshtml" />
+    <Content Include="Views\Goods\ImportSpfl.cshtml" />
+    <Content Include="Views\RoleSetting\RoleModuleEdit.cshtml" />
+    <Content Include="Views\ShopSp\Item.cshtml" />
+    <Content Include="Views\ShopSp\Edit.cshtml" />
+    <Content Include="Views\Parm\_Edit.cshtml" />
+    <Content Include="Views\Parm\_List.cshtml" />
+    <Content Include="Views\Parm\List.cshtml" />
+    <Content Include="Views\Shop\List.cshtml" />
+    <Content Include="Views\ParmShop\_Edit.cshtml" />
+    <Content Include="Views\ParmShop\_List.cshtml" />
+    <Content Include="Views\ParmShop\List.cshtml" />
+    <Content Include="Views\PayConfig\_Edit.cshtml" />
+    <Content Include="Views\Shop\_List.cshtml" />
+    <Content Include="Views\Shop\Detail.cshtml" />
+    <Content Include="Views\Shop\Edit.cshtml" />
+    <Content Include="Views\PayConfig\List1.cshtml" />
+    <Content Include="Views\PayConfig\_List1.cshtml" />
+    <Content Include="Views\Promote\List.cshtml" />
+    <Content Include="Views\Promote\_List.cshtml" />
+    <Content Include="static\css\global\core.css为bootstrap.txt" />
+    <Content Include="Views\Gysfl\oList.cshtml" />
+    <Content Include="Views\Gysfl\Edit.cshtml" />
+    <Content Include="Views\Gysfl\ImportIn.cshtml" />
+    <Content Include="static\css\global\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="static\css\global\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="static\css\global\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Views\Promote\Edit.cshtml" />
+    <Content Include="Views\Gys\_Edit.cshtml" />
+    <Content Include="Views\Gys\_List.cshtml" />
+    <Content Include="Views\Gys\List.cshtml" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.eot" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.ttf" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.woff" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.eot" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.ttf" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.woff" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.eot" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.ttf" />
+    <Content Include="static\js\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.woff" />
+    <Content Include="Views\Jh\List.cshtml" />
+    <Content Include="Views\Jh\_List.cshtml" />
+    <Content Include="Views\Promote\SelectSpList.cshtml" />
+    <Content Include="Views\Jh\Add.cshtml" />
+    <Content Include="Views\Gys\Search.cshtml" />
+    <Content Include="Views\Gys\_Search_DropDown.cshtml" />
+    <Content Include="Views\Gys\_Search.cshtml" />
+    <Content Include="Views\ShopSp\Search.cshtml" />
+    <Content Include="Views\ShopSp\_Search.cshtml" />
+    <Content Include="Views\ShopSp\_Search_DropDown.cshtml" />
+    <Content Include="Views\Jh\Add - 复制.cshtml" />
+    <Content Include="Views\Hy\List.cshtml" />
+    <Content Include="Views\Hy\_List.cshtml" />
+    <Content Include="Views\Hy\Edit.cshtml" />
+    <Content Include="Views\Hyfl\List.cshtml" />
+    <Content Include="Views\Hyfl\_List.cshtml" />
+    <Content Include="Views\Hyfl\Edit.cshtml" />
+    <Content Include="Views\Promote\SearchSp.cshtml" />
+    <Content Include="Views\Promote\_searchsp.cshtml" />
+    <Content Include="Views\Hy\Add.cshtml" />
+    <Content Include="Views\Jhfk\List.cshtml" />
+    <Content Include="Views\Jhfk\_List.cshtml" />
+    <Content Include="Views\Jhfk\Add.cshtml" />
+    <Content Include="Views\Jhfk\_Add.cshtml" />
+    <Content Include="Views\Jhfk\Add - 复制.cshtml" />
+    <Content Include="Views\Jh\ImportIn.cshtml" />
+    <Content Include="Views\Gys\Detail.cshtml" />
+    <Content Include="Views\Th\List.cshtml" />
+    <Content Include="Views\Th\_List.cshtml" />
+    <Content Include="Views\Th\Add.cshtml" />
+    <Content Include="Views\Jh\Search.cshtml" />
+    <Content Include="Views\Jh\_Search.cshtml" />
+    <Content Include="Views\Promote\DPZKAdd.cshtml" />
+    <Content Include="Views\Promote\SPFLZKAdd.cshtml" />
+    <Content Include="Views\Psck\List.cshtml" />
+    <Content Include="Views\Promote\BILLZKAdd.cshtml" />
+    <Content Include="Views\Psck\_List.cshtml" />
+    <Content Include="Views\Psck\Edit.cshtml" />
+    <Content Include="Views\Promote\dpmsadd.cshtml" />
+    <Content Include="Views\Promote\DZZKAdd.cshtml" />
+    <Content Include="Views\Gys\add.cshtml" />
+    <Content Include="Views\Promote\shopfl.cshtml" />
+    <Content Include="Views\Promote\dzmsadd.cshtml" />
+    <Content Include="static\css\common\modify.scss" />
+    <Content Include="Views\Gys\DetailSee.cshtml" />
+    <Content Include="Views\Promote\CurrentList.cshtml" />
+    <Content Include="Views\Promote\_CurrentList.cshtml" />
+    <Content Include="Views\Promote\sdzkadd.cshtml" />
+    <Content Include="Views\Promote\tjadd.cshtml" />
+    <Content Include="Views\Promote\billmsadd.cshtml" />
+    <Content Include="Views\Promote\spflmsadd.cshtml" />
+    <Content Include="Views\Promote\dzhgadd.cshtml" />
+    <Content Include="Views\Promote\billhgadd.cshtml" />
+    <Content Include="Views\Dh\List.cshtml" />
+    <Content Include="Views\Dh\_List.cshtml" />
+    <Content Include="Views\Promote\zhadd.cshtml" />
+    <Content Include="Views\Dh\Add_old.cshtml" />
+    <Content Include="Views\Dh\ImportIn.cshtml" />
+    <Content Include="Views\Psrk\_List.cshtml" />
+    <Content Include="Views\Psrk\Edit.cshtml" />
+    <Content Include="Views\Psrk\List.cshtml" />
+    <Content Include="Views\Goods\Spfl_List.cshtml" />
+    <Content Include="Views\PromoteSort\List.cshtml" />
+    <Content Include="Views\PromoteSort\_List.cshtml" />
+    <Content Include="Views\Dh\Search.cshtml" />
+    <Content Include="Views\Dh\_Search.cshtml" />
+    <Content Include="Views\Psfpck\_List.cshtml" />
+    <Content Include="Views\Psfpck\Edit.cshtml" />
+    <Content Include="Views\Psfpck\List.cshtml" />
+    <Content Include="Views\Psfprk\_List.cshtml" />
+    <Content Include="Views\Psfprk\Edit.cshtml" />
+    <Content Include="Views\Psfprk\List.cshtml" />
+    <Content Include="Views\Psck\SearchList.cshtml" />
+    <Content Include="Views\Psck\_SearchList.cshtml" />
+    <Content Include="Views\Psfpck\_SearchList.cshtml" />
+    <Content Include="Views\Psfpck\SearchList.cshtml" />
+    <Content Include="Views\Dh\Detail.cshtml" />
+    <Content Include="Views\Jh\Detail.cshtml" />
+    <Content Include="Views\Th\Detail.cshtml" />
+    <Content Include="Views\HYJFRule\JFRuleSet.cshtml" />
+    <Content Include="Views\Account\CZPwd.cshtml" />
+    <Content Include="Views\Account\SelectVer.cshtml" />
+    <Content Include="Views\Dh\Add.cshtml" />
+    <Content Include="Views\Account\ChangeCompanyno.cshtml" />
+    <Content Include="static\js\kindeditor\.gitignore" />
+    <Content Include="static\js\kindeditor\package.json" />
+    <Content Include="static\js\kindeditor\README.md" />
+    <Content Include="static\js\kindeditor\docs\ajax.rst" />
+    <Content Include="static\js\kindeditor\docs\changelog.rst" />
+    <Content Include="static\js\kindeditor\docs\classyext.py" />
+    <Content Include="static\js\kindeditor\docs\classyext.pyc" />
+    <Content Include="static\js\kindeditor\docs\cmd.rst" />
+    <Content Include="static\js\kindeditor\docs\colorpicker.rst" />
+    <Content Include="static\js\kindeditor\docs\conf.py" />
+    <Content Include="static\js\kindeditor\docs\core.rst" />
+    <Content Include="static\js\kindeditor\docs\dialog.rst" />
+    <Content Include="static\js\kindeditor\docs\editor.rst" />
+    <Content Include="static\js\kindeditor\docs\event.rst" />
+    <Content Include="static\js\kindeditor\docs\index.rst" />
+    <Content Include="static\js\kindeditor\docs\make.bat" />
+    <Content Include="static\js\kindeditor\docs\Makefile" />
+    <Content Include="static\js\kindeditor\docs\menu.rst" />
+    <Content Include="static\js\kindeditor\docs\node.rst" />
+    <Content Include="static\js\kindeditor\docs\option.rst" />
+    <Content Include="static\js\kindeditor\docs\plugin.rst" />
+    <Content Include="static\js\kindeditor\docs\qna.rst" />
+    <Content Include="static\js\kindeditor\docs\range.rst" />
+    <Content Include="static\js\kindeditor\docs\selector.rst" />
+    <Content Include="static\js\kindeditor\docs\tabs.rst" />
+    <Content Include="static\js\kindeditor\docs\theme.rst" />
+    <Content Include="static\js\kindeditor\docs\upgrade.rst" />
+    <Content Include="static\js\kindeditor\docs\upload.rst" />
+    <Content Include="static\js\kindeditor\docs\uploadbutton.rst" />
+    <Content Include="static\js\kindeditor\docs\usage.rst" />
+    <Content Include="static\js\kindeditor\docs\widget.rst" />
+    <Content Include="static\js\kindeditor\docs\_templates\classy\static\classy.css_t" />
+    <Content Include="static\js\kindeditor\docs\_templates\classy\theme.conf" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\.htaccess" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\build.bat" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension-beta\manifest.json" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\chrome-extension\manifest.json" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\build\compress.bat" />
+    <Content Include="static\js\kindeditor\lib\firebug-lite\plugin\proxy\proxy.php" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Set.cshtml" />
+    <Content Include="Views\Account\Browser.cshtml" />
+    <None Include="Views\FunctionManage\List.cshtml" />
+    <Content Include="Views\HYCZRule\CZRuleSet.cshtml" />
+    <Content Include="Views\Report\old_SpkcReport.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>39385</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:39999/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

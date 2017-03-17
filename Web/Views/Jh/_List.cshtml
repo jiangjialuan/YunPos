@@ -1,0 +1,158 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+
+
+@{
+    var pageList = ViewData["List"] as PageList<Td_Jh_1_QueryModel>;
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isStop = actionlist.Any(l => l.ToLower() == "stop");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var isCopy = actionlist.Any(l => l.ToLower() == "copy");
+    var isDetail = actionlist.Any(l => l.ToLower() == "list");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isSh = actionlist.Any(l => l.ToLower() == "sh");
+    string sort = ViewData["sort"].ToString();
+
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+    string show_shop_version = ViewData["show_shop_version"] == null ? "" : ViewData["show_shop_version"].ToString();
+}
+
+
+
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="40" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+            <th width="80" class="text-center">开单日期</th>
+            <th width="200">单号</th>
+            <th width="160">订货单号</th>
+            @if (show_shop_version == "1")
+            {
+                <th width="150">收货门店</th>
+            }
+            <th width="120">供应商名称</th>
+            <th width="100">经办人</th>
+            <th width="120">总金额</th>
+            <th width="120">实付金额</th>
+            <th class="text-center w-340">操作</th>
+        </tr>
+    </thead>
+    <tbody id="dwlist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="@string.Format(show_shop_version == "1"?"10":"9")" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-jh-id-@item.id" class="tr-status-finished">
+                            <td class="text-center">
+                                @(index++)
+                            </td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.rq)</td>
+
+                            <td>@item.dh</td>
+                            <td>@item.dh_origin</td>
+                            @if (show_shop_version == "1")// 10 单店  连锁 20
+                            {
+                                <td>@item.shop_name</td>
+                            }
+
+                            <td>@item.gys_name</td>
+                            <td  class="align_center">@item.jbr_name</td>
+                            <td class="align_right">@item.je_mxtotal.Digit((int)digit["dj_digit"])</td>
+                            <td class="align_right">@item.je_sf.Digit((int)digit["dj_digit"])</td>
+
+                            <td class="list-operate">
+                                <div class="look-out1">
+                                    <div class="second-height-operate w-340">
+
+                                        @if (isDetail)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="app.jh.detail('@item.id',this)" title="查看"></a>
+                                        }
+
+
+                                        @if (isEdit && item.flag_sh == 0)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.jh.edit('@item.id',this)" title="编辑"></a>
+                                        }
+
+                                        @if (isCopy)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-copy" href="javascript:;" onclick="app.jh.copy('@item.id',this)" title="复制"></a>
+                                        }
+                                        @if (isStop)
+                                        {
+                                            if (item.flag_cancel == 0 && item.flag_sh == 1)
+                                            {
+                                                @*<a class="bg-state bg-state-info fa fa-ban" href="javascript:;" onclick="app.jh.stop('@item.id',this)" title="作废"></a>*@
+                                            }
+                                            else if (item.flag_cancel == 1 && item.flag_sh == 1)
+                                            {
+                                                @*<a class="bg-state bg-state-info fa fa-ban a-h" onclick="javascript: void (0);" title="已作废"></a>*@
+                                            }
+                                        }
+
+                                        @if (isDel)
+                                        {
+                                            if (item.flag_sh == 0)
+                                            {
+                                                <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.jh.del('@item.id',this)" title="删除"></a>
+                                            }
+                                        }
+
+                                        @if (isSh)
+                                        {
+                                            if (item.flag_sh == 0)
+                                            {
+                                                <a class="bg-state bg-state-info  fa fa-user" href="javascript:;" onclick="app.jh.sh('@item.id',this)" title="审核"></a>
+                                            }
+                                        }
+
+                                        @if (item.flag_sh == 1 && item.flag_cancel == 0 && item.finish_th == 0)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-truck" href="javascript:;" onclick="app.jh.th('@item.id',this)" title="退货"></a>
+                                        }
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+
+
+
+<script>
+    app.c.public_data['jh/list'] = app.c.public_data['jh/list'] || {};
+    app.c.public_data['jh/list']['_row_total_'] = '@pageList.ItemCount';
+    app.c.public_data['jh/list']['_page_size_'] = '@pageList.PageSize';
+    app.c.public_data['jh/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>
+

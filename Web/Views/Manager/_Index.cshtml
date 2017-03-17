@@ -1,0 +1,479 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Utility
+@using CySoft.Model.Ts;
+
+@{
+    Hashtable ht = ViewData["ShowData"] as Hashtable;
+    ht = ht ?? new Hashtable();
+    var paylist = ht["payList"] as List<HomePagePay>;
+    paylist = paylist ?? new List<HomePagePay>();
+    var payListStr = JSON.Serialize(paylist);
+    var notice_list = ViewData["notice_list"] as PageList<Ts_Notice_View>;
+    notice_list = notice_list ?? new PageList<Ts_Notice_View>(10);
+}
+
+<div class="contentbox-header">
+    <a class="" title="首页" onclick="$.DHB.refresh();">首页</a>
+</div>
+
+
+
+<!--首页提醒未上传营业执照-->
+<div class="col">
+    <div class="row">
+        <input type="hidden" value="@JSON.Serialize(ht)" id="kk" />
+        <input type="hidden" value="@payListStr" id="cartdata" />
+        <div id="wrapper">
+
+            <div id="page-wrapper">
+                <!--第一部分//今天0，昨天1，近7天7，本月-1，其它日期-2-->
+                <div class="bodymain row col-sm-9">
+                    <div class="tab col-sm-12">
+                        <ul>
+                            <li @(string.Format("{0}", ViewData["date_type"]) == "0" ? "class=on" : "")>今天</li>
+                            <li @(string.Format("{0}", ViewData["date_type"]) == "1" ? "class=on" : "")>昨天</li>
+                            <li @(string.Format("{0}", ViewData["date_type"]) == "7" ? "class=on" : "")>近7</li>
+                            <li @(string.Format("{0}", ViewData["date_type"]) == "-1" ? "class=on" : "")>本月</li>
+                            <li @(string.Format("{0}", ViewData["date_type"]) == "-2" ? "class=on" : "")>
+                                <div>日期范围选择：@*<i class="fa fa-caret-down turn"></i>*@</div>
+                                <div class="data">
+                                    @*<i class="fa fa-calendar"></i>*@
+                                    <label>从</label>
+                                    <input type="datetime" name="datatTime" id="datatTime" class="form-control" style="" value="@ViewData["rq_begin"]" />
+                                    <label>到</label>
+                                    <input type="datetime" name="datatTime" id="datatTime2" value="@ViewData["rq_end"]" class="form-control" style="" />
+                                    <input id="search" class="btn btn-info" type="button" value="确定" />
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab_content col-sm-12">
+                        <div class="cont">
+                            <div class="col-sm-12 cont_l">
+                                <div class="boxer col-sm-6">
+                                    <div class="box_cont">
+                                        <label>销售额</label>
+                                        <p>
+                                            <span class="money">￥@(string.Format("{0:N}", ht["xse"] ?? 0))</span>
+                                            <span class="des" title="增长率">增<i>100.00%</i></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="boxer col-sm-6">
+                                    <div class="box_cont">
+                                        <label>销售笔数</label>
+                                        <p>
+                                            <span class="money">@(ht["xsbs"] ?? 0)</span>
+                                            <span class="des" title="增长率">增<i>0.00%</i></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="boxer col-sm-6">
+                                    <div class="box_cont">
+                                        <label>销售毛利</label>
+                                        <p>
+                                            <span class="money">￥@(string.Format("{0:N}", ht["je_ml"] ?? 0))</span>
+                                            <span class="des" title="增长率">增<i>0.00%</i></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="boxer col-sm-6">
+                                    <div class="box_cont exit_thing">
+                                        <div class="col-sm-4 exit_num">
+                                            <label>退货笔数</label>
+                                            <p class="money">@(ht["thbs"] ?? 0)</p>
+                                        </div>
+                                        <div class="col-sm-8 exit_price">
+                                            <label>退货金额</label>
+                                            <p class="money">￥@(string.Format("{0:N}", ht["thje"] ?? 0).Replace("-", ""))</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 cont_r box_shodaw">
+                                <div class="numbers col-sm-3">
+                                    <p>销售收银分布</p>
+                                    <ul>
+                                        @{ var index = 1;}
+                                        @foreach (var item in paylist)
+                                        {
+                                            var str = "item" + index++;
+                                            <li class="@str">
+                                                <i class="icon"></i>
+                                                <span class="labeltag">@item.mc</span>
+                                                <span class="color">￥@(string.Format("{0:N}", item.je))</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div id="container" style="height:400px; max-width:600px;margin:0px auto;"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--第二部分-->
+                <div class="col-sm-3 body_right">
+                    <div class="stock">
+                        <span class="txt_lab">本店库存金额：</span>
+                        <span class="stock_money">￥@(string.Format("{0:N}", ht["kcje"]))</span>
+                    </div>
+                    <div class="system_msg box_shodaw mar_b">
+                        <div class="tab col-sm-12">
+                            <ul class="title">
+                                <li class="on">系统信息</li>
+                                <li class="on"><a onclick="$.fn.menuTab.load({ url: '/notice/list', 'title': '系统公告', id: 'notice/list', nocache: '1' });">更多</a></li>
+                            </ul>
+                        </div>
+                        <ul class="tab_content">
+                            @foreach (var item in notice_list)
+                            {
+                                <li class="message_list">
+                                    <a onclick="$.fn.menuTab.load({ url: '/notice/detail?id=@item.id', 'title': '公告详情', id: 'notice/detail', nocache: '1' });">@item.title</a>
+                                    <p>@(string.Format(((DateTime)item.rq_create).ToString("yyyy-MM-dd HH:mm")))</p>
+                                </li>
+                            }
+
+
+
+
+                            @*
+                                                            <li class="message_list">
+                                                                <a href="###">公告：云POS3.0新增游客模式访问，轻松搞定海量客户</a>
+                                                                <p>2016-07-20 12:00</p>
+                                                            </li>
+                                                            <li class="message_list">
+                                    <a href="###">云POS新增移动管理端，业务在手畅快自由</a>
+                                    <p>2016-10-20 15:00</p>
+                                </li>*@
+                            @*<li class="message_list">
+                                    <a href="###">公告：云POS3.0新增游客模式访问，轻松搞定海量客户</a>
+                                    <p>2016-07-20 15:00</p>
+                                </li>
+                                <li class="message_list">
+                                    <a href="###">2016.07.20更新公告</a>
+                                    <p>2016-07-20 15:00</p>
+                                </li>*@
+                        </ul>
+                    </div>
+
+                    <div class="shopList box_shodaw ">
+                        <div class="tab col-sm-12">
+                            <ul class="title">
+                                <li class="on">畅销商品</li>
+                                <li>滞销商品</li>
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            <ul>
+                                @{
+                                    var cxsps = ht["cxsps"] as List<HomePageCxspModel>;
+                                    if (cxsps != null && cxsps.Any())
+                                    {
+                                        for (int i = 0; i < cxsps.Count; i++)
+                                        {
+                                            var item = cxsps[i];
+                                            <li class="shop_list">
+                                                <span class="sort">@(i + 1)</span>
+                                                <a href="###">@item.mc</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                            <ul style="display:none;">
+                                @{
+                                    var zxsps = ht["zxsps"] as List<HomePageZxspModel>;
+                                    if (zxsps != null && zxsps.Any())
+                                    {
+                                        for (int i = 0; i < zxsps.Count; i++)
+                                        {
+                                            var item = zxsps[i];
+                                            <li class="shop_list">
+                                                <span class="sort">@(i + 1)</span>
+                                                <a href="###">@item.mc</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<script type="text/javascript">
+
+    window.onload = function () {
+
+        $.DHB.loadJs([
+                { id: 'highChars', url: '/static/js/highcharts/highcharts.js' },
+                { id: 'WdatePicker', url: '/static/js/My97DatePicker/WdatePicker.js' }
+        ], function () {
+
+            //var kk = $('#kk').val();
+            ////console.log(JSON.parse(kk));
+            $('div[contentid=index]').on('click', '#datatTime,#datatTime2', function () {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd' });
+            });
+
+            if (typeof (app) == 'undefined') {
+                var app = {};
+            }
+            app.home = app.home || {};
+            app.home.request = function (homedata) {
+                ////console.log(homedata);
+                $.ajax({
+                    url: '/Manager/QueryPageShowData',
+                    data: homedata,
+                    type: 'post',
+                    contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                    crossDomain: true,
+                    success: function (data) {
+
+                        $('div[contentid=index]').html('');
+                        $('div[contentid=index]').append(data);
+                        // //console.log(app.home.picfull());
+                        if (app.home.picfull() == 'false') {
+
+                            $('#container').parent().parent().addClass('homebg')
+                        } else {
+                            $('#container').highcharts(app.home.picfull());
+                        }
+
+                        //return data;
+                    },
+                    error: function () {
+                        ////console.log("error");
+                    }
+                });
+            }
+
+
+            //今天、明天切换
+            $('div[contentid=index]').on('click', '.bodymain .tab li', function () {
+                var index = $(this).index();
+                var len = $('.bodymain .tab li').length;
+                var homedata;
+                if (index == 0) {
+                    homedata = { type: 0 };
+                }
+                if (index == 1) {
+                    homedata = { type: 1 };
+                }
+                if (index == 2) {
+                    homedata = { type: 7 };
+                }
+                if (index == 3) {
+                    homedata = { type: -1 };
+                }
+                if (index == len - 1) {
+                    homedata = { type: -2 };
+                    return false;
+                }
+                $(this).addClass('on').siblings().removeClass('on');
+                app.home.request(homedata);
+
+
+
+            });
+
+
+            //其它时间确定按钮
+            $('div[contentid=index]').on('click', '#search', function () {
+                var str = $('#datatTime').val();
+                var str2 = $('#datatTime2').val();
+                var data_obj = {}, flag = false;
+
+                if (str != '') {
+                    data_obj.rq_begin = str;
+                    flag = true;
+                }
+                if (str2 != '') {
+                    data_obj.rq_end = str2;
+                    flag = true;
+                }
+                if (str == '' && str2 == '') {
+                    $.DHB.message({ 'content': '请选择日期' });
+                    flag = false;
+                }
+                if (str != "" && str2 != "") {
+                    if (Date.parse(new Date(str2)) - Date.parse(new Date(str)) < 0) {
+                        flag = false;
+                        $.DHB.message({ 'content': '结束时间不能小于开始时间', 'type': 'i' });
+                    }
+                }
+
+                if (flag) {
+
+                    var homedata = { type: -2, date: JSON.stringify(data_obj) };
+                    ////console.log(homedata);
+                    
+                    $('.bodymain .tab li').removeClass('on');
+                    $('div[contentid=index').append(app.home.request(homedata));
+                }
+            })
+
+            ////增长率
+            $('div[contentid=index]').on('hover', '.box_cont .des', function () {
+                $(this).children('i').show();
+            }, function () {
+                $(this).children('i').hide();
+            });
+
+            ////畅销、滞销商品切换
+            $('div[contentid=index]').on('click', '.shopList .tab li', function () {
+                var index = $(this).index();
+                $(this).addClass('on').siblings().removeClass('on');
+                $('.shopList .tab-content ul').eq(index).show().siblings('ul').hide();
+            }).eq(0).trigger('click');
+
+
+
+
+            ////饼状图
+            app.home.picdata = function () {
+                var payStr = $('#cartdata').val();
+                var picdatad = JSON.parse(payStr);
+                var picdata = [];
+                var kkaa = [];
+                var f = false, h = false;
+                var totalje = 0;
+                //
+                ////console.log(picdatad);
+                for (var i = 0; i < picdatad.length; i++) {
+
+                    totalje += parseFloat(picdatad[i].je);
+
+                    if (i == picdatad.length - 1) {
+                        f = true;
+                    }
+                }
+
+
+                for (var i = 0; i < picdatad.length; i++) {
+                    var aa = [];
+                    aa.push(picdatad[i].mc);
+                    if (picdatad[i].je < 0) {
+                        var kk = 0;
+                    } else {
+                        var kk = parseFloat(picdatad[i].je);
+
+                    }
+                    var jj = parseFloat(kk / totalje) * 100;
+                    aa.push(parseFloat(jj.toFixed(2)));
+                    picdata.push(aa);
+                    if (i == picdatad.length - 1) {
+                        h = true;
+                    }
+
+
+                }
+                if (f == true && h == true) {
+                    kkaa.push(picdata);
+                    totalje = totalje.toFixed(2);
+                    kkaa.push(totalje);
+                    return kkaa;
+                    ////console.log(kkaa);
+                }
+
+
+            }
+
+            app.home.picfull = function () {
+                var picdata = [];
+                picdata = app.home.picdata();
+                ////console.log(picdata);
+                if (picdata == undefined) {
+                    return 'false'
+                } else {
+                    if (picdata[0] < 0) {
+                        //picdata[0] = 0;
+                        return 'false'
+                    }
+                    if (picdata[1] < 0) {
+                        //picdata[1] = 0;
+                        return 'false'
+                    }
+                    var pie_new = {
+                        chart: {
+                            type: 'pie',
+                            options3d: {
+                                enabled: true,
+                                alpha: 45
+                            }
+                        },
+                        title: {
+                            text: '入帐总额' + picdata[1]
+                        },
+                        colors: [
+                            '#71cf3b',
+                            '#2abbe5',
+                            '#fe8a5d',
+                            '#fdb45d',
+                            '#492970',
+                            '#77a1e5',
+                            '#c42525',
+                            '#a6c96a',
+                            '#f28f43'
+                        ],
+                        subtitle: {
+                            //text: '3D donut in Highcharts'
+                        },
+                        credits: {
+                            enabled: false // 禁用版权信息
+                        },
+                        exporting: {
+                            buttons: {
+                                exportButton: {
+                                    enabled: false
+                                },
+                                printButton: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        labels: {                  //图表标签
+                            exporting: {
+                                enabled: false  //设置导出按钮不可用
+                            },
+                        },
+                        series: [{
+                            name: '占总额百分比为',
+                            data: picdata[0]
+                        }]
+                    }
+                    return pie_new;
+                }
+
+            };
+
+            if ($('#container').html() == '') {
+
+                if (app.home.picfull() == 'false') {
+                    $('#container').parent().parent().addClass('homebg')
+                } else {
+                    $('#container').highcharts(app.home.picfull());
+                }
+            }
+
+
+        });
+    };
+
+
+
+
+
+
+
+
+</script>

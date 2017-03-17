@@ -1,0 +1,294 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Model.Tb
+
+@{
+    Layout = null;
+    System.Collections.Hashtable ht = ViewData["Model"] as System.Collections.Hashtable;
+    CySoft.Model.Tb.Tb_User_Query userModel = new CySoft.Model.Tb.Tb_User_Query();
+    if (ht != null && ht.ContainsKey("user"))
+    {
+        userModel = ht["user"] as CySoft.Model.Tb.Tb_User_Query;
+    }
+
+    List<CySoft.Model.Tb.Tb_User_Role_Query> roleModel = new List<CySoft.Model.Tb.Tb_User_Role_Query>();
+    if (ht != null && ht.ContainsKey("roles"))
+    {
+        roleModel = ht["roles"] as List<CySoft.Model.Tb.Tb_User_Role_Query>;
+    }
+
+    var selectListShop = ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>;
+    selectListShop = selectListShop ?? new List<Tb_User_ShopWithShopMc>();
+    var id_shop_master = ViewData["id_shop_master"] == null ? "" : ViewData["id_shop_master"].ToString();
+    var version = ViewData["version"];// 10 单店  连锁 20 
+}
+
+
+
+
+<div class="wrap-tab-contentbox" contentid="account/detail" controller="account" action="detail">
+    <script type="text/javascript">
+        $(function () {
+            $('div[contentID="account/detail"]').attr({ controller: 'account', action: 'detail' });
+            app.c.public_data['account/detail'] = app.c.public_data['account/detail'] || {};
+            app.c.public_data['account/detail']['once'] = false;
+            app.account = app.account || {};
+        });
+    </script>
+    <input pagesize="" value="" type="hidden">
+    <input page="" value="" type="hidden">
+    <div class="contentbox-header">
+        <a onclick="$.fn.menuTab.load({ url: '/account/list', 'title': '员工管理', id: 'account/list', nocache: '0' }); ">员工管理</a>
+        &gt;
+        <a class="" onclick="$.DHB.refresh();">员工详情</a>
+    </div>
+
+    <div class="col">
+        <div class="row">
+            <div class="col-xs-12 comform">
+                <div class="panel panel-default pad-l30 pad-t20">
+                    <div class="main-content">
+                        <div class="row">
+                            <div class="col-xs-12"></div>
+                        </div>
+                        <div class="fixed-input-group">
+                            <h2 class="form_title"><span>登录信息</span></h2>
+                            <div class="col-sm-12 form_content">
+
+
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <em class="tag">* </em><span>所属门店：</span>
+                                        </label>
+                                        <label>
+                                            @userModel.name_shop
+                                        </label>
+
+                                        <label class="copy d-i-b l-h-30 m-l-none" id="copy" style="position: relative">
+                                            <a class="icon-question tool" style="position: relative;left: 3px;"></a>
+                                            <div class="popover fade bottom in tool-box" style="left: -20px; width: auto; display: none;">
+                                                <div class="arrow" style="left: 36px;"></div>
+                                                <div class="popover-content">
+                                                    <p style="width: 644px;">此门店为单据默认门店或收银门店</p>
+
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                    </div>
+                                </div>
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <em class="tag">* </em><span>登录账号：</span>
+                                        </label>
+                                        <label>
+                                            @userModel.username
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <span>主用户：</span>
+                                        </label>
+                                        <label>
+                                            @Html.Raw(userModel.flag_master.ToString() == "1" ? "是" : "否")
+                                        </label>
+                                    </div>
+                                </div>
+
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <span>用户状态：</span>
+                                        </label>
+                                        <label>
+                                            @Html.Raw(userModel.flag_state.ToString() != "1" ? "停用" : "正常")
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!--联系人-->
+                        <div class="fixed-input-group dis-table">
+                            <h2 class="form_title"><span>基本信息</span></h2>
+                            <div class="col-sm-12 form_content">
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <em class="tag">* </em> <span>姓名：</span>
+                                        </label>
+                                        <label>
+                                            @userModel.name
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <em class="tag">* </em><span>手机号码：</span>
+                                        </label>
+                                        <label class="m-l-sm1">
+                                            @userModel.phone
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <span>电话号码：</span>
+                                        </label>
+                                        <label class="m-l-sm1">
+                                            @userModel.tel
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <span>QQ：</span>
+                                        </label>
+                                        <label class="m-l-sm1">
+                                            @userModel.qq
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <span>电子邮箱：</span>
+                                        </label>
+                                        <label>
+                                            @userModel.email
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <span>职务：</span>
+                                        </label>
+                                        <label>
+                                            @*@userModel.companyname*@
+                                            @userModel.job
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <span>联系地址：</span>
+                                        </label>
+                                        <label>
+                                            @Html.Raw(userModel.name_province + "-" + userModel.name_city + "-" + userModel.name_county + "-" + userModel.address)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--业务信息-->
+                        <div class="fixed-input-group dis-table">
+                            <h2 class="form_title"><span>业务信息</span></h2>
+                            <div class="col-sm-12 form_content">
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div style="width:100px;">
+                                        <label class="lab-w">
+                                            <span>所属角色：</span>
+                                        </label>
+                                        <label>
+                                            @foreach (var item in roleModel.Where(d => d.isChecked == true))
+                                            {
+                                                @Html.Raw(item.name_role + "  ")
+                                            }
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--门店信息-->
+                        <div class="fixed-input-group dis-table max-w"  @Html.Raw(@version.ToString()=="10"?"style='display:none'":"")>
+                            <h2 class="form_title"><span>门店信息</span></h2>
+                            <div class="col-sm-12 form_content">
+
+                                <div class="input-item-2 clearfix add-client m-l-25">
+                                    <div>
+                                        <label class="lab-w">
+                                            <span>用户管理门店：</span>
+                                        </label>
+                                        <label class="text-sp">
+
+                                            @*@foreach (var item in selectListShop)
+                                                {
+                                                    @Html.Raw(item.mc + "  ")
+                                                }*@
+
+                                            @foreach (var item in selectListShop)
+                                            {
+                                                if (item.id_shop == id_shop_master)
+                                                {
+                                                    if (userModel.id_shop == id_shop_master)
+                                                    {
+                                                        @Html.Raw(item.mc + "  ")
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw(item.mc + "  ")
+                                                }
+                                            }
+
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                    <footer class="panel-footer padder-lg padder-v need-footer-fixed need-footer-fixed-box text-l">
+                        <input name="base_client_id" id="base_client_id" value="1185" type="hidden">
+                        <button class="btn w-110 btn-info m-l-none m-r" id="submit-button" data-loading-text="正在提交..." type="button" onclick="$.fn.menuTab.load({ url: '/account/edit?flag_edit=update&id=@ViewData["ID"]', 'title': '员工编辑', id: 'account/edit', nocache: '0' }); ">
+                            修改员工资料
+                        </button>
+                        <button class="btn w-xs btn-default" type="button" onclick="$.fn.menuTab.deleteMenu('account/detail');$.fn.menuTab.load({ url: '/account/list', 'title': '员工管理', id: 'account/list', nocache: '0' }); ">
+                            取消
+                        </button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display: none;" class="wrap-tab-contentbox" contentid="ClientGroup/index" controller="Client" action="client">
+
+
+
+
+    <script language="JavaScript">
+
+
+
+
+
+
+
+
+    </script>

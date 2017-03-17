@@ -1,0 +1,165 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    PageList<Tb_Shopsp_Query> list_shopsp = ViewData["list_shopsp"] as PageList<Tb_Shopsp_Query>;
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+}
+
+
+<table id="shopsp_table" class="table m-b-none row1 selectAll-table b-b" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th style="width:45px;">
+                <label class="i-checks m-b-none">
+                    <input id="goods-dialog-selectAll" type="checkbox" onclick="app.shopsp.select_all(this)">
+                    <i>
+                    </i>
+                </label>
+            </th>
+            <th width="15%">
+                条形码
+            </th>
+            <th width="30%">
+                商品
+            </th>
+            @*<th width="7%">
+                所属门店
+            </th>*@
+            <th width="7%">
+                商品分类
+            </th>
+            <th width="7%">
+                单位
+            </th>
+            <th width="7%">
+                零售价
+            </th>
+            <th width="7%">
+                进货价
+            </th>
+            <th width="7%">
+                批发价
+            </th>
+            <th width="7%">
+                会员价
+            </th>
+            <th width="7%">
+                状态
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @{
+            if (list_shopsp == null || list_shopsp.Count == 0)
+            {
+            }
+            else
+            {
+                int index = 1;
+                foreach (var item in list_shopsp)
+                {
+                    <tr data-options="@item.id" style="cursor:pointer;" onclick="app.shopsp.select_click(this)">
+                        <td class="align_center">
+                            <label class="i-checks m-b-none">
+                                <input type="checkbox" name="goods-dialog-post[]" data-realnumber="0" data-wholeinventory="0" value="@item.id" data-id="@item.id" data-goodsname="@item.mc" data-translation="1" data-category="@item.spfl_mc" data-name="@item.mc"
+                                       data-wholeprice="@item.dj_jh.Digit((int)digit["dj_digit"])" data-purchaseprice="@item.dj_ls.Digit((int)digit["dj_digit"])" data-numberprice="[]"
+                                       data-baseunits="@item.dw"
+                                       data-containerunits=""
+                                       data-orderunits="@item.barcode" data-minorder="1" data-conversionnumber="1" data-goodsnum="@item.bm"
+                                       data-goodspicture="@Html.Raw(string.IsNullOrWhiteSpace(item.pic_path) ? "/static/images/default.jpg" : item.pic_path) "
+                                       data-id_kcsp="@item.id_kcsp"
+                                       data-id_sp="@item.id_sp"
+                                       data-zhl="@item.zhl"
+                                       data-dj_jh="@item.dj_jh.Digit((int)digit["dj_digit"])"
+                                       data-dj_ls="@item.dj_ls.Digit((int)digit["dj_digit"])"
+                                       data-dj_hy="@item.dj_hy.Digit((int)digit["dj_digit"])"
+                                       data-barcode="@item.barcode"
+                                       data-bm="@item.bm"
+                                       data-id_shop="@item.id_shop"
+                                       data-id_spfl="@item.id_spfl"
+                                       data-dw="@item.dw" 
+                                       data-sl_qm="@item.sl_qm.Digit((int)digit["sl_digit"])"
+                                       data-je_qm="@item.je_qm.Digit((int)digit["je_digit"])"
+                                       data-dj_cb="@item.dj_cb.Digit((int)digit["dj_digit"])"
+                                       data-dj_ps="@item.dj_ps.Digit((int)digit["dj_digit"])"
+                                       data-dj_pf="@item.dj_pf.Digit((int)digit["dj_digit"])"
+
+                                       />
+                                <i onclick="app.shopsp.stoppro(this)"></i>
+                            </label>
+                        </td>
+                        <td field="barcode">
+                            <div>
+                                @item.barcode
+                            </div>
+                        </td>
+                        <td field="mc">
+                            <div>
+                                @item.mc
+                            </div>
+                        </td>
+                        @*<td field="shop_mc">
+                            <div>
+                                @item.shop_mc
+                            </div>
+                        </td>*@
+                        <td field="spfl_mc">
+                            <div>
+                                @item.spfl_mc
+                            </div>
+                        </td>
+                        <td field="dw">
+                            <div>
+                                @item.dw
+                            </div>
+                        </td>
+                        <td field="dj_ls">
+                            <div>
+                                @item.dj_ls.Digit((int)digit["dj_digit"])
+                            </div>
+                        </td>
+                        <td field="dj_jh">
+                            <div>
+                                @item.dj_jh.Digit((int)digit["dj_digit"])
+                            </div>
+                        </td>
+                        <td field="dj_pf">
+                            <div>
+                                @item.dj_pf.Digit((int)digit["dj_digit"])
+                            </div>
+                        </td>
+                        <td field="dj_hy">
+                            <div>
+                                @item.dj_hy.Digit((int)digit["dj_digit"])
+                            </div>
+                        </td>
+                        <td field="flag_state">
+                            <div>
+                                @Html.Raw(item.flag_state == 1 ? "正常" : "停用")
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            }
+        }
+
+    </tbody>
+</table>
+
+
+
+
+
+
+
+<script>
+    app.c.public_data['shopsp/search'] = app.c.public_data['shopsp/search'] || {};
+    app.c.public_data['shopsp/search']['_row_total_'] = '@list_shopsp.ItemCount',
+    app.c.public_data['shopsp/search']['_page_size_'] = '@list_shopsp.PageSize',
+    app.c.public_data['shopsp/search']['_current_page_'] = '@(list_shopsp.PageIndex)';
+</script>
+

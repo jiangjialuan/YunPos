@@ -1,0 +1,1646 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+
+@{
+    string option = ViewData["option"].ToString();
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+    var selectListShop = ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>;
+    selectListShop = selectListShop ?? new List<Tb_User_ShopWithShopMc>();
+
+    var selectListShopShop = ViewData["userShopShopList"] as List<Tb_User_ShopWithShopMc>;
+    selectListShopShop = selectListShopShop ?? new List<Tb_User_ShopWithShopMc>();
+
+    var userList = ViewData["userList"] as List<Tb_User>;
+    userList = userList ?? new List<Tb_User>();
+
+    string id_user = ViewData["id_user"] == null ? "" : ViewData["id_user"].ToString();
+
+    var item_copy = ViewData["CopyInfo"] as Td_Jh_Dd_1_Query_DetailModel;
+    if (item_copy == null)
+    {
+        item_copy = new Td_Jh_Dd_1_Query_DetailModel();
+        item_copy.head = new Td_Jh_Dd_1_QueryModel() { id_jbr = id_user };
+        item_copy.body = new List<Td_Jh_Dd_2_QueryModel>();
+        item_copy.head.rq = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+    }
+
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var defaultSL = decimal.Parse("0").Digit((int)digit["sl_digit"]);
+    var defaultDJ = decimal.Parse("0").Digit((int)digit["dj_digit"]);
+    var defaultJE = decimal.Parse("0").Digit((int)digit["je_digit"]);
+    var data_json = ViewData["data_json"] == null ? "" : ViewData["data_json"].ToString();
+
+    string type = ViewData["type"] == null ? "" : ViewData["type"].ToString();
+
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+    string id_shop_master = ViewData["loginInfo.id_shop_master"] == null ? "" : ViewData["loginInfo.id_shop_master"].ToString();
+
+}
+
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="dh/add"]').attr({ controller: 'dh', action: 'add' });
+        app.c.public_data['dh/add'] = app.c.public_data['dh/add'] || {};
+        app.c.public_data['dh/add']['once'] = false;
+        app.dh = app.dh || {};
+    });
+</script>
+
+@*<script src="~/static/js/linq.js"></script>*@
+
+
+<input type="hidden" pagesize value="" />
+<input type="hidden" page value="" />
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/dh/list', 'title': '订货管理', id: 'dh/list', nocache: '0' }); ">订货管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">新增订货单</a>
+</div>
+
+<div class="col" id="dh_add">
+    <div class="panel panel-default">
+        <div class="main-content ">
+            <form class="form-group m-b-none validate comform m-t-none" onkeydown="if(event.keyCode==13){return false;}" onkeyup="if(event.keyCode==13){return false;}">
+                <div class="row">
+                    <div class="mar-group clearfix">
+                        <div class="p-l m-t-70">
+
+                            <div class="" style="margin-top:7px">
+                                
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none">
+                                        <span class="inline  text-left">
+
+                                        </span>
+                                    </label>
+                                    <div class="clear-padding f-l">
+                                        <button class="btn btn-info w-xs" type="button" onclick="app.dh.importin()"><i class="fa fa-cloud-upload coin-note"></i> 导入</button>
+                                    </div>
+
+
+
+                                    <div class="clear-padding f-l" id="div_sm" style="display:none;">
+                                        <input class="form-control user-input" style="width:100%;border:0px;margin-left:10px;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)" placeholder="请扫描商品条形码" type="text" value="" id="barcode_search" name="barcode_search" old-data="">
+                                    </div>
+                                    <div class="clear-padding f-l">
+                                        <button class="btn btn-info w-xs" type="button" style="margin-left:15px;" onclick="app.dh.sm(this)">扫描</button>
+                                    </div>
+                                    <div class="clear-padding f-l">
+                                        <button class="btn btn-info w-xs" type="button" style="margin-left:15px;" onclick=" app.dh.importout();"> <i class="fa fa-cloud-download coin-note"></i> 导出</button>
+                                    </div>
+                                    
+                                    
+                              
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 ">
+                        <!--新增订单-->
+                        
+                        <div class="p-l">
+                            <div class="jh_add_title page-header mar-ts">
+                            	<h3 class="mar-t10 mar-b0">订货单</h3>
+                            </div>
+                            <div class="p-l dh_add_up padding1 border-c1 dis-table col-md-12 col-lg-12 col-sm-12">
+                                
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <em class="tag">* </em>供应商：
+                                        </span>
+                                    </label>
+
+                                    <div class="clear-padding f-l">
+                                        <div class="input-group" style="width:150px;position:relative;" @*onmouseenter="$(this).find('span:last()').show();" onmouseleave="$(this).find('span:last()').hide();"*@>
+                                            
+
+                                            <input placeholder="" type="text" value="@item_copy.head.gys_name" autocomplete="off"
+                                                   id="gys_name" class="form-control btn-none {required:true}" data-toggle="dropdown" data-dialog_title=""
+                                                   data-name="gys_name"
+                                                   data-id="gys_id"
+                                                   data-callback="app.dh.add_gys_callback" data-init="0" data-initenter="0" data-initkeydown="0" data-client_type=""
+                                                   onclick="$.DHB.client.select_gys({ 'gys_name': 'gys_name', 'gys_id': 'gys_id', 'gys_callback': 'app.dh.add_gys_callback' });">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default btn-sm f-h-30 m-l-none btn-none" type="button"  onclick="$.DHB.client.select_gys({ 'gys_name': 'gys_name', 'gys_id': 'gys_id', 'gys_callback': 'app.dh.add_gys_callback' });">
+                                                    <i class="icon-users"></i>
+                                                </button>
+                                            </span>
+
+                                            <input type="hidden" name="gys_id" id="gys_id" value="@item_copy.head.id_gys">
+
+                                            @*<span data-name="gys_name" data-id="gys_id" data-callback="app.dh.add_gys_callback"
+                                                  onclick="$.DHB.client.clear_select_gys(this);"
+                                                  style="display:none;z-index:8;position:absolute;top:5px;right:1px;padding:1px 1px 1px 3px;cursor:pointer;color:#d5d3d5;width:18px;height:22px;background:#fff;">
+
+                                            </span>*@
+                                        </div>
+                                    </div>
+
+                                    <label class="copy " style="position: absolute;top:0px;margin-left: 5px">
+                                        <a class="icon-question tool iconImg" style="position: relative; visibility: hidden;"></a>
+                                        <div class="popover fade bottom in tool-box">
+                                            <div class="arrow"></div>
+                                            <div class="popover-content">
+                                                <p>请选择供应商。</p>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                </div>
+
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <em class="tag">* </em>单号：
+                                        </span>
+                                    </label>
+                                    <div class="clear-padding f-l">
+                                        <input class="form-control user-input {maxlength:80,required:true,messages:{required:&#39;请输入单号&#39;}} valid" style="width :150px;" maxlength="80" id="dh" name="dh" placeholder="请输入单号" type="text" value="" onkeyup="app.dh.checkbarcode(this)" onafterpaste="app.dh.checkbarcode(this)">
+                                    </div>
+
+
+                                </div>
+
+
+@if (version == "20")// 10 单店  连锁 20
+                                    {
+                                <div class="pull-left m-r-sm" style="margin-top:7px" id="div_id_shop">
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <em class="tag">* </em>收货门店：
+                                        </span>
+                                    </label>
+                                    <select id="id_shop_sh" name="id_shop_sh" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择商品收货门店&#39;}}" style="width:150px;">
+
+                                        @foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+                                        {
+                                            var shopChecked = "";
+                                            if (string.IsNullOrEmpty(item_copy.head.id_shop_sh))
+                                            {
+                                                shopChecked = id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                            }
+                                            else
+                                            {
+                                                shopChecked = item_copy.head.id_shop_sh == item.id_shop ? "selected=\"selected\"" : "";
+                                            }
+                                            <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                        }
+                                    </select>
+                                </div>
+                                    }else{
+                                  <div class="pull-left m-r-sm dis-no col-md-12 col-lg-12 col-sm-12" style="margin-top:7px" id="div_id_shop">
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <em class="tag">* </em>收货门店：
+                                        </span>
+                                    </label>
+                                    <select id="id_shop_sh" name="id_shop_sh" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择商品收货门店&#39;}}" style="width:150px;">
+                                        <option value="@id_shop">@id_shop</option>
+                                    </select>
+                                </div>
+                                    }
+
+
+
+
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <em class="tag">* </em>经办人：
+                                        </span>
+                                    </label>
+                                    <select id="id_jbr" name="id_jbr" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择经办人&#39;}}" style="width:150px;">
+
+                                        @foreach (var item in userList.OrderBy(d => d.rq_create))
+                                        {
+                                            var jbrChecked = item_copy.head.id_jbr == item.id ? "selected=\"selected\"" : "";
+                                            <option value="@item.id" @jbrChecked>@(string.IsNullOrEmpty(item.name) ? item.username : item.name)</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <span class="inline"><em class="tag">* </em>开单日期：</span>
+                                        </span>
+                                    </label>
+                                    <div class="col-xs-7 clear-padding">
+                                        <div class="input-group">
+                                            
+                                            <input name="rq" id="rq" class="form-control input-sm {required:true,messages:{required:&#39;开单日期&#39;}}" type="text"
+                                                   onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'rq', maxDate: '@DateTime.Now.ToString("yyyy-MM-dd")' })" value="@(item_copy.head.rq == null ? DateTime.Now.ToString("yyyy-MM-dd") : ((DateTime)item_copy.head.rq).ToString("yyyy-MM-dd"))" style="width:123px;">
+                                            <span class="input-group-btn" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'rq', maxDate: '@DateTime.Now.ToString("yyyy-MM-dd")' });">
+                                                <button type="button" class="btn btn-default btn-sm btn-none g-h-34" style="margin-left:0px;">
+                                                    <i class="fa fa-calendar"> </i>
+                                                </button>
+                                            </span>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+
+
+
+                                    @if (version == "20")// 10 单店  连锁 20
+
+                                    {
+                                        <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                            <span class="inline  text-left">
+                                                <span class="inline"><em class="tag">  </em>制单门店：</span>
+                                            </span>
+                                        </label>
+                                        @*<span class="fo_l fl">制单门店：</span>*@
+                                            <select id="id_shop" name="id_shop" onchange="app.dh.id_shop_onchange(this)" class="form-control jjlselect user-input select2 {required:true,messages:{required:&#39;请选择商品门店&#39;}}" style="width:150px;" onmouseenter="$(this).find('div.dropdown-menu').css({'right':'0px' , 'left': 'auto' })">
+
+                                                @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                {
+                                                    var shopChecked = "";
+                                                    if (string.IsNullOrEmpty(item_copy.head.id_shop))
+                                                    {
+                                                        shopChecked = id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                    }
+                                                    else
+                                                    {
+                                                        shopChecked = item_copy.head.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                    }
+                                                    <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                }
+                                            </select>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="fo_l fl dis-no">制单门店：</span>
+                                        <div class="pull-left m-r-sm dis-no" onchange="app.dh.id_shop_onchange(this)" style="margin-top:7px">
+                                            <select id="id_shop" name="id_shop" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择商品门店&#39;}}" style="width:150px;" onmouseenter="$(this).find('div.dropdown-menu').css({ 'right': '0px','left': 'auto'})">
+                                                <option value="@id_shop">@id_shop</option>
+                                            </select>
+                                        </div>
+
+                                    }
+
+
+
+
+                                </div>
+                                @*<div class="pull-left m-r-sm" style="margin-top:7px">
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <span class="inline"><em class="tag">* </em>送货截止日期：</span>
+                                        </span>
+                                    </label>
+                                    <div class="col-xs-7 clear-padding">
+                                        <div class="input-group">
+                                            <span class="input-group-btn" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'rq_jh', minDate: '@DateTime.Now.ToString("yyyy-MM-dd")' });">
+                                                <button type="button" class="btn btn-default btn-sm btn-none g-h-34" style="margin-left:0px;">
+                                                    <i class="fa fa-calendar"> </i>
+                                                </button>
+                                            </span>
+                                            <input name="rq_jh" id="rq_jh" class="form-control input-sm {required:true,messages:{required:&#39;送货截止日期&#39;}}" type="text"
+                                                   onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'rq_jh', minDate: '@DateTime.Now.ToString("yyyy-MM-dd")' })" value="@((item_copy.head.rq_jh == null||  ((DateTime)item_copy.head.rq_jh).ToString("yyyy-MM-dd")=="1900-01-01") ? DateTime.Now.AddMonths(1).ToString("yyyy-MM-dd") : ((DateTime)item_copy.head.rq_jh).ToString(" yyyy-MM-dd"))" style="width:123px;">
+
+                                        </div>
+                                    </div>
+                                </div>*@
+
+
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+                                    <span data-toggle="editclient" class="m-r-sm">
+                                        <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                            <span class="inline  text-left">
+                                                <em class="tag"> </em>备注：
+                                            </span>
+                                        </label>
+                                        <div class="clear-padding f-l">
+                                            <textarea id="remark" name="remark" class=""    >@string.Format(item_copy.head.bz == null ? "" : item_copy.head.bz)</textarea>
+                                        </div>
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div style="clear:both;"></div>
+
+
+
+
+
+
+
+                            <!--商品信息-->
+                            <div class="dh_add_mid">
+
+                                <div class="">
+                                    <div class="table_list table_max_h" style="max-height:445px; border-right:1px solid #c6cedb;">
+                                        <input name="shopspnum" id="shopspnum" value="1" type="hidden">
+                                        <table class="table-bordered order-detail table-sm" id="shopsp_table" name="shopsp_table" style="width:100%;table-layout: fixed;margin-left:0px;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 63px;">序号</th>
+                                                    <th width="120">商品条码</th>
+                                                    <th class="width200">商品名称</th>
+                                                    <th width="70">单位</th>
+                                                    <th class="width120">数量</th>
+                                                    <th class="width120">单价</th>
+                                                    <th class="width120">金额</th>
+                                                    <th class="width120">零售价</th>
+                                                    <th class="width120">库存数量</th>
+                                                    <th class="width200">备注</th>
+                                                    <th width="55">操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in item_copy.body)
+                                            {
+                                                    <tr data-item="@item.id_shopsp">
+                                                        <td class="align_center"><div name="xh">1</div><input class="form-control user-input" style="width:110px;display:none;" placeholder="商品ID" name="shopsp_obj" type="text" value="@item.id_shopsp" data-id_kcsp="@item.id_kcsp" data-id_sp="@item.id_sp" ></td>
+                                                      
+                                                        <td>
+                                                            <input class="form-control user-input" style="width:98%;border:0px;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)"   type="text" value="@item.barcode" name="barcode" old-data="@item.barcode">
+                                                        </td>
+
+                                                        <td name="mc"> 
+                                                            <div style="width: 100% !important;text-align:left;padding:0 0;"> <span>@item.shopsp_name</span>
+                                                            <a href="javascript:void(0)" onclick="app.dh.showshopsp();" class="btn btn-info f-r">  选择</a>
+                                                            </div> 
+                                                        
+                                                        </td>
+
+
+                                                        <td name="dw">
+                                                            <div id="dw_select" name="dw_select" class="common_select" style="display:block;">
+                                                                <div onclick="app.jh.dw_select_onclick(this)">
+                                                                    <span class="inline"  data-zhl="@item.zhl.Digit((int)digit["sl_digit"])">@item.dw</span>
+                                                                    <i class="fa fa-caret-down"></i>
+                                                                </div>
+                                                                <ul class="common_select_list">
+                                                                    <li value="@item.dj_jh.Digit((int)digit["dj_digit"])" data-zhl="@item.zhl.Digit((int)digit["sl_digit"])" data-id_shopsp="@item.id_shopsp" data-id_kcsp="@item.id_kcsp" data-id_sp="@item.id_sp" data-dw="@item.dw"  data-dj_ls="@item.dj_ls.Digit((int)digit["dj_digit"])"  >@item.dw</li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+
+
+
+                                                        <td>
+                                                            <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)" placeholder="数量" type="text" value="@item.sl.Digit((int)digit["sl_digit"])" name="sl" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" old-data="@item.sl.Digit((int)digit["sl_digit"])">
+                                                            <input name="sl_zhl" style="width:95%;display:none;border:0px;text-align:right;" placeholder="转换率" type="text" value="1">
+                                                            <input name="sl_total" style="width:95%;display:none;border:0px;text-align:right;" placeholder="数量总数" type="text" value="@item.sl_total">
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)" placeholder="单价(元)" type="text" value="@item.dj.Digit((int)digit["dj_digit"])" name="dj_jh" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" old-data="@item.dj.Digit((int)digit["dj_digit"])">
+                                                        </td>
+                                                        <td name="je">
+                                                            <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)" placeholder="金额(元)" type="text" value="@item.je.Digit((int)digit["je_digit"])" name="je" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@item.je.Digit((int)digit["je_digit"])">
+                                                        </td>
+
+                                                        <td name="dj_ls">
+                                                            <div style="width: 100% !important;text-align:right;padding:0 0;">@item.dj_ls.Digit((int)digit["je_digit"])</div>
+                                                        </td>
+
+                                                        <td name="sl_kc">
+                                                            <div style="width: 100% !important;text-align:right;padding:0 0;">@item.sl_kc.Digit((int)digit["je_digit"])</div>
+                                                        </td>
+
+
+                                                        <td><input class="form-control user-input" style="width:96%;border:0px;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)"   type="text" value="@item.bz" name="bz"></td>
+                                                        <td class="align_center"><a onclick="app.jh.choice_spec_del(this);" class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a></td>
+                                                    </tr>
+                                            }
+
+                                            </tbody>
+                                        </table>
+
+                                        <div class="cache-init-goods"></div>
+                                        <input type="hidden" name="table_result" id="table_result" value="" />
+                                    </div>
+
+                                    <div class="padding1 border_all pad-b5">
+                                        <button class="btn btn-info w-xs" type="button" onclick="app.dh.addshopsp_row(this)">增加行</button>
+                                        <div class="f-r notice-p">
+                                            <div class="w-295 f-l "><span class="fo_l">合计金额：￥</span><span id="edit_goods_total" class="fo_r">0.00</span></div>
+                                            <div class="w-295 f-l">
+                                                @*<span class="f-l">实付金额：</span><input class="form-control user-input f-l w-150" onfocus="app.dh.onfocus(this)" onblur="app.dh.onblur(this, @digit["je_digit"])" placeholder="实付金额(元)" type="text" value="" name="je_sf" id="je_sf" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="">*@
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+                            <div style="clear:both;"></div>
+                            <div class="col-lg-12 dhd-css" style="padding-left:10px;">
+                            	<div class="dhd-css-cen">
+                            		
+                            		 <div class="fl"><span class="fo_l">制单人：</span><span class="fo_r">@(ViewData["zdr_name"] == null ? "" : ViewData["zdr_name"].ToString())</span></div>
+                                <div class="fl"><span>制单时间：</span><span class="fo_r">@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</span></div>
+                                
+                            		 <div class="fl"><span class="fo_l">审核人：</span><span class="fo_r">@(ViewData["shr_name"] == null ? "" : ViewData["shr_name"].ToString())</span></div>
+                                <div class="fl"><span class="fo_l">审核时间：</span><span class="fo_r">@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</span></div>
+                               
+                               
+                                
+
+                                
+
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer  lter need-footer-fixed align_left">
+
+                    <input type="hidden" name="add_new" id="add_new" value="" />
+
+                    @if (type != "edit")
+                    {
+                        <button class="btn w-xs btn-info m-l-none f-l mr5" id="submit-button" data-loading-text="正在提交..." onclick="$(_+'#add_new').val('1');">
+                            保存并新增
+                        </button>
+                    }
+
+                    <button class="btn w-xs btn-info m-l-none  f-l mr5" id="submit-button" data-loading-text="正在提交..." onclick="$(_+'#add_new').val('0');">
+                        保存
+                    </button>
+
+                    <button type="button" class="btn w-xs btn-default f-l mr5" title="订货管理" onclick="$.fn.menuTab.deleteMenu('dh/add'); $.fn.menuTab.load({ url: '/dh/list', 'title': '订货管理', id: 'dh/list', nocache: '0' }); ">取消</button>
+                    
+                    
+                </footer>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!--设置定位-->
+<div class="modal fade in" id="define-dh-dw" role="dialog">
+    <div class="modal-dialog" style="width:500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">定位</h4>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="">
+                <div class="modal-body tab-content ">
+                    <table class="debit-note-info">
+                        <tbody>
+                            <tr>
+                                <td width="90" class="text-right">
+                                    <label class="m-b">
+                                        <span>查找位置</span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="sub-label w-370 m-b m-l-sm1">
+                                        <select id="id_czwz" name="id_czwz" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;查找位置&#39;}}" style="width:150px;">
+                                            <option value="行号">行号</option>
+                                            <option value="条码">条码</option>
+                                            <option value="名称">名称</option>
+                                            <option value="包装数">包装数</option>
+                                            <option value="数量">数量</option>
+                                            <option value="单价">单价</option>
+                                            <option value="金额">金额</option>
+                                            <option value="备注">备注</option>
+                                        </select>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="90" class="text-right">
+                                    <label class="m-b">
+                                        <span>查找内容</span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="sub-label w-370 m-b m-l-sm1">
+                                        <input class="form-control  w-370 {required:true,maxlength:30}" placeholder="查找内容" type="text" id="id_cznr" name="id_cznr">
+                                    </label>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.dh.dwsub();" class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    
+    $.DHB._ = function () {
+        app.c.public_data['dh/add'] = app.c.public_data['dh/add'] || {};
+        if (app.c.public_data['dh/add']['once'] === false) {
+            app.c.public_data['dh/add']['once'] = true;
+            $.DHB.checkForm(function () {
+
+
+                if (!$(_ + "#gys_id").val()) {
+                    $.DHB.message({ 'content': '请选择供应商！', 'type': 'i' });
+                }
+                else if ($(_ + "#shopsp_table>tbody>tr[data-item!='']").length <= 0) {
+                    $.DHB.message({ 'content': '请至少选择一个商品！', 'type': 'i' });
+                }
+                else {
+                    app.dh.setresult();
+                    var objData = {};
+                    objData.shopspList = $(_ + 'input[name="table_result"]').val();
+                    objData.remark = $(_ + '#remark').val();
+                    objData.id_gys = $(_ + '#gys_id').val();
+                    objData.id_shop = $(_ + '#id_shop').val();
+                    objData.id_jbr = $(_ + '#id_jbr').val();
+                    objData.dh = $(_ + '#dh').val();
+                    objData.rq = $(_ + '#rq').val();
+                    objData.id_shop_sh = $(_ + '#id_shop_sh').val();
+
+                    //objData.je_sf = $(_ + '#je_sf').val();
+                    objData.type = '@type';
+                    objData.id = '@item_copy.head.id';
+                    //console.log(objData);
+                    $.post($.DHB.U('dh/add'), objData,
+                            function (data) {
+                                if (data.status == "success") {
+                                    $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                                    if ($(_ + '#add_new').val() == '0') {
+                                        $.fn.menuTab.deleteMenu('dh/add');
+                                        $.DHB.url('dh/list', 'cache');
+                                    }
+                                    else {
+                                        $.fn.menuTab.deleteMenu('dh/add');
+                                        $.fn.menuTab.load({ url: '/dh/add', 'title': '订货管理', id: 'dh/add', nocache: '0' });
+                                    }
+                                } else {
+                                    $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                }
+                            }, 'json'
+                   );
+                }
+                return false;
+            });
+            $(function () {
+                $(_ + '#submit-button').removeAttr('disabled');
+            });
+        }
+    };
+
+    //默认设置单号
+    cy.http.Post({
+        url: '/dh/createdh',
+        beforeSend: function () {
+        },
+        callback: function (ret) {
+            if (ret.Success) {
+                if ('@type' != 'edit') {
+                    $(_ + "#dh").val(ret.Data);
+                    $(_ + "#dh").attr('old-data', ret.Data);
+                } else {
+                    $(_ + "#dh").val('@item_copy.head.dh');
+                    $(_ + "#dh").attr('old-data', '@item_copy.head.dh');
+                }
+            }
+        },
+        complete: function () {
+
+        }
+    });
+
+    app.dh = app.dh || {};
+
+
+
+    app.dh.add_gys_callback = function (selectVal) {
+        selectVal = selectVal || '';
+        var selectValTem = selectVal.split('|');
+        if (selectValTem[0] != 'undefined' && selectValTem[0] != '') {
+            $('#gys_id', _).val(selectValTem[0]);
+        }
+        if (selectValTem[1] != 'undefined' && selectValTem[1] != '') {
+            $('#gys_name', _).val(selectValTem[1]);
+        }
+    }
+
+    //回填金额 callback
+    app.dh.addshopsp_extendmoney_callback = function () {
+    }
+
+    //表头备注
+    app.dh.orders_remark = function () {
+        $(_ + "#orders-remark").modal('show');
+        $(_ + "#orders-remark textarea[name='remark_value']").val($(_ + "#remark").text());
+    }
+
+    //表头备注保存
+    app.dh.orders_remark_save = function () {
+        $(_ + "#orders-remark").modal('hide');
+        $(_ + "#remark").text($(_ + "#orders-remark textarea[name='remark_value']").val());
+    }
+
+
+    function dialogCallBack(array) {
+        //debugger;
+        var jsonStr = array[5].value;
+        //var objList = jQuery.parseJSON(jsonStr);
+        //var ss = Enumerable.From(objList).OrderBy("x=>x.sl").ToArray();
+        dialogCallBackWork(jsonStr);
+
+        //关闭dialog
+        $.DHB.dialog({ 'id': 'dialog-shopsp-search', 'action': 'destroy' });
+        app.dh.setresult(true);
+    }
+
+    //选择商品回调
+    function dialogCallBackWork(jsonStr) {
+       // debugger;
+        var data_item_last = '';
+        var objList = jQuery.parseJSON(jsonStr);
+        $(objList).each(function (i, obj) {
+
+           // debugger;
+
+            var guid = parseInt($(_ + "#shopspnum").val()) + 1;
+            var option = '';
+            var resultHtml = '';
+            resultHtml += '<tr data-item="' + obj.id_shopsp + '">';
+            resultHtml += '<td class="align_center">  <div name="xh">' + guid + '</div>  <input class="form-control user-input" style="width:110px;display:none;" placeholder="商品ID" name="shopsp_obj" type="text" value="' + obj.id_shopsp + '"  data-id_kcsp="' + obj.id_kcsp + '"  data-id_sp="' + obj.id_sp + '"></td>';
+
+
+
+            var sl = limit_num(obj.sl.toString(), "@digit["sl_digit"]");
+            var dj = limit_num(obj.dj_jh.toString(), "@digit["dj_digit"]");
+            var je = accMul(parseFloat(dj), parseFloat(sl));
+            je = limit_num(je.toString(), "@digit["je_digit"]");
+            var dj_ls = limit_num(obj.dj_ls.toString(), "@digit["dj_digit"]");
+            var sl_kc = limit_num(obj.sl_qm.toString(), "@digit["dj_digit"]");
+
+            resultHtml += ' <td><input class="form-control user-input col-md-2" style="border:0px;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)"   type="text" value="' + obj.barcode + '" name="barcode" old-data="' + obj.barcode + '"></td>';
+            resultHtml += '<td name="mc"> <div style="width: 100% !important;text-align:left;padding:0 0;"> <span>' + obj.mc + '</span><a href="javascript:void(0)" onclick="app.dh.showshopsp();" class="btn btn-info f-r">  选择</a></div> </td>';
+            if (typeof (obj.dw) != 'undefined' && obj.dw != 'undefined' && obj.dw != '') {
+                resultHtml += '<td name="dw">    <div id="dw_select" name="dw_select"  class="common_select" style="display:block;"><div onclick="app.dh.dw_select_onclick(this)"><span class="inline" data-zhl="' + limit_num(obj.zhl.toString(), "@digit["sl_digit"]") + '">' + obj.dw + '</span> <i class="fa fa-caret-down"></i></div><ul class="common_select_list"><li value="' + limit_num(obj.dj_jh.toString(), "@digit["dj_digit"]") + '"  data-zhl="' + limit_num(obj.zhl.toString(), "@digit["sl_digit"]") + '"    data-id_shopsp="' + obj.id_shopsp + '"   data-id_kcsp="' + obj.id_kcsp + '"  data-id_sp="' + obj.id_sp + '" data-dw="' + obj.dw + '" data-dj_ls="' + dj_ls + '"  >' + obj.dw + '</li></ul></div></td>';
+            } else {
+                resultHtml += '<td name="dw">    <div id="dw_select" name="dw_select"   class="common_select"><div onclick="app.dh.dw_select_onclick(this)"><span class="inline">单位</span> <i class="fa fa-caret-down"></i></div><ul value="" class="common_select_list"></ul></div></td>';
+            }
+
+
+            resultHtml += '<td><input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)" placeholder="数量" type="text" value="' + sl + '" name="sl" onkeyup="check_digit(this,\'@digit["sl_digit"]\')" onafterpaste="check_digit(this,\'@digit["sl_digit"]\')" old-data="' + sl + '">    <input name="sl_zhl" style="width:95%;display:none;text-align:right;" placeholder="转换率" type="text" value="1">  <input name="sl_total" style="width:95%;display:none;text-align:right;" placeholder="数量总数" type="text" value="@defaultSL"></td>';
+            resultHtml += ' <td><input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)" placeholder="单价(元)" type="text" value="' + dj + '" name="dj_jh" old-data="' + dj + '"   onkeyup="check_digit(this,\'@digit["dj_digit"]\')" onafterpaste="check_digit(this,\'@digit["dj_digit"]\')" ></td>';
+            resultHtml += ' <td name="je"> <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)" placeholder="金额(元)" type="text" value="' + je + '" name="je" old-data="' + je + '"   onkeyup="check_digit(this,\'@digit["je_digit"]\')" onafterpaste="check_digit(this,\'@digit["je_digit"]\')" ></td>';
+
+
+
+            resultHtml += ' <td name="dj_ls"><div style="width: 100% !important;text-align:right;padding:0 0;">' + dj_ls + '</div></td> ';
+            resultHtml += ' <td name="sl_kc"><div style="width: 100% !important;text-align:right;padding:0 0;">' + sl_kc + '</div></td> ';
+
+
+            if (typeof (obj.bz) != 'undefined' && obj.bz != 'undefined' && obj.bz != '') {
+                resultHtml += ' <td><input class="form-control user-input" style="width:96%;border:0px;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)"   type="text" value="' + obj.bz + '" name="bz"></td>';
+            } else {
+                resultHtml += ' <td><input class="form-control user-input" style="width:96%;border:0px;" onmouseover="app.dh.onmouseover(this)" onmouseout="app.dh.onmouseout(this)"   type="text" value="" name="bz"></td>';
+            }
+            resultHtml += '<td class="align_center"><a onclick="app.dh.choice_spec_del(this);" class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a></td>';
+            resultHtml += ' </tr>';
+            $(_ + "#shopspnum").val(guid);
+            $(_ + "#shopsp_table>tbody").append(resultHtml);
+            app.dh.bindkeypresslast();
+            data_item_last = obj.id_shopsp;
+        });
+    }
+
+    app.dh.addshopsp_row = function (obj) {
+        app.dh.addshopsp();
+        reset_xh();
+    };
+   
+
+    //添加商品至table
+    app.dh.addshopsp = function (obj) {
+
+        var shopsp = [];
+        var shopsp_e = {};
+        shopsp_e.id_shopsp = "";
+        shopsp_e.id_kcsp = "";
+        shopsp_e.id_sp = "";
+        shopsp_e.barcode = "";
+        shopsp_e.mc = "";
+        shopsp_e.dw = "";
+        shopsp_e.zhl = "1";
+        shopsp_e.dj_jh = '@defaultDJ';
+        shopsp_e.sl = '@defaultSL';
+
+        shopsp_e.dj_ls = '@defaultDJ';
+        shopsp_e.sl_qm = '@defaultSL';
+
+        shopsp.push(shopsp_e);
+        var jsonStr = JSON.stringify(shopsp);
+        dialogCallBackWork(jsonStr);
+    }
+
+    //删除商品的数据
+    app.dh.choice_spec_del = function (el) {
+        $(el).parents('tr').remove();
+        app.dh.setresult(false);
+    }
+
+    //改动后重新计算和赋值
+    app.dh.setresult = function (ifRemove) {
+
+        var e = [];
+        var shopsp = [];
+        var totleMoney = 0;
+        var xh = 1;
+
+        if (ifRemove) {
+            $('#shopsp_table>tbody').find('tr[data-item=""]').each(function () {
+                $(this).remove();
+            });
+        }
+
+        $('#shopsp_table>tbody').find('tr').each(function () {
+
+
+
+            $(this).find('div[name="xh"]').text(xh);
+            var shopsp_e = {};
+            var shopsp_obj = $(this).find('input[name="shopsp_obj"]');
+            shopsp_e.id_shopsp = shopsp_obj.val();
+            shopsp_e.id_kcsp = $.trim(shopsp_obj.attr("data-id_kcsp"));//仓库id
+            shopsp_e.id_sp = $.trim(shopsp_obj.attr("data-id_sp"));//id_sp
+            shopsp_e.sl = $.trim($(this).find('input[name="sl"]').val()); //数量
+            shopsp_e.dj = $.trim($(this).find('input[name="dj_jh"]').val()); //单价
+            shopsp_e.barcode = $.trim($(this).find('input[name="barcode"]').val());//条码
+            shopsp_e.dw = $(this).find('div[name=dw_select]>div>span').html();//单位
+            shopsp_e.bz = $.trim($(this).find('input[name="bz"]').val());//备注
+            shopsp_e.zhl = $.trim($(this).find('div[name=dw_select]>div>span').attr('data-zhl')); //转换率
+            shopsp_e.shopsp_name = $(this).find('td[name="mc"] div').text();;//商品名称
+
+            shopsp_e.dj_ls = $(this).find('td[name="dj_ls"] div').text();
+            shopsp_e.sl_kc = $(this).find('td[name="sl_kc"] div').text();
+
+
+            //数量总数
+            var sl_total = accMul(parseFloat(shopsp_e.zhl), parseFloat(shopsp_e.sl));                     //(parseFloat(shopsp_e.zhl) * parseFloat(shopsp_e.sl));
+            sl_total = limit_num(sl_total.toString(), "@digit["sl_digit"]")
+            $(this).find('input[name="sl_total"]').val(sl_total);
+            shopsp_e.sl_total = $.trim(sl_total);
+
+            shopsp_e.je = $.trim($(this).find('input[name="je"]').val()); //金额
+
+            if (shopsp_e.id_shopsp != '') {
+                shopsp.push(shopsp_e);
+            }
+            xh++;
+
+
+            //当前金额
+            var moneyTotal = limit_num(shopsp_e.je.toString(), "@digit["dj_digit"]")
+            //总金额
+            //totleMoney += parseFloat($.trim(moneyTotal))
+            totleMoney = accAdd(totleMoney, parseFloat($.trim(moneyTotal)));
+        });
+
+        if (ifRemove) {
+            $(_ + "#shopspnum").val(parseInt(xh) - 1);
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            app.dh.addshopsp();
+            reset_xh();
+        }
+
+
+        //totleMoney = totleMoney.toFixed(@digit["dj_digit"]);
+        totleMoney = limit_num(totleMoney.toString(), "@digit["je_digit"]")
+        $(_ + '#edit_goods_total').text(totleMoney);
+        var jsonStr = JSON.stringify(shopsp);
+        $(_ + "#table_result").val(jsonStr);
+
+    }
+
+    //时间控件
+    app.dh.wdatepicker_dh_list = function (el) {
+        var booStart = $(el).data('type') == 'start';
+        var option = {};
+        option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+        option['onpicked'] = function () {
+            $(el)
+                .text($dp.cal.getP('y') +
+                    '-' +
+                    $dp.cal.getP('M') +
+                    '-' +
+                    $dp.cal.getP('d'));
+            if (booStart) {
+                setTimeout(function () {
+                    $(el)
+                        .parent()
+                        .find('[data-type="end"]')
+                        .data('position', '1')
+                        .click();
+                },
+                    5000);
+            }
+            app.search.do_search_dw_list();
+        };
+
+        if (booStart) {
+            option['maxDate'] =
+                '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+        } else {
+            option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+            if ($(el).data('position') == '1') {
+            }
+        }
+        option['oncleared'] = function () {
+            $(el).html(booStart ? $(el).data('title') : '截至日期');
+            app.search.do_search_dw_list();
+        };
+
+        WdatePicker(option);
+    }
+
+
+
+
+    //绑定事件
+    app.dh.bindkeypress = function (obj) {
+        $('#shopsp_table>tbody').find('tr').each(function () {
+            bindEvent($(this));
+        });
+    }
+
+    //默认绑定事件
+    app.dh.bindkeypress();
+
+    //绑定最后一条tr的事件
+    app.dh.bindkeypresslast = function () {
+        $("#shopsp_table>tbody>tr:last").each(function () {
+            bindEvent($(this));
+        });
+    };
+
+    //绑定事件执行
+    function bindEvent(ele) {
+        ele.each(function () {
+            var barcode_obj = $(this).find('input[name="barcode"]');
+            var sl_obj = $(this).find('input[name="sl"]');
+            var dj_ls_obj = $(this).find('input[name="dj_jh"]');
+            var bz_obj = $(this).find('input[name="bz"]');
+            var je_obj = $(this).find('input[name="je"]');
+
+            barcode_obj.keyup(function (e) {
+                var tr = barcode_obj.parents("tr");
+                if (e.keyCode == 13) {
+                    var data_item_tr = tr.attr("data-item");
+                    if (data_item_tr != 'undefined' && data_item_tr != '') {
+                        //已经获取过数据 此时找数量焦点
+                        sl_obj.focus().select();
+                    }
+                    else {
+                        //Post读取数据赋值
+                        cy.http.Post({
+                            url: '/shopsp/GetShopspList',
+                            data: { keyword: barcode_obj.val() },
+                            beforeSend: function () {
+                            },
+                            callback: function (ret) {
+                                if (ret.Success) {
+                                    debugger;
+                                    tr.attr("data-item", ret.Data.id);
+                                    tr.find('td[name="mc"] div').text(ret.Data.mc);
+                                    tr.find('input[name="sl"]').val(limit_num('1', '@digit["sl_digit"]'));
+                                    tr.find('input[name="dj_jh"]').val(limit_num(ret.Data.dj_jh.toString(), '@digit["dj_digit"]'));
+                                    tr.find('input[name="je"]').val(limit_num(ret.Data.dj_jh.toString(), '@digit["dj_digit"]'));
+                                    //设置old-data
+                                    barcode_obj.attr('old-data', barcode_obj.val());
+                                    sl_obj.attr('old-data', limit_num('1', '@digit["sl_digit"]'));
+                                    dj_ls_obj.attr('old-data', limit_num(ret.Data.dj_jh.toString(), '@digit["dj_digit"]'));
+                                    je_obj.attr('old-data', limit_num(ret.Data.dj_jh.toString(), '@digit["dj_digit"]'));
+
+                                    tr.find('input[name="shopsp_obj"]').attr("value", ret.Data.id);
+
+                                    tr.find('input[name="sl"]').focus().select();
+
+                                    tr.find('td[name="dj_ls"] div').text(limit_num(ret.Data.dj_ls.toString(), '@digit["dj_digit"]'));
+                                    tr.find('td[name="sl_kc"] div').text(limit_num(ret.Data.sl_qm.toString(), '@digit["dj_digit"]'));
+
+
+                                    //绑定下拉
+                                    tr.find('div[name=dw_select]>div>span').html(ret.Data.dw);
+                                    tr.find('div[name=dw_select]>div>span').attr("data-zhl", ret.Data.zhl);
+                                    tr.find('div[name=dw_select]').css('display', 'block');
+                                    tr.find('ul').append('<li>' + ret.Data.dw + '</li>');
+                                    //转换率
+                                    var zhl = ret.Data.zhl.toString();
+                                    zhl = limit_num(zhl, "@digit["sl_digit"]")
+                                    var dj_jh = ret.Data.dj_jh.toString();
+                                    dj_jh = limit_num(dj_jh, "@digit["dj_digit"]")
+
+                                    var dj_ls = ret.Data.dj_ls.toString();
+                                    dj_ls = limit_num(dj_ls, "@digit["dj_digit"]")
+                                    
+
+                                    //dw_select.append('<option value=' + dj_jh + '  data-zhl=' + zhl + ' data-id_shopsp=' + ret.Data.id + ' data-id_kcsp=' + ret.Data.id_kcsp + '  data-id_sp=' + ret.Data.id_sp + ' data-dw=' + ret.Data.dw + ' data-dj_ls="' + dj_ls + '" > ' + ret.Data.dw + '(' + zhl + ')' + '</option> ');
+                                    tr.find('input[name="sl_zhl"]').val(zhl);
+
+                                    tr.find('input[name="shopsp_obj"]').attr("data-id_kcsp", ret.Data.id_kcsp);
+                                    tr.find('input[name="shopsp_obj"]').attr("data-id_sp", ret.Data.id_sp);
+
+                                    var tbody = tr.parents("tbody");
+                                    var data_item = tbody.find("tr:last").attr("data-item");
+                                    if (data_item == ret.Data.id) {
+                                        app.dh.addshopsp();//新增最后一条新记录
+                                        reset_xh();
+                                    }
+                                    app.dh.setresult(false);
+                                } else {
+                                    $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?keyword=' + barcode_obj.val() + '&id_shop=' + $(_ + '#id_shop').val()), 'id': 'dialog-shopsp-search', 'confirm': dialogCallBack });
+                                }
+                            },
+                            complete: function () { }
+                        });
+                    }
+                }
+                else if (e.keyCode == 38) {//上
+                    var tr_prev = tr.prev('tr');
+                    if (tr_prev.length > 0) {
+                        tr_prev.find('input[name="barcode"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 40) {//下
+                    var tr_next = tr.next('tr');
+                    if (tr_next.length > 0) {
+                        tr_next.find('input[name="barcode"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 37) {//左
+                    var tr_prev = tr.prev('tr');
+                    if (tr_prev.length > 0) {
+                        tr_prev.find('input[name="bz"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 39) {//右
+                    sl_obj.focus().select();
+                }
+            });
+            sl_obj.keyup(function (e) {
+                var tr = sl_obj.parents("tr");
+                if (e.keyCode == 13) {//回车
+                    dj_ls_obj.focus().select();
+                }
+                else if (e.keyCode == 38) {//上
+                    var tr_prev = tr.prev('tr');
+                    if (tr_prev.length > 0) {
+                        tr_prev.find('input[name="sl"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 40) {//下
+                    var tr_next = tr.next('tr');
+                    if (tr_next.length > 0) {
+                        tr_next.find('input[name="barcode"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 37) {//左
+                    barcode_obj.focus().select();
+                }
+                else if (e.keyCode == 39) {//右
+                    dj_ls_obj.focus().select();
+                }
+            });
+            dj_ls_obj.keyup(function (e) {
+                var tr = dj_ls_obj.parents("tr");
+
+                if (e.keyCode == 13) {//回车
+                    je_obj.focus().select();
+                }
+                else if (e.keyCode == 38) {//上
+                    var tr_prev = tr.prev('tr');
+                    if (tr_prev.length > 0) {
+                        tr_prev.find('input[name="dj_jh"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 40) {//下
+                    var tr_next = tr.next('tr');
+                    if (tr_next.length > 0) {
+                        tr_next.find('input[name="barcode"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 37) { //左
+                    sl_obj.focus().select();
+                }
+                else if (e.keyCode == 39) { //右
+                    je_obj.focus().select();
+                }
+            });
+            je_obj.keyup(function (e) {
+                var tr = je_obj.parents("tr");
+                if (e.keyCode == 13) {//回车
+                    bz_obj.focus().select();
+                }
+                else if (e.keyCode == 38) {//上
+                    var tr_prev = tr.prev('tr');
+                    if (tr_prev.length > 0) {
+                        tr_prev.find('input[name="je"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 40) {//下
+                    var tr_next = tr.next('tr');
+                    if (tr_next.length > 0) {
+                        tr_next.find('input[name="barcode"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 37) { //左
+                    dj_ls_obj.focus().select();
+                }
+                else if (e.keyCode == 39) { //右
+                    bz_obj.focus().select();
+                }
+            });
+            bz_obj.keyup(function (e) {
+                var tr = bz_obj.parents("tr");
+                if (e.keyCode == 13) {//回车
+                    var tr_next = tr.next('tr');
+                    if (tr_next.length > 0) {
+                        tr_next.find('input[name="barcode"]').focus().select();
+                    } else {
+
+                        var data_item_tr = tr.attr("data-item");
+                        if (data_item_tr != 'undefined' && data_item_tr != '') {
+                            app.dh.addshopsp();
+                            reset_xh();
+                            tr.next('tr').find('input[name="barcode"]').focus().select();
+                        } else {
+                            barcode_obj.focus().select();
+                        }
+                    }
+                }
+                else if (e.keyCode == 38) {//上
+                    var tr_prev = tr.prev('tr');
+                    if (tr_prev.length > 0) {
+                        tr_prev.find('input[name="bz"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 40) { //下
+                    var tr_next = tr.next('tr');
+                    if (tr_next.length > 0) {
+                        tr_next.find('input[name="barcode"]').focus().select();
+                    }
+                }
+                else if (e.keyCode == 37) { //左
+                    je_obj.focus().select();
+                }
+                else if (e.keyCode == 39) {//右
+                    var tr_next = tr.next('tr');
+                    if (tr_next.length > 0) {
+                        tr_next.find('input[name="barcode"]').focus().select();
+                    }
+                }
+            });
+            barcode_obj.focus(function () {
+                $(this).select();
+            });
+            sl_obj.focus(function () {
+                $(this).select();
+            });
+            dj_ls_obj.focus(function () {
+                $(this).select();
+            });
+            je_obj.focus(function () {
+                $(this).select();
+            });
+            bz_obj.focus(function () {
+                $(this).select();
+            });
+            sl_obj.blur(function () {
+                var tr = sl_obj.parents("tr");
+                var data_item = tr.attr('data-item');
+                if (typeof (data_item) != 'undefined' && data_item != 'undefined' && data_item != '') {
+                    //数量变了金额变
+                    var dj = limit_num($.trim(tr.find('input[name="dj_jh"]').val()), '@digit["dj_digit"]'); //单价
+                    var sl = limit_num($.trim(tr.find('input[name="sl"]').val()), '@digit["sl_digit"]'); //数量
+                    var old_je = limit_num($.trim(tr.find('input[name="je"]').val()), '@digit["je_digit"]'); //旧金额
+                    var je = accMul(parseFloat(dj), parseFloat(sl));//金额
+                    //如果旧金额除以数量取小数后等于现在的单价 金额则不变
+                    if (parseFloat(sl) != 0) {
+                        //var dj_temp = (parseFloat(old_je) / parseFloat(sl));
+                        var dj_temp = accDiv(parseFloat(old_je), parseFloat(sl));
+                        dj_temp = limit_num($.trim(dj_temp), '@digit["dj_digit"]');
+                        if (parseFloat(dj_temp) == parseFloat(dj)) {
+                            je = old_je;
+                        }
+                    }
+                    je = limit_num($.trim(je), '@digit["je_digit"]');
+                    tr.find('input[name="je"]').val(je);
+                    tr.find('input[name="je"]').attr('old-data', je);
+                    tr.find('input[name="sl"]').val(sl);
+                    tr.find('input[name="sl"]').attr('old-data', sl);
+                    app.dh.setresult(false);
+                } else {
+                    sl_obj.val('@defaultSL');
+                }
+
+            });
+            dj_ls_obj.blur(function () {
+                var tr = dj_ls_obj.parents("tr");
+                var data_item = tr.attr('data-item');
+                if (typeof (data_item) != 'undefined' && data_item != 'undefined' && data_item != '') {
+                    //单价变了金额变
+                    var dj = limit_num($.trim(tr.find('input[name="dj_jh"]').val()), '@digit["dj_digit"]'); //单价
+                    var sl = limit_num($.trim(tr.find('input[name="sl"]').val()), '@digit["sl_digit"]'); //数量
+                    var old_je = limit_num($.trim(tr.find('input[name="je"]').val()), '@digit["je_digit"]'); //旧金额
+                    var je = accMul(parseFloat(dj), parseFloat(sl));//金额
+
+                    debugger;
+
+                    //如果旧金额除以数量取小数后等于现在的单价 金额则不变
+                    if (parseFloat(sl) != 0) {
+
+                        debugger;
+
+                        var dj_temp = accDiv(parseFloat(old_je), parseFloat(sl));
+                        dj_temp = limit_num($.trim(dj_temp), '@digit["dj_digit"]');
+                        if (parseFloat(dj_temp) == parseFloat(dj)) {
+                            je = old_je;
+                        }
+                    }
+                    je = limit_num($.trim(je), '@digit["je_digit"]');
+                    tr.find('input[name="je"]').val(je);
+                    tr.find('input[name="je"]').attr('old-data', je);
+                    tr.find('input[name="dj_jh"]').val(dj);
+                    tr.find('input[name="dj_jh"]').attr('old-data', dj);
+                    app.dh.setresult(false);
+                } else {
+                    dj_ls_obj.val('@defaultDJ');
+                }
+            });
+            je_obj.blur(function () {
+                var tr = je_obj.parents("tr");
+                var data_item = tr.attr('data-item');
+                if (typeof (data_item) != 'undefined' && data_item != 'undefined' && data_item != '') {
+                    //金额变了单价变
+                    debugger;
+                    var old_dj = limit_num($.trim(tr.find('input[name="dj_jh"]').val()), '@digit["dj_digit"]'); //旧单价
+                    var je = limit_num($.trim(tr.find('input[name="je"]').val()), '@digit["je_digit"]'); //金额
+                    var sl = limit_num($.trim(tr.find('input[name="sl"]').val()), '@digit["sl_digit"]'); //数量
+                    var dj = '@defaultDJ';//单价
+
+                    if (parseFloat(sl) != 0) {
+                        @*var dj_temp = accDiv(parseFloat(je),parseFloat(sl));
+                        dj_temp = limit_num($.trim(dj_temp),'@digit["dj_digit"]');
+                        if (parseFloat(dj_temp) == parseFloat(old_dj)) {
+                            dj = old_dj;
+                        } else {
+                            dj = dj_temp;
+                        }*@
+
+                        var temp_je = accMul(parseFloat(old_dj), parseFloat(sl));//金额
+                        temp_je = limit_num($.trim(temp_je), '@digit["je_digit"]');
+                        if (je == temp_je) {
+                            dj = old_dj;
+                        } else {
+                            var dj_temp = accDiv(parseFloat(je), parseFloat(sl));
+                            dj_temp = limit_num($.trim(dj_temp), '@digit["dj_digit"]');
+                            dj = dj_temp;
+                        }
+
+                    }
+
+                    tr.find('input[name="dj_jh"]').val(dj);
+                    tr.find('input[name="dj_jh"]').attr('old-data', dj);
+                    tr.find('input[name="je"]').val(je);
+                    tr.find('input[name="je"]').attr('old-data', je);
+                    app.dh.setresult(false);
+                } else {
+                    je_obj.val('@defaultJE');
+                }
+            });
+            barcode_obj.blur(function () {
+                var tr = barcode_obj.parents("tr");
+                var data_item = tr.attr('data-item');
+                if (typeof (data_item) != 'undefined' && data_item != 'undefined' && data_item != '') {
+                    var old_data = barcode_obj.attr('old-data');
+                    barcode_obj.val(old_data);
+                }
+            });
+
+        });
+    }
+
+    //单位下拉选中改变事件
+    app.dh.dw_select_onchange = function (e) {
+        var tr = $(e).parents("tr");
+        var zhl = $(e).attr('data-zhl');
+        if (typeof (zhl) != 'undefined' && zhl != 'undefined' && zhl != '') {
+            tr.find('input[name="sl_zhl"]').val(zhl);
+        }
+
+        var id_shopsp = $(e).attr('data-id_shopsp');
+        if (typeof (id_shopsp) != 'undefined' && id_shopsp != 'undefined' && id_shopsp != '') {
+            tr.attr("data-item", id_shopsp);
+            tr.find('input[name="shopsp_obj"]').attr("value", id_shopsp);
+
+        }
+
+        var id_kcsp = $(e).attr('data-id_kcsp');
+        if (typeof (id_kcsp) != 'undefined' && id_kcsp != 'undefined' && id_kcsp != '') {
+            tr.find('input[name="shopsp_obj"]').attr("data-id_kcsp", id_kcsp);
+        }
+
+        var id_sp = $(e).attr('data-id_sp');
+        if (typeof (id_sp) != 'undefined' && id_sp != 'undefined' && id_sp != '') {
+            tr.find('input[name="shopsp_obj"]').attr("data-id_sp", id_sp);
+        }
+
+        var dj = limit_num($.trim(e.value).toString(), '@digit["dj_digit"]');//单价
+        var sl = limit_num($.trim(tr.find('input[name="sl"]').val()).toString(), '@digit["sl_digit"]'); //数量
+        //var je = limit_num($.trim((parseFloat(dj) * parseFloat(sl))).toString(), '@digit["je_digit"]');//金额
+
+        var dj_ls = $(e).attr('data-dj_ls');
+        if (typeof (dj_ls) != 'undefined' && dj_ls != 'undefined' && dj_ls != '') {
+            dj_ls = limit_num($.trim(dj_ls).toString(), '@digit["dj_digit"]');
+            tr.find('td[name="dj_ls"] div').html(dj_ls);
+        }
+
+        var je = accMul(parseFloat(dj), parseFloat(sl));
+        je = limit_num($.trim(je).toString(), '@digit["je_digit"]');//金额
+        tr.find('input[name="dj_jh"]').val(dj);
+        tr.find('input[name="dj_jh"]').attr('old-data', dj);
+        tr.find('input[name="je"]').val(je);
+        tr.find('input[name="je"]').attr('old-data', je);
+
+
+
+
+        app.dh.setresult(false);
+    };
+
+    //点击单位下拉事件
+    app.dh.dw_select_onclick = function (e) {
+       // debugger;
+        var $select = $(e);
+        var tr = $(e).parents("tr");
+        var data_item = tr.attr('data-item');
+        if (typeof (data_item) != 'undefined' && data_item != 'undefined' && data_item != '') {
+            var dw_select = tr.find('td[name="dw"] div[name="dw_select"] ul');
+            var data_item_select = dw_select.attr('data-item');
+            if (typeof (data_item_select) == 'undefined' || data_item_select == 'undefined' || data_item_select == '' || data_item_select == '0') {
+                //Post读取数据赋值
+                cy.http.Post({
+                    url: '/shopsp/GetShopspDwList',
+                    data: { select_id_sp: data_item },
+                    beforeSend: function () {
+                    },
+                    callback: function (ret) {
+                        //console.log(ret);
+                        if (ret.Success) {
+                            if (ret.Data.length > 0) {
+                                for (var item in ret.Data) {
+
+                                    if (ret.Data[item].id != data_item) {
+                                        var zhl = ret.Data[item].zhl.toString();
+                                        zhl = limit_num(zhl, "@digit["sl_digit"]")
+                                        var dj_jh = ret.Data[item].dj_jh.toString();
+                                        dj_jh = limit_num(dj_jh, "@digit["dj_digit"]")
+
+                                        var dj_ls = ret.Data[item].dj_ls.toString();
+                                        dj_ls = limit_num(dj_ls, "@digit["dj_digit"]")
+
+                                        dw_select.append('<li  value=' + dj_jh + '  data-zhl=' + zhl + ' data-id_shopsp=' + ret.Data[item].id + ' data-id_kcsp=' + ret.Data[item].id_kcsp + '   data-id_sp=' + ret.Data[item].id_sp + '  data-dj_ls="' + dj_ls + '"   > ' + ret.Data[item].dw + '</li> ');
+
+                                    }
+                                }
+
+                                dw_select.attr('data-item', '1');
+                            }
+                        }
+                    },
+                    complete: function () {  }
+
+                });
+            }
+
+        }
+        $select.siblings('ul').show();
+
+    };
+
+    app.dh.add_ready = function () {
+
+        $('.table_list', _).on('mouseleave', '.common_select', function () {
+            $('.common_select_list', _).hide();
+        });
+        $('.table_list', _).on('click', '.common_select_list li', function () {
+
+            var li_txt = $(this).html();
+            $(this).parents('.common_select_list').hide();
+            $(this).parents('.common_select').find('span').html(li_txt);
+            $(this).parents('.common_select').find('span').attr('data-zhl', $(this).attr('data-zhl'));
+            app.dh.dw_select_onchange(this);
+        });
+        app.dh.setresult(true);
+    }
+
+
+    app.dh.onmouseover = function onmouseover(e) {
+        var input = $(e);
+        input.css({ border: "1px solid #ccc" })
+    };
+
+    app.dh.onmouseout = function onmouseout(e) {
+        var input = $(e);
+        input.css({ border: "0px solid #ccc" })
+    };
+
+
+    app.dh.sm = function (e) {
+        var div_sm = $(_ + '#div_sm');
+        if (div_sm.css('display') == 'none') {
+            $(_ + '#div_sm').css('display', 'block');
+        } else {
+            $(_ + '#div_sm').css('display', 'none');
+        }
+    }
+
+
+    $(_ + '#div_sm').keyup(function (e) {
+        if (e.keyCode == 13) {
+            $('#shopsp_table>tbody').find('tr[data-item=""]:first').each(function () {
+                var tr = $(this);
+                //Post读取数据赋值
+                cy.http.Post({
+                    url: '/shopsp/GetShopspList',
+                    data: { keyword: $(_ + '#barcode_search').val() },
+                    beforeSend: function () {
+                    },
+                    callback: function (ret) {
+                        if (ret.Success) {
+                            tr.attr("data-item", ret.Data.id);
+                            tr.find('td[name="mc"] div').text(ret.Data.mc);
+                            tr.find('input[name="sl"]').val(limit_num('1', '@digit["sl_digit"]'));
+                            tr.find('input[name="dj_jh"]').val(limit_num(ret.Data.dj_jh.toString(), '@digit["dj_digit"]'));
+                            tr.find('input[name="je"]').val(limit_num(ret.Data.dj_jh.toString(), '@digit["je_digit"]'));
+                            //设置old-data
+                            tr.find('input[name="barcode"]').attr('old-data', $(_ + '#barcode_search').val());
+                            tr.find('input[name="barcode"]').val($(_ + '#barcode_search').val());
+                            tr.find('input[name="sl"]').attr('old-data', limit_num('1', '@digit["sl_digit"]'));
+                            tr.find('input[name="dj_jh"]').attr('old-data', limit_num(ret.Data.dj_jh.toString(), '@digit["dj_digit"]'));
+                            tr.find('input[name="je"]').attr('old-data', limit_num(ret.Data.dj_jh.toString(), '@digit["je_digit"]'));
+                            tr.find('input[name="shopsp_obj"]').attr("value", ret.Data.id);
+
+
+                            tr.find('td[name="dj_ls"] div').text(limit_num(ret.Data.dj_ls.toString(), '@digit["dj_digit"]'));
+                            tr.find('td[name="sl_kc"] div').text(limit_num(ret.Data.sl_qm.toString(), '@digit["dj_digit"]'));
+                            debugger;
+                            //绑定下拉
+                            tr.find('div[name=dw_select]>div>span').html(ret.Data.dw)
+                            tr.find('div[name=dw_select]').css('display', 'block');
+                            tr.find('ul').append('<li>' + ret.Data.dw + '</li>');
+                            //转换率
+                            var zhl = ret.Data.zhl.toString();
+                            zhl = limit_num(zhl, "@digit["sl_digit"]")
+                            var dj_jh = ret.Data.dj_jh.toString();
+                            dj_jh = limit_num(dj_jh, "@digit["dj_digit"]")
+
+                            var dj_ls = ret.Data.dj_ls.toString();
+                            dj_ls = limit_num(dj_ls, "@digit["dj_digit"]")
+
+                            dw_select.append('<option value=' + dj_jh + '  data-zhl=' + zhl + ' data-id_shopsp=' + ret.Data.id + ' data-id_kcsp=' + ret.Data.id_kcsp + ' data-id_sp=' + ret.Data.id_sp + '  data-dw=' + ret.Data.dw + ' data-dj_ls="' + dj_ls + '" > ' + ret.Data.dw + '(' + zhl + ')' + '</option> ');
+                            tr.find('input[name="sl_zhl"]').val(zhl);
+
+                            tr.find('input[name="shopsp_obj"]').attr("data-id_kcsp", ret.Data.id_kcsp);
+                            tr.find('input[name="shopsp_obj"]').attr("data-id_sp", ret.Data.id_sp);
+
+                            var tbody = tr.parents("tbody");
+                            var data_item = tbody.find("tr:last").attr("data-item");
+                            if (data_item == ret.Data.id) {
+                                app.dh.addshopsp();//新增最后一条新记录
+                                reset_xh();
+                            }
+                            app.dh.setresult(false);
+                        } else {
+                            $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?keyword=' + $(_ + '#barcode_search').val()), 'id': 'dialog-shopsp-search', 'confirm': dialogCallBack });
+                        }
+                    },
+                    complete: function () { }
+                });
+            });
+        }
+    });
+
+
+    app.dh.importin = function () {
+        $.DHB.dialog({ 'title': '订货导入', 'url': $.DHB.U('dh/importin'), 'id': 'dialog-dhdr-search' });
+    }
+
+    function dialogdhDRCallBack(jsonStr) {
+
+        dialogCallBackWork(jsonStr);
+        app.dh.setresult(true);
+        $.DHB.message({ 'content': '操作完毕', 'time': 4000, 'type': 's' });
+    }
+
+    //导出
+    app.dh.importout = function () {
+        if ($(_ + "#shopsp_table>tbody>tr[data-item!='']").length <= 0) {
+            $.DHB.message({ 'content': '无有效的数据！', 'type': 'i' });
+        }
+        else {
+
+            var shopspList = $(_ + 'input[name="table_result"]').val();
+            window.location.href = $.DHB.U('/dh/importout?shopspList=' + shopspList);
+        }
+
+    }
+
+    //定位
+    app.dh.dw = function (obj) {
+        $(_ + "#define-dh-dw").modal('show');
+    };
+
+    //定位确定
+    app.dh.dwsub = function (obj) {
+        var czwz = $(_ + "#id_czwz").val();
+        var cznr = $(_ + "#id_cznr").val();
+        if (cznr == '') {
+            $.DHB.message({ 'content': '请填写查找内容！', 'type': 'i' });
+            return false;
+        }
+
+        var tbody = $('#shopsp_table>tbody');
+
+        if (czwz == '行号') {
+            tbody.find('tr').each(function () {
+                var data = $(this).find('div[name="xh"]').text();
+                if (data == cznr) {
+                    //$(this).find('input[name="barcode"]').val('找到此行');
+                    $(this).focus().select();
+                }
+            });
+        }
+        else if (czwz == '条码') {
+            tbody.find('tr').each(function () {
+                var data = $(this).find('input[name="barcode"]').val();
+                if (data.toString().indexOf(cznr) != -1) {
+                    $(this).find('input[name="barcode"]').focus().select();
+                }
+            });
+        }
+        else if (czwz == '名称') {
+            tbody.find('tr').each(function () {
+                var data = $(this).find('td[name="mc"] div').text();
+                if (data.toString().indexOf(cznr) != -1) {
+                    $(this).find('input[name="barcode"]').focus().select();
+                }
+            });
+        }
+        else if (czwz == '包装数') {
+            tbody.find('tr').each(function () {
+                var data = $.trim($(this).find('select[name="dw_select"] option:selected').attr('data-zhl')); //转换率
+                if (data.toString() == $.trim(cznr)) {
+                    $(this).find('input[name="barcode"]').focus().select();
+                }
+            });
+        }
+        else if (czwz == '数量') {
+            tbody.find('tr').each(function () {
+                var data = $(this).find('input[name="sl"]').val();
+                if (data.toString() == cznr) {
+                    $(this).find('input[name="barcode"]').focus().select();
+                }
+            });
+        }
+        else if (czwz == '单价') {
+            tbody.find('tr').each(function () {
+                var data = $(this).find('input[name="dj"]').val();
+                if (data.toString() == cznr) {
+                    $(this).find('input[name="barcode"]').focus().select();
+                }
+            });
+        }
+        else if (czwz == '金额') {
+            tbody.find('tr').each(function () {
+                var data = $(this).find('input[name="je"]').val();
+                if (data.toString() == cznr) {
+                    $(this).find('input[name="barcode"]').focus().select();
+                }
+            });
+        }
+        else if (czwz == '备注') {
+            tbody.find('tr').each(function () {
+                var data = $(this).find('input[name="bz"]').val();
+                if (data.toString().indexOf(cznr) != -1) {
+                    $(this).find('input[name="bz"]').focus().select();
+                }
+            });
+        }
+
+    };
+
+
+    app.dh.onblur = function (e, num) {
+        var data = $(e).val();
+        $(e).val(limit_num($.trim(data), num));
+    };
+
+    app.dh.onfocus = function (e) {
+        $(e).select();
+    };
+
+    app.dh.showshopsp = function () {
+        $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?id_shop=' + $(_ + '#id_shop_sh').val()), 'id': 'dialog-shopsp-search', 'confirm': dialogCallBack });
+    };
+
+
+
+    function reset_xh(e) {
+        var xh = 1;
+        $('#shopsp_table>tbody').find('tr').each(function () {
+            $(this).find('div[name="xh"]').text(xh);
+            xh++;
+        });
+    }
+
+    app.dh.checkbarcode = function (obj) {
+
+        //如果是上下左右Tab按键 回车 不处理
+        var event = arguments.callee.caller.arguments[0] || window.event;//消除浏览器差异
+
+        if (typeof (event) != 'undefined') {
+            var keyCode = event.keyCode;
+
+            if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40 || keyCode == 9 || keyCode == 13 || keyCode == 8) {
+                return false;
+            }
+        }
+
+        var value = new String($(obj).val().replace(/\s+/g, ""));
+        $(obj).val(value);
+        if (isNaN(value) || value.indexOf(".") != -1) {
+            $.DHB.message({ 'content': '仅允许输入数字', 'time': 4000, 'type': 'i' });
+
+            var old_data = $(obj).attr('old-data');
+            if (typeof (old_data) == 'undefined') { old_data = ''; }
+            value = old_data;
+            $(obj).val(value);
+        }
+        value = value + "";
+        $(obj).attr('old-data', value);
+    }
+
+
+
+    app.dh.id_shop_onchange = function (e) {
+        //var yhlx = $(e).find('option:selected').attr('data-yhlx');
+        //var zk = $(e).find('option:selected').attr('data-zk');
+
+        //$(_ + "#zk").val(zk);
+
+
+        var id_shop = $(_ + '#id_shop').val();
+
+        if (id_shop == '@id_shop_master') {
+            $(_ + "#id_shop_sh").removeAttr("disabled");
+            $(_ + "#div_id_shop").find('button[data-id="id_shop_sh"]').removeClass("disabled");
+        } else {
+            $(_ + "#id_shop_sh").removeAttr("disabled");
+            var index = $('#id_shop_sh', _).find('option[value="' + id_shop + '"]').index();
+            var objid_shop_sh = $(_ + 'select[name="id_shop_sh"]').prev();
+            objid_shop_sh.find('ul li').removeAttr("class");
+            $(objid_shop_sh.find('ul li')[index]).find('a').click();
+            $(_ + "#id_shop_sh").attr("disabled", "disabled");
+            $(_ + "#div_id_shop").find('button[data-id="id_shop_sh"]').addClass("disabled");
+        }
+
+
+
+    };
+
+
+</script>

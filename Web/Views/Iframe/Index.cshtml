@@ -1,0 +1,36 @@
+﻿@{
+    Layout = null;
+    var url = ViewData["url"] == null ? "" : ViewData["url"].ToString();
+}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>云Pos</title>
+    <meta name="description" content="云Pos" />
+
+    <script type="text/javascript">
+          function Iframe() {
+              var iframe = document.getElementById("mainIframe");
+              try {
+                  var bHeight = iframe.contentWindow.document.body.scrollHeight;
+                  var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+                  var height = Math.max(bHeight, dHeight);
+                  iframe.height = height;
+              } catch (ex) { }
+          }
+          window.setInterval("Iframe()", 200);
+    </script>
+
+</head>
+<body>
+    <iframe id="mainIframe"  name="mainIframe" width="100%;" height="650px;" frameborder="0" scrolling="auto" src="@url"></iframe>
+</body>
+</html>

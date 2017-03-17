@@ -1,0 +1,505 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+
+@{
+    string option = ViewData["option"].ToString();
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+    var selectListShop = ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>;
+    selectListShop = selectListShop ?? new List<Tb_User_ShopWithShopMc>();
+    var userList = ViewData["userList"] as List<Tb_User>;
+    userList = userList ?? new List<Tb_User>();
+    string id_user = ViewData["id_user"] == null ? "" : ViewData["id_user"].ToString();
+
+    var item_copy = ViewData["CopyInfo"] as Td_Xs_1_Query_DetailModel;
+    if (item_copy == null)
+    {
+        item_copy = new Td_Xs_1_Query_DetailModel();
+        item_copy.head = new Td_Xs_1_QueryModel() { id_jbr = id_user };
+        item_copy.body = new List<Td_Xs_2_QueryModel>();
+        item_copy.head.rq = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+    }
+
+    var item_dh = ViewData["CopyDDInfo"] as Td_Xs_Dd_1_Query_DetailModel;
+    if (item_dh == null)
+    {
+        item_dh = new Td_Xs_Dd_1_Query_DetailModel();
+        item_dh.head = new Td_Xs_Dd_1_QueryModel();
+        item_dh.body = new List<Td_Xs_Dd_2_QueryModel>();
+        item_dh.head.rq = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+    }
+
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var defaultSL = decimal.Parse("0").Digit((int)digit["sl_digit"]);
+    var defaultDJ = decimal.Parse("0").Digit((int)digit["dj_digit"]);
+    var defaultJE = decimal.Parse("0").Digit((int)digit["je_digit"]);
+    var data_json = ViewData["data_json"] == null ? "" : ViewData["data_json"].ToString();
+
+    string type = ViewData["type"] == null ? "" : ViewData["type"].ToString();
+
+    string temp_kh_name = "";
+    string temp_kh_id = "";
+    string temp_dh_origin = "";
+    string temp_id_bill_origin = "";
+    string temp_bm_djlx_origin = "";
+    string temp_id_shop_sh = "";
+    string temp_bz = "";
+
+    if (!string.IsNullOrEmpty(item_copy.head.id))
+    {
+        temp_kh_id = item_copy.head.id_kh;
+        temp_kh_name = item_copy.head.kh_name;
+        temp_dh_origin = item_copy.head.dh_origin;
+        temp_id_bill_origin = item_copy.head.id_bill_origin;
+        temp_bm_djlx_origin = item_copy.head.bm_djlx_origin;
+        temp_id_shop_sh = item_copy.head.id_shop;
+        temp_bz= item_copy.head.bz;
+    }
+    else if (!string.IsNullOrEmpty(item_dh.head.id))
+    {
+        temp_kh_id = item_dh.head.id_kh;
+        temp_kh_name = item_dh.head.kh_name;
+        temp_dh_origin = item_dh.head.dh;
+        temp_id_bill_origin = item_dh.head.id;
+        temp_bm_djlx_origin = item_dh.head.bm_djlx;
+        temp_id_shop_sh = item_dh.head.id_shop;
+        temp_bz = item_dh.head.bz;
+
+    }
+
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+    string show_shop_version = ViewData["show_shop_version"] == null ? "" : ViewData["show_shop_version"].ToString();
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="xsck/add"]').attr({ controller: 'xsck', action: 'add' });
+        app.c.public_data['xsck/add'] = app.c.public_data['xsck/add'] || {};
+        app.c.public_data['xsck/add']['once'] = false;
+        app.xsck = app.xsck || {};
+    });
+</script>
+<input type="hidden" pagesize value="" />
+<input type="hidden" page value="" />
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/xsck/list', 'title': '销售出库管理', id: 'xsck/list', nocache: '0' }); ">销售出库管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">新增销售出库单</a>
+</div>
+<div class="col" id="xsck_add">
+    <div class="panel panel-default">
+        <div class="main-content ">
+            <form class="form-group m-b-none validate comform m-t-none" onkeydown="if(event.keyCode==13){return false;}" onkeyup="if(event.keyCode==13){return false;}">
+                <div class="row">
+                    <div class="mar-group clearfix">
+                        <div class="p-l m-t-70">
+
+                            <div class="" style="margin-top:7px">
+
+                                <label class="clear-padding control-label f-l l-h-30 p-t-none">
+                                    <span class="inline  text-left">
+
+                                    </span>
+                                </label>
+                                <div class="clear-padding f-l">
+                                    <button class="btn btn-info w-xs" type="button" onclick="app.xsck.importin()"><i class="fa fa-cloud-upload coin-note"></i> 导入</button>
+                                </div>
+
+
+
+                                <div class="clear-padding f-l" id="div_sm" style="display:none;">
+                                    <input class="form-control user-input" style="width:100%;border:0px;margin-left:10px;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)" placeholder="请扫描商品条形码" type="text" value="" id="barcode_search" name="barcode_search" old-data="">
+                                </div>
+                                <div class="clear-padding f-l">
+                                    <button class="btn btn-info w-xs" type="button" style="margin-left:15px;" onclick="app.xsck.sm(this)">扫描</button>
+                                </div>
+                                <div class="clear-padding f-l">
+                                    <button class="btn btn-info w-xs" type="button" style="margin-left:15px;" onclick=" app.xsck.importout();"> <i class="fa fa-cloud-download coin-note"></i> 导出</button>
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 ">
+                        <!--新增订单-->
+
+                        <div class="p-l">
+                            <div class="jh_add_title page-header mar-ts">
+                                <h3 class="mar-t10 mar-b0">销售出库单</h3>
+                            </div>
+                            <div class="p-l jh_add_up pad-t10 pad-b10">
+
+
+                                <div class="pull-left" style="margin-top: 7px">
+                                    <span data-toggle="editclient" class="m-r-sm">
+                                        <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                            <span class="inline  text-left">
+                                                <em class="tag">* </em>客户：
+                                            </span>
+                                        </label>
+
+                                        <div class="clear-padding f-l">
+                                            <div class="input-group" style="width:150px;position:relative;">
+
+
+                                                <input placeholder="" type="text" value="@temp_kh_name" autocomplete="off"
+                                                       id="kh_name" class="form-control btn-none {required:true}" data-toggle="dropdown" data-dialog_title=""
+                                                       data-name="kh_name"
+                                                       data-id="kh_id"
+                                                       data-callback="app.sk.add__add_kh_callback" data-init="0" data-initenter="0" data-initkeydown="0" data-client_type=""
+                                                       onclick="$.DHB.client.select_kh({ 'kh_name': 'kh_name', 'kh_id': 'kh_id', 'kh_callback': 'app.xsck.add_add_kh_callback' ,'kh_type': 'sk' });">
+                                                <span class="input-group-btn">
+                                                    <button id="kh_group_btn" class="btn btn-default btn-sm f-h-30 m-l-none btn-none" type="button" onclick="$.DHB.client.select_kh({ 'kh_name': 'kh_name', 'kh_id': 'kh_id', 'kh_callback': 'app.xsck.add_add_kh_callback', 'kh_type': 'sk' });">
+                                                        <i class="icon-users"></i>
+                                                    </button>
+                                                </span>
+                                                <input type="hidden" name="kh_id" id="kh_id" value="@temp_kh_id">
+
+                                            </div>
+                                        </div>
+
+                                        <label class="copy " style="position: absolute;top:0px;margin-left: 5px">
+                                            <a class="icon-question tool iconImg" style="position: relative; visibility: hidden;"></a>
+                                            <div class="popover fade bottom in tool-box">
+                                                <div class="arrow"></div>
+                                                <div class="popover-content">
+                                                    <p>请选择客户。</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </span>
+                                </div>
+
+
+
+
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <em class="tag">* </em>单号：
+                                        </span>
+                                    </label>
+                                    <div class="clear-padding f-l">
+                                        <input class="form-control user-input {maxlength:80,required:true,messages:{required:&#39;请输入单号&#39;}} valid" style="width :150px;" maxlength="80" id="dh" name="dh" placeholder="请输入单号" type="text" value="" onkeyup="app.xsck.checkbarcode(this)" onafterpaste="app.xsck.checkbarcode(this)">
+                                    </div>
+
+                                </div>
+
+
+
+
+
+                                <div class="pull-left m-r-sm pad-t7">
+                                    <span data-toggle="editclient" class="m-r-sm">
+                                        <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                            <span class="inline  text-left">
+                                                销售订单号：
+                                            </span>
+                                        </label>
+                                        <div class="clear-padding f-l">
+                                            <div class="input-group" style="width:210px;position:relative;" onmouseenter="$(this).find('span:last()').show();" onmouseleave="$(this).find('span:last()').hide();">
+                                                <input placeholder="" readonly="readonly" type="text" value="@temp_dh_origin" autocomplete="off"
+                                                       id="dh_origin" name="dh_origin" class="borderR form-control btn-none {}" data-toggle="dropdown" data-dialog_title=""
+                                                       data-name="dh_origin"
+                                                       data-id="id_bill_origin"
+                                                       data-callback="app.th.add_jh_list_callback"
+                                                       @*onclick="$.DHB.client.select_xs_list({ 'xs_origin': 'xs_origin', 'id_bill_origin': 'id_bill_origin', 'bm_djlx_origin': 'bm_djlx_origin', 'xs_callback': 'app.xsck.add_dh_list_callback' });"*@
+                                                       onclick="app.xsck.select_cktzd()"
+                                                       >
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default btn-sm f-h-30 m-l-none btn-none" type="button"  
+                                                            @*onclick="$.DHB.client.select_xs_list({ 'xs_origin': 'xs_origin', 'id_bill_origin': 'id_bill_origin', 'bm_djlx_origin': 'bm_djlx_origin', 'xs_callback': 'app.xsck.add_dh_list_callback' });"*@
+                                                            onclick="app.xsck.select_cktzd()"
+                                                            >
+                                                        <i class="fa fa-newspaper-o"></i>
+                                                    </button>
+                                                </span>
+
+                                                <input type="hidden" name="id_bill_origin" id="id_bill_origin" value="@temp_id_bill_origin">
+                                                <input type="hidden" name="bm_djlx_origin" id="bm_djlx_origin" value="@temp_bm_djlx_origin">
+
+                                                <span data-name="dh_origin" data-id="id_bill_origin" data-callback="app.xsck.add_dh_list_callback"
+                                                      onclick="app.xsck.clear_select_xs(this);"
+                                                      style="display: none;z-index:8;position:absolute;top:5px;right:35px;padding:1px 1px 1px 3px;cursor:pointer;color:#d5d3d5;width:18px;height:22px;background:#fff;">
+
+                                                    <i class="fa fa-times-circle"></i>
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+                                        <label class="copy " style="position: absolute;top:0px;margin-left: 5px">
+                                            <a class="icon-question tool iconImg" style="position: relative; visibility: hidden;"></a>
+                                            <div class="popover fade bottom in tool-box">
+                                                <div class="arrow"></div>
+                                                <div class="popover-content">
+                                                    <p>销售订单号</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </span>
+                                </div>
+
+
+
+
+
+                                @if (show_shop_version == "1")
+                                {
+                                    <div class="pull-left m-r-sm" style="margin-top:7px" id="div_id_shop">
+                                        <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                            <span class="inline  text-left">
+                                                <em class="tag">* </em>销售门店：
+                                            </span>
+                                        </label>
+                                        <select id="id_shop" name="id_shop" onchange="app.xsck.id_shop_sh_onchange(this)" onmouseenter="app.xsck.option(this)" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择出库门店&#39;}}" style="width:150px;">
+
+                                            @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                            {
+                                                var shopChecked = temp_id_shop_sh == item.id_shop ? "selected=\"selected\"" : "";
+                                                <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="pull-left m-r-sm dis-no" style="margin-top:7px" id="div_id_shop">
+                                        <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                            <span class="inline  text-left">
+                                                <em class="tag">* </em>销售门店：
+                                            </span>
+                                        </label>
+                                        <select id="id_shop" name="id_shop" onchange="app.xsck.id_shop_sh_onchange(this)"  class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择出库门店&#39;}}" style="width:150px;">
+
+                                            @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                            {
+                                                var shopChecked = temp_id_shop_sh == item.id_shop ? "selected=\"selected\"" : "";
+                                                <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <em class="tag">* </em>经办人：
+                                        </span>
+                                    </label>
+                                    <select id="id_jbr" name="id_jbr" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择经办人&#39;}}" style="width:150px;">
+
+                                        @foreach (var item in userList.OrderBy(d => d.rq_create))
+                                        {
+                                            var jbrChecked = item_copy.head.id_jbr == item.id ? "selected=\"selected\"" : "";
+                                            <option value="@item.id" @jbrChecked>@(string.IsNullOrEmpty(item.name) ? item.username : item.name)</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                        <span class="inline  text-left">
+                                            <span class="inline"><em class="tag">* </em>开单日期：</span>
+                                        </span>
+                                    </label>
+                                    <div class="col-xs-7 clear-padding">
+                                        <div class="input-group">
+                                            <input name="rq" id="rq" class="form-control input-sm {required:true,messages:{required:&#39;开单日期&#39;}}" type="text"
+                                                   onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'rq' })" value="@(item_copy.head.rq == null ? DateTime.Now.ToString("yyyy-MM-dd") : ((DateTime)item_copy.head.rq).ToString("yyyy-MM-dd"))" style="width:123px;">
+                                            <span class="input-group-btn" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'rq' });">
+                                                <button type="button" class="btn btn-default btn-sm btn-none g-h-34" style="margin-left:0px;">
+                                                    <i class="fa fa-calendar"> </i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pull-left m-r-sm" style="margin-top:7px">
+                                    <span data-toggle="editclient" class="m-r-sm">
+                                        <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                            <span class="inline  text-left">
+                                                <em class="tag"></em>备注：
+                                            </span>
+                                        </label>
+                                        <div class="clear-padding f-l">
+                                            <textarea id="remark" name="remark" class=""    style="width:420px; height:30px;">@temp_bz</textarea>
+                                        </div>
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+                            <div style="clear:both;"></div>
+                            <!--商品信息-->
+                            <div class="jh_add_mid">
+                                <div class="">
+                                    <div class="table_list table_max_h " style="max-height:445px; border-right:1px solid #c6cedb;">
+                                        <input name="shopspnum" id="shopspnum" value="1" type="hidden">
+                                        <table class="table-bordered order-detail table-sm" id="shopsp_table" name="shopsp_table" style="width:100%;table-layout: fixed;margin-left:0px;">
+                                            <thead>
+                                                <tr>
+                                                    <th width="55">序号</th>
+                                                    <th width="170">商品条码</th>
+                                                    <th width="200">商品名称</th>
+                                                    <th width="70">单位</th>
+                                                    <th class="width120">数量</th>
+                                                    <th class="width120">单价</th>
+                                                    <th class="width120">金额</th>
+                                                    <th width="200">备注</th>
+                                                    <th width="55">操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (item_copy.body != null && item_copy.body.Count() > 0)
+                                                {
+                                                    foreach (var item in item_copy.body.OrderBy(d => d.sort_id))
+                                                    {
+                                                        <tr data-item="@item.id_shopsp">
+                                                            <td class="align_center"><div name="xh">1</div><input class="form-control user-input" style="width:110px;display:none;" placeholder="商品ID" name="shopsp_obj" type="text" value="@item.id_shopsp" data-id_kcsp="@item.id_kcsp" data-id_sp="@item.id_sp"></td>
+                                                            <td>
+
+                                                                <input class="form-control user-input" style="width:98%;border:0px;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)"   type="text" value="@item.barcode" name="barcode" old-data="@item.barcode">
+
+                                                            </td>
+                                                            <td name="mc">
+                                                                <div style="width: 100% !important;text-align:left;padding:0 0;"><span>@item.shopsp_name</span><a href="javascript:void(0)" onclick="app.xsck.showshopsp();" class="btn btn-info f-r">  选择</a></div>
+                                                            </td>
+                                                            <td name="dw">
+                                                                <div id="dw_select" name="dw_select" class="common_select" style="display:block;">
+                                                                    <div onclick="app.xsck.dw_select_xsck_onclick(this)">
+                                                                        <span class="inline" data-zhl="@item.zhl.Digit((int)digit["sl_digit"])">@item.dw</span>
+                                                                        <i class="fa fa-caret-down"></i>
+                                                                    </div>
+                                                                    <ul class="common_select_list">
+                                                                        <li value="@item.dj_jh.Digit((int)digit["dj_digit"])"    data-mc="@item.shopsp_name" data-barcode="@item.barcode" data-sl_kc="0"   data-zhl="@item.zhl.Digit((int)digit["sl_digit"])" data-id_shopsp="@item.id_shopsp" data-id_kcsp="@item.id_kcsp" data-id_sp="@item.id_sp" data-dw="@item.dw">@item.dw</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)" placeholder="数量" type="text" value="@item.sl.Digit((int)digit["sl_digit"])" name="sl" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" old-data="@item.sl.Digit((int)digit["sl_digit"])">
+                                                                <input name="sl_zhl" style="width:95%;display:none;border:0px;text-align:right;" placeholder="转换率" type="text" value="1">
+                                                                <input name="sl_total" style="width:95%;display:none;border:0px;text-align:right;" placeholder="数量总数" type="text" value="@item.sl_total">
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)" placeholder="单价(元)" type="text" value="@item.dj.Digit((int)digit["dj_digit"])" name="dj_jh" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" old-data="@item.dj.Digit((int)digit["dj_digit"])">
+                                                            </td>
+                                                            <td name="je">
+                                                                <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)" placeholder="金额(元)" type="text" value="@item.je.Digit((int)digit["je_digit"])" name="je" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@item.je.Digit((int)digit["je_digit"])">
+                                                            </td>
+                                                            <td><input class="form-control user-input" style="width:96%;border:0px;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)"   type="text" value="@item.bz" name="bz"></td>
+                                                            <td class="align_center"><a onclick="app.xsck.choice_spec_del(this);" class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a></td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else if (item_dh.body != null && item_dh.body.Count() > 0)
+                                                {
+                                                    foreach (var item in item_dh.body.OrderBy(d => d.sort_id))
+                                                    {
+                                                        <tr data-item="@item.id_shopsp">
+                                                            <td class="align_center"><div name="xh">1</div><input class="form-control user-input" style="width:110px;display:none;" placeholder="商品ID" name="shopsp_obj" type="text" value="@item.id_shopsp" data-id_kcsp="@item.id_kcsp" data-id_sp="@item.id_sp"></td>
+                                                            <td>
+
+                                                                <input class="form-control user-input" style="width:98%;border:0px;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)"   type="text" value="@item.barcode" name="barcode" old-data="@item.barcode">
+
+                                                            </td>
+                                                            <td name="mc">
+                                                                <div style="width: 100% !important;text-align:left;padding:0 0;"><span>@item.shopsp_name</span><a href="javascript:void(0)" onclick="app.xsck.showshopsp();" class="btn btn-info f-r">  选择</a></div>
+                                                            </td>
+                                                            <td name="dw">
+                                                                <div id="dw_select" name="dw_select" class="common_select" style="display:block;">
+                                                                    <div onclick="app.xsck.dw_select_xsck_onclick(this)">
+                                                                        <span class="inline" data-zhl="@item.zhl.Digit((int)digit["sl_digit"])">@item.dw</span>
+                                                                        <i class="fa fa-caret-down"></i>
+                                                                    </div>
+                                                                    <ul class="common_select_list">
+                                                                        <li value="@item.dj_jh.Digit((int)digit["dj_digit"])"  data-mc="@item.shopsp_name" data-barcode="@item.barcode" data-sl_kc="0"    data-zhl="@item.zhl.Digit((int)digit["sl_digit"])" data-id_shopsp="@item.id_shopsp" data-id_kcsp="@item.id_kcsp" data-id_sp="@item.id_sp" data-dw="@item.dw">@item.dw</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)" placeholder="数量" type="text" value="@item.sl.Digit((int)digit["sl_digit"])" name="sl" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" old-data="@item.sl.Digit((int)digit["sl_digit"])">
+                                                                <input name="sl_zhl" style="width:95%;display:none;border:0px;text-align:right;" placeholder="转换率" type="text" value="1">
+                                                                <input name="sl_total" style="width:95%;display:none;border:0px;text-align:right;" placeholder="数量总数" type="text" value="@item.sl_total">
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)" placeholder="单价(元)" type="text" value="@item.dj.Digit((int)digit["dj_digit"])" name="dj_jh" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" old-data="@item.dj.Digit((int)digit["dj_digit"])">
+                                                            </td>
+                                                            <td name="je">
+                                                                <input class="form-control user-input" style="width:96%;border:0px;text-align:right;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)" placeholder="金额(元)" type="text" value="@item.je.Digit((int)digit["je_digit"])" name="je" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@item.je.Digit((int)digit["je_digit"])">
+                                                            </td>
+                                                            <td><input class="form-control user-input" style="width:96%;border:0px;" onmouseover="app.xsck.onmouseover(this)" onmouseout="app.xsck.onmouseout(this)"   type="text" value="@item.bz" name="bz"></td>
+                                                            <td class="align_center"><a onclick="app.xsck.choice_spec_del(this);" class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a></td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <div class="cache-init-goods"></div>
+                                        <input type="hidden" name="table_result" id="table_result" value="" />
+                                    </div>
+
+                                    <div class="padding1 border_all pad-b5">
+                                        <button class="btn btn-info w-xs" type="button" onclick="app.xsck.addshopsp_row(this)">增加行</button>
+                                        <div class="f-r notice-p">
+                                            <div class="w-295 f-l "><span class="fo_l">合计金额：￥</span><span id="edit_goods_total" class="fo_r">0.00</span></div>
+                                            <div class="w-295 f-l">
+                                                <span class="f-l">实收金额：</span><input class="form-control user-input f-l w-150" onfocus="app.xsck.onfocus(this)" onblur="app.xsck.onblur(this, @digit["je_digit"])" placeholder="实收金额(元)" type="text" value="@item_copy.head.je_ss.Digit((int)digit["je_digit"])" name="je_ss" id="je_ss" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@item_copy.head.je_ss.Digit((int)digit["je_digit"])">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="clear:both;"></div>
+                            <div class="jh_add_down h-30">
+                                <div class="f-r mr20"><span class="fo_l">审核时间：</span><span class="fo_r">@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</span></div>
+                                <div class="f-r mr20"><span class="fo_l">审核人：</span><span class="fo_r">@(ViewData["shr_name"] == null ? "" : ViewData["shr_name"].ToString())</span></div>
+                                <div class="f-r mr20"><span>制单时间：</span><span class="fo_r">@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</span></div>
+                                <div class="f-r mr20"><span class="fo_l">制单人：</span><span class="fo_r">@(ViewData["zdr_name"] == null ? "" : ViewData["zdr_name"].ToString())</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer  lter need-footer-fixed align_left">
+
+                    <input type="hidden" name="add_new" id="add_new" value="" />
+
+                    @if (type != "edit")
+                    {
+                        <button class="btn w-xs btn-info m-l-none f-l mr5" id="submit-button" data-loading-text="正在提交..." onclick="$(_+'#add_new').val('1');">
+                            保存并新增
+                        </button>
+                    }
+
+                    <button class="btn w-xs btn-info m-l-none  f-l mr5" id="submit-button" data-loading-text="正在提交..." onclick="$(_+'#add_new').val('0');">
+                        保存
+                    </button>
+
+                    <button type="button" class="btn w-xs btn-default f-l mr5" title="销售出库" onclick="$.fn.menuTab.deleteMenu('xsck/add');">取消</button>
+
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <input type="hidden" id="sl_digit" value="@digit["sl_digit"]">
+    <input type="hidden" id="dj_digit" value="@digit["dj_digit"]">
+    <input type="hidden" id="je_digit" value="@digit["je_digit"]">
+    <input type="hidden" id="type" value="@type">
+    <input type="hidden" id="head_id" value="@item_copy.head.id">
+    <input type="hidden" id="head_dh" value="@item_copy.head.dh">
+    <input type="hidden" id="head_je_ss" value="@item_copy.head.je_ss.Digit((int)digit["je_digit"])">
+    <input type="hidden" id="default_dj" value="@defaultDJ">
+    <input type="hidden" id="default_sl" value="@defaultSL">
+    <input type="hidden" id="default_je" value="@defaultJE">
+    <input type="hidden" name="id_shop_sh_hid" id="id_shop_sh_hid" value="" />
+</div>
+
+
+<script src="~/static/js/business/xsck.js"></script>

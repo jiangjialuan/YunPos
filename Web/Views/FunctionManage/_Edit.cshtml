@@ -1,0 +1,299 @@
+﻿@using CySoft.Model;
+@using CySoft.Model.Tb;
+@using System.Text;
+@using CySoft.Model.Ts
+@{
+    string category_id = ViewData["category_id"].ToString();
+    IList<Tb_Function_Tree> list = ViewData["list"] as IList<Tb_Function_Tree>;
+    Tb_Function item_edit = ViewData["item_edit"] as Tb_Function;
+    item_edit = item_edit ?? new Tb_Function();
+    item_edit.version += "";
+    var arr = item_edit.version.Split(',');
+    string option = ViewData["option"].ToString();
+    SelectList selectListType = ViewData["selectListType"] as SelectList;
+    var versionList= ViewData["versionList"] as List<Ts_Flag>;
+    versionList = versionList ?? new List<Ts_Flag>();
+}
+<style>
+    .dropdown-menu {
+        max-height: 510px;
+    }
+</style>
+
+<div class="modal fade in" id="dialog-category" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">编辑分类</h4>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="">
+                <div class="modal-body tab-content ">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>上级分类</span>
+                            </label>
+
+                            <label class="sub-label w-340 m-l-xs">
+                                <select class="form-control input-sm select2_ {required:true,check_parent_basecategory:true}" name="parent_id" id="parent_id" @string.Format("{0}", item_edit == null ? string.Empty : "disabled")>
+                                    <option value="0" @string.Format("{0}", (category_id == "0" || item_edit != null) ? "selected" : string.Empty)>- 请选择上级分类（不选则为顶级分类） -</option>
+                                    <!-- 分类树 -->
+                                    @helper NodeHelper(string category_id, Tb_Function item_edit, int index, bool parent_is_last, IList<Tb_Function_Tree> _list)
+{
+    if (_list.Count > 0)
+    {
+        index = 0;
+        foreach (Tb_Function_Tree item in _list)
+        {
+            index++;
+            int count_level = item.path.Count(c => c.Equals('/'));
+            StringBuilder str_current_symbol = new StringBuilder();
+            if (count_level > 2)        //根节点count_level == 2
+            {
+                //每级4空格
+                for (int i = 0; i < count_level - 3; i++)
+                {
+                    if (item.children.Count >= 0)
+                    {
+                        str_current_symbol.Append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                        //str_current_symbol.Append("│");
+                    }
+                }
+
+                //if (parent_is_last)
+                //{
+                //    str_current_symbol.Remove(str_current_symbol.Length - 1, 1);
+                //}
+                if (index == _list.Count)
+                {
+                    parent_is_last = true;
+                    str_current_symbol.Append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                    //str_current_symbol.Append("└ ");
+                }
+                else
+                {
+                    str_current_symbol.Append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                    //str_current_symbol.Append("├ ");
+                }
+            }
+
+            if (item_edit != null && item_edit.id_father != "0")
+            {
+                //编辑时选中父ID
+                <option value='@item.id' @string.Format("{0}", item_edit.id_father == item.id ? "selected" : string.Empty)>@Html.Raw(str_current_symbol)@item.name</option>
+            }
+            else
+            {
+                //添加子节点时选中当前ID
+                <option value='@item.id' @string.Format("{0}", (category_id == item.id) ? "selected" : string.Empty)>@Html.Raw(str_current_symbol)@item.name</option>
+            }
+
+            if (item.children.Count > 0)
+            {
+                @NodeHelper(category_id, item_edit, index, parent_is_last, item.children)
+            }
+        }
+    }
+}
+                                    @NodeHelper(category_id, item_edit, 0, false, list);
+
+                                    <!-- 分类树 -->
+                                </select>
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>名称</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:30,check_categoryname_spfl:true}" placeholder="请输入名称" type="text" name="name" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.name)" id="txt_name">
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>模块类型</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @Html.DropDownList("flag_type", selectListType, new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control {required:true,maxlength:30,check_categoryname_spfl:true}"}
+                                    })
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>控制器</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs m-b-none">
+                                <input class="form-control {maxlength:30,stringCheckTwo:true}" placeholder="请输入控制器" type="text" name="controller_name" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.controller_name)" id="txt_controller_name">
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>行为</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs m-b-none">
+                                <input class="form-control {maxlength:30,stringCheckTwo:true}" placeholder="请输入行为" type="text" name="action_name" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.action_name)" id="txt_action_name">
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>图标名</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs m-b-none">
+                                <input class="form-control {maxlength:30}" placeholder="请输入图标名" type="text" name="icon" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.icon)" id="txt_icon">
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>分组名</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs m-b-none">
+                                <input class="form-control {maxlength:30}" placeholder="请输入分组名" type="text" name="tag_name" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.tag_name)" id="txt_tag_name">
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>排序号</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs m-b-none">
+                                <input class="form-control {check_common_num:true,maxlength:30}" placeholder="请输入排序号" type="text" name="sort_id" value="@string.Format("{0}", item_edit == null ? 1 : item_edit.sort_id)" id="txt_sort_id">
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>版本</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs m-b-none">
+                                @if (versionList.Any())
+                                {
+                                    foreach (var item in versionList)
+                                    {
+                                        <label class="i-checks">
+                                            <input name="version" value="@item.listdata" @(arr.Contains(item.listdata+"")?"checked":"") type="checkbox">
+                                            <i></i>@item.listdisplay
+                                        </label>
+                                    }
+                                }
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" name="order_num" id="order_num" value="">
+                    <input type="hidden" id="hid_option" value="@option">
+                    <input type="hidden" id="id" name="id" value="@string.Format("{0}", category_id == "0" ? "0" : category_id)" />
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button').button('loading');
+
+            //    $.post(
+            //        $.DHB.U('functionmanage/' + (Tnum > 0 ? 'saveEdit' : 'saveAdd')),
+            //        $(_ + ".validate").serialize(),
+                    
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+            //            $(_ + '#submit-button').text("提交成功！");
+            //            //
+            //            $.DHB.url('functionmanage/list', 'cache');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //            btn.button('reset');
+            //        }
+            //    }, 'json'
+            //);
+                app.httpAjax.post({
+                    data: $(_ + ".validate").serialize(),
+                    headers: {},
+                    url: $.DHB.U('functionmanage/' + (Tnum > 0 ? 'saveEdit' : 'saveAdd')),
+                    type: "POST",
+                    dataType: 'json',
+                    beforeSend: null,
+                    success: function (data) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                            $(_ + '#submit-button').text("提交成功！");
+                            //
+                            $.DHB.url('functionmanage/list', 'cache');
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                            btn.button('reset');
+                        }
+                    },
+                    error: null,
+                    complete: null
+                });
+
+            return false;
+        });
+    };
+
+    app.spfl = app.spfl || {};
+
+    jQuery.validator.addMethod("check_categorynum_spfl",
+        function (value, element) {
+            if (!$(_ + '#category_num').val()) {
+                return true;
+            }
+            else {
+                if ($(_ + '#category_id').val()) {
+                    strCheckUrl = $.DHB.U('spfl/saveEdit?ajax=checkCategorynum&category_id=' + $(_ + '#category_id').val() + '&category_num=' + encodeURIComponent($(_ + '#category_num').val()));
+                } else {
+                    strCheckUrl = $.DHB.U('spfl/saveAdd?ajax=checkCategorynum&category_num=' + encodeURIComponent($(_ + '#category_num').val()));
+                }
+                var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                return $.trim(xhr.responseText) == 'true' ? true : false;
+            }
+        }, "商品分类编号不能够重复！"
+    );
+
+    jQuery.validator.addMethod("check_categoryname_spfl",
+            function (value, element) {
+                if (!$(_ + '#category_name').val()) {
+                    return true;
+                } else {
+                    if ($(_ + '#category_id').val()) {
+                        strCheckUrl = $.DHB.U('spfl/saveEdit?ajax=checkCategoryname&parent_id=' + $(_ + '#parent_id').val() + '&category_id=' + $(_ + '#category_id').val() + '&category_name=' + encodeURIComponent($(_ + '#category_name').val()));
+                    } else {
+                        strCheckUrl = $.DHB.U('spfl/saveAdd?ajax=checkCategoryname&parent_id=' + $(_ + '#parent_id').val() + '&category_name=' + encodeURIComponent($(_ + '#category_name').val()));
+                    }
+                    var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                    return $.trim(xhr.responseText) == 'true' ? true : false;
+                }
+            }, "商品分类名称不能重复！"
+        );
+
+    jQuery.validator.addMethod("check_parent_spfl",
+        function (value, element) {
+            if (!$(_ + '#category_id').val()) {
+                strCheckUrl = $.DHB.U('spfl/saveAdd?ajax=checkCategoryparent&category_id=' + $(_ + '#category_id').val() + '&parent_id=' + $(_ + '#parent_id').val());
+                var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                return $.trim(xhr.responseText) == 'true' ? true : false;
+            } else {
+                strCheckUrl = $.DHB.U('spfl/saveEdit?ajax=checkCategoryparent&category_id=' + $(_ + '#category_id').val() + '&parent_id=' + $(_ + '#parent_id').val());
+                var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                return $.trim(xhr.responseText) == 'true' ? true : false;
+            }
+        }, "商品父级分类不能为自己或者自己的子类，而且商品分类最大支持5级！"
+    );
+</script>

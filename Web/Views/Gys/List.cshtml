@@ -1,0 +1,668 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+
+
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tb_Gys>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    string sort = ViewData["sort"].ToString();
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+
+}
+@Styles.Render("~/static/js/bootstrap-treeview/bootstrap-treeview.min.css")
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="gys/list"]').attr({ controller: 'gys', action: 'list' });
+        app.c.public_data['gys/list'] = app.c.public_data['gys/list'] || {};
+        app.c.public_data['gys/list']['once'] = false;
+        app.gys = app.gys || {};
+    });
+</script>
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        供应商管理
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>1、查找所有的供应商信息</p>
+                        <p>2、添加供应商信息</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['gys/list'] = app.c.public_data['gys/list'] || {};
+    app.c.public_data['gys/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['gys/list']['threemenu'] === false) {
+            app.c.public_data['gys/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-8 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/gys/list">
+                                    <div class="col-xs-12 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+
+                                                <input id="id_gysfl" name="id_gysfl" value="" type="hidden" />
+
+                                                <!-- 内容搜索 -->
+                                                <div class="pull-right m-r-sm" style="margin-top:7px">
+
+                                                    <select id="flag_state" name="flag_state" class="form-control input-sm box-shawn user-input search-result select2" style="width:95px;" onmouseenter="app.search.search_enter(this);" onmouseleave="app.search.search_leave(this);" onchange="app.search.do_search_dw_list(this);">
+                                                        <option value="">供应商状态</option>
+                                                        @foreach (var item in selectListState.OrderBy(d => d.listsort))
+                                                        {
+                                                            <option value="@item.listdata">@item.listdisplay</option>
+                                                        }
+                                                    </select>
+
+                                                </div>
+                                                <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                    <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="text" value="" onkeypress="app.search.trigger_search_dw_list(event);" class="form-control input-sm search-h inline v-middle search-result search" name="keyword" id="keyword" style="width: 250px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="编码/名称/助记码/电话/联系人/备注" ondblclick="app.search.search_item_clear_dw_list(this);" /><span><button type="button" onclick="app.search.do_search_dw_list(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span>
+                                                        <span onclick="app.search.search_item_clear_dw_list(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;">
+                                                            <i class="fa fa-times-circle"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            app.c.public_data['gys/list'] = app.c.public_data['gys/list'] || {};
+                                            app.c.public_data['gys/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'gys/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' + currentSearch + '===false){app.search.search_dw_list();' + currentSearch + '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            app.search.search_dw_list = function () {
+                                                app.c.public_data['gys/list'] = app.c.public_data['gys/list'] || {};
+                                                app.c.public_data['gys/list']['_row_total_'] = '@pageList.ItemCount';
+                                                app.c.public_data['gys/list']['_page_size_'] = '@pageList.PageSize';
+                                                app.c.public_data['gys/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                app.search.do_search_pagination_dw_list();
+                                            }
+
+
+                                            app.search.trigger_search_dw_list = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_dw_list();
+                                                    event.preventDefault();
+                                                }
+                                            }
+                                           
+                                            //查询
+                                            app.search.do_search_dw_list = function (el, isExport) {
+                                                isExport = isExport || 0;
+                                                var v = $(_ + ".filter-form").serialize();
+                                                var url = '/gys/list?_search_=1&' + v;
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    url = $.DHB.U(url);
+                                                    window.location.href = url;
+                                                }
+                                                else {
+                                                    var options = {
+                                                        url: $.DHB.U(url),
+                                                        datatype: 'html',
+                                                        beforeSend: function () {
+                                                            $.DHB.showButterbar();
+                                                        },
+                                                        success: function (data, textStatus, jqXHR) {
+                                                            if ($('#gys-list-list-fresh-box', _).length > 0) {
+                                                                $('#gys-list-list-fresh-box', _).html(data);
+                                                            }
+                                                            var curSearchcallback = 'app.gys.list_search_callback';
+                                                            var curListcallback = 'app.gys.list_listready';
+                                                            eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                                                            eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                            app.search.do_search_pagination_dw_list();
+                                                        },
+                                                        complete: function (XHR, TS) {
+                                                            $.DHB.closeButterbar();
+                                                        }
+                                                    };
+                                                    app.httpAjax.post(options)
+                                                }
+                                                return false;
+                                            };
+
+                                            //分页
+                                            app.search.do_search_pagination_dw_list = function () {
+                                                $.DHB.func.pagination({
+                                                    module_name: 'Manager',
+                                                    controller_name: 'gys',
+                                                    action_name: 'list',
+                                                    ready_once: false
+                                                });
+                                            }
+
+
+                                            app.search.do_search_option_dw_list = function (el) {
+                                                if ($(el).attr('class') != '') {
+                                                    $(el)
+                                                        .find('span')
+                                                        .each(function () {
+                                                            if ($(this).attr('class') == '') {
+                                                                $(this).attr('class', 'order-active');
+                                                            } else {
+                                                                $(this).attr('class', '');
+                                                            }
+                                                        });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el)
+                                                        .parents('.btn-group')
+                                                        .find('input:eq(0)')
+                                                        .val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el)
+                                                    .parents('.btn-group')
+                                                    .find('button span:eq(0)')
+                                                    .html(selectA.html());
+
+                                                app.search.do_search_dw_list();
+                                            }
+
+
+                                            app.search.search_enter = function (el) {
+                                                if (app.c.public_data['gys/list']['search_all'] === false) {
+                                                    $(el)
+                                                        .parents('.search-box-container')
+                                                        .find(".bootstrap-select ul.dropdown-menu")
+                                                        .each(function () {
+                                                            var ts = $(this).find('li:first() span:first()');
+                                                            ts.text('全部');
+                                                        });
+                                                    /*$(el).parents('.search-box-container').find(".treeview .list-group>li:first()").each(function(){
+                                                        $(this).text('全部');
+                                                    });*/
+                                                    app.c.public_data['gys/list']['search_all'] = true;
+                                                }
+                                            }
+
+
+                                            app.search.search_leave = function (el) {
+                                            }
+
+                                            app.search.search_client_clear_dw_list = function (el) {
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_dw_list();
+                                            }
+
+
+                                            app.search.wdatepicker_dw_list = function (el) {
+                                                var booStart = $(el).data('type') == 'start';
+                                                var option = {};
+                                                option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                                option['onpicked'] = function () {
+                                                    $(el)
+                                                        .text($dp.cal.getP('y') +
+                                                            '-' +
+                                                            $dp.cal.getP('M') +
+                                                            '-' +
+                                                            $dp.cal.getP('d'));
+                                                    if (booStart) {
+                                                        setTimeout(function () {
+                                                            $(el)
+                                                                .parent()
+                                                                .find('[data-type="end"]')
+                                                                .data('position', '1')
+                                                                .click();
+                                                        },
+                                                            5000);
+                                                    }
+                                                    app.search.do_search_dw_list();
+                                                };
+
+                                                if (booStart) {
+                                                    option['maxDate'] =
+                                                        '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                                } else {
+                                                    option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                    if ($(el).data('position') == '1') {
+                                                        //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                                                        //$(el).data('position','');
+                                                    }
+                                                }
+                                                option['oncleared'] = function () {
+                                                    $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                    app.search.do_search_dw_list();
+                                                };
+
+                                                WdatePicker(option);
+                                            }
+
+
+                                            app.search.search_item_clear_dw_list = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                par.find("select.select2_")
+                                                    .selectpicker({ liveSearch: true })
+                                                    .selectpicker('refresh');
+                                                par.find("select.select2").selectpicker('refresh');
+                                                app.search.do_search_dw_list();
+                                            }
+                                        </script>
+                                    </div>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="@sort" />
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 pull-left table_upblock">
+                            <div class="m-t-12 f-l">
+                                @if (isAdd)
+                                {
+
+                                    <a class="btn btn-info _btn new_add" onclick="$.fn.menuTab.load({ url: '/gys/add', 'title': '新增供应商', id: 'gys/edit', nocache: '0' }); " href="javascript:void(0)"><span class="fa fa-plus btn_icon"></span>新增供应商</a>
+
+                                }
+
+                                @if (IsPermissionShow("importin", actionlist))
+                                {
+                                    <a title="批量导入" class="_btn" onclick="$.fn.menuTab.load({ url: '/gys/importin', 'title': '供应商导入', id: 'gys/importin', nocache: '0' }); "><span class="fa fa-cloud-upload"></span>批量导入</a>
+                                }
+                            </div>
+
+                          </div>
+
+                        </div>
+                    <!--添加一个分类列表-->
+                  <div class="shopsp_cont">
+                     <div class="close_tree  fa fa-chevron-left"></div>
+                            <div class="col-xs-2 p-l-r-none tree_left overf " style="max-height:600px;">
+
+                                    <div class="row common-no w-wi100">
+                                        <div class="col-xs-12  hei-two common-no">
+                                            <div class="l-tree_head">
+                                                <ul>
+                                                    <li>供应商分类</li>
+                                                </ul>
+                                                <div class="pull-left" style="margin-top:10px; padding-left:15px;">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div id="tree_left" class="p-b-30 jstree jstree-1 jstree-proton" role="tree" tabindex="0" aria-activedescendant="f67c9221-1d71-47f7-8c53-53e315bb0169" aria-busy="false">
+                                            	<!--<ul class="jstree-container-ul jstree-children jstree-no-icons" role="group">
+                                            		<li role="treeitem" aria-selected="true" aria-level="1" aria-labelledby="0_anchor" aria-expanded="true" id="0" class="jstree-node  jstree-open jstree-last">
+                                            			<i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                            			<a class="jstree-anchor jstree-clicked" href="#" tabindex="-1" id="0_anchor">
+                                            				<i class="jstree-icon jstree-themeicon" role="presentation"></i>全部</a>
+                                            				<ul role="group" class="jstree-children">
+                                            					<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="9d928e14-50f2-403e-892b-2985fae9deb1_anchor" id="9d928e14-50f2-403e-892b-2985fae9deb1" class="jstree-node  jstree-leaf">
+                                            						<i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                            						<a class="jstree-anchor" href="#" tabindex="-1" id="9d928e14-50f2-403e-892b-2985fae9deb1_anchor"><i class="jstree-icon jstree-themeicon" role="presentation"></i>
+                                                                  
+                                                                    </a>
+                                            					</li>
+                                            					<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="f67c9221-1d71-47f7-8c53-53e315bb0169_anchor" id="f67c9221-1d71-47f7-8c53-53e315bb0169" class="jstree-node  jstree-leaf jstree-last">
+                                            						<i class="jstree-icon jstree-ocl" role="presentation"></i>
+                                            						<a class="jstree-anchor" href="#" tabindex="-1" id="f67c9221-1d71-47f7-8c53-53e315bb0169_anchor">
+                                            							<i class="jstree-icon jstree-themeicon" role="presentation"></i>
+                                            							
+                                            						</a>
+                                            					</li>
+                                            				</ul>
+                                            		</li>
+                                            	</ul>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                    <!--数据表格-->
+                    @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                    <div id="gys-list-list-fresh-box" class=" table_list table_max_h col-xs-10 right_table" style="border-bottom:none;">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line sptable" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+                                    <th>编码</th>
+                                    <th>名称</th>
+                                    <th>联系人</th>
+                                    <th>联系电话</th>
+                                    <th>邮箱</th>
+                                    <th width="160" class="text-center">公司电话</th>
+                                    <th width="110" class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dwlist-main-tbody">
+                                @{
+                                    if (pageList == null || pageList.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="8" align="center">
+                                                <img src="~/static/images/nodata.png" class="table_nodata">
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        var list = pageList.Items;
+                                        if (list != null && list.Any())
+                                        {
+                                            int index = 1;
+                                            foreach (var item in list)
+                                            {
+                                                <tr id="row-gys-id-@item.id" class="tr-status-finished">
+                                                    <td class="text-center">
+                                                        @(index++)
+                                                    </td>
+                                                    <td><a class="list-link">@item.bm</a></td>
+                                                    <td><a class="list-link">@item.mc</a></td>
+                                                    <td><a class="list-link">@item.lxr</a></td>
+                                                    <td><a class="list-link">@item.tel</a></td>
+                                                    <td><a class="list-link">@item.email</a></td>
+                                                    <!--<td class="text-center">@string.Format("{0:yyyy-MM:dd HH:mm:ss}", item.rq_create)</td>-->
+                                                    <td class="text-center">@item.companytel</td>
+                                                    <td class="list-operate">
+                                                        <div class="look-out1">
+                                                            <div class="second-height-operate">
+
+                                                                <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="app.gys.detail('@item.id',this)" title="查看"></a>
+
+                                                                @if (isEdit)
+                                                                {
+                                                                    <a class="bg-state bg-state-info  fa fa-pencil" href="javascript:;" onclick="app.gys.edit('@item.id',this)" title="编辑"></a>
+                                                                }
+                                                                @if (isDel)
+                                                                {
+                                                                    <a class="bg-state bg-state-info  fa fa-trash" href="javascript:;" onclick="app.gys.del('@item.id',this)" title="删除"></a>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                 </div>
+
+                    <!--页脚-->
+                    <footer class="panel-footer">
+                        <div class="dropup d-i-b" style="position: relative">
+                        </div>&nbsp;
+                        <ul id="Pagination" class="pagination pagination-sm  m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //var catenestable = null;
+    app.gys = app.gys || {};
+
+    //内页加载完成
+    app.gys.list_ready = function () {
+        //Init Sort
+        app.gys.list_search_callback(null, null);
+    };
+
+    //分页回调
+    app.gys.list_pagination_callback = function (data, textStatus, idx, jq) {
+        app.gys.list_search_callback(data, textStatus);
+    };
+
+    //查询回调
+    app.gys.list_search_callback = function (data, textStatus) {
+        var sort_array = $('.table a[data-sort]', _);
+        var $current_sort = ($('#hid_sort', _).val().toLowerCase()).split(' ', 2);       //这是当前排序
+
+        //绑定UI
+        sort_array.each(function (index, obj) {
+            var $current = $(obj);
+            if ($current.attr('data-sort') === $current_sort[0]) {
+                $current.attr('data-dir', $current_sort[1]);
+                if ($current_sort[1] === 'asc')
+                    $current.append(app.sort_icon.asc);      //升序
+                else
+                    $current.append(app.sort_icon.desc);     //降序
+            }
+            else {
+                $current.append(app.sort_icon.sort);
+            }
+        });
+
+        //绑定事件
+        sort_array.off('click').on('click', function (e) {
+            var e = e || event;
+            var $current = $(e.target);        //获取当前点击派序列
+            var _dir = 'desc';
+            if ($.trim($current.attr('data-dir')).length == 0 || $.trim($current.attr('data-dir')) === 'asc') {
+                $current.attr('data-dir', _dir);
+            }
+            else {
+                _dir = 'asc';
+                $current.attr('data-dir', _dir);
+            }
+            $('#hid_sort', _).val($current.attr('data-sort') + ' ' + _dir);
+            app.search.do_search_dw_list();
+        });
+    };
+
+
+    //编辑供应商
+    app.gys.edit = function (id, obj) {
+        $(obj).trigger('blur');
+        //$.DHB.dialog({ 'title': '编辑供应商', 'url': $.DHB.U('gys/edit?id=' + id), 'id': 'dialog-gys' });
+         $.fn.menuTab.load({ url: $.DHB.U('gys/edit?id=' + id), 'title': '编辑供应商', id: 'gys/edit', nocache: '1' });
+    };
+
+    //新增供应商
+    app.gys.add = function (obj) {
+        $(obj).trigger('blur');
+        //$.DHB.dialog({ 'title': '新增供应商', 'url': $.DHB.U('gys/add'), 'id': 'dialog-gys' });
+        $.fn.menuTab.load({ url: $.DHB.U('gys/add'), 'title': '新增供应商', id: 'gys/list', nocache: '0' });
+
+    };
+
+    //删除供应商
+    app.gys.del = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定删除吗?", function () {
+
+
+            var options = {
+                data: {
+                    id: id
+                },
+                url: $.DHB.U('/gys/delete'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('gys/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options)
+
+
+        });
+    };
+   
+    //查看供应商
+    app.gys.detail = function (id, obj) {
+        $(obj).trigger('blur');
+         //$.DHB.dialog({ 'title': '供应商详情', 'url': $.DHB.U('gys/detail?id=' + id), 'id': 'dialog-gys' });
+      
+        $.fn.menuTab.load({ url: $.DHB.U('gys/detail?id=' + id), 'title': '供应商详情', id: 'gys/detail', nocache: '1' });
+    };
+
+    app.gys.list_ready = function () {
+        
+        
+    }
+    $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+        app.gys.bind_spfl_tree();
+    });
+    //关闭左侧菜单
+    $('.tree_left', _).height($('.right_table').height() + 300);
+    $('.close_tree', _).click(function () {
+        $(this).parent().toggleClass('close_t');
+    });
+    //点击排序按钮
+    app.gys.list_sort_ui = function (tt) {
+        $t = tt;
+        var $current_sort = $t.attr('slag');
+        if ($current_sort == 0) {
+            $t.attr('slag', '1');
+            $t.find('i').remove();
+            $t.append(app.sort_icon.asc);
+        } else if ($current_sort == 1) {
+            $t.attr('slag', '0');
+            $t.find('i').remove();
+            $t.append(app.sort_icon.desc);
+        }
+    }
+    $('.table_list a', _).click(function () {
+        var aa = $(this);
+        app.gys.list_sort_ui(aa);
+    })
+    $('.table_list th a[data-sort=shopsp]', _).append(app.sort_icon.sort);
+    
+ 
+
+    //绑定左侧商品分类树#modify_goods_info
+    app.gys.bind_spfl_tree = function () {
+        var tree_selector = '#tree_left';
+
+        $(_ + tree_selector)
+            .jstree("destroy")
+            .jstree({
+                'core': {
+                    'data': {
+                        'url': function (obj) {
+                            return '/shopsp/get_left_tree?rd=' + new Date().getTime() + '&type=1';
+                        }
+                    },
+                }
+            })
+            .on('ready.jstree', function (e, obj) {
+                obj.instance.select_node({ "id": "0" }, true, false);
+                obj.instance.open_node({ "id": "0" });
+            })
+            .on("changed.jstree", function (e, data) {
+
+                if (data.selected && data.selected.length) {
+                    var i, j, r = [];
+                    for (i = 0, j = data.selected.length; i < j; i++) {
+                        r.push(data.instance.get_node(data.selected[i]).id);
+                    }
+                    //TODO：赋值到hidden，触发查询事件等
+                    $(_ + "#id_gysfl").val(r.join(''));
+                    
+                    app.search.do_search_dw_list();
+
+                }
+            });
+
+    }
+   
+app.gys.list_ready = function () {
+        $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+            app.gys.bind_spfl_tree();
+        });
+        //关闭左侧菜单
+        $('.tree_left', _).height($('.right_table').height() + 300);
+        $('.close_tree', _).click(function () {
+            $(this).parent().toggleClass('close_t');
+        });
+        //点击排序按钮
+        app.gys.list_sort_ui = function (tt) {
+            $t = tt;
+            var $current_sort = $t.attr('slag');
+            if ($current_sort == 0) {
+                $t.attr('slag', '1');
+                $t.find('i').remove();
+                $t.append(app.sort_icon.asc);
+            } else if ($current_sort == 1) {
+                $t.attr('slag', '0');
+                $t.find('i').remove();
+                $t.append(app.sort_icon.desc);
+            }
+        }
+        $('.table_list a', _).click(function () {
+            var aa = $(this);
+            app.gys.list_sort_ui(aa);
+        })
+        $('.table_list th a[data-sort=shopsp]', _).append(app.sort_icon.sort);
+    };
+</script>  

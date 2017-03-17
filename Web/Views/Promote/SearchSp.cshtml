@@ -1,0 +1,364 @@
+﻿@using CySoft.Model.Other
+@{
+    Layout = null;
+    var pageList = ViewData["pn"] as PageList<SelectSpModel>; 
+    string sort = ViewData["sort"].ToString();
+    var beginRowNum = pageList.PageIndex * pageList.PageSize + 1;
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="promote/searchsp"]').attr({ controller: 'promote', action: 'searchsp' });
+        app.c.public_data['promote/searchsp'] = app.c.public_data['promote/searchsp'] || {};
+        app.c.public_data['promote/searchsp']['once'] = false;
+        app.promote = app.promote || {};
+    });
+</script>
+<div class="modal fade in" role="dialog" id="dialog-promote-searchsp">
+    <div class="modal-dialog popshop">
+        @*<div class="modal-content">*@
+            <div class="modal-header poptitle popcontent">                
+                <p class="@*modal-title*@ name">选择商品</p>
+                <button data-dismiss="modal" class="close" type="button">×</button>
+            </div>
+
+            <div class="shopsp_cont">
+                <div class="close_tree  fa fa-chevron-left"></div>
+                <div class="col-xs-2 p-l-r-none tree_left">
+                    <div class="l-tree_head">
+                        <ul>
+                            <li>商品分类</li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-12">
+                        <div id="tree_left" class="p-b-30 jstree jstree-2 jstree-proton" role="tree"></div>
+                    </div>
+                </div>
+                <script>
+                                app.c.public_data['promote/searchsp'] = app.c.public_data['promote/searchsp'] || {};
+                                app.c.public_data['promote/searchsp']['search_all'] = false;
+                                var currentSearch = 'app.c.public_data[\'promote/searchsp\'][\'search\']';
+                                eval(currentSearch + ' = false;');
+                                $.DHB._search = function() {
+                                    eval('if(' +
+                                        currentSearch +
+                                        '===false){app.search.search_promote_searchsp();' +
+                                        currentSearch +
+                                        '=true;}');
+                                }
+
+                                app.search = app.search || {};
+
+                                app.search.search_promote_searchsp = function() {
+                                    app.c.public_data['promote/searchsp'] = app.c.public_data['promote/searchsp'] || {};
+                                    app.c.public_data['promote/searchsp']['_row_total_'] = '@pageList.ItemCount';
+                                    app.c.public_data['promote/searchsp']['_page_size_'] = '@pageList.PageSize';
+                                    app.c.public_data['promote/searchsp']['_current_page_'] = '@(pageList.PageIndex)';
+                                    app.search.do_search_pagination_promote_searchsp();
+                                }
+
+                                app.search.trigger_search_promote_searchsp = function(event) {
+                                    //绑定回车键
+                                    event = event || window.event
+                                    if (event.keyCode == 13) {
+                                        app.search.do_search_shopsp_list();
+                                        event.preventDefault();
+                                    }
+                                }
+
+                                //查询
+                                app.search.do_search_promote_searchsp = function(el, isExport) {
+                                    isExport = isExport || 0;
+                                    var v = $(_ + ".filter-form-shopsp-search-dialog").serialize();
+                                    var url = '/promote/searchsp?_search_=1&' + v;
+                                    if (isExport == 1) {
+                                        url += '&export=1';
+                                        url = $.DHB.U(url);
+                                        window.location.href = url;
+                                    } else {
+                                        var options = {
+                                            url: $.DHB.U(url),
+                                            datatype: 'html',
+                                            beforeSend: function() {
+                                                $.DHB.showButterbar();
+                                            },
+                                            success: function (data, textStatus, jqXHR) {
+                                                if ($('#promote-searchsp-list-fresh-box', _).length > 0) {
+                                                    $('#promote-searchsp-list-fresh-box', _).html(data);
+                                                }
+                                                var curSearchcallback = 'app.promote.list_search_callback';
+                                                var curListcallback = 'app.promote.list_listready';
+                                                eval('try {if(' +
+                                                    curSearchcallback +
+                                                    ' && typeof(' +
+                                                    curSearchcallback +
+                                                    ')=="function"){' +
+                                                    curSearchcallback +
+                                                    '(data, textStatus); }}catch(e){}');
+                                                eval('try {if(' +
+                                                    curListcallback +
+                                                    ' && typeof(' +
+                                                    curListcallback +
+                                                    ')=="function"){' +
+                                                    curListcallback +
+                                                    '(); }}catch(e){}');
+                                                app.search.do_search_pagination_promote_searchsp();
+                                            },
+                                            complete: function(XHR, TS) {
+                                                $.DHB.closeButterbar();
+                                            }
+                                        };
+                                       // cy.http.Get(options);
+                                        app.httpAjax.post(options);
+                                    }
+                                    return false;
+                                };
+
+                                //分页
+                                app.search.do_search_pagination_promote_searchsp = function() {
+                                    $.DHB.func.pagination({
+                                        module_name: 'Manager',
+                                        controller_name: 'promote',
+                                        action_name: 'searchsp',
+                                        ready_once: false,
+                                        filter_form: ".filter-form-promote-searchsp-dialog",
+                                        page_box: "#Pagination-promote-dialog",
+                                        dialog_pagesize: true
+                                    });
+                                }
+
+                                app.search.search_enter = function(el) {
+                                    if (app.c.public_data['promote/searchsp']['search_all'] === false) {
+                                        $(el)
+                                            .parents('.search-box-container')
+                                            .find(".bootstrap-select ul.dropdown-menu")
+                                            .each(function() {
+                                                var ts = $(this).find('li:first() span:first()');
+                                                ts.text('全部');
+                                            });
+                                        app.c.public_data['promote/searchsp']['search_all'] = true;
+                                    }
+                                }
+
+                                app.search.search_leave = function(el) {
+                                }
+
+                                app.search.search_client_clear_promote_searchsp = function(el) {
+                                    var par = $(el).parents('form');
+                                    par.get(0).reset();
+                                    app.search.do_search_promote_searchsp();
+                                }
+
+                </script>
+                <div class="right_table col-xs-10">
+                    <div class="modal-body tab-content ">
+                        <div class="row wrapper1">
+                            <form class="filter-form-promote-searchsp-dialog" action="/promote/searchsp">
+                                <input id="hid_back_val" name="hid_back_val" type="hidden" value="" />
+                                <div class="col-xs-12 padding_lr">
+                                    <div class="search-box-container">
+                                        <div class="clearfix">
+                                            <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                    <input type="text" value="" onkeypress="app.search.trigger_search_promote_searchsp(event);" class="form-control input-sm search-h inline v-middle search-result search" name="s_dw" id="s_dw" style="width: 250px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="商品名称" ondblclick="app.search.search_item_clear_promote_searchsp(this);" /><span><button type="button" onclick="app.search.do_search_promote_searchsp(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span>
+                                                    <span onclick="app.search.search_item_clear_promote_searchsp(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;">
+                                                        <i class="fa fa-times-circle"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+
+                                </div>
+                                <input type="hidden" name="for_type" value="orders" />
+                                <input type="hidden" id="shopsp_table_json" name="shopsp_table_json" value="" />
+                            </form>
+                        </div>
+
+
+                        <div id="promote-searchsp-list-fresh-box" style="max-height: 720px;overflow: auto">
+                            
+                            <table id="shopsp_table" class="table m-b-none row1 selectAll-table b-b" style="table-layout: fixed">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 75px;">
+                                            <label class="i-checks m-b-none">
+                                                <input type="checkbox" onclick="$.DHB.func.selectAllThis(this);">
+                                                <i></i>&nbsp;
+                                            </label>
+                                        </th>
+                                        <th width="4%">序号</th>
+                                        <th width="12%">
+                                            <a data-sort="shopsp" slag="0">
+                                                商品条码
+                                            </a>
+                                        </th>
+                                        <th width="25%">
+                                            <a data-sort="shopsp" slag="0">
+                                                商品名称
+                                            </a>
+                                        </th>
+                                        <th width="10%">
+                                            商品分类
+                                        </th>
+                                        <th width="5%">
+                                            单位
+                                        </th>
+                                        <th width="10%">
+                                            <a data-sort="shopsp" slag="0">
+                                                零售价
+                                            </a>
+                                        </th>
+                                        <th width="10%">
+                                            <a data-sort="shopsp" slag="0">
+                                                进货价
+                                            </a>
+                                        </th>
+                                        <th width="10%">
+                                            <a data-sort="shopsp" slag="0">
+                                                会员价
+                                            </a>
+                                        </th>
+                                        <th width="5%">
+                                            <a data-sort="shopsp" slag="0">
+                                                状态
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                                if (pageList.Any())
+                                                {
+                                                   
+                                                    foreach (var item in pageList)
+                                                    {
+                                                <tr style="cursor: pointer">
+                                                    <td>
+                                                        <label class="i-checks m-b-none">
+                                                            <input onclick="app.promote.selectsp(this)" type="checkbox" name="_ck_sp" value="@item.id" data-bm="@item.bm" data-mc="@item.mc" data-jj="@item.dj_jh" data-tm="@item.barcode" data-lsj="@item.dj_ls" data-dw="@item.dw" />
+                                                            <i></i>@beginRowNum
+                                                        </label>
+                                                    </td>
+                                                    <td class="align_center">@item.bm</td>
+                                                    <td class="align_center">@item.mc</td>
+                                                    <td class="align_center">@item.mc</td>
+                                                    <td class="align_center">@item.dw</td>
+                                                    <td class="align_right">@item.dj_ls</td>
+                                                    <td class="align_right">@item.dj_jh</td>
+                                                    <td class="align_right">@item.dj_ls</td>
+                                                    <td class="align_center"></td>
+                                                </tr>
+                                                beginRowNum++;
+                                            }
+                                    }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class=" m-t-12 m-b-12 m-r-md ">
+                            <ul id="Pagination-promote-dialog" class="pagination pagination-sm pull-right m-b-none"></ul>
+                            <div style="clear:both;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer popfooter align_center">
+                <button type="button" id="_submit-button" data-loading-text="提交中..." data-confirm="confirm" onclick="" class="btn btn-info w-xs">确定</button>
+                <button type="button" class="btn btn-default w-xs" data-dismiss="modal" onclick="$.fn.menuTab.load({ url: '/promote/list', 'title': '促销查询', id: 'promote/list', nocache: '1' }); $.fn.menuTab.deleteMenu('promote/searchsp');">取消</button>
+            </div>
+
+        @*</div>*@
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $(_ + "#dialog-promote-searchsp .modal-body").removeClass('modal-body');
+        
+    });
+    app.promote = app.promote || {};
+
+    app.promote.submit = function () {
+        app.promote.select_complate();
+    }
+    //集合对象
+    function Dictionary() {
+        this.data = new Array();
+        this.put = function (key, value) {
+            this.data[key] = value;
+        };
+        this.get = function (key) {
+            return this.data[key];
+        };
+        this.remove = function (key) {
+            this.data[key] = null;
+        };
+        this.isEmpty = function () {
+            return this.data.length == 0;
+        };
+        this.size = function () {
+            return this.data.length;
+        };
+    }
+    //商品对象
+    function sp_model() {
+        this.id = "";
+        this.bm = "";
+        this.mc = "";
+        this.dw = "";
+        this.tm = "";
+        this.jj = "";
+        this.lsj = "";
+    }
+    //选中商品集合
+    app.promote.dictionary = new Dictionary();
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#_submit-button').removeAttr('disabled');
+            $(_ + '#_submit-button').on('click', function (e) { 
+                app.promote.select_complate();
+            });
+        });
+    };
+    //选择商品
+    app.promote.selectsp = function (input) {
+        
+        var _key = $(input).val();
+        if (input.checked === true) {
+            var _value = new sp_model();
+            _value.id = _key;
+            _value.bm = $(input).attr("data-bm");
+            _value.mc = $(input).attr("data-mc");
+            _value.dw = $(input).attr("data-dw");
+            _value.tm = $(input).attr("data-tm");
+            _value.jj = $(input).attr("data-jj");
+            _value.lsj = $(input).attr("data-lsj");
+            app.promote.dictionary.put(_key, _value);
+        } else {
+            app.promote.dictionary.remove(_key);
+        }
+    }
+    //选择完成
+    app.promote.select_complate = function () {
+        var info = "[";
+        for (var v in app.promote.dictionary.data) {
+            var val = app.promote.dictionary.data[v];
+            var subitem = "{";
+            for (var pn in val) {
+                var str = val[pn] == undefined ? "" : val[pn];
+                subitem += "\"" + pn + "\":\"" + str + "\",";
+            }
+            subitem = subitem.substr(0, subitem.length - 1);
+            subitem += "},";
+            info += subitem;
+        }
+        info = info.substr(0, info.length - 1);
+        info += "]";
+        $("#hid_back_val").val(info);
+        
+    }
+    
+    
+</script>

@@ -1,0 +1,34 @@
+﻿@using CySoft.Model.Tb;
+@{
+    Layout = null;
+    List<Tb_Spfl_Tree> list_spfl = ViewData["list_spfl"] as List<Tb_Spfl_Tree>;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>测试分类树</title>
+</head>
+<body>
+    <ul>
+        @helper NodeHelper(List<Tb_Spfl_Tree> _list_spfl, int depth, string prefix)
+        {
+if (_list_spfl.Count > 0)
+{
+    if (depth == 0)
+    {
+            @*<option value='@_spfl.id' @string.Format("{0}", (item_edit.id_farther.Equals(_spfl.id, StringComparison.OrdinalIgnoreCase)) ? "selected" : string.Empty)>@Html.Raw(str_current_symbol)@_spfl.text</option>*@
+            <li data-id=''></li>
+    }
+    for (int i = 0; i < _list_spfl.Count; i++)
+    {
+            @NodeHelper(_list_spfl[i].children, depth++, "&nbsp;&nbsp;&nbsp;&nbsp;| ")
+    }
+}
+}
+        @NodeHelper(list_spfl, 0, string.Empty)
+    </ul>
+</body>
+</html>

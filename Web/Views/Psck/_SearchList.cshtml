@@ -1,0 +1,77 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+@using Spring.Collections
+
+
+@{
+    var pageList = ViewData["List"] as PageList<Td_Ps_Ck_1_Query>;
+
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var isCopy = actionlist.Any(l => l.ToLower() == "copy");
+    var isDetail = actionlist.Any(l => l.ToLower() == "detail");
+    string sort = ViewData["sort"].ToString();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    digit = digit ?? new System.Collections.Hashtable();
+}
+
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+            <th width="160" class="text-center">开单日期</th>
+            <th>单据编号</th>
+            <th>入库门店</th>
+            <th>经办人</th>
+            <th>总金额</th>
+        </tr>
+    </thead>
+    <tbody id="dwlist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="6" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = pageList.PageIndex * pageList.PageSize + 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-jh-id-@item.id" class="tr-status-finished" data-value="@JSON.Serialize(item)" onclick="app.psck.select_dh(this);">
+                            <td class="text-center">
+                                @(index++)
+                            </td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.rq)</td>
+                            <td>@item.dh</td>
+                            <td>@item.shop_name</td>
+                            <td>@item.jbr_name</td>
+                            <td>@item.je_mxtotal.Digit((int)digit["dj_digit"])</td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+<script>
+    app.c.public_data['psck/searchlist'] = app.c.public_data['psck/searchlist'] || {};
+    app.c.public_data['psck/searchlist']['_row_total_'] = '@pageList.ItemCount';
+    app.c.public_data['psck/searchlist']['_page_size_'] = '@pageList.PageSize';
+    app.c.public_data['psck/searchlist']['_current_page_'] = '@(pageList.PageIndex)';
+</script>
+

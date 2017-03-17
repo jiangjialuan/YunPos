@@ -1,0 +1,1294 @@
+﻿@{
+    Layout = null;
+}
+<div class="wrap-tab-contentbox" contentid="manager/shopsp" controller="manager" action="shop" style="display:block; min-height: 654px;">
+    <script type="text/javascript">
+        $(function () {
+            $('div[contentID="manager/shopsp"]').attr({ controller: 'manager', action: 'shop' });
+            app.c.public_data['manager/shopsp'] = app.c.public_data['manager/shopsp'] || {};
+            app.c.public_data['manager/shopsp']['once'] = false;
+            app.client = app.client || {};
+        });
+    </script>
+    <input type="hidden" pagesize="" value="">
+    <input type="hidden" page="" value="">
+
+    <div class="contentbox-header">
+        <a active="active" class="sub-tab" onclick="$.DHB.refresh();" style="color: rgb(88, 102, 110);">
+            门店商品				                <div style="width: 14px;display: inline-block;">
+                <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                    <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                    <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                        <div class="arrow"></div>
+                        <div class="popover-content">
+                            <p>1、查找你所有的客户，了解客户详情信息</p>
+                            <p>2、添加你已经掌握的客户信息，为其设置账号</p>
+                            <p>3、添加后的客户，客户会收到一个短信，提示他自行设置密码，并提醒他登录你的订货平台客户登录后，账号状态从</p><p>【待激活】变成【已启用】</p>
+                            <p>4、停用或开启某些客户的账号<span href="https://pc.dhb168.com/index.php?module=web&amp;controller=helpCenter&amp;action=index&amp;classifyId=35" class="tool-link" id="help-link">查看更多帮助</span></p>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </a>
+        <span style="left: 46px;"></span>
+    </div>
+    <script type="text/javascript">
+        app.c.public_data['manager/shopsp'] = app.c.public_data['manager/shopsp'] || {};
+        app.c.public_data['manager/shopsp']['threemenu'] = false;
+        $.DHB._threeMenu = function () {
+            if (app.c.public_data['manager/shopsp']['threemenu'] === false) {
+                app.c.public_data['manager/shopsp']['threemenu'] = true;
+
+                $(document).ready(function () {
+                    if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                        var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                        var p = currEle.position();
+                        var currLeft = p.left + currEle.width() / 2 - 16;
+                        $(_ + 'div.contentbox-header > span').animate({
+                            'left': currLeft
+                        }, 450);
+                        $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                    }
+                });
+            }
+        }
+    </script>
+
+
+    <div class="col">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel panel-default">
+                    <div class="main-content">
+                        <!--客户管理配置项-->
+                        <div class="row wrapper1 ">
+                            <div class="col-xs-10">
+                                <div class="row">
+                                    <form class="filter-form" action="/client/client">
+                                        <div class="col-xs-10">
+                                            <div class="search-box-container">
+                                                <div class="clearfix">
+                                                    <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                        <div class="1" style="position:relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                            <input type="text" value="" onkeypress="app.search.trigger_search_client_client(event);" class="form-control input-sm search-h inline v-middle search-result search" name="kw" id="kw" style="width:250px;border-right:none;border-radius: 2px 0 0 2px;" placeholder="客户名称/手机号/联系人/客户编号/备注" ondblclick="app.search.search_item_clear_client_client(this);" onblur="app.search.do_search_client_client(this);"><span><button type="button" onclick="app.search.do_search_client_client(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span><span onclick="app.search.search_item_clear_client_client(this);" style="position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: rgb(213, 211, 213); width: 19px; height: 25px; display: none; background: rgb(255, 255, 255);"><i class="fa fa-times-circle"></i></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-left m-r-sm" style="margin-top:7px">
+
+                                                        <div class="btn-group bootstrap-select user-input  form-control input-sm box-shawn search-result select2" style="width:100px;" onmouseleave="app.search.search_leave(this);" onmouseenter="app.search.search_enter(this);">
+                                                            <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" data-id="type_id"><span class="filter-option pull-left d-i-b cut-out">客户类型</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">全部</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">一级客户</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">二级客户</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div><select onmouseenter="app.search.search_enter(this);" onmouseleave="app.search.search_leave(this);" class="form-control input-sm box-shawn user-input search-result select2" style="width:100px;" id="type_id" name="type_id" onchange="app.search.do_search_client_client(this);" tabindex="-98">
+                                                                <option value="" selected="">客户类型</option>
+                                                                <option value="191">一级客户</option>
+                                                                <option value="197">二级客户</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                        <label id="tree-category-client_area"><div class="btn-group bootstrap-select form-control input-sm dhb-treeview box-shawn search-result select2" style="width:100px;" id="dhb-treeview-client_area"><button data-toggle="dropdown" class="btn btn-sm dropdown-toggle btn-default" type="button"><span class="filter-option pull-left d-i-b cut-out">归属地区</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open" style="overflow: hidden;min-width:350px;width:100%;"><div role="menu" class="dropdown-menu inner treeview" style="max-height: 250px; overflow-y: auto;"><ul class="list-group"><li class="list-group-item node-" data-nodeid="0" data-href="" style="color:undefined;background-color:undefined;"><span class="icon glyphicon" style="color: rgb(213, 211, 213);"></span><span class="icon node-icon"></span>归属地区</li><li class="list-group-item node-" data-nodeid="1" data-href="307" style="color:undefined;background-color:undefined;"><span class="icon glyphicon" style="color: rgb(213, 211, 213);"></span><span class="icon node-icon"></span>重庆</li><li class="list-group-item node-" data-nodeid="2" data-href="265" style="color:undefined;background-color:undefined;"><span class="icon glyphicon" style="color: rgb(213, 211, 213);"></span><span class="icon node-icon"></span>成都</li></ul></div></div><input type="hidden" class="valid" name="client_area" value=""></div></label>
+                                                        <script type="text/javascript">
+                                                            $(function () {
+                                                                var categoryTree = JSON.parse('[{"id":"307","pid":"0","name":"重庆","is_default":"F"},{"id":"265","pid":"0","name":"成都","is_default":"F"}]');
+                                                                var treeData = { el: '#tree-category-client_area', title: '归属地区', name: 'client_area', data: categoryTree, width: 100, callback: function (cur, el) { app.search.do_search_client_client(this); } };
+
+                                                                $.DHB.tree(treeData);
+                                                            });
+                                                        </script>
+                                                    </div>
+                                                    <div class="pull-left m-r-sm" style="margin-top:7px">
+
+                                                        <div class="btn-group bootstrap-select user-input  form-control input-sm box-shawn search-result select2" style="width:100px;" onmouseleave="app.search.search_leave(this);" onmouseenter="app.search.search_enter(this);">
+                                                            <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" data-id="status"><span class="filter-option pull-left d-i-b cut-out">账号状态</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">全部</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">已启用</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">已停用</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="3"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">待激活</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="4"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">待审核</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div><select onmouseenter="app.search.search_enter(this);" onmouseleave="app.search.search_leave(this);" class="form-control input-sm box-shawn user-input search-result select2" style="width:100px;" id="status" name="status" onchange="app.search.do_search_client_client(this);" tabindex="-98">
+                                                                <option value="" selected="">账号状态</option>
+                                                                <option value="T">已启用</option>
+                                                                <option value="F">已停用</option>
+                                                                <option value="A">待激活</option>
+                                                                <option value="C">待审核</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-left m-r-sm" style="margin-top:7px">
+
+                                                        <div class="btn-group bootstrap-select user-input  form-control input-sm box-shawn search-result select2" style="width:100px;" onmouseleave="app.search.search_leave(this);" onmouseenter="app.search.search_enter(this);">
+                                                            <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" data-id="clearing_form"><span class="filter-option pull-left d-i-b cut-out">结算方式</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">全部</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">预付</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">现付</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="3"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">后付</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div><select onmouseenter="app.search.search_enter(this);" onmouseleave="app.search.search_leave(this);" class="form-control input-sm box-shawn user-input search-result select2" style="width:100px;" id="clearing_form" name="clearing_form" onchange="app.search.do_search_client_client(this);" tabindex="-98">
+                                                                <option value="" selected="">结算方式</option>
+                                                                <option value="prepaid">预付</option>
+                                                                <option value="forward">现付</option>
+                                                                <option value="postpaid">后付</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <script type="text/javascript">
+                                                app.c.public_data['manager/shopsp'] = app.c.public_data['manager/shopsp'] || {};
+                                                app.c.public_data['manager/shopsp']['search_all'] = false;
+                                                var currentSearch = 'app.c.public_data[\'manager/shopsp\'][\'search\']';
+                                                eval(currentSearch + ' = false;');
+                                                $.DHB._search = function () {
+                                                    eval('if(' + currentSearch + '===false){app.search.search_client_client();' + currentSearch + '=true;}');
+                                                }
+
+                                                app.search = app.search || {};
+
+
+                                                app.search.search_client_client = function () {
+                                                    app.c.public_data['manager/shopsp'] = app.c.public_data['manager/shopsp'] || {}; app.c.public_data['manager/shopsp']['_row_total_'] = '3', app.c.public_data['manager/shopsp']['_page_size_'] = '30', app.c.public_data['manager/shopsp']['_current_page_'] = '0'; app.search.do_search_pagination_client_client();
+                                                }
+
+
+                                                app.search.trigger_search_client_client = function (event) {
+                                                    //绑定回车键
+                                                    event = event || window.event
+                                                    if (event.keyCode == 13) {
+                                                        app.search.do_search_client_client();
+                                                        event.preventDefault();
+                                                    }
+                                                }
+
+
+                                                app.search.do_search_client_client = function (el, isExport) {
+                                                    isExport = isExport || 0;
+
+                                                    var url = 'manager/shopsp?_search_=1&' + $(_ + ".filter-form").serialize();
+
+                                                    if (isExport == 1) {
+                                                        url += '&export=1';
+                                                        window.location.href = $.DHB.U(url);
+                                                    } else {
+                                                        $.DHB.showButterbar();
+
+                                                        $.get($.DHB.U(url), function (data, textStatus) {
+                                                            $.DHB.closeButterbar();
+
+                                                            if ($('#Client-client-list-fresh-box', _).length > 0) {
+                                                                $('#Client-client-list-fresh-box', _).html(data);
+                                                            }
+
+                                                            var curSearchcallback = 'app.client.client_search_callback';
+                                                            var curListcallback = 'app.client.client_listready';
+                                                            eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                            eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+
+                                                            app.search.do_search_pagination_client_client();
+                                                        }, 'html'
+                                                        );
+                                                    }
+                                                    return false;
+                                                }
+
+
+                                                app.search.do_search_pagination_client_client = function () {
+                                                    $.DHB.func.pagination({ module_name: 'Manager', controller_name: 'Client', action_name: 'client', ready_once: false });
+                                                }
+
+
+                                                app.search.do_search_option_client_client = function (el) {
+                                                    if ($(el).attr('class') != '') {
+                                                        $(el).find('span').each(function () {
+                                                            if ($(this).attr('class') == '') {
+                                                                $(this).attr('class', 'order-active');
+                                                            } else {
+                                                                $(this).attr('class', '');
+                                                            }
+                                                        });
+
+                                                        if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                            $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                        } else {
+                                                            $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                        }
+                                                    }
+
+                                                    if ($(el).attr('class') == '') {
+                                                        $(el).parent().find('.active').removeClass('active');
+                                                        $(el).addClass('active');
+                                                        $(el).parents('.btn-group').find('input:eq(0)').val($(el).attr('value'));
+                                                    }
+
+                                                    $(el).parents('.btn-group').removeClass('open');
+                                                    var selectA = $(el).find('a').clone();
+                                                    selectA.find('span[class=""]').remove();
+                                                    $(el).parents('.btn-group').find('button span:eq(0)').html(selectA.html());
+
+                                                    app.search.do_search_client_client();
+                                                }
+
+
+                                                app.search.search_enter = function (el) {
+                                                    if (app.c.public_data['manager/shopsp']['search_all'] === false) {
+                                                        $(el).parents('.search-box-container').find(".bootstrap-select ul.dropdown-menu").each(function () {
+                                                            var ts = $(this).find('li:first() span:first()');
+                                                            ts.text('全部');
+                                                        });
+                                                        /*$(el).parents('.search-box-container').find(".treeview .list-group>li:first()").each(function(){
+                                                            $(this).text('全部');
+                                                        });*/
+                                                        app.c.public_data['manager/shopsp']['search_all'] = true;
+                                                    }
+                                                }
+
+
+                                                app.search.search_leave = function (el) {
+                                                }
+
+
+                                                app.search.search_client_client_client = function (el) {
+                                                    $.DHB.dialog({ 'title': '选择客户', 'url': $.DHB.U('Quote/Public/clientDialog', { pageSize: publicSettings.minPageSize, edit_client_name: $(el).data('id') + '_name', edit_client_id: $(el).data('id'), 'client_callback': 'app.search.do_search_client_client' }), 'id': 'client_dialog' });
+                                                }
+
+
+                                                app.search.search_client_clear_client_client = function (el) {
+                                                    $(el).parents('.input-group').find('input').val('');
+                                                    app.search.do_search_client_client();
+                                                }
+
+
+                                                app.search.wdatepicker_client_client = function (el) {
+                                                    var booStart = $(el).data('type') == 'start';
+                                                    var option = {};
+                                                    option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                                    option['onpicked'] = function () {
+                                                        $(el).text($dp.cal.getP('y') + '-' + $dp.cal.getP('M') + '-' + $dp.cal.getP('d'));
+                                                        if (booStart) {
+                                                            setTimeout(function () {
+                                                                $(el).parent().find('[data-type="end"]').data('position', '1').click();
+                                                            }, 5000);
+                                                        }
+                                                        app.search.do_search_client_client();
+                                                    };
+
+                                                    if (booStart) {
+                                                        option['maxDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                                    } else {
+                                                        option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                        if ($(el).data('position') == '1') {
+                                                            //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                                                            //$(el).data('position','');
+                                                        }
+                                                    }
+                                                    option['oncleared'] = function () {
+                                                        $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                        app.search.do_search_client_client();
+                                                    };
+
+                                                    WdatePicker(option);
+                                                }
+
+
+                                                app.search.search_item_clear_client_client = function (el) {
+                                                    var par = $(el).parents('form');
+                                                    par.get(0).reset();
+                                                    par.find("select.select2_").selectpicker({ liveSearch: true }).selectpicker('refresh');
+                                                    par.find("select.select2").selectpicker('refresh');
+                                                    app.search.do_search_client_client();
+                                                }
+                                            </script>
+                                        </div>
+                                        <div class="col-xs-2 clear-padding hide-area">
+                                            <div class="m-t-12">
+                                                <label class="i-checks m-b-none f-r">
+                                                    <input type="checkbox" class="hide-btn" name="hide_canceled" checked="checked">
+                                                    <i></i>隐藏已停用
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-xs-2">
+                                <div class="btn-group m-t-12 f-r">
+                                    <button type="button" class="btn btn-info" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=addClient','title':'客户管理',id:'ClientGroup/index',nocache:'0'}); ">新增客户</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle show-list" style="border-top-left-radius: 0px !important;border-bottom-left-radius: 0px !important;border-left: 1px solid #F47340">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">新增客户</span>
+                                    </button>
+                                    <ul class="dropdown-menu show-li" style="width: 90px; display: none;">
+                                        <li><a title="新增客户" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=addClient','title':'客户管理',id:'ClientGroup/index',nocache:'0'}); " href="javascript:;">单个新增</a></li>
+                                        <li><a title="新增客户" href="javascript:;" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=importClient','title':'客户管理',id:'ClientGroup/index',nocache:'0'}); ">批量导入</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="Client-client-list-fresh-box">
+                            <table class="table m-b-none row1 selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                                <thead>
+                                    <tr>
+                                        <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">
+                                            <label class="i-checks m-b-none">
+                                                <input type="checkbox" onclick="$.DHB.func.selectAllThis(this);">
+                                                <i>
+                                                </i>
+                                            </label>
+                                        </th>
+                                        <th width="160">客户名称</th>
+                                        <th width="100">客户编号</th>
+                                        <th width="15.12%" class="table-p-l-xsm table-p-r-xsm">登录账号</th>
+                                        <th width="11.88%" class="table-p-r-xsm">联系人</th>
+                                        <th width="11.88%" class="table-p-r-xsm">客户类型</th>
+                                        <th width="11.88%" class="table-p-r-xsm">归属地区</th>
+                                        <th width="120">结算方式</th>
+                                        <th width="11.88%" class="table-p-r-xsm">业务员</th>
+                                        <th width="11.88%" class="table-p-r-xsm">账号状态</th>
+                                        <th width="25.48%" class="table-p-r-sm">备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="row-goods-id-19083" class="tr-status-finished ">
+                                        <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                            <label class="i-checks m-b-none">
+                                                <input type="checkbox" name="client_id[]" good="19083" value="1830">
+                                                <i>
+                                                </i>1
+                                            </label>
+                                        </td>
+                                        <td><a class="list-link" onclick="$.fn.menuTab.load({url:'/Client/clientInfo?id=19083','title':'客户详情',id:'Client/clientInfo',nocache:'0'}); ">宠星人</a></td>
+                                        <td>10037</td>
+                                        <td class="table-p-l-xsm table-p-r-xsm">15075593302</td>
+                                        <td class="table-p-r-xsm"></td>
+                                        <td class="table-p-r-xsm">二级客户</td>
+                                        <td class="table-p-r-xsm">成都</td>
+                                        <td class="table-p-r-xsm">
+                                            现付
+                                        </td>
+                                        <td class="table-p-r-xsm"></td>
+                                        <td class="table-p-r-xsm">
+                                            <span class="status-finished">已启用</span>
+                                            <!-- <div  class="look-out1" >
+                                                <div class="min-height-operate">
+                                                    <a class="bg-state bg-state-info"  href="javascript:;" onclick="app.client.auditclient(19083,'SF');">停用</a>
+                                                </div>
+                                            </div> -->
+                                        </td>
+                                        <td class="list-operate table-p-r-sm">
+                                            <p class="cut-out">
+                                                --
+
+                                            </p>
+                                            <div class="look-out1">
+                                                <div class="second-height-operate">
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=clientInfo&amp;id=19083','title':'客户详情',id:'Client/clientInfo',nocache:'0'}); ">查看</a>
+
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=editClient&amp;id=1830','title':'客户管理',id:'ClientGroup/index',nocache:'0'}); ">编辑</a>
+
+
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="app.client.auditclient(19083,'SF');">停用</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="row-goods-id-400" class="tr-status-finished">
+                                        <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                            <label class="i-checks m-b-none">
+                                                <input type="checkbox" name="client_id[]" good="400" value="1142">
+                                                <i>
+                                                </i>2
+                                            </label>
+                                        </td>
+                                        <td><a class="list-link" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=clientInfo&amp;id=400','title':'客户详情',id:'Client/clientInfo',nocache:'0'}); ">雅木森有限公司</a></td>
+                                        <td>10009</td>
+                                        <td class="table-p-l-xsm table-p-r-xsm">13438962793</td>
+                                        <td class="table-p-r-xsm"></td>
+                                        <td class="table-p-r-xsm">一级客户</td>
+                                        <td class="table-p-r-xsm">成都</td>
+                                        <td class="table-p-r-xsm">
+                                            后付
+                                        </td>
+                                        <td class="table-p-r-xsm">01</td>
+                                        <td class="table-p-r-xsm">
+                                            <span class="status-finished">已启用</span>
+                                            <!-- <div  class="look-out1" >
+                                                <div class="min-height-operate">
+                                                    <a class="bg-state bg-state-info"  href="javascript:;" onclick="app.client.auditclient(400,'SF');">停用</a>
+                                                </div>
+                                            </div> -->
+                                        </td>
+                                        <td class="list-operate table-p-r-sm">
+                                            <p class="cut-out">
+                                                --
+
+                                            </p>
+                                            <div class="look-out1">
+                                                <div class="second-height-operate">
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=clientInfo&amp;id=400','title':'客户详情',id:'Client/clientInfo',nocache:'0'}); ">查看</a>
+
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=editClient&amp;id=1142','title':'客户管理',id:'ClientGroup/index',nocache:'0'}); ">编辑</a>
+
+
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="app.client.auditclient(400,'SF');">停用</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="row-goods-id-117" class="tr-status-finished ">
+                                        <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                            <label class="i-checks m-b-none">
+                                                <input type="checkbox" name="client_id[]" good="117" value="1836">
+                                                <i>
+                                                </i>3
+                                            </label>
+                                        </td>
+                                        <td><a class="list-link" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=clientInfo&amp;id=117','title':'客户详情',id:'Client/clientInfo',nocache:'0'}); ">阿里</a></td>
+                                        <td>10030</td>
+                                        <td class="table-p-l-xsm table-p-r-xsm">18180847532</td>
+                                        <td class="table-p-r-xsm"></td>
+                                        <td class="table-p-r-xsm">二级客户</td>
+                                        <td class="table-p-r-xsm">成都</td>
+                                        <td class="table-p-r-xsm">
+                                            现付
+                                        </td>
+                                        <td class="table-p-r-xsm"></td>
+                                        <td class="table-p-r-xsm">
+                                            <span class="status-finished">已启用</span>
+                                            <!-- <div  class="look-out1" >
+                                                <div class="min-height-operate">
+                                                    <a class="bg-state bg-state-info"  href="javascript:;" onclick="app.client.auditclient(117,'SF');">停用</a>
+                                                </div>
+                                            </div> -->
+                                        </td>
+                                        <td class="list-operate table-p-r-sm">
+                                            <p class="cut-out">
+                                                --
+
+                                            </p>
+                                            <div class="look-out1">
+                                                <div class="second-height-operate">
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=clientInfo&amp;id=117','title':'客户详情',id:'Client/clientInfo',nocache:'0'}); ">查看</a>
+
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="$.fn.menuTab.load({url:'/?module=Manager&amp;controller=Client&amp;action=editClient&amp;id=1836','title':'客户管理',id:'ClientGroup/index',nocache:'0'}); ">编辑</a>
+
+
+                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="app.client.auditclient(117,'SF');">停用</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <script type="text/javascript">app.c.public_data['manager/shopsp'] = app.c.public_data['manager/shopsp'] || {}; app.c.public_data['manager/shopsp']['_row_total_'] = '3', app.c.public_data['manager/shopsp']['_page_size_'] = '30', app.c.public_data['manager/shopsp']['_current_page_'] = '0';</script>
+
+
+
+                            <div class="modal fade in" id="client-type" role="dialog">
+                                <div class="modal-dialog" style="width:400px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button data-dismiss="modal" class="close" type="button">×</button>
+                                            <h4 class="modal-title">调整客户类型</h4>
+                                        </div>
+                                        <form class="form-horizontal validate f0" method="post" id="">
+                                            <div class="modal-body tab-content ">
+                                                <p class="desc text-center m-b-sm1 m-t-none">（你所选择的客户将全部移入该类型下）</p>
+                                                <div>
+                                                    <label class="f-l l-h-30">
+                                                        <span>客户类型：</span>
+                                                    </label>
+                                                    <label class="sub-label w-md">
+                                                        <select id="client_type" name="client_type" class="select2 form-control">
+                                                            <option value="">请选择客户类型</option>
+                                                            <option value="191">一级客户</option>
+                                                            <option value="197">二级客户</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.client.save_type();" class="btn btn-info w-xs">确定</button>
+                                                <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="modal fade in" id="client-area" role="dialog">
+                                <div class="modal-dialog" style="width:400px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button data-dismiss="modal" class="close" type="button">×</button>
+                                            <h4 class="modal-title">调整客户地区</h4>
+                                        </div>
+                                        <form class="form-horizontal validate f0" method="post" id="">
+                                            <div class="modal-body tab-content ">
+                                                <p class="desc text-center m-b-sm1 m-t-none">（你所选择的客户将全部移入该地区下）</p>
+                                                <div>
+                                                    <label class="f-l l-h-30">
+                                                        <span>客户地区：</span>
+                                                    </label>
+                                                    <label class="sub-label w-md">
+                                                        <select id="client_area" name="client_area" class="select2 form-control">
+                                                            <option value="">请选择客户地区</option>
+                                                            <option value="265">成都</option>
+                                                            <option value="307">重庆</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.client.save_area();" class="btn btn-info w-xs">确定</button>
+                                                <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="modal fade in" id="client-sale" role="dialog">
+                                <div class="modal-dialog" style="width:400px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button data-dismiss="modal" class="close" type="button">×</button>
+                                            <h4 class="modal-title">调整所属业务员</h4>
+                                        </div>
+                                        <form class="form-horizontal validate f0" method="post" id="">
+                                            <div class="modal-body tab-content ">
+                                                <p class="desc text-center m-b-sm1 m-t-none">(你所选择的客户将全部归该业务员管理)</p>
+                                                <div>
+                                                    <label>
+                                                        <span>业务员：</span>
+                                                    </label>
+                                                    <label class="sub-label w-md">
+                                                        <select id="client_sale" name="client_sale" class="select2 form-control">
+                                                            <option value="">请选择所属业务员</option>
+                                                            <option value="1846">01</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.client.save_sale();" class="btn btn-info w-xs">确定</button>
+                                                <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="modal fade in" id="client-clearing-form" role="dialog">
+                                <div class="modal-dialog" style="width:400px;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button data-dismiss="modal" class="close" type="button">×</button>
+                                            <h4 class="modal-title">批量修改结算方式</h4>
+                                        </div>
+                                        <form class="form-horizontal validate f0" method="post" id="">
+                                            <div class="modal-body tab-content ">
+                                                <div>
+                                                    <label class="f-l l-h-30">
+                                                        <span>结算方式：</span>
+                                                    </label>
+                                                    <label class="sub-label w-md">
+                                                        <select id="clearing-form" name="clearing_form" class="select2 form-control">
+                                                            <option value="">请选择结算方式</option>
+                                                            <option value="prepaid">预付</option>
+                                                            <option value="forward">现付</option>
+                                                            <option value="postpaid">后付</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.client.save_clearing_form();" class="btn btn-info w-xs">确定</button>
+                                                <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <script type="text/javascript">
+                                $.DHB._ = function () {
+                                    app.c.public_data['manager/shopsp'] = app.c.public_data['manager/shopsp'] || {};
+                                    if (app.c.public_data['manager/shopsp']['once'] === false) {
+                                        app.c.public_data['manager/shopsp']['once'] = true;
+                                        $(function () {
+                                            // 地区
+                                            var par = $(_ + ".search-box-container select[name='area_id']").parents('.pull-left');
+                                            par.html('').append($(_ + "select[data-area]"));
+                                            par.find('select').selectpicker({ liveSearch: true });
+                                        });
+                                    }
+                                }
+
+                                app.client = app.client || {};
+
+
+                                app.client.auditmutilclient = function (apply) {
+                                    var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+
+                                    if (goods.length == 0) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    }
+                                    else {
+                                        app.client.auditclient(goods.toString(), apply);
+                                    }
+                                }
+                                app.client.auditclient = function (id, apply) {
+                                    var msg = '删除';
+                                    if (apply == 'ST')
+                                        msg = '启用';
+                                    if (apply == 'SF')
+                                        msg = '停用';
+
+                                    $.messager.confirm("系统提示", "确定为所选客户执行" + msg + "操作吗?", function () {
+                                        $.post("/index.php?module=Manager&controller=Client&action=auditApply", { id: id, apply: apply }, function (json) {
+                                            $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                                            var jumpUrl = "/index.php?module=Manager&controller=Client&action=client";
+                                            if (json.status == 'success') {
+                                                $.fn.menuTab.load_({
+                                                    url: jumpUrl,
+                                                    nocache: 1
+                                                });
+                                            }
+                                        }, 'json');
+                                    });
+                                }
+
+
+                                app.client.deleteclient = function (id) {
+                                    $.messager.confirm("系统提示", "确定删除该客户吗?", function () {
+                                        $.post("/index.php?module=Manager&controller=Client&action=delClient", { id: id }, function (json) {
+                                            $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                                            var jumpUrl = "/index.php?module=Manager&controller=Client&action=client";
+                                            if (json.status == 'success') {
+                                                $.fn.menuTab.load_({
+                                                    url: jumpUrl,
+                                                    nocache: 1
+                                                });
+                                            }
+                                        }, 'json');
+                                    });
+                                }
+
+
+                                app.client.client_type = function () {
+                                    var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+                                    if (goods.length < 1) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    } else {
+                                        $(_ + "#client-type").modal('show');
+                                    }
+                                }
+
+                                app.client.save_type = function () {
+                                    var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+                                    var typeid = $('#client_type').val();
+
+                                    if (clients.length == 0) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    }
+                                    else if (typeid == '') {
+                                        $.DHB.message({ content: '请选择客户调整目标类型！', type: 'i' });
+                                        return false;
+                                    }
+                                    else {
+                                        var objData = {};
+                                        objData.clients = clients.toString();
+                                        objData.apply = 'CT';
+                                        objData.value = typeid;
+
+                                        app.client.save_apply(objData);
+                                    }
+                                }
+
+                                app.client.client_area = function () {
+                                    var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+                                    if (goods.length < 1) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    } else {
+                                        $(_ + "#client-area").modal('show');
+                                    }
+                                }
+
+                                app.client.save_area = function () {
+                                    var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+                                    var areaid = $('#client_area').val();
+
+                                    if (clients.length == 0) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    }
+                                    else if (areaid == '') {
+                                        $.DHB.message({ content: '请选择客户调整目标地区！', type: 'i' });
+                                        return false;
+                                    }
+                                    else {
+                                        var objData = {};
+                                        objData.clients = clients.toString();
+                                        objData.apply = 'CA';
+                                        objData.value = areaid;
+
+                                        app.client.save_apply(objData);
+                                    }
+                                }
+
+                                //批量调整所属业务员
+                                app.client.client_sale = function () {
+                                    var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+                                    if (goods.length < 1) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    } else {
+                                        $(_ + "#client-sale").modal('show');
+                                    }
+                                }
+
+                                app.client.save_sale = function () {
+                                    var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+                                    var saleid = $('#client_sale').val();
+
+                                    if (clients.length == 0) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    }
+                                    else if (saleid == '') {
+                                        $.DHB.message({ content: '请选择客户调整所属业务员！', type: 'i' });
+                                        return false;
+                                    }
+                                    else {
+                                        var objData = {};
+                                        objData.clients = clients.toString();
+                                        objData.apply = 'CS';
+                                        objData.value = saleid;
+
+                                        app.client.save_apply(objData);
+                                    }
+                                }
+
+                                app.client.save_apply = function (data) {
+                                    $.post("/index.php?module=Manager&controller=Client&action=clientApply", data, function (json) {
+                                        $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                                        var jumpUrl = "/index.php?module=Manager&controller=Client&action=client";
+                                        if (json.status == 'success') {
+                                            $.fn.menuTab.load_({
+                                                url: jumpUrl,
+                                                nocache: 1
+                                            });
+                                        }
+                                    }, 'json');
+                                }
+
+                                app.client.export_client = function () {
+                                    var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+
+                                    if (clients.length == 0) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    }
+                                    else {
+                                        window.location.href = $.DHB.U('Client/clientExport', { clients: clients });
+                                    }
+                                }
+
+                                app.client.sendActiveMsg = function () {
+                                    var clientIds = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+                                    //console.log(clientIds);
+
+                                    if (clientIds.length == 0) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    }
+
+                                    $.messager.confirm("系统提示", "确定为所选客户发送激活短信?", function () {
+                                        $.post("/index.php?module=Manager&controller=Client&action=sendActiveMsg", { clientIds: clientIds }, function (data) {
+                                            $.DHB.message({ content: data.message, type: (data.status == 'success' ? 's' : 'e') });
+
+                                            // TODO: 判断是否全部发送成功
+                                        }, 'json');
+                                    });
+
+                                }
+
+                                app.client.client_pay = function () {
+                                    var clientIds = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+                                    if (clientIds.length == 0) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    } else {
+                                        $(_ + "#client-clearing-form").modal('show');
+                                    }
+                                }
+
+                                app.client.save_clearing_form = function () {
+                                    var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+                                    var clearing_form = $('#clearing-form').val();
+
+                                    if (clients.length == 0) {
+                                        $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                                        return false;
+                                    } else if (clearing_form == '') {
+                                        $.DHB.message({ content: '请选择客户调整目标类型！', type: 'i' });
+                                        return false;
+                                    } else {
+                                        var objData = {};
+                                        objData.clients = clients.toString();
+                                        objData.clearing_form = clearing_form;
+                                        // 提交批量修改结算方式
+                                        $.post("/index.php?module=Manager&controller=Client&action=modifyClearingForm", objData, function (json) {
+                                            $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                                            var jumpUrl = "/index.php?module=Manager&controller=Client&action=client";
+                                            if (json.status == 'success') {
+                                                $.fn.menuTab.load_({
+                                                    url: jumpUrl,
+                                                    nocache: 1
+                                                });
+                                            }
+                                        }, 'json');
+                                    }
+                                };
+                            </script>
+                        </div>
+
+                        <footer class="panel-footer">
+                            <label class="i-checks m-b-none">
+                                <input type="checkbox" class="footer-selectAllThis" onclick="$(_+'.selectAll-table th input:checkbox').trigger('click');">
+                                <i>
+                                </i>
+                            </label>
+                            <div class="dropup d-i-b" style="position: relative">
+                                <button class="btn btn-default dropdown-toggle show-list" style="width: 120px;" id="dropdownMenu2" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    批量操作
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu show-li" aria-labelledby="dropdownMenu2" style="width: 120px; left: 10px; display: none;">
+                                    <li><a href="javascript:" onclick="app.client.client_pay();">调整结算方式</a></li>
+                                    <li><a href="javascript:" onclick="app.client.client_type();">调整客户类型</a></li>
+                                    <li><a href="javascript:" onclick="app.client.client_area();">调整客户地区</a></li>
+                                    <li><a href="javascript:" onclick="app.client.client_sale();">调整所属业务员</a></li>
+                                    <li><a href="javascript:" onclick="app.client.auditmutilclient('ST');">批量启用</a></li>
+                                    <li><a href="javascript:" onclick="app.client.auditmutilclient('SF');">批量停用</a></li>
+                                    <li><a href="javascript:" onclick="app.client.sendActiveMsg();">发送激活账号短信</a></li>
+                                </ul>
+                            </div>&nbsp;
+                            <button class="btn m-l-xs w-xs btn-default box-shawn" type="button" onclick="app.client.export_client();">
+                                批量导出
+                            </button>
+                            <ul id="Pagination" class="pagination pagination-sm pull-right m-t-none m-b-none"><li><a>共 <strong>3 </strong>条</a></li><li class="dropdown dropup" style="width:100px;max-width:100;min-width:100;"><a data-toggle="dropdown" id="pageSize_" data-value="30">每页 <strong style="text-align:center;width:23px;display:inline-block;">30</strong> 条<span class="caret"></span></a><ul class="dropdown-menu"><li><a>10</a></li><li><a>20</a></li><li class="active"><a>30</a></li><li><a>50</a></li><li><a>80</a></li><li><a>100</a></li></ul></li><li class="activeactive prev"><a><i class="fa fa-chevron-left"></i></a></li><li class="active"><a>1</a></li><li class="activeactive next"><a><i class="fa fa-chevron-right"></i></a></li></ul>
+                            <div style="clear:both;">
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            var $tab = $(_);
+            $tab.find('#status').on('change', function () {
+                if ($tab.find('#status').val()) {
+                    $tab.find('.hide-area').hide();
+                } else {
+                    $tab.find('.hide-area').show();
+                }
+            })
+
+            $tab.find('.hide-btn').on('click', function () {
+                var flag = this.checked;
+                app.search.do_search_client_client(this);
+            });
+        });
+    </script>
+
+
+    <div class="modal fade in" id="client-type" role="dialog">
+        <div class="modal-dialog" style="width:400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">调整客户类型</h4>
+                </div>
+                <form class="form-horizontal validate f0" method="post" id="">
+                    <div class="modal-body tab-content ">
+                        <p class="desc text-center m-b-sm1 m-t-none">（你所选择的客户将全部移入该类型下）</p>
+                        <div>
+                            <label class="f-l l-h-30">
+                                <span>客户类型：</span>
+                            </label>
+                            <label class="sub-label w-md">
+                                <div class="btn-group bootstrap-select user-input  select2 form-control">
+                                    <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" data-id="client_type"><span class="filter-option pull-left d-i-b cut-out">请选择客户类型</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">请选择客户类型</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">一级客户</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">二级客户</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div><select id="client_type" name="client_type" class="select2 form-control" tabindex="-98">
+                                        <option value="">请选择客户类型</option>
+                                        <option value="191">一级客户</option>
+                                        <option value="197">二级客户</option>
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.client.save_type();" class="btn btn-info w-xs">确定</button>
+                        <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade in" id="client-area" role="dialog">
+        <div class="modal-dialog" style="width:400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">调整客户地区</h4>
+                </div>
+                <form class="form-horizontal validate f0" method="post" id="">
+                    <div class="modal-body tab-content ">
+                        <p class="desc text-center m-b-sm1 m-t-none">（你所选择的客户将全部移入该地区下）</p>
+                        <div>
+                            <label class="f-l l-h-30">
+                                <span>客户地区：</span>
+                            </label>
+                            <label class="sub-label w-md">
+                                <div class="btn-group bootstrap-select user-input  select2 form-control">
+                                    <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" data-id="client_area"><span class="filter-option pull-left d-i-b cut-out">请选择客户地区</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">请选择客户地区</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">成都</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">重庆</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div><select id="client_area" name="client_area" class="select2 form-control" tabindex="-98">
+                                        <option value="">请选择客户地区</option>
+                                        <option value="265">成都</option>
+                                        <option value="307">重庆</option>
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.client.save_area();" class="btn btn-info w-xs">确定</button>
+                        <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade in" id="client-sale" role="dialog">
+        <div class="modal-dialog" style="width:400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">调整所属业务员</h4>
+                </div>
+                <form class="form-horizontal validate f0" method="post" id="">
+                    <div class="modal-body tab-content ">
+                        <p class="desc text-center m-b-sm1 m-t-none">(你所选择的客户将全部归该业务员管理)</p>
+                        <div>
+                            <label>
+                                <span>业务员：</span>
+                            </label>
+                            <label class="sub-label w-md">
+                                <div class="btn-group bootstrap-select user-input  select2 form-control">
+                                    <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" data-id="client_sale"><span class="filter-option pull-left d-i-b cut-out">请选择所属业务员</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">请选择所属业务员</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">01</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div><select id="client_sale" name="client_sale" class="select2 form-control" tabindex="-98">
+                                        <option value="">请选择所属业务员</option>
+                                        <option value="1846">01</option>
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.client.save_sale();" class="btn btn-info w-xs">确定</button>
+                        <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade in" id="client-clearing-form" role="dialog">
+        <div class="modal-dialog" style="width:400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">批量修改结算方式</h4>
+                </div>
+                <form class="form-horizontal validate f0" method="post" id="">
+                    <div class="modal-body tab-content ">
+                        <div>
+                            <label class="f-l l-h-30">
+                                <span>结算方式：</span>
+                            </label>
+                            <label class="sub-label w-md">
+                                <div class="btn-group bootstrap-select user-input  select2 form-control">
+                                    <button type="button" class="btn btn-sm dropdown-toggle btn-default" data-toggle="dropdown" data-id="clearing-form"><span class="filter-option pull-left d-i-b cut-out">请选择结算方式</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">请选择结算方式</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">预付</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">现付</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="3"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">后付</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div><select id="clearing-form" name="clearing_form" class="select2 form-control" tabindex="-98">
+                                        <option value="">请选择结算方式</option>
+                                        <option value="prepaid">预付</option>
+                                        <option value="forward">现付</option>
+                                        <option value="postpaid">后付</option>
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.client.save_clearing_form();" class="btn btn-info w-xs">确定</button>
+                        <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        $.DHB._ = function () {
+            app.c.public_data['manager/shopsp'] = app.c.public_data['manager/shopsp'] || {};
+            if (app.c.public_data['manager/shopsp']['once'] === false) {
+                app.c.public_data['manager/shopsp']['once'] = true;
+                $(function () {
+                    // 地区
+                    var par = $(_ + ".search-box-container select[name='area_id']").parents('.pull-left');
+                    par.html('').append($(_ + "select[data-area]"));
+                    par.find('select').selectpicker({ liveSearch: true });
+                });
+            }
+        }
+
+        app.client = app.client || {};
+
+
+        app.client.auditmutilclient = function (apply) {
+            var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+
+            if (goods.length == 0) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            }
+            else {
+                app.client.auditclient(goods.toString(), apply);
+            }
+        }
+        app.client.auditclient = function (id, apply) {
+            var msg = '删除';
+            if (apply == 'ST')
+                msg = '启用';
+            if (apply == 'SF')
+                msg = '停用';
+
+            $.messager.confirm("系统提示", "确定为所选客户执行" + msg + "操作吗?", function () {
+                $.post("/index.php?module=Manager&controller=Client&action=auditApply", { id: id, apply: apply }, function (json) {
+                    $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                    var jumpUrl = "/index.php?module=Manager&controller=Client&action=client";
+                    if (json.status == 'success') {
+                        $.fn.menuTab.load_({
+                            url: jumpUrl,
+                            nocache: 1
+                        });
+                    }
+                }, 'json');
+            });
+        }
+
+
+        app.client.deleteclient = function (id) {
+            $.messager.confirm("系统提示", "确定删除该客户吗?", function () {
+                $.post("/index.php?module=Manager&controller=Client&action=delClient", { id: id }, function (json) {
+                    $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                    var jumpUrl = "/index.php?module=Manager&controller=Client&action=client";
+                    if (json.status == 'success') {
+                        $.fn.menuTab.load_({
+                            url: jumpUrl,
+                            nocache: 1
+                        });
+                    }
+                }, 'json');
+            });
+        }
+
+
+        app.client.client_type = function () {
+            var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+            if (goods.length < 1) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            } else {
+                $(_ + "#client-type").modal('show');
+            }
+        }
+
+        app.client.save_type = function () {
+            var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+            var typeid = $('#client_type').val();
+
+            if (clients.length == 0) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            }
+            else if (typeid == '') {
+                $.DHB.message({ content: '请选择客户调整目标类型！', type: 'i' });
+                return false;
+            }
+            else {
+                var objData = {};
+                objData.clients = clients.toString();
+                objData.apply = 'CT';
+                objData.value = typeid;
+
+                app.client.save_apply(objData);
+            }
+        }
+
+        app.client.client_area = function () {
+            var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+            if (goods.length < 1) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            } else {
+                $(_ + "#client-area").modal('show');
+            }
+        }
+
+        app.client.save_area = function () {
+            var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+            var areaid = $('#client_area').val();
+
+            if (clients.length == 0) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            }
+            else if (areaid == '') {
+                $.DHB.message({ content: '请选择客户调整目标地区！', type: 'i' });
+                return false;
+            }
+            else {
+                var objData = {};
+                objData.clients = clients.toString();
+                objData.apply = 'CA';
+                objData.value = areaid;
+
+                app.client.save_apply(objData);
+            }
+        }
+
+        //批量调整所属业务员
+        app.client.client_sale = function () {
+            var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+            if (goods.length < 1) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            } else {
+                $(_ + "#client-sale").modal('show');
+            }
+        }
+
+        app.client.save_sale = function () {
+            var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+            var saleid = $('#client_sale').val();
+
+            if (clients.length == 0) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            }
+            else if (saleid == '') {
+                $.DHB.message({ content: '请选择客户调整所属业务员！', type: 'i' });
+                return false;
+            }
+            else {
+                var objData = {};
+                objData.clients = clients.toString();
+                objData.apply = 'CS';
+                objData.value = saleid;
+
+                app.client.save_apply(objData);
+            }
+        }
+
+        app.client.save_apply = function (data) {
+            $.post("/index.php?module=Manager&controller=Client&action=clientApply", data, function (json) {
+                $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                var jumpUrl = "/index.php?module=Manager&controller=Client&action=client";
+                if (json.status == 'success') {
+                    $.fn.menuTab.load_({
+                        url: jumpUrl,
+                        nocache: 1
+                    });
+                }
+            }, 'json');
+        }
+
+        app.client.export_client = function () {
+            var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+
+            if (clients.length == 0) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            }
+            else {
+                window.location.href = $.DHB.U('Client/clientExport', { clients: clients });
+            }
+        }
+
+        app.client.sendActiveMsg = function () {
+            var clientIds = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+            //console.log(clientIds);
+
+            if (clientIds.length == 0) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            }
+
+            $.messager.confirm("系统提示", "确定为所选客户发送激活短信?", function () {
+                $.post("/index.php?module=Manager&controller=Client&action=sendActiveMsg", { clientIds: clientIds }, function (data) {
+                    $.DHB.message({ content: data.message, type: (data.status == 'success' ? 's' : 'e') });
+
+                    // TODO: 判断是否全部发送成功
+                }, 'json');
+            });
+
+        }
+
+        app.client.client_pay = function () {
+            var clientIds = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+            if (clientIds.length == 0) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            } else {
+                $(_ + "#client-clearing-form").modal('show');
+            }
+        }
+
+        app.client.save_clearing_form = function () {
+            var clients = $.DHB.func.getSelectedAttr(".selectAll-table", "good");
+            var clearing_form = $('#clearing-form').val();
+
+            if (clients.length == 0) {
+                $.DHB.message({ content: '请至少选择一个客户！', type: 'i' });
+                return false;
+            } else if (clearing_form == '') {
+                $.DHB.message({ content: '请选择客户调整目标类型！', type: 'i' });
+                return false;
+            } else {
+                var objData = {};
+                objData.clients = clients.toString();
+                objData.clearing_form = clearing_form;
+                // 提交批量修改结算方式
+                $.post("/index.php?module=Manager&controller=Client&action=modifyClearingForm", objData, function (json) {
+                    $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                    var jumpUrl = "/index.php?module=Manager&controller=Client&action=client";
+                    if (json.status == 'success') {
+                        $.fn.menuTab.load_({
+                            url: jumpUrl,
+                            nocache: 1
+                        });
+                    }
+                }, 'json');
+            }
+        };
+    </script>
+</div>

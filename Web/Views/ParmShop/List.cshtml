@@ -1,0 +1,464 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Ts_Parm_ShopWithShopMc>;
+    var shoplist = ViewData["shoplist"] as List<Tb_User_ShopWithShopMc>;
+    shoplist = shoplist ?? new List<Tb_User_ShopWithShopMc>();
+    SelectList selectList = new SelectList(shoplist, "id_shop", "mc");
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="parmshop/list"]').attr({ controller: 'parmshop', action: 'list' });
+        app.c.public_data['parmshop/list'] = app.c.public_data['parmshop/list'] || {};
+        app.c.public_data['parmshop/list']['once'] = false;
+        app.parmshop = app.parmshop || {};
+    });
+</script>
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        门店参数
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        @*<p>1、查找你所有的商品单位信息</p>
+                            <p>2、添加商品单位信息</p>*@
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['parmshop/list'] = app.c.public_data['parmshop/list'] || {};
+    app.c.public_data['parmshop/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['parmshop/list']['threemenu'] === false) {
+            app.c.public_data['parmshop/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10">
+                            <div class="row">
+                                <form class="filter-form" action="/parmshop/list">
+                                    <div class="col-xs-10">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <!-- 内容搜索 -->
+                                                <div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                    <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="text" value="" onkeypress="app.search.trigger_search_client_client(event);" class="form-control input-sm search-h inline v-middle search-result search" name="s_parmname" id="s_parmname" style="width: 250px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="参数名称" ondblclick="app.search.search_item_clear_client_client(this);" /><span><button type="button" onclick="app.search.do_search_client_client(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span><span onclick="app.search.search_item_clear_client_client(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;"><i class="fa fa-times-circle"></i></span>
+                                                    </div>
+                                                </div>
+                                                <div class="pull-left m-r-sm" style="margin-top:7px">
+
+                                                    <select id="id_shop" name="id_shop" class="form-control input-sm box-shawn user-input search-result select2" style="width:95px;" onmouseenter="app.search.search_enter(this);" onmouseleave=" app.search.search_leave(this);" onchange=" app.search.do_search_client_client(this);">
+                                                        <option value="">门店</option>
+                                                        @foreach (var item in shoplist)
+                                                        {
+                                                            <option value="@item.id_shop">@item.mc</option>
+                                                        }
+                                                    </select>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <script type="text/javascript">
+                                            app.c.public_data['parmshop/list'] = app.c.public_data['parmshop/list'] || {};
+                                            app.c.public_data['parmshop/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'parmshop/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' +
+                                                    currentSearch +
+                                                    '===false){app.search.search_client_client();' +
+                                                    currentSearch +
+                                                    '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            //TODO：分页参数
+                                            app.search.search_client_client = function () {
+                                                app.c.public_data['parmshop/list'] = app.c.public_data['parmshop/list'] || {};
+                                                app.c.public_data['parmshop/list']['_row_total_'] = '@pageList.ItemCount';
+                                                app.c.public_data['parmshop/list']['_page_size_'] = '@pageList.PageSize';
+                                                app.c.public_data['parmshop/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                app.search.do_search_pagination_client_client();
+                                            }
+
+
+                                            app.search.trigger_search_client_client = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_client_client();
+                                                    event.preventDefault();
+                                                }
+                                            }
+
+
+                                            app.search.do_search_client_client = function (el, isExport) {
+                                                isExport = isExport || 0;
+                                                var v = $(_ + ".filter-form").serialize();
+                                                var url = 'Manager/parmshop/list?_search_=1&' + v;
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    url = $.DHB.U(url);
+                                                    window.location.href = url;
+                                                } else {
+                                                    $.DHB.showButterbar();
+
+                                                    //$.get($.DHB.U(url),
+                                                    //    function (data, textStatus) {
+                                                    //        $.DHB.closeButterbar();
+                                                    //        if ($('#parmshop-list-list-fresh-box', _).length > 0) {
+                                                    //            $('#parmshop-list-list-fresh-box', _).html(data);
+                                                    //        }
+                                                    //        var curSearchcallback = 'app.parmshop.client_search_callback';
+                                                    //        var curListcallback = 'app.parmshop.client_listready';
+                                                    //        eval('try {if(' +
+                                                    //            curListcallback +
+                                                    //            ' && typeof(' +
+                                                    //            curListcallback +
+                                                    //            ')=="function"){' +
+                                                    //            curListcallback +
+                                                    //            '(); }}catch(e){}');
+                                                    //        eval('try {if(' +
+                                                    //            curSearchcallback +
+                                                    //            ' && typeof(' +
+                                                    //            curSearchcallback +
+                                                    //            ')=="function"){' +
+                                                    //            curSearchcallback +
+                                                    //            '(data, textStatus); }}catch(e){}');
+
+                                                    //        app.search.do_search_pagination_client_client();
+                                                    //    },
+                                                    //    'html');
+                                                    app.httpAjax.post({
+                                                        data: {},
+                                                        headers: {},
+                                                        url: $.DHB.U(url),
+                                                        type: "GET",
+                                                        dataType: 'html',
+                                                        beforeSend: null,
+                                                        success: function (data, textStatus) {
+                                                            $.DHB.closeButterbar();
+                                                            if ($('#parmshop-list-list-fresh-box', _).length > 0) {
+                                                                $('#parmshop-list-list-fresh-box', _).html(data);
+                                                            }
+                                                            var curSearchcallback = 'app.parmshop.client_search_callback';
+                                                            var curListcallback = 'app.parmshop.client_listready';
+                                                            eval('try {if(' +
+                                                                curListcallback +
+                                                                ' && typeof(' +
+                                                                curListcallback +
+                                                                ')=="function"){' +
+                                                                curListcallback +
+                                                                '(); }}catch(e){}');
+                                                            eval('try {if(' +
+                                                                curSearchcallback +
+                                                                ' && typeof(' +
+                                                                curSearchcallback +
+                                                                ')=="function"){' +
+                                                                curSearchcallback +
+                                                                '(data, textStatus); }}catch(e){}');
+
+                                                            app.search.do_search_pagination_client_client();
+                                                        },
+                                                        error: null,
+                                                        complete: null
+                                                    });
+
+                                                }
+                                                return false;
+                                            }
+
+                                            //分页
+                                            app.search.do_search_pagination_client_client = function () {
+                                                $.DHB.func
+                                                    .pagination({
+                                                        module_name: 'Manager',
+                                                        controller_name: 'parmshop',
+                                                        action_name: 'list',
+                                                        ready_once: false
+                                                    });
+                                            }
+
+
+                                            app.search.do_search_option_client_client = function (el) {
+                                                if ($(el).attr('class') != '') {
+                                                    $(el)
+                                                        .find('span')
+                                                        .each(function () {
+                                                            if ($(this).attr('class') == '') {
+                                                                $(this).attr('class', 'order-active');
+                                                            } else {
+                                                                $(this).attr('class', '');
+                                                            }
+                                                        });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el)
+                                                        .parents('.btn-group')
+                                                        .find('input:eq(0)')
+                                                        .val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el)
+                                                    .parents('.btn-group')
+                                                    .find('button span:eq(0)')
+                                                    .html(selectA.html());
+
+                                                app.search.do_search_client_client();
+                                            }
+
+
+                                            app.search.search_enter = function (el) {
+                                                if (app.c.public_data['parmshop/list']['search_all'] === false) {
+                                                    $(el)
+                                                        .parents('.search-box-container')
+                                                        .find(".bootstrap-select ul.dropdown-menu")
+                                                        .each(function () {
+                                                            var ts = $(this).find('li:first() span:first()');
+                                                            ts.text('全部');
+                                                        });
+                                                    /*$(el).parents('.search-box-container').find(".treeview .list-group>li:first()").each(function(){
+                                                        $(this).text('全部');
+                                                    });*/
+                                                    app.c.public_data['parmshop/list']['search_all'] = true;
+                                                }
+                                            }
+
+
+                                            app.search.search_leave = function (el) {
+                                            }
+
+
+                                            app.search.search_client_client_client = function (el) {
+                                                $.DHB
+                                                    .dialog({
+                                                        'title': '选择客户',
+                                                        'url': $.DHB
+                                                            .U('Quote/Public/clientDialog',
+                                                            {
+                                                                pageSize: publicSettings.minPageSize,
+                                                                edit_client_name: $(el).data('id') + '_name',
+                                                                edit_client_id: $(el).data('id'),
+                                                                'client_callback': 'app.search.do_search_client_client'
+                                                            }),
+                                                        'id': 'client_dialog'
+                                                    });
+                                            }
+
+
+                                            app.search.search_client_clear_client_client = function (el) {
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_client_client();
+                                            }
+
+
+                                            app.search.wdatepicker_client_client = function (el) {
+                                                var booStart = $(el).data('type') == 'start';
+                                                var option = {};
+                                                option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                                option['onpicked'] = function () {
+                                                    $(el)
+                                                        .text($dp.cal.getP('y') +
+                                                            '-' +
+                                                            $dp.cal.getP('M') +
+                                                            '-' +
+                                                            $dp.cal.getP('d'));
+                                                    if (booStart) {
+                                                        setTimeout(function () {
+                                                            $(el)
+                                                                .parent()
+                                                                .find('[data-type="end"]')
+                                                                .data('position', '1')
+                                                                .click();
+                                                        },
+                                                            5000);
+                                                    }
+                                                    app.search.do_search_client_client();
+                                                };
+
+                                                if (booStart) {
+                                                    option['maxDate'] =
+                                                        '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                                } else {
+                                                    option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                    if ($(el).data('position') == '1') {
+                                                        //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                                                        //$(el).data('position','');
+                                                    }
+                                                }
+                                                option['oncleared'] = function () {
+                                                    $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                    app.search.do_search_client_client();
+                                                };
+
+                                                WdatePicker(option);
+                                            }
+
+
+                                            app.search.search_item_clear_client_client = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                par.find("select.select2_")
+                                                    .selectpicker({ liveSearch: true })
+                                                    .selectpicker('refresh');
+                                                par.find("select.select2").selectpicker('refresh');
+                                                app.search.do_search_client_client();
+                                            }
+                                        </script>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--数据表格-->
+                    @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                    <div id="parmshop-list-list-fresh-box">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                                    </th>
+                                    <th width="">参数名称</th>
+                                    <th width="150">设定值</th>
+                                    <th width="">所属门店</th>
+                                    <th width="60" class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parmshoplist-main-tbody">
+                                @{
+                                    if (pageList == null || pageList.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="5" align="center">
+                                                <img src="~/static/images/nodata.png" class="table_nodata">
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        var list = pageList.Items;
+                                        if (list != null && list.Any())
+                                        {
+                                            int index = 1;
+                                            foreach (var item in list)
+                                            {
+                                                <tr id="row-parmshop-id-@item.id" class="tr-status-finished">
+                                                    <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                                        <i>
+                                                        </i>@(index++)
+                                                    </td>
+                                                    <td><a class="list-link">@item.parmname</a></td>
+                                                    <td class="table-p-r-xsm">@item.parmvalue</td>
+                                                    <td class="table-p-r-xsm">@item.mc</td>
+                                                    <td class="list-operate table-p-r-sm">
+                                                        @*<p class="cut-out">
+                                                            --
+                                                        </p>*@
+                                                        <div class="look-out1">
+                                                            <div class="second-height-operate">
+                                                                @if (isEdit)
+                                                                {
+                                                                    <a class="bg-state bg-state-info" href="javascript:;" onclick="app.parmshop.edit('@item.id','@item.parmcode')">编辑</a>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--页脚-->
+                    <footer class="panel-footer">
+                        <div class="dropup d-i-b" style="position: relative">
+                        </div>&nbsp;
+                        <ul id="Pagination" class="pagination pagination-sm pull-right m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var $tab = $(_);
+        $tab.find('#status').on('change', function () {
+            if ($tab.find('#status').val()) {
+                $tab.find('.hide-area').hide();
+            } else {
+                $tab.find('.hide-area').show();
+            }
+        })
+
+        $tab.find('.hide-btn').on('click', function () {
+            var flag = this.checked;
+            app.search.do_search_client_client(this);
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    app.parmshop = app.parmshop || {};
+    //编辑
+    app.parmshop.edit = function (id, parmcode) {
+        $(event.target).trigger('blur');
+        $.DHB.dialog({ 'title': '编辑参数', 'url': $.DHB.U('parmshop/edit?id=' + id + "&parmcode=" + parmcode), 'id': 'dialog-parm' });
+    };
+</script>  

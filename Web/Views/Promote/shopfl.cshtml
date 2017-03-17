@@ -1,0 +1,122 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+}
+<script>
+    $(function () {
+        $('div[contentID="promote/shopfl"]').attr({ controller: 'promote', action: 'shopfl' });
+        app.c.public_data['promote/shopfl'] = app.c.public_data['promote/shopfl'] || {};
+        app.c.public_data['promote/shopfl']['once'] = false;
+        app.promote = app.promote || {};
+        app.promote.shopfl = app.promote.shopfl || {};
+    });
+</script>
+
+<div class="modal fade in" role="dialog">
+    <div class="modal-dialog popshop">
+        <div class="modal-header poptitle">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <p class="name">商品分类</p>
+        </div>
+        <div class="modal-body tab-content popcontent shopsp_cont" id="tree_dlog" style="min-height:200px;">
+
+        </div>
+        <div class="modal-footer popfooter align_center">
+
+            <button type="button" id="submit-button" data-loading-text="提交中..." data-confirm="confirm" class="btn btn-info w-xs">确定</button>
+            <button type="button" class="btn btn-default w-xs" onclick="$(this).parents('.modal').find('.modal-backdrop').click()" data-dismiss="modal">取消</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+        app.promote.shopfl.bind_spfl_tree();
+    });
+    //两个数组去除相同的选项
+    
+    app.promote.sz = function (arr1,arr2) {
+        for (var i = 0 ; i < arr1.length ; i++) {
+            for (var j = 0 ; j < arr2.length ; j++) {
+                if (arr1[i] === arr2[j]) {
+                    arr1.splice(i, 1); //利用splice函数删除元素，从第i个位置，截取长度为1的元素
+                }
+            }
+        }
+        //alert(arr1.length)
+        for (var i = 0; i < arr2.length; i++) {
+            arr1.push(arr2[i]);
+        }
+        return arr1;
+    }
+
+    //商品分类树#modify_goods_info
+    app.promote.shopfl.bind_spfl_tree = function () {
+        var tree_selector = '#tree_dlog';
+
+        $(_ + tree_selector)
+            .jstree("destroy")
+            .jstree({
+                'core': {
+                    'multiple': true,
+
+                    'data': {
+                        'url': function (obj) {
+                            var type = $.trim($('#hid_type').val());
+                            return '/shopsp/get_left_tree?rd=' + new Date().getTime() + '&type=' + type;
+                        },
+                        
+                    },
+                    
+                },
+                "plugins": ["themes", "json_data", "search", "checkbox"],
+                "checkbox": {
+                    "keep_selected_style": false,//是否默认选中
+                    "three_state": false,//父子级别级联选择
+                    //"tie_selection": true
+                },
+            })
+            .on("changed.jstree", function (e, data) {
+                //
+                if (data.selected && data.selected.length) {
+                    var i, j, str=[],r=[];
+                    
+                    for (i = 0, j = data.selected.length; i < j; i++) {
+                        
+                        if(data.node.text=="全部"){
+                            continue;
+                        }else{
+                            var b = {};
+                            b.id = data.instance.get_node(data.selected[i]).id;
+                            str.push(data.instance.get_node(data.selected[i]).id);
+                            b.text = data.instance.get_node(data.selected[i]).text;
+                            r.push(b);
+                        }
+                        
+                    }
+                    $('#fldata', _).val(JSON.stringify(r));
+                    if ($('#fldata', _).attr('flstr') == undefined || $('#fldata', _).attr('flstr') == "") {
+                        $('#fldata', _).attr('flstr', str.join(","));
+                        
+                    } else {
+                        
+                        var b = $('#fldata', _).attr('flstr').split(",");
+                        $('#fldata', _).attr('flstr', app.promote.sz(b, str).join(","));
+                    }
+
+                }
+            })
+            .on('ready.jstree', function (e, obj) {
+                obj.instance.open_node({ "id": "0" });
+                 // obj.instance.select_node({ "id": "0" }, false, false).attr('disable');
+            }).on('loaded.jstree', function () {
+            });
+    }
+
+
+
+</script>

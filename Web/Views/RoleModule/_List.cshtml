@@ -1,0 +1,51 @@
+﻿@using CySoft.Model.Tb
+
+@{
+    IList<Tb_Role_Module_Tree> list = ViewData["list"] as IList<Tb_Role_Module_Tree>;
+}
+<div class="dd">
+    @helper NodeHelper(IList<Tb_Role_Module_Tree> _list)
+    {
+if (_list != null && _list.Count > 0)
+{
+        <ol class="dd-list">
+            @foreach (Tb_Role_Module_Tree _item in _list)
+            {
+                <li class="dd-item" data-id="@_item.id">
+                    <div class="dd-handle" onmouseenter="$.DHB.func.nestableHover(this);" onmouseleave="$.DHB.func.nestableHover(this,'leave');">
+                        @_item.name&nbsp;<span style="color: #98a6ad;">（编码：@_item.name）</span>
+                        <span class="pull-right">
+                            @if (_item.id == "0")
+                            {
+                                <a onclick="app.rolemodule.add(this,'0', '@ViewData["id_platform_role"]');">增加子类</a>
+                            }
+                            else
+                            {
+                                <a onclick="app.rolemodule.add(this,'@_item.id_module','@_item.id_platform_role');">增加子类</a>
+                            }
+                            @if (_item.id != "0")
+                            {
+                                <span class="vertical-line"></span>
+                                <a onclick="app.rolemodule.edit(this,'@_item.id');">编辑</a>
+                                <span class="vertical-line"></span>
+                                <a onclick="app.rolemodule.del(this,'@_item.id');">删除</a>
+                            }
+                            else
+                            {
+                                <span class="vertical-line"></span>
+                                <a href="javascript:"><span style="color: #a9a9a9">编辑</span></a>
+                                <span class="vertical-line"></span>
+                                <a href="javascript:"><span style="color: #a9a9a9">删除</span></a>
+                            }
+                        </span>
+                    </div>
+                    <!-- 子分类 -->
+                    @NodeHelper(_item.children)
+                </li>
+            }
+        </ol>
+}
+}
+    @NodeHelper(list)
+</div>
+

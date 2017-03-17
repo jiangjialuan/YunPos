@@ -1,0 +1,74 @@
+﻿@using CySoft.Model.Tb;
+@{
+}
+
+<style>
+    #dialog-ChangeCompanyno .ChangeCompanyno_bz{
+        padding-left:77px;
+        line-height:22px;
+        color:#999;
+        margin:0px;
+    }
+</style>
+<div class="modal fade in" id="dialog-ChangeCompanyno" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header poptitle">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <p class="name">修改企业号</p>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="ChangeCompanyno_form">
+                <div class="modal-body tab-content  popcontent" style="padding:20px;">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>企业号</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:10}" placeholder="" type="text" name="companyno" id="companyno" v-model="companyno">
+                            </label>                        
+                            
+                        </div>
+                        <p  class="ChangeCompanyno_bz">(1)企业号用于员工登录系统或门店POS验证</p>
+                        <p class="ChangeCompanyno_bz">(2)只能修改一次，修改后不能再次修改</p>
+                        <p class="ChangeCompanyno_bz">(3)中英文都支持</p>
+                    </div>
+                </div>
+                <div class="modal-footer  popfooter align_center">
+                    <button type="button" @*id="submit-button"*@ data-loading-text="提交中..." class="btn btn-info w-xs" onclick="app.ChangeCompanyno.save_shopsp(this);">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/static/js/vue/vue.js"></script>
+<script>
+
+    app.ChangeCompanyno = app.ChangeCompanyno || {};
+    app.ChangeCompanyno.vue = new Vue({
+        el: '#ChangeCompanyno_form',
+        data: {
+            companyno: ''
+        }
+    });
+    app.ChangeCompanyno.save_shopsp = function () {
+        
+        app.request($.DHB.U('Account/ChangeCompanyno'), { companyno: app.ChangeCompanyno.vue.companyno }, function (data) {
+            
+            if (data.status == 'error') {
+                $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'i' });
+            } else {
+                $.DHB.message({ 'content': data.message, 'time': 2000, 'type': 's' });
+                $(_ + 'input[name=companyno]').val(app.ChangeCompanyno.vue.companyno);
+                $(_ + '#btn_change_companyno').hide();
+                $.DHB.dialog({ 'id': 'dialog-ChangeCompanyno', 'action': 'destroy' });
+            }
+            
+        }, function () {
+            //console.log(data);
+        });
+    }
+
+</script>

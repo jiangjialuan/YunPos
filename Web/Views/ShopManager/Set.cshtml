@@ -1,0 +1,141 @@
+﻿@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@{
+    Layout = null;
+    var url = ViewData["url"] == null ? "" : ViewData["url"].ToString();
+    var shopList = ViewData["shopList"] as IList<Tb_User_ShopWithShopMc>;
+    shopList = shopList ?? new List<Tb_User_ShopWithShopMc>();
+    var id_shop_master = ViewData["id_shop_master"] == null ? "" : ViewData["id_shop_master"].ToString();
+    var id_shop = ViewData["id_shop"] == null ? "" : ViewData["id_shop"].ToString();
+    var id_user_master = ViewData["id_user_master"] == null ? "" : ViewData["id_user_master"].ToString();
+    var userShopList = ViewData["userShopList"] as IList<Tb_User_ShopWithShopMc>;
+    userShopList = userShopList ?? new List<Tb_User_ShopWithShopMc>();
+    var is_sysmanager = ViewData["is_sysmanager"] == null ? "0" : ViewData["is_sysmanager"].ToString();
+}
+
+
+<script>
+
+    $(function () {
+        $('div[contentID="shopmanager/set"]').attr({ controller: 'shopmanager', action: 'set' });
+        app.c.public_data['shopmanager/set'] = app.c.public_data['shopmanager/set'] || {};
+        app.c.public_data['shopmanager/set']['once'] = false;
+        app.shopmanager = app.shopmanager || {};
+    });
+</script>
+
+    
+        <div class="modal fade in" id="dialog-shopmanager-set" role="dialog">
+            <div class="modal-dialog" style="width:520px;">
+                <div class="modal-content">
+                    <div class="modal-header poptitle">
+                        <p class="name">选择门店</p>
+                    </div>
+                    <form class="form-horizontal validate" method="post" id="">
+                    @if (is_sysmanager == "1")
+                    {
+                        <div class="modal-body tab-content popcontent" style="padding:0px 20px;">
+
+                            <div class="fixed-input-group">
+                                <div class="form_content">
+                                    <div>
+                                        <div class="m-b">
+                                            
+                                            <div class="sub-label m-l-xs col-sm-12" style="float:none; overflow:hidden;">
+                                                
+                                                @foreach (var item in shopList)
+                                                {
+                                                    if (item.id_shop == id_shop_master)
+                                                    {
+                                                        <label class="i-checks showIcon item_blank1 col-sm-5" style="height:auto; margin-left:0px;">
+                                                            <input data-group="id_shops" value="@item.id_shop" type="checkbox" checked="checked" disabled="disabled"><i></i><span>@item.mc</span>
+                                                        </label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label class="i-checks showIcon item_blank1 col-sm-5" style="height:auto; margin-left:0px;">
+                                                            <input data-group="id_shops" value="@item.id_shop" type="checkbox" ><i></i><span>@item.mc</span>
+                                                        </label>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="modal-body tab-content popcontent" style="padding:20px;">
+                            <p class="font-bold" style="padding:0px 20px;">你不是系统管理员无权操作！请登录管理员角色设置开通的门店</p>
+                        </div>
+                      }
+
+
+                            
+                            <div class="modal-footer popfooter align_center">
+                            @if (is_sysmanager == "1")
+                            {
+                                <a type="button" class="btn btn-info w-xs mr10" href="/Account/Logout">重新登录</a>
+                                <a target="_Blank" class="btn  btn-info m-l-none  " href="@url">购买服务信息</a>
+                                <button type="button" id="submit-button" data-loading-text="提交中..." onclick="shopmanager_sub();" class="btn btn-info w-xs">确定</button>
+                            }
+                            else
+                            {
+                                <a type="button" class="btn btn-info w-xs" href="/Account/Logout">重新登录</a>
+                            }
+</div>
+</form>
+                </div>
+            </div>
+        </div>
+   
+    @*<script src="@Scripts.Url("~/static/js/jquery/jquery.min.js")"></script>
+    <script src="@Scripts.Url("~/static/js/util.js")"></script>
+    <script src="@Scripts.Url("~/static/js/placeholder/placeholder.js")"></script>
+    <script src="@Scripts.Url("~/static/js/app/login.js")"></script>*@
+
+
+
+
+
+
+
+
+
+
+<script>
+    if ('@is_sysmanager' == "1")
+    {
+        $.DHB.message({ "content": "您的门店设置已经超过购买的服务，不允许操作！", "type": "i" });
+    }
+    function shopmanager_sub() {
+        
+
+        var id_shops = '';
+        $("input[data-group=id_shops]").each(function (index, item) {
+            if (item.checked === true) {
+                    id_shops += $(item).val() + ",";
+                }
+                });
+
+        $.post(
+            '/shopmanager/set',
+            {ids:id_shops},
+            function (data) {
+                
+                if (data.status == "success") {
+                    alert("设置成功！");
+                    window.location.href = '/manager/home';
+                }
+                else {
+                    alert(data.message);
+                }
+            }, 'json'
+        );
+
+        }
+</script>
+
+

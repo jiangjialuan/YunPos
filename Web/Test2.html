@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>测试</title>
+    <link href="static/css/global/core.css" rel="stylesheet" />
+    <!--<link href="static/js/jstree/themes/default/style.css" rel="stylesheet" />-->
+    <link href="static/js/jstree/themes/proton/style.css" rel="stylesheet" />
+    <!--<link href="static/home.css" rel="stylesheet" />-->
+    <script src="static/js/jquery/jquery.min.js"></script>
+    <script src="static/js/util.js"></script>
+    <script src="static/js/jstree/jstree.js"></script>
+</head>
+<body>
+    <input type="text" id="txt_type" value="1" />
+    <input type="button" id="btn_update" value="更新树" />
+    <div class="row">
+        <div class="col-xs-6 p-r-none" style="background-color:#8fe28e">
+            <div id="jstree">
+
+            </div>
+        </div>
+        <div class="col-xs-6 p-l-none" style="background-color:#ff7474">
+            <div style="height:50px;">abc</div>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="row">
+        <div class="col-xs-12 p-l-r-none">
+            <div id="container"></div>
+        </div>
+    </div>
+
+    <script>
+        var BindTree = function () {
+            var tree_selector = '#jstree';
+            $(tree_selector)
+                .jstree("destroy")
+               .on("changed.jstree", function (e, data) {
+                   if (data.selected && data.selected.length) {
+                       var i, j, r = [];
+                       for (i = 0, j = data.selected.length; i < j; i++) {
+                           r.push(data.instance.get_node(data.selected[i]).id);
+                       }
+                       console.debug('选中节点Id：' + r.join(', '));
+                       alert('选中节点Id：' + r.join(', '));
+                   }
+               })
+               .on('ready.jstree', function (e, obj) {
+                   obj.instance.select_node({ "id": "0" }, true, false);
+                   obj.instance.open_all();
+               })
+               .jstree({
+                   'core': {
+                       'data': {
+                           'url': function (obj) {
+                               return 'tree.json?rand=' + new Date().getTime() + '&type=' + $('#txt_type').val();
+                               //return 'tree2.json?rand=' + new Date().getTime() + '&type=' + $('#txt_type').val();
+                           }
+                       },
+                   }
+               });
+        };
+
+        $(function () {
+            BindTree();
+
+            $('#btn_update').on('click', function (e) {
+                var e = e || event;
+                $(e.target).trigger('blur');
+                //$(tree_selector).jstree('refresh');
+                BindTree();
+            });
+        });
+
+        //var array_node = [
+        //    {
+        //        "id": "0",
+        //        "text": "全部",
+        //        "children": [
+        //            {
+        //                "id": "id1",
+        //                "text": "节点 1"
+        //            },
+        //            {
+        //                "id": "id2",
+        //                "text": "节点 2",
+        //                "children": [
+        //                    {
+        //                        "id": "id3",
+        //                        "text": "节点 2-1"
+        //                    },
+        //                    {
+        //                        "id": "id4",
+        //                        "text": "节点 2-2"
+        //                    }
+        //                ]
+        //            }
+        //        ]
+        //    }];
+        //var array_node2 = [
+        //    {
+        //        "id": "0",
+        //        "text": "★全部",
+        //        "children": [
+        //            {
+        //                "id": "id1",
+        //                "text": "★节点 1"
+        //            },
+        //            {
+        //                "id": "id2",
+        //                "text": "★节点 2",
+        //                "children": [
+        //                    {
+        //                        "id": "id3",
+        //                        "text": "★节点 2-1"
+        //                    },
+        //                    {
+        //                        "id": "id4",
+        //                        "text": "★节点 2-2"
+        //                    }
+        //                ]
+        //            }
+        //        ]
+        //    }];
+    </script>
+</body>
+</html>

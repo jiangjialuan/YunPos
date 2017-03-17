@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "员工管理";
+    PageList<CySoft.Model.Tb.Tb_User_Query> pageList = ViewData["PageList"] as PageList<CySoft.Model.Tb.Tb_User_Query>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+    var id_user_master = ViewData["id_user_master"] == null ? "" : ViewData["id_user_master"].ToString();
+}
+
+<table class="table m-b-none row1 selectAll-table status-box one-line stockManager" @*onmouseover="$.DHB.func.listOperate(this);"*@ style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                序号
+            </th>
+            <th width="150">所属门店</th>
+            <th width="150">登录账号</th>
+            <th width="90">姓名</th>
+            <th width="100">手机号</th>
+            <th width="160">邮箱</th>
+            <th class="dis-no" width="">公司</th>
+            <th width="60" class="text-center">主用户</th>
+            <th width="50">状态</th>
+            <th width="215" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="accountlist-main-tbody">
+        @if (pageList == null || pageList.Count == 0)
+        {
+            <tr>
+                <td colspan="9" align="center">
+                    <img src="~/static/images/nodata.png" class="table_nodata">
+                </td>
+            </tr>
+        }
+        else
+        {
+            int index = 1;
+            foreach (var item in pageList.OrderByDescending(d => d.rq_create))
+            {
+                <tr id="row-user-id-@item.id" class="tr-status-finished">
+                    <td class="text-center">
+                        @(index++)
+                    </td>
+                    @*增加门店*@
+                    <td>@item.name_shop</td>
+                    <td>
+                        <a class="list-link" onclick="$.fn.menuTab.load({ url: '/account/detail?id=@item.id', 'title': '员工详情', id: 'account/list', nocache: '0' }); ">
+                            @item.username
+                        </a>
+                    </td>
+                    <td>@item.name</td>
+                    <td>@item.phone</td>
+                    <td>@item.email</td>
+                    <td class="dis-no">@item.companyname</td>
+                    <td class="text-center">@Html.Raw(item.flag_master.ToString() == "1" ? "是" : "否")</td>
+                    <td>@Html.Raw(item.flag_state.ToString() != "1" ? "停用" : "正常")</td>
+                    <td class="list-operate">
+                        @*<p class="cut-out invisible">
+                                &nbsp;
+                            </p>*@
+                        <div class="look-out1">
+                            <div class="second-height-operate">
+
+                                @if (IsPermissionShow("list", actionlist))
+                                {
+                                    <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="$.fn.menuTab.load({ url: '/account/detail?id=@item.id', 'title': '员工详情', id: 'account/detail', nocache: '1' }); " title="查看"></a>
+                                }
+
+                                @if (IsPermissionShow("edit", actionlist))
+                                {
+                                    <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="$.fn.menuTab.load({ url: '/account/edit?flag_edit=update&id=@item.id', 'title': '员工编辑', id: 'account/edit', nocache: '0' });" title="编辑"></a>
+                                }
+
+                                @if (item.flag_master.ToString() != "1")
+                                {
+                                    if (IsPermissionShow("delete", actionlist))
+                                    {
+                                        <a class="bg-state bg-state-info fa fa-trash" onclick="app.search.del(this,'@item.id');" title="删除"></a>
+                                    }
+                                    if (item.flag_state.ToString() != "1" && IsPermissionShow("active", actionlist))
+                                    {
+                                        <a class="bg-state bg-state-info" onclick="app.search.active(this,'@item.id');">启用</a>
+                                    }
+                                    else if (IsPermissionShow("stop", actionlist))
+                                    {
+                                        <a class="bg-state bg-state-info fa fa-minus-square" onclick="app.search.stop(this,'@item.id');" title="停用"></a>
+                                    }
+                                }
+
+                                @if (id_user_master != item.id)
+                                {
+                                   if (IsPermissionShow("czpwd", actionlist))
+                                   {
+                                    <a class="bg-state bg-state-info fa fa-user" href="javascript:;" onclick="app.search.czpwd(this,'@item.id')" title="重置密码"></a>
+                                   }
+                                }
+
+                                
+
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+
+
+    </tbody>
+</table>
+
+
+
+
+
+<script type="text/javascript">
+    app.c.public_data['account/list'] = app.c.public_data['account/list'] || {};
+    app.c.public_data['account/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['account/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['account/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>
+

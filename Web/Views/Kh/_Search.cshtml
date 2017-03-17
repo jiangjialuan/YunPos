@@ -1,0 +1,91 @@
+﻿@using CySoft.Model.Tb
+@{
+    var pageList = ViewData["List"] as PageList<Tb_Kh_Query>;
+}
+
+<table class="table m-b-none row1 selectAll-table b-b">
+    <thead>
+        <tr>
+            <th style="width:55px;">
+                序号
+            </th>
+            <th width="15%">
+                编码
+            </th>
+            <th>
+                名称
+            </th>
+            <th width="15%">
+                联系人
+            </th>
+            <th width="13%">
+                联系电话
+            </th>
+            <th width="13%">
+                公司电话
+            </th>
+            <th width="13%">地址</th>
+            <th width="100">
+                操作
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                @*<tr>
+                        <td colspan="8" align="center">
+                            <img src="~/static/images/nodata.png" class="table_nodata">
+                        </td>
+                    </tr>*@
+            }
+            else
+            {
+
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr onclick="app.public.select_kh_client(this);" data-value="@item.id|@item.mc" style="cursor:pointer">
+                            <td>
+                                @(index++)
+                            </td>
+                            <td>
+                                @item.bm
+                            </td>
+                            <td>
+                                @item.mc
+                            </td>
+                            <td>
+                                @item.lxr
+                            </td>
+                            <td>
+                                @item.tel
+                            </td>
+                            <td>
+                                @item.companytel
+                            </td>
+                            <td>
+                                @item.address
+                            </td>
+                            <td class="look-out1">
+                                <a class="bg-state bg-state-info color-b fa fa-exchange blockbtn" title="选择" href="###"></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    app.c.public_data['kh/search'] = app.c.public_data['kh/search'] || {};
+    app.c.public_data['kh/search']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['kh/search']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['kh/search']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

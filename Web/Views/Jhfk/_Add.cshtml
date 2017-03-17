@@ -1,0 +1,118 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Model.Tz;
+@using CySoft.Utility;
+
+
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tz_Yf_Jsc_Gx_QueryModel>;
+    string sort = ViewData["sort"].ToString();
+    var selectListShop = (ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>) ?? new List<Tb_User_ShopWithShopMc>();
+    var selectListGys = (ViewData["userGysList"] as List<Tb_Gys_User_QueryModel>) ?? new List<Tb_Gys_User_QueryModel>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var defaultSL = decimal.Parse("0").Digit((int)digit["sl_digit"]);
+    var defaultDJ = decimal.Parse("0").Digit((int)digit["dj_digit"]);
+    var defaultJE = decimal.Parse("0").Digit((int)digit["je_digit"]);
+    var id_gys = ViewData["id_gys"] == null ? "" : ViewData["id_gys"].ToString();
+    var gys_name = ViewData["gys_name"] == null ? "" : ViewData["gys_name"].ToString();
+
+     var item_copy = ViewData["CopyInfo"] as Td_Fk_1_Query_DetailModel;
+    if (item_copy == null)
+    {
+        item_copy = new Td_Fk_1_Query_DetailModel();
+        item_copy.head = new Td_Fk_1_QueryModel();
+        item_copy.body = new List<Td_Fk_2_QueryModel>();
+        item_copy.head.rq = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+    }
+    if (!string.IsNullOrEmpty(item_copy.head.id))
+    {
+        id_gys = item_copy.head.id_gys;
+        gys_name = item_copy.head.gys_name;
+    }
+
+}
+
+
+
+<table class="table m-b-none row1 selectAll-table status-box one-line" id="jh_table" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                <label class="i-checks m-b-none">
+                    <input type="checkbox" id="check-btn-header" onclick="$.DHB.func.selectAllThis(this); app.jhfk.check_checked(this);">
+                    <i></i>
+                </label>
+            </th>
+            <th>原单类型</th>
+            <th>结算单号</th>
+            <th>供应商</th>
+            <th>原单日期</th>
+            <th>原单总金额</th>
+            <th>已付金额</th>
+            <th>未付金额</th>
+            <th>优惠金额</th>
+            <th>付款金额</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody id="dwlist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="11" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-jhfk-id-@item.id_bill" class="tr-status-finished" data-item="" id_bill_origin="@item.id_bill" dh_origin="@item.dh" bm_djlx_origin="@item.bm_djlx" je_origin="@item.je.Digit((int)digit["je_digit"])" je_yf="@(item.je_fk.Digit((int)digit["je_digit"]) + item.je_yh.Digit((int)digit["je_digit"]))" je_wf="@item.je_wf.Digit((int)digit["je_digit"])">
+                            <td class="text-center">
+                                <label class="i-checks m-b-none">
+                                    <input type="checkbox" name="id_bill[]" value="@item.id_bill" onclick="$.DHB.func.selectSingle(this);app.jhfk.check_checked(this);" />
+                                    <i></i>
+                                </label>
+                            </td>
+                            <td>@item.bm_djlx_name</td>
+                            <td>@item.dh</td>
+                            <td>@item.gys_name</td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.rq)</td>
+                            <td><div style="text-align:right;width:95%;">@item.je.Digit((int)digit["je_digit"])</div></td>
+                            <td><div style="text-align:right;width:95%;">@(item.je_fk.Digit((int)digit["je_digit"]) + item.je_yh.Digit((int)digit["je_digit"])) </div></td>
+                            <td name="weifu"><div style="text-align:right;width:95%;">@item.je_wf.Digit((int)digit["je_digit"])</div></td>
+                            <td name="je_yh">
+                                <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)" placeholder="优惠金额(元)" type="text" value="@defaultJE" name="je_yh" @*onkeyup="check_digit(this,'@digit["je_digit"]')"*@ onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@defaultJE" onfocus="app.jhfk.onfocus(this)" onblur="app.jhfk.onblur(this, @digit["je_digit"])">
+                            </td>
+                            <td name="je_fk">
+                                <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)" placeholder="付款金额(元)" type="text" value="@defaultJE" name="je_fk" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@defaultJE" onfocus="app.jhfk.onfocus(this)" onblur="app.jhfk.onblur(this, @digit["je_digit"])">
+                            </td>
+
+                            <td><input class="form-control user-input" readonly="readonly" style="width:96%;border:0px;" onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)"   type="text" value="@item.bz" name="bz"></td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+
+<script>
+    app.c.public_data['jhfk/add'] = app.c.public_data['jhfk/add'] || {};
+    app.c.public_data['jhfk/add']['_row_total_'] = '@pageList.ItemCount';
+    app.c.public_data['jhfk/add']['_page_size_'] = '@pageList.PageSize';
+    app.c.public_data['jhfk/add']['_current_page_'] = '@(pageList.PageIndex)';
+</script>
+

@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_Gys_Cgs_Check"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tb_Gys_Cgs_Check" type="CySoft.Model.Tb.Tb_Gys_Cgs_Check,CySoft.Model" />
+    <typeAlias alias="Tb_Gys_Cgs_Check_Query" type="CySoft.Model.Tb.Tb_Gys_Cgs_Check_Query,CySoft.Model" />
+    <typeAlias alias="Tb_Cgs_Attention" type="CySoft.Model.Tb.Tb_Cgs_Attention,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="idList">
+          db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+        <isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+        <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>
+        <isNotNull prepend="and" property="id_cgs">db.[id_cgs]=#id_cgs#</isNotNull>
+        <isNotNull prepend="and" property="flag_form">db.[flag_form]=#flag_form#</isNotNull>
+        <isNotNull prepend="and" property="rq_sq">db.[rq_sq]=#rq_sq#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_sq">Datediff(day,#start_rq_sq#,db.[rq_sq]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_sq">Datediff(day,db.[rq_sq],Convert(date,#end_rq_sq#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="rq_check">db.[rq_check]=#rq_check#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_check">Datediff(day,#start_rq_check#,db.[rq_check]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_check">Datediff(day,db.[rq_check],Convert(date,#end_rq_check#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="flag_state">db.[flag_state]=#flag_state#</isNotNull>
+        <isNotNull prepend="and" property="not_flag_state">db.[flag_state] <![CDATA[ < ]]> #not_flag_state#</isNotNull>
+        <isNotNull prepend="and" property="remark">db.[remark]=#remark#</isNotNull>
+        <isNotNull prepend="and" property="refuse">db.[refuse]=#refuse#</isNotNull>
+        <isNotNull prepend="and" property="flag_stateList">
+          db.[flag_state] in <iterate property="flag_stateList" conjunction="," open="(" close=")">#flag_stateList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id_user_master_gys">gc.[id_user_master]= #id_user_master_gys#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_gys">db.[id_gys]=#new_id_gys#</isNotNull>
+        <isNotNull prepend="," property="new_id_cgs">db.[id_cgs]=#new_id_cgs#</isNotNull>
+        <isNotNull prepend="," property="new_flag_form">db.[flag_form]=#new_flag_form#</isNotNull>
+        <isNotNull prepend="," property="new_rq_sq">db.[rq_sq]=#new_rq_sq#</isNotNull>
+        <isNotNull prepend="," property="new_rq_check">db.[rq_check]=#new_rq_check#</isNotNull>
+        <isNotNull prepend="," property="new_flag_state">db.[flag_state]=#new_flag_state#</isNotNull>
+        <isNotNull prepend="," property="new_remark">db.[remark]=#new_remark#</isNotNull>
+        <isNotNull prepend="," property="new_refuse">db.[refuse]=#new_refuse#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          db.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Tb_gys_cgs_check]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="GetNextKey" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      select (isnull(max(db.id),0)+1) as value from <include refid="Table"/> as db <include refid="Where"/>
+    </select>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_Gys_Cgs_Check">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id],db.[id_gys],db.[id_cgs],db.[flag_form],db.[rq_sq],db.[rq_check],db.[flag_state],db.[remark],db.[refuse] from <include refid="Table"/> as db
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryListOfBuyerAttention" parameterClass="System.Collections.IDictionary" resultClass="Tb_Gys_Cgs_Check_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select db.id_gys as id,db.id_gys,um.companyname,province.name as name_province,city.name as name_city,
+      county.name as name_county,um.name,um.phone,db.[id],db.[id_gys],db.[id_cgs],db.[flag_form],db.[rq_sq],db.[rq_check],db.[flag_state],db.[remark],db.[refuse] from <include refid="Table"/> as db
+      left join Tb_gys as gys on gys.id=db.id_gys
+      left join Tb_user as um on um.id = gys.id_user_master
+      left join Tb_Districts as province on province.id = um.id_province
+      left join Tb_Districts as city on city.id = um.id_city
+      left join Tb_Districts as county on county.id = um.id_county
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPageOfSupplierAttention" parameterClass="System.Collections.IDictionary" resultClass="Tb_Gys_Cgs_Check_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select db.*,um.companyname,um.username,province.name as name_province,city.name as name_city,
+      county.name as name_county,um.name,um.phone,db.flag_form,db.remark,db.refuse,
+      (CASE ISnull(account.id_user,0) WHEN 0 THEN 0 ELSE 1 END) as flag_actived
+      from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db  <include refid="Where"/>) as db
+      left join Tb_cgs as cgs on cgs.id = db.id_cgs
+      left join Tb_user as um on um.id = cgs.id_user_master
+      left join Tb_Districts as province on province.id = um.id_province
+      left join Tb_Districts as city on city.id = um.id_city
+      left join Tb_Districts as county on county.id = um.id_county
+      LEFT JOIN  (SELECT id_user FROM Tb_account GROUP BY id_user)account ON account.id_user=um.id
+      <!--select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t-->
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_Gys_Cgs_Check_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select db.*,cgs.id,um.companyname,um.username,province.name as name_province,city.name as name_city,
+      county.name as name_county,um.name,um.phone,db.flag_form,
+      (CASE ISnull(account.id_user,0) WHEN 0 THEN 0 ELSE 1 END) as flag_actived
+      from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db  <include refid="Where"/>) as db
+      left join Tb_cgs as cgs on cgs.id = db.id_cgs
+      left join Tb_user as um on um.id = gys.id_user_master
+      left join Tb_Districts as province on province.id = um.id_province
+      left join Tb_Districts as city on city.id = um.id_city
+      left join Tb_Districts as county on county.id = um.id_county
+      LEFT JOIN  (SELECT id_user FROM Tb_account GROUP BY id_user)account ON account.id_user=um.id
+      <!--select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t-->
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_Gys_Cgs_Check">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id],db.[id_gys],db.[id_cgs],db.[flag_form],db.[rq_sq],db.[rq_check],db.[flag_state],db.[remark],db.[refuse],ugys.companyname mc_gys,ucgs.companyname mc_cgs from <include refid="Table"/> as db
+      left join tb_gys gys on gys.id=db.id_gys
+      left join tb_cgs cgs on cgs.id=db.id_cgs
+      left join tb_user ugys on gys.id_user_master=ugys.id
+      left join tb_user ucgs on cgs.id_user_master=ucgs.id
+      <include refid="Where"/>
+    </select>
+
+    <select id="QueryItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_Cgs_Attention">
+      set nocount on
+      <include refid="NoLock" />
+      select cgs.[id],cgs.[id_user_master],cgs.[id_cgs_ptjb],cgs.[flag_pay],cgs.[name_bank],cgs.[account_bank],cgs.[khr],cgs.[no_tax],cgs.[title_invoice],
+      um.companyname as companyname,
+      um.username,
+      um.id_province,
+      um.id_city,
+      um.id_county,
+      um.name,
+      um.phone,
+      um.qq,
+      um.job,
+      um.email,
+      um.fax,
+      um.zipcode,
+      um.address,
+      1 as flag_activeed,
+      um.id_hy,
+      db.id_gys,
+      db.refuse,
+      db.remark,
+      province.name as name_province,city.name as name_city,county.name as name_county
+      from <include refid="Table"/> as db
+      left join Tb_cgs as cgs on cgs.id = db.id_cgs
+      left join Tb_gys as gc on gc.id = db.id_gys
+      inner join Tb_user as um on um.id = cgs.id_user_master AND um.flag_stop=0
+      left join Tb_hy as hy on hy.id = um.id_hy
+      left join Tb_Districts as province on province.id = um.id_province
+      left join Tb_Districts as city on city.id = um.id_city
+      left join Tb_Districts as county on county.id = um.id_county
+      <include refid="Where"/>
+    </select>
+
+  </statements>
+</sqlMap>
+

@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>测试页</title>
+    <script type="text/javascript" src="/Scripts/jquery/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery/jquery.validate-1.13.1.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery/jquery.qtip.min.js"></script>
+    <script type="text/javascript" src="/Scripts/cysoft/cy.core.js"></script>
+    <style>
+        div{ height:80px}
+        input[type="text"]{ height:30px; width:150px }
+    </style>
+</head>
+<body>
+    <div1 id="div1">
+    <form id="form1" action="/test.htm">
+        <div class="control-input"><input type="text" id="vaildphone" name="vaildphone" tabindex="1" maxlength="12" placeholder="请输入手机号" />
+        <label class="label-tip label-tip-info" title="请输入手机号">
+        </div>
+        <div class="control-input"><input type="text" id="vaildcode" name="vaildcode" tabindex="2" maxlength="6" placeholder="请输入验证码" />
+        <label class="label-tip label-tip-info" title="请输入验证码">
+            <img src="/Utility/VaildCode" height="38" width="80" class="auth-image"></div>
+        <div><input type="submit" tabindex="3" value="获取验证码" /></div>
+    </form>
+
+    <div class="control-input"><input type="text" id="phonevaildcode" name="phonevaildcode" tabindex="1" maxlength="12" placeholder="手机效验码" />
+    <label class="label-tip label-tip-info" title="请输入手机效验码">
+        <input type="submit" id="submit" value="提交" />
+    </div>
+
+    <script type="text/javascript">
+        var valid = {
+            _showInfo: function (e) {
+                var _self = this;
+                _self._hideError(e);
+                var $_infoElement = _self._getInfoLabelTip(e);
+                var infoTxt = $_infoElement.attr("title");
+                $_infoElement.show();
+                _self._showTip($_infoElement, 'info', infoTxt);
+            },
+            _hideInfo: function (e) {
+                var _self = this;
+                var $_infoElement = _self._getInfoLabelTip(e);
+                $_infoElement.hide();
+                $_infoElement.qtip('destroy', true);
+            },
+            _showError: function (e, errTxt) {
+                var _self = this;
+                var $_errElement = _self._getErrLabelTip(e);
+                $_errElement.show();
+                _self._showTip($_errElement, 'error', errTxt);
+            },
+            _hideError: function (e) {
+                var _self = this;
+                var $_errElement = _self._getErrLabelTip(e);
+                $_errElement.hide();
+                $_errElement.qtip('destroy', true);
+            },
+            _getInfoLabelTip: function (e) {
+                var $_infoElement = $(e).parents(".control-input").find(".label-tip-info");
+                return $_infoElement;
+            },
+            _getErrLabelTip: function (e) {
+                var $_errElement = $(e).parents(".control-input").find(".label-tip-err");
+                if ($_errElement.length == 0) {
+                    $(e).parents(".control-input").append('<label class="label-tip label-tip-err"></label>');
+                    $_errElement = $(e).parents(".control-input").find(".label-tip-err");
+                }
+                return $_errElement;
+            },
+            _showTip: function (event, type, content) {
+                event.qtip({
+                    show: {
+                        ready: true,
+                        effect: function () {
+                            $(this).fadeTo(600, 1);
+                        }
+                    },
+                    hide: false,
+                    position: {
+                        my: 'center left',
+                        at: 'center right',
+                        adjust: {
+                            x: 20
+                        }
+                    },
+                    content: content,
+                    style: {
+                        classes: 'qtip-' + type
+                    }
+                });
+            },
+            validForm: function (form, submitHandler) {
+                var _self = this;
+                return $(form).validate({
+                    onfocusin: function (element, event) {
+                        _self._showInfo(element);
+                    },
+                    onfocusout: function (element, event) {
+                        _self._hideInfo(element);
+                        $(element).valid();
+                    },
+                    focusCleanup: true,
+                    success: function (errorLabel, element) {
+                        _self._hideInfo(element);
+                        _self._hideError(element);
+                    },
+                    onkeyup: false,
+                    ignore: false,
+                    errorPlacement: function (label, element) {
+                        var errTxt = label.text();
+                        _self._showError(element, errTxt);
+                    },
+                    focusInvalid: false,
+                    rules: {
+                        vaildphone:{
+	        	    	 	    required:true,
+	        	    	 	    number:true,
+	        	    	 	    rangelength:[11,11],
+                                phone:true,
+	        	    	},
+	    	        	vaildcode:{
+	    	        		required:true,
+                            number:true,
+	    	        		rangelength:[4,4],
+                            vaildcode:true
+	    	        	},
+                        phonevaildcode:{
+	        	    	 	required:true,
+	        	    	 	number:true,
+	        	    	 	rangelength:[6,6],
+                            remote: {
+		   					    url: '@Url.RouteUrl("Default", new { controller = "Utility", action = "CheckPhoneVaildCode" })', 
+		   					    type: "post",
+		   					    dataType: "json",   
+		   					    data: { 
+		   					    	phonevaildcode:this.value,
+                                    vaildcode:function(){ return $('#vaildcode').val(); },
+                                    vaildphone:function(){ return $('#vaildphone').val(); },
+                                    _t:function(){ return Math.random();}
+		   					   	}
+		    	        	}
+	        	    	},
+                        username:{
+	    	        		required:true,
+                            chrnum:true,
+	    	        		minlength:4,
+		        		    maxlength:20
+	    	        	},
+                        password:{
+	   	        		    required:true,
+	   	        		    minlength:6,
+	   	        		    maxlength:18
+	   	        	    },
+                        confirmPassword:{
+                            required:true,
+                            equalTo:'#password'
+                        },
+                        email:{
+	   	        		    email:true,
+	   	        		    maxlength:100,
+                            remote: {
+						        url: '@Url.RouteUrl("Default", new { controller = "Account", action = "CheckRegisterEmail" })',
+						        type: "post",
+						        dataType: "json", 
+						        data: {
+						    	    email:this.value,
+                                    _t: function(){ return Math.random();}
+						        }
+						    }
+	   	        	    }
+                    },
+                    messages: {
+                        vaildphone:{
+	        	    	 	required:'不能为空',
+	        	    	 	number:'手机号不正确',
+	        	    	 	rangelength:'手机号不正确'
+	        	    	},
+	    	        	vaildcode:{
+	    	        		required:'不能为空',
+	    	        		rangelength:'验证码为4位',
+	    	        		number:'验证码为4位',
+                            remote: '验证码错误'
+	    	        	},
+                        phonevaildcode:{
+	        	    	 	required:'不能为空',
+	        	    	 	number:'手机效验码为6位数字',
+	        	    	 	rangelength:'手机效验码为6位数字',
+                            remote:'手机效验码不正确'
+                        },
+                        username:{
+	    	        		required:'用户名不能为空',
+	    	        		minlength:'长度不能小于{0}位',
+		        		    maxlength:'长度不能大于{0}位'
+	    	        	},
+                        password:{
+	   	        		    required:'密码不能为空',
+	   	        		    minlength:'长度不小于{0}位',
+	   	        		    maxlength:'长度不大于{0}位'
+	   	        	    },
+                        confirmPassword:{
+                            required:'密码确认不能为空',
+                            equalTo:'两次输入的密码不一致'
+                        },
+                        email:{
+	   	        		    email:'请输入正确的邮箱',
+	   	        		    maxlength:'长度不超过{0}位',
+                            remote: '此邮箱已占用'
+	   	        	    }
+                    }
+                });
+            }
+        };
+
+        $(function () {
+            jQuery.validator.addMethod("phone", function (value, element) {
+                var length = value.length;
+                return this.optional(element) || (length == 11 && /^(1+\d{10})$/.test(value));
+            }, "请正确填写您的手机号码");
+
+            valid.validForm($('#form1'), {
+                vaildphone: {
+                    required: true,
+                    number: true,
+                    phone: true
+                },
+                vaildcode: {
+                    required: true,
+                    number: true
+                }
+            }, {
+                vaildphone: {
+                    required: '手机号不能为空',
+                    number: '请输入正确的手机号'
+                },
+                vaildcode: {
+                    required: '校验码不能为空',
+                    number: '请输入正确的校验码'
+                }
+            }, function () {
+
+                console.log(2);
+            }
+                );
+        });
+    </script>
+</body>
+</html>

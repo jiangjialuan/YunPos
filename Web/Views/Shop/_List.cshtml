@@ -1,0 +1,113 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "门店管理";
+    PageList<CySoft.Model.Tb.Tb_Shop> pageList = ViewData["List"] as PageList<CySoft.Model.Tb.Tb_Shop>;
+    var _view_page_ = ViewData["_view_page_"] == null ? "1" : ViewData["_view_page_"].ToString();
+
+    var hone_css = _view_page_ == "1" ? "tab-pane fade active in" : "tab-pane fade  container";
+    var ios_css = _view_page_ == "1" ? "tab-pane fade  container" : "tab-pane fade  container active in";
+    int index = 1;
+}
+
+
+<div id="myTabContent" class="tab-content">
+                <div class="@hone_css" id="home">
+                    <ul id="banner_ul" class="col-xs-12 m-l-none m-b-none wrapper-md">
+                        @foreach (var item in pageList)
+                        {
+                            <li id="banner_li_@item.id" class="m-r-md m-b-md pull-left banner-set-box out-box banner_li " style="position: relative">
+                                
+                                <div class="move retail-store" style="clear: both">
+                                    <div class="w-406 h-200 b wrapper-xs banner-set img-set bor-b">
+                                        <img src="@Html.Raw(string.IsNullOrWhiteSpace(item.pic_path) ? "/static/images/register/stores.png" : item.pic_path) " alt="@item.mc" onclick="$.fn.menuTab.load({ url: '/shop/detail?id=@item.id', 'title': '门店详情', id: 'shop/list', nocache: '0' }); ">
+                                        <input name="banner_img[]" value="@item.pic_path" type="hidden">
+                                    </div>
+                                    <div class="m-t banner-link" style="margin-left: 15px !important;">
+                                        <label class="item-2-label" style="margin-left:0px;"><span>门店编码：</span></label><label class="m-l-xs1">@item.bm</label><br />
+                                        <label class="item-2-label" style="margin-left:0px;"><span>门店名称：</span></label><label class="m-l-xs1">@item.mc</label><br />
+                                        <label class="item-2-label" style="margin-left:0px;"><span>联系人：</span></label> <label class="m-l-xs1">@item.lxr</label><br />
+                                        <label class="item-2-label" style="margin-left:0px;"> <span>手机号码：</span></label><label class="m-l-xs1">@item.phone</label><br />
+                                        <label class="item-2-label" style="margin-left:0px;"><span>联系地址：</span></label><label class="m-l-xs1">@item.address</label><br />
+                                        <label class="item-2-label" style="margin-left:0px;"><span>状态：</span></label><label class="m-l-xs1">@Html.Raw(item.flag_state.ToString() != "1" ? "停用" : "正常")</label><br />
+                                    </div>
+                                </div>
+                                <ul style="display: block;bottom:10px;" class="do-banner a-hover1">
+                                    <li class="ho1"><a class="fa fa-copy pad-rl4" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/add?id=@item.id'+'&fromType=0', 'title': '门店编辑', id: 'shop/list', nocache: '1' }); "><span class="mar-l3">复制</span></a></li>
+                                    <li class="ho2"><a class="fa fa-pencil pad-rl4" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/edit?id=@item.id'+'&fromType=0', 'title': '门店编辑', id: 'shop/list', nocache: '1' }); "><span class="mar-l3">编辑</span></a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        <li id="banner_li_add" class="m-r-md m-b-md pull-left banner-set-box out-box banner_li" style="position: relative">
+                            <div class="move" style="clear: both">
+                                <div class="w-406 h-200 b wrapper-xs banner-set img-set retail-store">
+                                    <img src="/static/images/default7.png" alt="新增" onclick="$.fn.menuTab.load({ url: '/shop/add', 'title': '门店管理', id: 'shop/list', nocache: '1' }); ">
+                                    <input name="banner_img[]" value="pic_add" type="hidden">
+                                </div>
+                            </div>
+                            <ul style="display: block;bottom:20px;" class="do-banner a-hover1">
+                                <li class="fa fa-plus btn_icon"><a class="mar-l3" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/add', 'title': '门店管理', id: 'shop/list', nocache: '1' }); ">新增门店</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+
+            <div class="@ios_css" id="ios">
+                <div id="hy-list-list-fresh-box" class="table_list table_max_h">
+                    <table class="table table-bordered" id="xuh">
+                        <caption>
+                            <button class="btn m-t-12 m-b-sm btn-sm btn-info btn-addon w-xs" style="float:left" onclick="$.fn.menuTab.load({ url: '/shop/add?fromType=1', 'title': '注册新门店', id: 'shop/list', nocache: '1' }); " title="注册新门店" href="javascript:void(0);"> <span class="fa fa-plus btn_icon"></span>注册新门店 </button>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th width="55">序号</th>
+                                <th class="col-md-2">门店编码</th>
+                                <th class="col-md-2">门店名称</th>
+                                <th class="col-md-1">联系人</th>
+                                <th class="col-md-2">手机号码</th>
+                                <th>联系地址</th>
+                                <th class="col-md-1">状态</th>
+                                <th class="col-md-1">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            @foreach (var item in pageList)
+                            {
+
+                                <tr>
+                                    <td class="text-c">@(index++)</td>
+                                    <td>@item.bm</td>
+                                    <td>@item.mc</td>
+                                    <td>@item.lxr</td>
+                                    <td>@item.phone</td>
+                                    <td>@item.address</td>
+                                    <td>@Html.Raw(item.flag_state.ToString() != "1" ? "停用" : "正常")</td>
+                                    <td>
+                                        <a class="fa fa-copy pad-rl4" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/add?id=@item.id'+'&fromType=1', 'title': '门店编辑', id: 'shop/list', nocache: '1' }); ">复制</a>
+                                        <a class="fa fa-pencil pad-rl4" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/edit?id=@item.id'+'&fromType=1', 'title': '门店编辑', id: 'shop/list', nocache: '1' }); ">编辑</a>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+<script>
+    app.c.public_data['shop/list'] = app.c.public_data['shop/list'] || {};
+    app.c.public_data['shop/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['shop/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['shop/list']['_current_page_'] = '@(pageList.PageIndex)';
+
+</script>
+

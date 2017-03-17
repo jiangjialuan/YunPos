@@ -1,0 +1,771 @@
+﻿@using CySoft.Model.Tb
+@using Spring.Aop
+@{
+    Layout = null;
+    List<Tb_Role_Module> item_edit = ViewData["item_edit"] as List<Tb_Role_Module>;
+    item_edit = item_edit ?? new List<Tb_Role_Module>();
+    string option = ViewData["option"].ToString();
+    List<Tb_Role_Function> roleFunList = ViewData["roleFunList"] as List<Tb_Role_Function>;
+    roleFunList = roleFunList ?? new List<Tb_Role_Function>();
+
+    IList<Tb_Pos_Function> posFuncList = ViewData["posFuncList"] as IList<Tb_Pos_Function>;
+    posFuncList = posFuncList ?? new List<Tb_Pos_Function>();
+    
+    IList<Tb_Role_Pos_FunctionWithName> rolePosFuncList = ViewData["rolePosFuncList"] as IList<Tb_Role_Pos_FunctionWithName>;
+    rolePosFuncList = rolePosFuncList ?? new List<Tb_Role_Pos_FunctionWithName>();
+    var funList= ViewData["funList"] as List<Tb_Function>;
+    funList=funList??new  List<Tb_Function>();
+    var version = string.Format("{0}", ViewData["version"]);
+    funList = funList.Where(f => f.version.Split(',').Any(a => a == version)).ToList();
+    posFuncList = posFuncList.Where(p => string.Format("{0}", p.version).Split(',').Any(a => a == version)).ToList();
+    var id_role= string.Format("{0}", ViewData["id_role"]);
+}
+
+<style>
+    #role_module_edit {
+        width: 95%;
+        height: auto;
+        margin: 20px;
+    }
+
+        #role_module_edit tr {
+            text-align: left;
+        }
+
+        #role_module_edit th {
+            border-left: 1px solid #c6cedb;
+            border-bottom: 1px solid #c6cedb;
+            padding: 9px 5px;
+            font-size: 16px;
+        }
+
+            #role_module_edit th:nth-child(3) {
+                border-right: 1px solid #c6cedb;
+            }
+
+        #role_module_edit td {
+            border-bottom: 1px solid #c6cedb;
+            border-left: 1px solid #c6cedb;
+            padding: 5px;
+        }
+
+            #role_module_edit td.interval {
+                border: none;
+            }
+
+        #role_module_edit tr:nth-child(2n) {
+            background: #f4f6fb;
+        }
+
+        #role_module_edit tr.lins_box td {
+            border-top: 1px solid #c6cedb;
+        }
+
+            #role_module_edit tr.lins_box td:nth-child(2) {
+                border-right: 1px solid #c6cedb;
+            }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="rolesetting/edit"]').attr({ controller: 'rolesetting', action: 'detail' });
+        $('div[contentID="rolesetting/editrolemodule"]').attr({ controller: 'rolesetting', action: 'editrolemodule' });
+        app.c.public_data['rolesetting/edit'] = app.c.public_data['rolesetting/edit'] || {};
+        app.c.public_data['rolesetting/edit']['once'] = false;
+    });
+    app.rolemoduleedit = app.rolemoduleedit || {};
+    app.rolesetting = app.rolesetting || {};
+    app.rolemoduleedit.formid = "role_module_edit";
+    //判断是否有当前选中权限TAB的登录权限
+    app.rolemoduleedit.login = function (cb) {
+        var tab = $(cb).parents("table");
+        var inputLogn = tab.find("._input_login")[0];
+        var data_type = $(inputLogn).attr("data-type");
+        if (data_type === "admin") {
+            if (tab.find("input[type='checkbox'][data-level='2']:checked").length > 0) {
+                inputLogn.checked = true;
+            } else if (tab.find("input[type='checkbox'][data-level='3']:checked").length > 0) {
+                inputLogn.checked = true;
+            } else {
+                inputLogn.checked = false;
+            }
+        } else if (data_type === "pos") {
+            if (tab.find("input[type='checkbox'][data-level='1']:checked").length > 0) {
+                inputLogn.checked = true;
+            }
+            else {
+                inputLogn.checked = false;
+            }
+        }
+    }/**/
+    app.rolemoduleedit.tab = null;
+    $(function () {
+        
+        var $fm = $("#update_rolemodule_form");
+        var $btn = $("#btn_update_rolemodule");
+        var $tab = $(_);
+        app.rolemoduleedit.tab = $tab;
+        $btn.unbind('click');
+
+        $btn.bind('click', function (event) {
+            
+            $.DHB.checkForm('update_rolemodule_form', function () {
+                
+                $btn.button("loading");
+                submitForm($fm, $btn);
+            });
+        })
+        app.rolemoduleedit.changeSelectTab = function (li, tabid) {
+            var _li = $(li);
+            _li.siblings().toggleClass("rme_ul_current");
+            _li.toggleClass("rme_ul_current");
+            var currentTab = $("#" + tabid);
+            currentTab.show();
+            currentTab.siblings("table").hide();
+            app.rolemoduleedit.formid = tabid;
+            app.rolemoduleedit.login($("#" + app.rolemoduleedit.formid + " input:checkbox:last")[0]);
+        }
+    })
+</script>
+<style>
+    #rme_ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        margin-left: 20px;
+        display: inline-block;
+    }
+
+        #rme_ul li {
+            float: left;
+            margin: 0;
+            padding: 0;
+            line-height: 40px;
+            font-size: 14px;
+            text-align: center;
+            padding: 0 10px;
+            border: 1px solid #c6cedb;
+            cursor: pointer;
+        }
+
+    .rme_ul_current {
+        background-color: #4f9de0;
+        color: #fff;
+    }
+</style>
+<style>
+    #role_pos_module_edit {
+        width: 95%;
+        height: auto;
+        margin: 20px;
+    }
+
+        #role_pos_module_edit tr {
+            text-align: left;
+        }
+
+        #role_pos_module_edit th {
+            border: 1px solid #ffb092;
+            padding: 15px 5px;
+        }
+
+        #role_pos_module_edit td {
+            border-bottom: 1px solid #c6cedb;
+            border-left: 1px solid #c6cedb;
+            border-right: 1px solid #c6cedb;
+            padding: 5px;
+        }
+
+        #role_pos_module_edit .pso_one {
+            border-top: 1px solid #c6cedb;
+        }
+
+        #role_pos_module_edit td.interval {
+            border: none;
+        }
+
+        #role_pos_module_edit tr:nth-child(odd) {
+            background: #f4f6fb;
+        }
+
+    #role_module_edit tbody > tr:nth-child(odd):hover {
+        background-color: transparent !important;
+    }
+
+    #role_module_edit tbody > tr:nth-child(even):hover {
+        background-color: #f4f6fb !important;
+    }
+
+    #role_module_edit #tbody_select {
+        font-size: 12px;
+    }
+   #role_module_edit  .i-checks > i,#role_pos_module_edit .i-checks > i{
+        width:auto;
+    }
+</style>
+<input pagesize="" value="" type="hidden">
+<input page="" value="" type="hidden">
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/rolesetting/rolelist', 'title': '角色管理', id: 'rolesetting/rolelist', nocache: '0' }); ">角色管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">角色权限编辑</a>
+</div>
+<div class="col">
+    <div class="panel panel-default pad-t10">
+        <div class="main-content">
+            <ul id="rme_ul">
+                <li class="rme_ul_current" onclick="app.rolemoduleedit.changeSelectTab(this, 'role_module_edit')">后台管理权限</li>
+                <li onclick="app.rolemoduleedit.changeSelectTab(this, 'role_pos_module_edit')">POS端权限</li>
+            </ul>
+            <form novalidate="novalidate" action="/rolesetting/editrolemodule" class="client-box" id="update_rolemodule_form">
+            	
+                <table id="role_module_edit" style="margin-top: 0px; margin-bottom:42px;">
+                    <tr class="lins_box">
+                        <td>
+                            <label class="i-checks">
+                                角色名称：@ViewData["rolename"]
+                            </label>
+                        </td>
+                        <td colspan="2">
+                            <label class="i-checks">
+                                <input class="_input_login" data-type="admin"  value="" type="checkbox" />
+                                <i></i>允许登录管理后台
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>一级</th>
+                        <th>二级</th>
+                        <th id="tbody_select">
+                            <label class="i-checks" style="margin-left:15px;">
+                           <input name="moduleIds" type="checkbox" checked="checked" id="check_search"/>
+                                <i><span>查询</span></i>
+                            </label>
+                            <label class="i-checks" style="margin-left:15px;">
+                               <input name="moduleIds" checked="checked" type="checkbox" id="check_add"/>
+                               <!--<input name="moduleIds" type="checkbox" id="check_d1" onclick="checkOnex(this)"/>-->
+                                <i><span>新增</span></i>
+                            </label>
+                            <label class="i-checks" style="margin-left:15px;">
+                                <input name="moduleIds" checked="checked" type="checkbox" id="check_edit">
+                                	<!--<input name="moduleIds" type="checkbox" onclick="checkOneb(this)"/>-->
+                                <i><span>编辑</span></i>
+                            </label>
+                            <label class="i-checks" style="margin-left:15px;">
+                                <input name="moduleIds" checked="checked" type="checkbox" id="check_del">
+                                	<!--<input name="moduleIds" type="checkbox" onclick="checkOnes(this)">-->
+                                <i><span>删除</span></i>
+                            </label>
+                            <label class="i-checks" style="margin-left:15px;">
+                                <input name="moduleIds" checked="checked" type="checkbox" id="check_import">
+                                	<!--<input name="moduleIds" type="checkbox" onclick="checkOner(this)">-->
+                                <i><span>导入</span></i>
+                            </label>
+                            <label class="i-checks" checked="checked" style="margin-left:15px;">
+                                <input name="moduleIds" type="checkbox" id="check_export">
+                                	<!-- <input name="moduleIds" type="checkbox" onclick="checkOnec(this)">-->
+                                <i><span>导出</span></i>
+                            </label>
+                        </th>
+                    </tr>
+                    @{
+                        var parentList = item_edit.Where(n => n.id_module_father == "0" && funList.Any(f => f.id == n.id_function)); //1
+                        if (parentList.Any())
+                        {
+                            int one = 0;
+                            foreach (var oneItme in parentList)
+                            {
+                                var oneList = item_edit.Where(n => n.id_module_father == oneItme.id_module && funList.Any(f=>f.id==n.id_function)); //2
+                                int count = oneList.Count();
+                                if (oneList.Any())
+                                {
+                                    foreach (var twoItem in oneList)
+                                    {
+                                        var twoList = item_edit.Where(n => n.id_module_father == twoItem.id_module && funList.Any(f => f.id == n.id_function)); //3
+                                        var boll = one++ < 1;
+                                        var only_style = (boll) ? "z-index:2" : "";
+                                        <tr id="check-oneo" style="@only_style">
+                                            @if (boll)
+                                            {
+                                                <td class="color-bgwhite" rowspan="@count" >
+                                                    <label class="i-checks">
+                                                       <input name="moduleIds" onclick="selectCheckbox(this);" data-level="1" class="xxxxx" value="@oneItme.id" type="checkbox" @(roleFunList.Any(a => a.id_function == oneItme.id_function) ? "checked" : "") />
+                                                        
+                                                        <i><span>@oneItme.name</span></i>
+                                                    </label>
+                                                </td>
+                                            }
+
+                                            <td>
+                                                <label class="i-checks" style="margin-left:15px;">
+                                                    <input name="moduleIds" onclick="selectCheckbox(this)" data-1level-id="@oneItme.id" data-level="2" value="@twoItem.id" type="checkbox" @(roleFunList.Any(a => a.id_function == twoItem.id_function) ? "checked" : "") />
+                                                    <i><span>@twoItem.name</span></i>
+                                                </label>
+                                            </td>
+                                            <td style="border-right:1px solid #c6cedb;" class="checkbox_list_box">
+                                                @{
+                                        if (twoList.Any())
+                                        {
+                                            @*@CySoft.Utility.JSON.Serialize(twoList)*@
+
+                                                foreach (var threeItem in twoList)
+                                                {
+
+                                                    if (@threeItem.name == "查询")
+                                                    {
+                                                        <label class="i-checks" style="margin-left:15px;">
+                                                            <input name="moduleIds" onclick="selectCheckbox(this,'check_search')" func_type="check_search" data-1level-id="@oneItme.id" data-2level-id="@twoItem.id" data-level="3" value="@threeItem.id" type="checkbox" @(roleFunList.Any(a => a.id_function == threeItem.id_function) ? "checked" : "") />
+                                                            <i><span>@threeItem.name</span></i>
+                                                        </label>
+                                                    }
+                                                    else if (@threeItem.name == "新增")
+                                                    {
+                                                        <label class="i-checks" style="margin-left:15px;">
+                                                            <input name="moduleIds" onclick="selectCheckbox(this,'check_add')" func_type="check_add" data-1level-id="@oneItme.id" data-2level-id="@twoItem.id" data-level="3" value="@threeItem.id" type="checkbox" @(roleFunList.Any(a => a.id_function == threeItem.id_function) ? "checked" : "") />
+                                                            <i><span>@threeItem.name</span></i>
+                                                        </label>
+                                                    }
+                                                    else if (@threeItem.name == "编辑")
+                                                    {
+                                                        <label class="i-checks" style="margin-left:15px;">
+                                                            <input name="moduleIds" onclick="selectCheckbox(this, 'check_edit')" func_type="check_edit" data-1level-id="@oneItme.id" data-2level-id="@twoItem.id" data-level="3" value="@threeItem.id" type="checkbox" @(roleFunList.Any(a => a.id_function == threeItem.id_function) ? "checked" : "") />
+                                                            <i><span>@threeItem.name</span></i>
+                                                        </label>
+                                                    }
+                                                    else if (@threeItem.name == "删除")
+                                                    {
+                                                        <label class="i-checks" style="margin-left:15px;">
+                                                            <input name="moduleIds" onclick="selectCheckbox(this,'check_del')" func_type="check_del" data-1level-id="@oneItme.id" data-2level-id="@twoItem.id" data-level="3" value="@threeItem.id" type="checkbox" @(roleFunList.Any(a => a.id_function == threeItem.id_function) ? "checked" : "") />
+                                                            <i><span>@threeItem.name</span></i>
+                                                        </label>
+                                                    }
+                                                    else if (@threeItem.name == "导入")
+                                                    {
+                                                        <label class="i-checks" style="margin-left:15px;">
+                                                            <input name="moduleIds" onclick="selectCheckbox(this,'check_import')" func_type="check_import" data-1level-id="@oneItme.id" data-2level-id="@twoItem.id" data-level="3" value="@threeItem.id" type="checkbox" @(roleFunList.Any(a => a.id_function == threeItem.id_function) ? "checked" : "") />
+                                                            <i><span>@threeItem.name</span></i>
+                                                        </label>
+                                                    }
+                                                    else if (@threeItem.name == "导出")
+                                                    {
+                                                        <label class="i-checks" style="margin-left:15px;">
+                                                            <input name="moduleIds" onclick="selectCheckbox(this,'check_export')" func_type="check_export" data-1level-id="@oneItme.id" data-2level-id="@twoItem.id" data-level="3" value="@threeItem.id" type="checkbox" @(roleFunList.Any(a => a.id_function == threeItem.id_function) ? "checked" : "") />
+                                                            <i><span>@threeItem.name</span></i>
+                                                        </label>
+                                                    }
+                                                    else {
+                                                        <label class="i-checks" style="margin-left:15px;">
+                                                            <input name="moduleIds" onclick="selectCheckbox(this)" func_type="" data-1level-id="@oneItme.id" data-2level-id="@twoItem.id" data-level="3" value="@threeItem.id" type="checkbox" @(roleFunList.Any(a => a.id_function == threeItem.id_function) ? "checked" : "") />
+                                                            <i><span>@threeItem.name</span></i>
+                                                        </label>
+                                                        }
+
+
+
+                                                    }
+                                                }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                    one = 0;
+                                }
+
+                                @**<tr>
+                                <td colspan="3" class="interval">&nbsp;</td>
+                            </tr>*@
+                            }
+                        }
+                    }
+                    <tr></tr>
+                </table>
+
+                <table id="role_pos_module_edit" style="margin-top: 0px;margin-bottom:42px;display: none;">
+                    <tr>
+                        <td class="pso_one">
+                            <label class="i-checks">
+                                角色名称：@ViewData["rolename"]
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label class="i-checks">
+                                <input class="_input_login" data-type="pos" id="myCheck" checked="checked" onclick="jurisdiction(this)" value="" type="checkbox" />
+                                <i></i>允许登录POS端
+                            </label>
+                        </td>
+                    </tr>
+                    
+                    @{
+                        var pfl_ft_1 = posFuncList.Where(pf => pf.flag_type == 1);
+                        if (pfl_ft_1.Any())
+                        {
+                            foreach (var fun in pfl_ft_1.OrderBy(a=>a.sort_id))
+                            {
+                                <tr id="jurisdiction-p">
+                                    <td>
+                                        <label class="i-checks">
+                                            <input name="pos_moduleIds" data-level="1" name="juris" id="juris" onclick="app.rolemoduleedit.selectCheckbox(this);" data-type="@fun.flag_type" class="xxxxx" value="@fun.id" @(rolePosFuncList.Any(a => a.id_pos_function == fun.id&&a.flag_use==1) ? "checked" : "") type="checkbox" />
+                                            <i><span>@fun.mc</span></i>
+                                        </label>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+
+                    @{
+                        var pfl_ft_2 = posFuncList.Where(pf => pf.flag_type == 2);
+                        if (pfl_ft_2.Any())
+                        {
+                            foreach (var fun in pfl_ft_2.OrderBy(a=>a.sort_id))
+                            {
+                                var rpfModel = rolePosFuncList.FirstOrDefault(f => f.id_pos_function == fun.id);
+                                if (rpfModel != null)
+                                {
+                                    <tr id="jurisdiction-p">
+                                        <td>
+                                            <label class="i-checks">
+                                                <input name="pos_moduleIds" checked="checked" onclick="app.rolemoduleedit.selectCheckbox(this);" data-type="@fun.flag_type" data-regex="@fun.regex" class="xxxxx" value="@fun.id" type="checkbox" />
+                                                <i><span>@fun.mc</span></i>
+                                            </label>:
+                                            <input class="form-control {regex_check:true}" data-regex="@fun.regex" style="display: inherit; width: 15px;" placeholder="最小值" type="text" value="@rpfModel.minvalue" data-val-type="min" />
+                                            <input class="form-control {regex_check:false}" data-regex="@fun.regex" style="display: inherit; width: 15px;" placeholder="最大值" type="text" value="@rpfModel.maxvalue" data-val-type="max" />
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr id="jurisdiction-p">
+                                        <td>
+                                            <label class="i-checks">
+                                                <input name="pos_moduleIds" onclick="app.rolemoduleedit.selectCheckbox(this);" data-type="@fun.flag_type" class="xxxxx" data-regex="@fun.regex" value="@fun.id" type="checkbox" style="display: inherit" />
+                                                <i><span>@fun.mc</span></i>
+                                            </label>：
+                                            <input class="form-control {regex_check:true}" data-regex="@fun.regex" style="display: inherit; width: 15px;" placeholder="最小值" type="text" value="" data-val-type="min" />
+                                            <input class="form-control {regex_check:true}" data-regex="@fun.regex" style="display: inherit; width: 15px;" placeholder="最大值" type="text" value="" data-val-type="max" />
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                    @{
+                        var pfl_ft_3 = posFuncList.Where(pf => pf.flag_type == 3);
+                        if (pfl_ft_3.Any())
+                        {
+                            foreach (var fun in pfl_ft_3.OrderBy(a => a.sort_id))
+                            {
+                                var rpfModel = rolePosFuncList.FirstOrDefault(f => f.id_pos_function == fun.id);
+                                if (rpfModel != null)
+                                {
+                                    <tr id="jurisdiction-p">
+                                        <td>
+                                            <label class="i-checks">
+                                                <input name="pos_moduleIds" checked="checked" onclick="app.rolemoduleedit.selectCheckbox(this);" data-type="@fun.flag_type" data-regex="@fun.regex" class="xxxxx" value="@fun.id" type="checkbox" />
+                                                <i><span>@fun.mc</span></i>
+                                            </label>:
+                                            <input class="form-control {regex_check:false}" data-regex="@fun.regex" style="display: inherit; width: 15px;" placeholder="最大值" type="text" value="@rpfModel.maxvalue" data-val-type="max" />
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr id="jurisdiction-p">
+                                        <td>
+                                            <label class="i-checks">
+                                                <input name="pos_moduleIds" onclick="app.rolemoduleedit.selectCheckbox(this);" data-type="@fun.flag_type" class="xxxxx" data-regex="@fun.regex" value="@fun.id" type="checkbox" style="display: inherit" />
+                                                <i><span>@fun.mc</span></i>
+                                            </label>：
+                                            <input class="form-control {regex_check:true}" data-regex="@fun.regex" style="display: inherit; width: 15px;" placeholder="最大值" type="text" value="" data-val-type="max" />
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                </table>
+
+                <input type="hidden" id="roleId" name="roleId" value="@ViewData["roleid"]" />
+                <footer class="panel-footer lter need-footer-fixed need-footer-fixed-box">
+                    <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                    @if (id_role != "2"&&id_role!="3")
+                    {
+                        <button type="submit" class="btn w-xs btn-info" id="btn_update_rolemodule" data-loading-text="正在提交...">保存</button>
+                    }
+                    &nbsp; &nbsp;
+                    <button class="btn w-xs btn-default" type="button" onclick="$.fn.menuTab.load({ url: '/rolesetting/rolelist', 'title': '角色管理', id: 'rolesetting/rolelist', nocache: '0' }); ">
+                        取消
+                    </button>
+                </footer>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+   
+
+        //排除浏览器缓存
+        function submitForm($fm, $btn) {
+            
+            //$.post($.DHB.U(app.rolemoduleedit.getURL()), app.rolemoduleedit.getParams(), function (data) {
+            //    $btn.button("reset");
+            //    if (data.status == "success") {
+            //        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+            //        $.fn.menuTab.load({ url: '/rolesetting/rolelist', 'title': '角色管理', id: 'rolesetting/rolelist', nocache: '1' });
+            //    }
+            //    else {
+            //        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+            //        $btn.button('reset');
+            //    }
+            //}, 'json');
+            app.httpAjax.post({
+                data: app.rolemoduleedit.getParams(),
+                headers: {},
+                url: $.DHB.U(app.rolemoduleedit.getURL()),
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) {
+                    $btn.button("reset");
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                        $.fn.menuTab.load({ url: '/rolesetting/rolelist', 'title': '角色管理', id: 'rolesetting/rolelist', nocache: '1' });
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                        $btn.button('reset');
+                    }
+                },
+                error: null,
+                complete: null
+            });
+
+        }
+        app.rolemoduleedit.login($("#role_module_edit input:checkbox:last")[0]);
+   // });
+    app.rolemoduleedit.getURL = function () {
+        
+        if (app.rolemoduleedit.formid === "role_module_edit") {
+            return "rolesetting/editrolemodule";
+        }
+        if (app.rolemoduleedit.formid === "role_pos_module_edit") {
+            return "rolesetting/bindposfunction";
+        }
+    }
+    app.rolemoduleedit.getParams = function () {
+        
+        if (app.rolemoduleedit.formid === "role_module_edit") {
+            var v = $("#update_rolemodule_form").serialize();
+            return v;
+        }
+        if (app.rolemoduleedit.formid === "role_pos_module_edit") {
+            return "roleid=" + $("#roleId").val() + "&posmoduleIds=" + app.rolemoduleedit.getSelectVal();
+        }
+    }
+    app.rolemoduleedit.selectCheckbox = function (cb) {
+        ////console.log(app.rolemoduleedit.getSelectVal());
+        // 
+        app.rolemoduleedit.login(cb);
+    }
+    app.rolemoduleedit.getSelectVal = function () {
+        var valStr = "[";
+        $("#role_pos_module_edit input[type=checkbox]:checked").each(function (index, item) {
+            var flagtype = $(item).attr("data-type");
+            if (flagtype === '1') {
+                valStr += '{';
+                valStr += '"id_pos_func":"' + $(item).val() + '",';
+                valStr += '"flag_type":"' + flagtype + '"';
+                valStr += '},';
+            } else if (flagtype === '2' || flagtype === '3') {
+                valStr += '{';
+                valStr += '"id_pos_func":"' + $(item).val() + '",';
+                valStr += '"flag_type":"' + flagtype + '",';
+                var _regex = $(item).attr("data-regex");
+                $(item).parent().siblings("input").each(function (index, item1) {
+                    if ($(item1).attr("data-val-type") === "min") {
+                        //var _item1_val = $(item1).val();
+                        ////console.log(_item1_val);
+                        //var reg = new RegExp(_regex);
+                        ////console.log(reg.test(_item1_val));
+                        valStr += '"minvalue":"' + $(item1).val() + '",';
+                    }
+                    else if ($(item1).attr("data-val-type") === "max") {
+                        valStr += '"maxvalue":"' + $(item1).val() + '",';
+                    }
+                });
+                valStr = valStr.substr(0, valStr.length - 1);
+                valStr += '},';
+            }
+        });
+        if (valStr.length > 1) {
+            valStr = valStr.substr(0, valStr.length - 1);
+        }
+        valStr += "]";
+        return valStr;
+    }
+    function selectCheckbox(cb, str) {
+         
+        if (!$(cb).is(':checked')) {
+            $('#'+str).removeAttr('checked');
+        } else {
+
+            if ($('input[func_type=' + str + ']:checked', _).length == $('input[func_type=' + str + ']', _).length) {
+                if (!$('#'+str).is(':checked')) {
+                    $('#'+str).click();
+                }
+
+            }
+
+        }
+        
+         
+        if (cb) {
+            var _cb = $(cb);
+            
+            var _level = $(cb).attr("data-level");
+            if (_level == 1) {
+                var val = _cb.val();
+                if (cb.checked) {
+                    $("input[data-1level-id='" + val + "']").each(function (index, item) {
+                        item.checked = true;
+                    });
+                } else {
+                    $("input[data-1level-id=" + val + "]").removeAttr("checked");
+                }
+            }
+            else if (_level == 2) {
+                var val = _cb.val();
+                var _1levelid = _cb.attr("data-1level-id");
+                if (cb.checked) {
+                    $("input[data-2level-id='" + val + "']").each(function (index, item) {
+                        item.checked = true;
+                    });
+                    $("input[value='" + _1levelid + "']").each(function (index, item) {
+                        item.checked = true;
+                    });
+                } else {
+                    $("input[data-2level-id=" + val + "]").removeAttr("checked");
+                    //
+                    checkSecondLevel(cb); 
+                }
+            } else if (_level == 3) {
+                var _2levelid = _cb.attr("data-2level-id");
+                var _1levelid = _cb.attr("data-1level-id");
+                if (cb.checked) {
+                    $("input[value='" + _2levelid + "']").each(function (index, item) {
+                        item.checked = true;
+                    });
+                    $("input[value='" + _1levelid + "']").each(function (index, item) {
+                        item.checked = true;
+                    });
+                }
+                var isselect = false;
+                _cb.parent().parent().find("input").each(function (index, item) {
+                    if (item.checked == true) {
+                        isselect = true;
+                    }
+                });
+                if (!isselect) {
+                    $("input[value='" + _2levelid + "']")
+                        .each(function (index, item) {
+                            item.checked = cb.checked;
+                        });
+                } else {
+                    $("input[value='" + _2levelid + "']")
+                        .each(function (index, item) {
+                            item.checked = true;
+                        });
+                }
+                checkSecondLevel(cb);
+            }
+            app.rolemoduleedit.login(cb);
+        }
+    }
+
+    function checkSecondLevel(cb) {
+        var _cb = $(cb);
+        var _1levelid = _cb.attr("data-1level-id");
+        var hadselect = false;
+        $("input[data-1level-id='" + _1levelid + "']").each(function (index, item) {
+            if (item.checked) {
+                hadselect = true;
+            }
+        });
+        if (hadselect) {
+            $("input[value='" + _1levelid + "']").each(function (index, item) {
+                item.checked = true;
+            });
+        } else {
+            $("input[value='" + _1levelid + "']").each(function (index, item) {
+                item.checked = false;
+            });
+        }
+    }
+
+    //
+    app.rolesetting.editrolemodule_ready = function () {
+        //
+        app.rolesetting.select_all = function (e, t) {
+            //
+            if ($(e).is(':checked')) {
+                
+                $("input[func_type=" + t + "]", _).not("input:checked").click();
+                
+            } else {
+                
+                $("input[func_type=" + t + "]:checked", _).click();
+            }
+            
+        }
+       
+        $("#check_search", _).on('click', function () {            
+            app.rolesetting.select_all(this, "check_search");            
+        });
+        
+    
+         $("#check_add", _).on('click', function () {
+             app.rolesetting.select_all(this, "check_add");
+        });
+        $("#check_edit", _).on('click', function () {
+            app.rolesetting.select_all(this, "check_edit");
+        });
+        $("#check_del", _).on('click', function () {
+            app.rolesetting.select_all(this, "check_del");
+        });
+        $("#check_import", _).on('click', function () {
+            app.rolesetting.select_all(this, "check_import");
+        });
+        $("#check_export", _).on('click', function () {
+            app.rolesetting.select_all(this, "check_export");
+        });
+        
+     
+    };
+
+
+
+
+//选择和全选
+    function jurisdiction(sa) {
+        if (sa.checked) {
+            $(_ + "#jurisdiction-p").find("input[type='checkbox']").each(function (index, item) {
+                item.checked = true;
+
+            });
+
+        } else {
+            $(_ + "#jurisdiction-p").find("input[type='checkbox']").each(function (index, item) {
+                item.checked = false;
+
+            })
+        }
+    }
+
+
+</script>
+
+
+

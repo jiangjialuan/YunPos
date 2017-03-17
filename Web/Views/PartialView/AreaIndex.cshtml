@@ -1,0 +1,55 @@
+﻿@{
+    var AreaData = ViewData["AreaData"] == null ? new List<CySoft.Model.Tb.Tb_Districts>() : (List<CySoft.Model.Tb.Tb_Districts>)ViewData["AreaData"];
+}
+
+
+<div class="city-box" id="citybox-dhbcity-area_id_field">
+    <div class="city-del"><i class="fa fa-times"></i></div>
+    <ul class="city-tab-header">
+        <li class="active" style="position: relative"><a class="cut-out" data-name="省份">省份</a><i class="fa  fa-angle-down" style="position: absolute;right: 5px;top:0px;font-size: 20px;line-height: 35px"></i></li>
+        <li class="" style="position: relative"><a class="cut-out" data-name="城市">城市</a><i class="fa  fa-angle-down" style="position: absolute;right: 5px;top:0px;font-size: 20px;line-height: 35px"></i></li>
+        <li class="" style="position: relative"><a class="cut-out" data-name="县区">县区</a><i class="fa  fa-angle-down" style="position: absolute;right: 5px;top:0px;font-size: 20px;line-height: 35px"></i></li>
+    </ul>
+    <div class="city-tab-content city-province" style="display: block;">
+
+
+        <div class="province-item">
+            @*<div class="item-title">A-G</div>*@
+            <div class="item-content">
+                @foreach (var item in AreaData.OrderBy(d => d.sort))
+                {
+                    <a data-code="@item.id">@item.name</a>
+                }
+
+            </div>
+        </div>
+
+
+        @*<div class="province-item">
+                <div class="item-title">A-G</div>
+                <div class="item-content">
+                    <a data-code="110000">北京市</a><a data-code="340000">安徽省</a><a data-code="350000">福建省</a><a data-code="440000">广东省</a><a data-code="450000">广 西</a><a data-code="520000">贵州省</a><a data-code="620000">甘肃省</a><a data-code="910000">国　外</a>
+                </div>
+            </div><div class="province-item">
+                <div class="item-title">H-K</div>
+                <div class="item-content">
+                    <a data-code="130000">河北省</a><a data-code="220000">吉林省</a><a data-code="230000">黑龙江</a><a data-code="320000">江苏省</a><a data-code="360000">江西省</a><a data-code="410000">河南省</a><a data-code="420000">湖北省</a><a data-code="430000">湖南省</a><a data-code="460000">海南省</a>
+                </div>
+            </div><div class="province-item">
+                <div class="item-title">L-S</div>
+                <div class="item-content">
+                    <a data-code="140000">山西省</a><a data-code="150000">内蒙古</a><a data-code="210000">辽宁省</a><a data-code="310000">上海市</a><a data-code="370000">山东省</a><a data-code="500000">重庆市</a><a data-code="510000">四川省</a><a data-code="540000">西 藏</a><a data-code="610000">陕西省</a><a data-code="630000">青海省</a><a data-code="640000">宁　夏</a><a data-code="820000">澳 门</a>
+                </div>
+            </div><div class="province-item">
+                <div class="item-title">T-Z</div>
+                <div class="item-content">
+                    <a data-code="120000">天津市</a><a data-code="330000">浙江省</a><a data-code="530000">云南省</a><a data-code="650000">新　疆</a><a data-code="710000">台湾省</a><a data-code="810000">香 港</a>
+                </div>
+            </div>*@
+    </div>
+    <div class="city-tab-content city-city" style="">
+        请先选择省份
+    </div>    <div class="city-tab-content city-county" style="">
+        请先选择城市
+    </div>
+</div>

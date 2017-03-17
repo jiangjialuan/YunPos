@@ -1,0 +1,84 @@
+﻿@using CySoft.Model.Ts;
+
+@{
+    Layout = null;
+
+    Ts_Notice item_edit = ViewData["item_edit"] as Ts_Notice;
+    item_edit = item_edit ?? new Ts_Notice();
+    string option = ViewData["option"].ToString();
+
+
+}
+
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="notice/detail"]').attr({ controller: 'notice', action: 'detail' });
+        app.c.public_data['notice/detail'] = app.c.public_data['notice/detail'] || {};
+        app.c.public_data['notice/detail']['once'] = false;
+        app.notice = app.notice || {};
+    });
+</script>
+
+<link href="~/static/js/kindeditor/themes/default/default.css" rel="stylesheet" />
+<link href="~/static/js/kindeditor/themes/simple/simple.css" rel="stylesheet" />
+<script charset="utf-8" src="~/static/js/kindeditor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="~/static/js/kindeditor/lang/zh-CN.js"></script>
+
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <div class="row">
+                        <div class="col-xs-12"></div>
+                    </div>
+                    <div class="system-message padder-lg padder-v30" style="width: 1110px">
+                        <div class="b-b-f1">
+                            <h4>@item_edit.title</h4>
+                            <p class="text-muted l-h-30">@string.Format(((DateTime)item_edit.rq_create).ToString("yyyy-MM-dd HH:mm"))</p>
+                        </div>
+                        <div>
+                            <div class="message-info">
+                               
+                                @Html.Raw(item_edit.content)
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box" style="width: 1797px;">
+                    @*<footer class="panel-footer  padder-lg padder-v need-footer-fixed need-footer-fixed-box" style="width: 1797px;">*@
+                        <button class="btn w-xs btn-default" type="button" onclick="app.notice.close(this);">
+                            关闭
+                        </button>
+                    </footer>
+</div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    app.notice = app.notice || {};
+
+    //内页加载完成
+    app.notice.detail_ready = function () {
+
+
+    };
+
+    //编辑公告
+    app.notice.edit = function (id, obj) {
+        $.fn.menuTab.load({ url: '/notice/edit?id=' + id, 'title': '编辑公告', id: 'notice/list', nocache: '1' });
+    };
+
+    //返回
+    app.notice.close = function (obj) {
+        //$.fn.menuTab.load({ url: '/notice/list', 'title': '系统公告', id: 'notice/list', nocache: '0' });
+        $.fn.menuTab.deleteMenu('notice/detail');
+    };
+
+</script>

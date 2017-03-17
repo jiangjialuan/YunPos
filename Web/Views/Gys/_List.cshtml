@@ -1,0 +1,89 @@
+﻿@using CySoft.Model.Tb
+@{
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var pageList = ViewData["List"] as PageList<Tb_Gys>;
+}
+
+
+<table class="table m-b-none row1 selectAll-table status-box one-line sptable" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+            <th>编码</th>
+            <th>名称</th>
+            <th>联系人</th>
+            <th>联系电话</th>
+            <th>邮箱</th>
+            <th width="160" class="text-center">公司电话</th>
+            <th width="110" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="dwlist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="8" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-gys-id-@item.id" class="tr-status-finished">
+                            <td class="text-center">
+                                @(index++)
+                            </td>
+                            <td><a class="list-link">@item.bm</a></td>
+                            <td><a class="list-link">@item.mc</a></td>
+                            <td><a class="list-link">@item.lxr</a></td>
+                            <td><a class="list-link">@item.tel</a></td>
+                            <td><a class="list-link">@item.email</a></td>
+                            <!--<td class="text-center">@string.Format("{0:yyyy-MM:dd HH:mm:ss}", item.rq_create)</td>-->
+                            <td class="text-center">@item.companytel</td>
+                            <td class="list-operate">
+                                <div class="look-out1">
+                                    <div class="second-height-operate">
+
+                                        <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="app.gys.detail('@item.id',this)" title="查看"></a>
+
+                                        @if (isEdit)
+                                        {
+                                            <a class="bg-state bg-state-info  fa fa-pencil" href="javascript:;" onclick="app.gys.edit('@item.id',this)" title="编辑"></a>
+                                        }
+                                        @if (isDel)
+                                        {
+                                            <a class="bg-state bg-state-info  fa fa-trash" href="javascript:;" onclick="app.gys.del('@item.id',this)" title="删除"></a>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+
+
+
+<script type="text/javascript">
+    app.c.public_data['dw/list'] = app.c.public_data['dw/list'] || {};
+    app.c.public_data['dw/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['dw/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['dw/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

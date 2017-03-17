@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_Gys_Sp_Tag"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tb_Gys_Sp_Tag" type="CySoft.Model.Tb.Tb_Gys_Sp_Tag,CySoft.Model" />
+    <typeAlias alias="Tb_Gys_Sp_Tag_Query" type="CySoft.Model.Tb.Tb_Gys_Sp_Tag_Query,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="id_gysList">
+          db.[id_gys] in <iterate property="id_gysList" conjunction="," open="(" close=")">#id_gysList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>
+        <isNotNull prepend="and" property="id_cgs">exists(select 1 from tb_gys_cgs WHERE flag_stop=0 and db.id_gys=id_gys AND id_cgs=#id_cgs#)</isNotNull>
+        <isNotNull prepend="and" property="not_id_gys">db.[id_gys] <![CDATA[ <> ]]> #not_id_gys#</isNotNull>
+        <isNotNull prepend="and" property="id_skuList">
+          db.[id_sku] in <iterate property="id_skuList" conjunction="," open="(" close=")">#id_skuList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id_sku">db.[id_sku]=#id_sku#</isNotNull>
+        <isNotNull prepend="and" property="not_id_sku">db.[id_sku] <![CDATA[ <> ]]> #not_id_sku#</isNotNull>
+        <isNotNull prepend="and" property="id_tagList">
+          db.[id_tag] in <iterate property="id_tagList" conjunction="," open="(" close=")">#id_tagList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id_tag">db.[id_tag]=#id_tag#</isNotNull>
+        <isNotNull prepend="and" property="not_id_tag">db.[id_tag] <![CDATA[ <> ]]> #not_id_tag#</isNotNull>
+        <isNotNull prepend="and" property="id_sp">db.[id_sp]=#id_sp#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id_gys] asc,db.[id_sku] asc,db.[id_tag] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_sp">db.[id_sp]=#new_id_sp#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Tb_gys_sp_tag]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_Gys_Sp_Tag_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_gys],db.[id_sku],db.[id_tag],db.[id_sp],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],tgt.mc from <include refid="Table"/> as db
+      left join Tb_gys_tag tgt
+      on db.id_tag=tgt.id_tag
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_Gys_Sp_Tag">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_Gys_Sp_Tag">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_gys],db.[id_sku],db.[id_tag],db.[id_sp],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+  </statements>
+</sqlMap>

@@ -1,0 +1,176 @@
+﻿@using CySoft.Model.Tb;
+
+<style>
+    .dropdown-menu { max-height: 510px; }
+</style>
+
+
+<div class="modal fade in" id="dialog-CZPwd" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">重置密码</h4>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="">
+                <div class="modal-body tab-content ">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>新密码</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true}" placeholder="请输入新密码" type="password" name="password" value="" >
+                            </label>
+                        </div>
+
+
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>确认密码</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true}" placeholder="请输入确认密码" type="password" name="new_password" value="">
+                            </label>
+                        </div>
+
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>识别码</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true}" placeholder="请输入识别码" type="text" name="img_code" value="" maxlength="4">
+                            </label>
+                        </div>
+
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span></span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <img class="btn_img_code left15" alt="图片识别码" src="/utility/vaildcode?t=@Guid.NewGuid().ToString("N").Substring(0, 6)" id="img_code" title="点击刷新" onclick="javascript: RefreshCodeSelf(this);">
+                            </label>
+                        </div>
+
+                    </div>
+                    <input type="hidden" id="id_user" name="id_user" value="@(ViewData["id_user"]==null?"":ViewData["id_user"].ToString())" />
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button').button('loading');
+            var password = $(_ + ".validate").find("input[name='password']").val();
+            var new_password = $(_ + ".validate").find("input[name='new_password']").val();
+            var img_code = $(_ + ".validate").find("input[name='img_code']").val();
+
+            if (password == '') {
+                $.DHB.message({ 'content': '请输入新密码', 'time': 0, 'type': 'e' });
+                btn.button('reset');
+                return;
+            }
+            if (new_password == '') {
+                $.DHB.message({ 'content': '请输入确认密码', 'time': 0, 'type': 'e' });
+                btn.button('reset');
+                return;
+            }
+            if (password!=new_password) {
+                $.DHB.message({ 'content': '输入新密码和确认密码不相同', 'time': 0, 'type': 'e' });
+                btn.button('reset');
+                return;
+            }
+            if (img_code == '') {
+                $.DHB.message({ 'content': '请输入识别码', 'time': 0, 'type': 'e' });
+                btn.button('reset');
+                return;
+            }
+
+            if (password.toString().length < 6) {
+                $.DHB.message({ 'content': '密码长度不能少于6位！', 'type': 'i' });
+                btn.button('reset');
+                return;
+            }
+
+            //$.post(
+            //    $.DHB.U('Account/CZPwd'),
+            //    $(_ + ".validate").serialize(),
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+            //            $(_ + '#submit-button').text("操作成功！");
+            //            $.DHB.url('account/list', 'cache');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //            if (data.message.indexOf('图片识别码错误') >= 0 || data.message.indexOf('验证码已过期') >= 0) {
+                            
+            //                var img = $(_ + "#img_code");
+            //                img.click();
+            //            } 
+            //            btn.button('reset');
+            //        }
+            //    }, 'json'
+            //);
+
+            var options = {
+                data: $(_ + ".validate").serialize(),
+                url: $.DHB.U('Account/CZPwd'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                        $(_ + '#submit-button').text("操作成功！");
+                        $.DHB.url('account/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        if (data.message.indexOf('图片识别码错误') >= 0 || data.message.indexOf('验证码已过期') >= 0) {
+
+                            var img = $(_ + "#img_code");
+                            img.click();
+                        }
+                        btn.button('reset');
+                    }
+                },
+                complete: function (XHR, TS) { btn.button('reset'); }
+            };
+            app.httpAjax.post(options);
+
+
+
+
+
+
+
+            return false;
+        });
+    };
+
+
+    function RefreshCodeSelf(node) {
+        var time = new Date().getTime();
+        node.src = "/utility/vaildcode" + '?t=' + time;
+    }
+
+
+    
+</script>
+
+

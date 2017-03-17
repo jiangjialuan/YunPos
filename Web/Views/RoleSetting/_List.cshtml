@@ -1,0 +1,63 @@
+﻿@using System.Collections
+@using CySoft.Model.Tb
+@{
+    var pageList = ViewData["List"] as PageList<Tb_Role_Query>;
+    Hashtable ht = new Hashtable()
+    {
+        {1,"平台角色"},
+        {2,"系统角色"},
+        {9,"模板角色"}
+    };
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                序号
+            </th>
+            <th width="120">角色名称</th>
+            <th width="120">角色类型</th>
+            <th width="200">角色描述</th>
+            <th width="205">操作</th>
+        </tr>
+    </thead>
+    <tbody id="rolesetting-main-tbody">
+        @{
+            if (pageList != null)
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-dw-id-@item.id" class="tr-status-finished">
+                            <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                @(index++)
+                            </td>
+                            <td><a class="list-link">@item.name</a></td>
+                            <td><a class="list-link">@(ht[(int)item.flag_type])</a></td>
+                            <td>@item.role_describe</td>
+                            <td class="list-operate table-p-r-sm">
+                                <div class="look-out1">
+                                    <div class="second-height-operate">
+                                        <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.rolesetting.edit(this, '@item.id')" title="编辑"></a>
+                                        @*<a class="bg-state bg-state-info" href="javascript:;" onclick="$.fn.menuTab.load({url: '/rolesetting/editrolemodule?id=@item.id&rolename=@item.name','title': '权限设置',id: 'rolesetting/rolelist',nocache: '0'}); ">权限设置</a>*@
+                                        <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.rolesetting.del(this,'@item.id')" title="删除"></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    app.c.public_data['rolesetting/list'] = app.c.public_data['rolesetting/list'] || {};
+    app.c.public_data['rolesetting/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['rolesetting/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['rolesetting/list']['_current_page_'] = '@pageList.PageIndex';
+</script>

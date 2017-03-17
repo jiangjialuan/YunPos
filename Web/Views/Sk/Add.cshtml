@@ -1,0 +1,999 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Model.Tz;
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tz_Ys_Jsc_QueryModel>;
+    string sort = ViewData["sort"].ToString();
+    var selectListShop = (ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>) ?? new List<Tb_User_ShopWithShopMc>();
+    var userList = (ViewData["userList"] as List<Tb_User>) ?? new List<Tb_User>();
+    var selectListKh = (ViewData["userKhList"] as List<Tb_Kh>) ?? new List<Tb_Kh>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var defaultSL = decimal.Parse("0").Digit((int)digit["sl_digit"]);
+    var defaultDJ = decimal.Parse("0").Digit((int)digit["dj_digit"]);
+    var defaultJE = decimal.Parse("0").Digit((int)digit["je_digit"]);
+    var id_kh = ViewData["id_kh"] == null ? "" : ViewData["id_kh"].ToString();
+    var kh_name = ViewData["kh_name"] == null ? "" : ViewData["kh_name"].ToString();
+    string id_user = ViewData["id_user"] == null ? "" : ViewData["id_user"].ToString();
+    var item_copy = ViewData["CopyInfo"] as Td_Sk_1_Query_DetailModel;
+    if (item_copy == null)
+    {
+        item_copy = new Td_Sk_1_Query_DetailModel();
+        item_copy.head = new Td_Sk_1_QueryModel() { id_jbr = id_user };
+        item_copy.body = new List<Td_Sk_2_QueryModel>();
+        item_copy.head.rq = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+    }
+    if (!string.IsNullOrEmpty(item_copy.head.id))
+    {
+        id_kh = item_copy.head.id_kh;
+        kh_name = item_copy.head.kh_name;
+    }
+    string type = ViewData["type"] == null ? "" : ViewData["type"].ToString();
+
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+    string show_shop_version = ViewData["show_shop_version"] == null ? "" : ViewData["show_shop_version"].ToString();
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="sk/add"]').attr({ controller: 'sk', action: 'add' });
+        app.c.public_data['sk/add'] = app.c.public_data['sk/add'] || {};
+        app.c.public_data['sk/add']['once'] = false;
+        app.sk = app.sk || {};
+    });
+</script>
+
+<link href="~/static/js/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" />
+
+
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/sk/list', 'title': '收款管理', id: 'sk/list', nocache: '0' }); ">收款管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">新增收款</a>
+</div>
+
+
+<div class="col">
+    <div class="row">
+            <div class="p-l">
+                <div class="panel panel-default">
+                    <div class="main-content">
+                        <!--页头-->
+                        <div class="jh_add_title page-header mar-ts">
+                            <h3 class="mar-t10 mar-b0">收款单</h3>
+                        </div>
+                        <div class="p-l border-c1 dis-table col-md-12 col-lg-12 col-sm-12 ">
+                            <form class="filter-form" action="/sk/add" id="fm-jh-add">
+                                <div class="">
+                                    <div class="common-no">
+                                        <div class="clearfix">
+                                            <!-- 内容搜索 -->
+                                            <div class="pull-left" style="margin-top: 7px">
+
+                                                <span data-toggle="editclient" class="m-r-sm">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <em class="tag">* </em>客户：
+                                                        </span>
+                                                    </label>
+
+                                                    <div class="clear-padding f-l">
+                                                        <div class="input-group" style="width:150px;position:relative;" >
+                                                            
+
+                                                            <input placeholder="" type="text" value="@kh_name" autocomplete="off"
+                                                                   id="kh_name" class="form-control btn-none {required:true}" data-toggle="dropdown" data-dialog_title=""
+                                                                   data-name="kh_name"
+                                                                   data-id="kh_id"
+                                                                   data-callback="app.sk.add__add_kh_callback" data-init="0" data-initenter="0" data-initkeydown="0" data-client_type=""
+                                                                   onclick="$.DHB.client.select_kh({ 'kh_name': 'kh_name', 'kh_id': 'kh_id', 'kh_callback': 'app.sk.add__add_kh_callback' ,'kh_type': 'sk_self' });">
+                                                            <span class="input-group-btn">
+                                                                <button id="kh_group_btn" class="btn btn-default btn-sm f-h-30 m-l-none btn-none" type="button" onclick="$.DHB.client.select_kh({ 'kh_name': 'kh_name', 'kh_id': 'kh_id', 'kh_callback': 'app.sk.add__add_kh_callback', 'kh_type': 'sk_self' });">
+                                                                    <i class="icon-users"></i>
+                                                                </button>
+                                                            </span>
+                                                            <input type="hidden" name="kh_id" id="kh_id" value="@id_kh">
+
+                                                        </div>
+                                                    </div>
+
+                                                    <label class="copy " style="position: absolute;top:0px;margin-left: 5px">
+                                                        <a class="icon-question tool iconImg" style="position: relative; visibility: hidden;"></a>
+                                                        <div class="popover fade bottom in tool-box">
+                                                            <div class="arrow"></div>
+                                                            <div class="popover-content">
+                                                                <p>请选择客户。</p>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </span>
+
+                                            </div>
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <span data-toggle="editclient" class="m-r-sm">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <em class="tag">* </em>收款类型：
+                                                        </span>
+                                                    </label>
+                                                    <div class="clear-padding f-l">
+                                                        <select id="flag_sklx" name="flag_sklx" onchange="app.sk.flag_sklx_onchange(this)" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择收款类型&#39;}}" style="width:150px;">
+                                                            <option value="1" @(string.Format(item_copy.head.flag_sklx==1?"selected=\"selected\"":""))>应收</option>
+                                                            <option value="2" @(string.Format(item_copy.head.flag_sklx == 2 ? "selected=\"selected\"":""))>预收</option>
+                                                        </select>
+                                                    </div>
+                                                </span>
+                                            </div>
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <span data-toggle="editclient" class="m-r-sm">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left" id="ysk_title">
+                                                            收/支预收款：
+                                                        </span>
+                                                    </label>
+                                                    <div class="clear-padding f-l">
+                                                        @*<input class="form-control user-input {maxlength:80,messages:{required:&#39;请输入金额&#39;}} valid" style="width :150px;" maxlength="80" id="je_pre" name="je_pre" placeholder="请输入金额" type="text"  onblur="app.sk.onblur(this, '@digit["je_digit"]')"  onkeyup="check_digit(this,@digit["je_digit"])" onafterpaste="check_digit(this,@digit["je_digit"])" onfocus="app.sk.onfocus(this)"  value="@string.Format(item_copy.head.je_pre == null ? defaultJE.ToString() : item_copy.head.je_pre.Digit((int)digit["je_digit"]).ToString())">*@
+                                                        <input class="form-control user-input {maxlength:80,messages:{required:&#39;请输入金额&#39;}} valid" style="width :150px;" maxlength="80" id="je_pre" name="je_pre" placeholder="请输入金额" type="text" onblur="app.sk.onblur(this, '@digit["je_digit"]')"  onfocus="app.sk.onfocus(this)" value="@string.Format(item_copy.head.je_pre == null ? defaultJE.ToString() : item_copy.head.je_pre.Digit((int)digit["je_digit"]).ToString())">
+                                                    </div>
+                                                </span>
+                                            </div>
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <span data-toggle="editclient" class="m-r-sm">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <em class="tag">* </em>单号：
+                                                        </span>
+                                                    </label>
+                                                    <div class="clear-padding f-l">
+                                                        <input class="form-control user-input {maxlength:80,required:true,messages:{required:&#39;请输入单号&#39;}} valid" style="width :150px;" maxlength="80" id="dh" name="dh" placeholder="请输入单号" type="text" value="">
+                                                    </div>
+                                                </span>
+
+                                            </div>
+
+                                          @if (show_shop_version == "1")
+                                                {
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">* </em>收款门店：
+                                                    </span>
+                                                </label>
+                                                <select id="id_shop" name="id_shop" onchange="app.sk.shopChange(this)" onmouseenter="app.sk.option(this)" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择门店&#39;}}" style="width:150px;">
+                                                    @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                    {
+                                                        var shopChecked = item_copy.head.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                        <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            }else{
+                                            	 <div class="pull-left m-r-sm dis-no" style="margin-top:7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">* </em>收款门店：
+                                                    </span>
+                                                </label>
+                                                <select id="id_shop" name="id_shop" onchange="app.sk.shopChange(this)" onmouseenter="app.sk.option(this)" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择门店&#39;}}" style="width:150px;">
+                                                    @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                    {
+                                                        var shopChecked = item_copy.head.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                        <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            }
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">* </em>经办人：
+                                                    </span>
+                                                </label>
+                                                <select id="id_jbr" name="id_jbr" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择经办人&#39;}}" style="width:150px;">
+                                                    @foreach (var item in userList.OrderBy(d => d.rq_create))
+                                                    {
+                                                        var jbrChecked = item_copy.head.id_jbr == item.id ? "selected=\"selected\"" : "";
+                                                        <option value="@item.id" @jbrChecked>@(string.IsNullOrEmpty(item.name) ? item.username : item.name)</option>
+                                                    }
+                                                </select>
+                                            </div>
+
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <span class="inline"><em class="tag">* </em>开单日期：</span>
+                                                        </span>
+                                                    </label>
+                                                    <div class="col-xs-7 clear-padding">
+                                                        <div class="input-group">
+                                                            
+                                                            <input name="rq" id="rq" class="form-control input-sm {required:true,messages:{required:&#39;开单日期&#39;}}" type="text"
+                                                                   onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'rq' })" value="@(item_copy.head.rq == null ? DateTime.Now.ToString("yyyy-MM-dd") : ((DateTime)item_copy.head.rq).ToString("yyyy-MM-dd"))" style="width:123px;">
+                                                            <span class="input-group-btn" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',el:'rq'});">
+                                                                <button type="button" class="btn btn-default btn-sm btn-none g-h-34" style="margin-left:0px;">
+                                                                    <i class="glyphicon glyphicon-calendar"> </i>
+                                                                </button>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                            </div>
+
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <span data-toggle="editclient" class="m-r-sm">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <em class="tag"></em>备注：
+                                                        </span>
+                                                    </label>
+                                                    <div class="clear-padding f-l">
+                                                        <textarea id="remark" name="remark" class=""   placeholder="请填写收款单备注" style="width:420px; height:30px;">@string.Format(item_copy.head.bz == null ? "" : item_copy.head.bz)</textarea>
+                                                    </div>
+                                                </span>
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        app.c.public_data['sk/add'] = app.c.public_data['sk/add'] || {};
+                                        app.c.public_data['sk/add']['search_all'] = false;
+                                        var currentSearch = 'app.c.public_data[\'sk/add\'][\'search\']';
+                                        eval(currentSearch + ' = false;');
+                                        $.DHB._search = function () {
+                                            eval('if(' + currentSearch + '===false){app.search.search_sk_add_list();' + currentSearch + '=true;}');
+                                        }
+
+                                        app.search = app.search || {};
+
+                                        app.search.search_sk_add_list = function () {
+                                            app.c.public_data['sk/add'] = app.c.public_data['sk/add'] || {};
+                                            app.c.public_data['sk/add']['_row_total_'] = '@pageList.ItemCount';
+                                            app.c.public_data['sk/add']['_page_size_'] = '@pageList.PageSize';
+                                            app.c.public_data['sk/add']['_current_page_'] = '@(pageList.PageIndex)';
+                                            app.search.do_search_pagination_sk_add_list();
+                                        }
+
+                                        //分页
+                                        app.search.do_search_pagination_sk_add_list = function () {
+                                            $.DHB.func.pagination({
+                                                module_name: 'Manager',
+                                                controller_name: 'sk',
+                                                action_name: 'add',
+                                                ready_once: false
+                                            });
+                                        }
+
+
+                                        app.search.wdatepicker_sk_add_list = function (el) {
+                                            var booStart = $(el).data('type') == 'start';
+                                            var option = {};
+                                            option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                            option['onpicked'] = function () {
+                                                $(el)
+                                                    .text($dp.cal.getP('y') +
+                                                        '-' +
+                                                        $dp.cal.getP('M') +
+                                                        '-' +
+                                                        $dp.cal.getP('d'));
+                                                if (booStart) {
+                                                    setTimeout(function () {
+                                                        $(el)
+                                                            .parent()
+                                                            .find('[data-type="end"]')
+                                                            .data('position', '1')
+                                                            .click();
+                                                    },
+                                                        5000);
+                                                }
+                                            };
+
+                                            if (booStart) {
+                                                option['maxDate'] =
+                                                    '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                            } else {
+                                                option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                if ($(el).data('position') == '1') {
+                                                }
+                                            }
+                                            option['oncleared'] = function () {
+                                                $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                app.search.do_search_sk_add_list();
+                                            };
+
+                                            WdatePicker(option);
+                                        }
+
+                                    </script>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="@sort" />
+                                </div>
+
+                            </form>
+                        </div>
+
+                        <input type="hidden" name="sk_table_result" id="sk_table_result" value="" />
+
+
+
+
+                        <div class="jh_add_down h-30"><span style="color:#4f9de0;">&nbsp;&nbsp;&nbsp;&nbsp;请先选择客户,再勾选单据</span></div>
+                        <!--数据表格-->
+                        @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                        <div id="sk-list-list-fresh-box" class="table_list table_max_h" style="max-height:445px;">
+                            <table class="table m-b-none row1 selectAll-table status-box one-line" id="sk_table" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                                <thead>
+                                    <tr>
+                                        <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                                            <label class="i-checks m-b-none">
+                                                <input type="checkbox" id="check-btn-header" onclick="$.DHB.func.selectAllThis(this); app.sk.sk_add_check_checked(this);">
+                                                <i></i>
+                                            </label>
+                                        </th>
+                                        <th>原单类型</th>
+                                        <th>结算单号</th>
+                                        <th>客户</th>
+                                        <th>原单日期</th>
+                                        <th class="width120">原单总金额</th>
+                                        <th class="width120">已收金额</th>
+                                        <th class="width120">未收金额</th>
+                                        <th class="width120">优惠金额</th>
+                                        <th class="width120">收款金额</th>
+                                        <th>备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dwlist-main-tbody">
+                                    @{
+                                        if (item_copy == null || item_copy.head == null || string.IsNullOrEmpty(item_copy.head.id) || item_copy.body == null || item_copy.body.Count == 0)
+                                        {
+                                            <tr id="row-sk-id-" class="tr-status-finished" data-item="" id_bill_origin="" dh_origin="" bm_djlx_origin="" je_origin="0" je_ys="0" je_ws="0">
+                                                <td class="text-center">
+                                                    <label class="i-checks m-b-none">
+                                                        <input type="checkbox" name="id_bill[]" value="" />
+                                                        <i></i>
+                                                    </label>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-center"></td>
+                                                <td><div style="text-align:right;width:95%;">@defaultJE</div></td>
+                                                <td><div style="text-align:right;width:95%;">@defaultJE</div></td>
+                                                <td name="weishou"><div style="text-align:right;width:95%;">@defaultJE</div></td>
+                                                <td name="je_yh">
+                                                    <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" placeholder="优惠金额(元)" type="text" value="@defaultJE" name="je_yh" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@defaultJE">
+                                                </td>
+                                                <td name="je_sk">
+                                                    <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" placeholder="收款金额(元)" type="text" value="@defaultJE" name="je_sk" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@defaultJE">
+                                                </td>
+
+                                                <td><input class="form-control user-input" readonly="readonly" style="width:96%;border:0px;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)"   type="text" value="" name="bz"></td>
+                                            </tr>
+
+                                        }
+                                        else
+                                        {
+                                            var list = item_copy.body.ToList();
+                                            if (list != null && list.Any())
+                                            {
+                                                foreach (var item in list)
+                                                {
+                                                    <tr id="row-sk-id-@item.id_bill" class="tr-status-finished" data-item="" id_bill_origin="@item.id_bill_origin" dh_origin="@item.dh_origin" bm_djlx_origin="@item.bm_djlx_origin" je_origin="@item.je_origin.Digit((int)digit["je_digit"])" je_ys="@item.je_ys.Digit((int)digit["je_digit"])" je_ws="@item.je_ws.Digit((int)digit["je_digit"])">
+                                                        <td class="text-center">
+                                                            <label class="i-checks m-b-none">
+                                                                <input type="checkbox" name="id_bill[]" value="@item.id_bill" onclick="$.DHB.func.selectSingle(this);app.sk.sk_add_check_checked(this);" />
+                                                                <i></i>
+                                                            </label>
+                                                        </td>
+                                                        <td>@item.bm_djlx_origin</td>
+                                                        <td>@item.dh_origin</td>
+                                                        <td>@item_copy.head.kh_name</td>
+                                                        <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.rq_create)</td>
+                                                        <td><div style="text-align:right;width:95%;">@item.je_origin.Digit((int)digit["je_digit"])</div></td>
+                                                        <td><div style="text-align:right;width:95%;">@item.je_ys.Digit((int)digit["je_digit"])  </div></td>
+                                                        <td name="weishou"><div style="text-align:right;width:95%;">@item.je_ws.Digit((int)digit["je_digit"])</div></td>
+                                                        <td name="je_yh">
+                                                            <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" placeholder="优惠金额(元)" type="text" value="@item.je_yh.Digit((int)digit["je_digit"])" name="je_yh" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@item.je_yh.Digit((int)digit["je_digit"])" onfocus="app.sk.onfocus(this)" onblur="app.sk.onblur(this, @digit["je_digit"])">
+                                                        </td>
+                                                        <td name="je_sk">
+                                                            <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" placeholder="收款金额(元)" type="text" value="@item.je_sk.Digit((int)digit["je_digit"])" name="je_sk" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@item.je_sk.Digit((int)digit["je_digit"])" onfocus="app.sk.onfocus(this)" onblur="app.sk.onblur(this, @digit["je_digit"])">
+                                                        </td>
+
+                                                        <td><input class="form-control user-input" readonly="readonly" style="width:96%;border:0px;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)"   type="text" value="" name="bz"></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!--页脚-->
+                        <footer class="panel-footer jh_add_down" style="overflow:visible;">
+                            <div class="dropup d-i-b" style="position: relative">
+                            </div>&nbsp;
+                            <ul id="Pagination" class="pagination pagination-sm pull-right m-t-none m-b-none"></ul>
+                            <div style="clear:both;">
+                            </div>
+                        </footer>
+
+
+                        <div style="clear:both;"></div>
+                        <ul class="jh_add_down ul_block  h-30">
+                            <li><span>原单总金额合计：￥</span><span id="je_mxtotal_total">@defaultJE</span></li>
+                            <li><span>已收金额：￥</span><span id="je_ys_total">@defaultJE</span></li>
+                            <li><span>未收金额：￥</span><span id="je_ws_total">@defaultJE</span></li>
+                            <li><span>优惠金额：￥</span><span id="je_yh_total">@defaultJE</span></li>
+                            <li><span>收款金额：￥</span><span id="je_bqyj_total">@defaultJE</span></li>
+                        </ul>
+
+                       <ul class="jh_add_down  ul_block  h-30" style="margin-bottom:50px;">
+                           <li><span>制单人：</span><span>@(ViewData["zdr_name"] == null ? "" : ViewData["zdr_name"].ToString())</span></li>
+                           <li><span>制单时间：</span><span>@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</span></li>
+                           <li><span>审核人：</span><span>@(ViewData["shr_name"] == null ? "" : ViewData["shr_name"].ToString())</span></li>
+                           <li><span>审核时间：</span><span>@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</span></li>
+                       </ul>
+
+
+                        <footer class="panel-footer  lter need-footer-fixed text-l">
+
+                            @if (type != "edit")
+                            {
+                                <button class="btn w-xs btn-info m-l-none" id="submit-button1" onclick="app.sk.check_jh_yes('submit-button','1');" data-loading-text="正在提交...">
+                                    保存并新增
+                                </button>
+                            }
+
+                            <button class="btn w-xs btn-info m-l-none" id="submit-button2" onclick="app.sk.check_jh_yes('submit-button','0');" data-loading-text="正在提交...">
+                                保存
+                            </button>
+                            <button type="button" class="btn w-xs btn-default" style="margin-left:3px;" title="收款" onclick="$.fn.menuTab.load({ url: '/sk/list', 'title': '收款管理', id: 'sk/list', nocache: '0' });$.DHB.close('sk/add'); ">取消</button>
+                        </footer>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $.DHB._ = function () {
+        app.c.public_data['sk/add'] = app.c.public_data['sk/add'] || {};
+        if (app.c.public_data['sk/add']['once'] === false) {
+            app.c.public_data['sk/add']['once'] = true;
+            $.DHB.checkForm(function () {
+
+                var flag_sklx = $("#flag_sklx", _).val();
+
+                if (!$(_ + "#kh_id").val()) {
+                    $.DHB.message({ 'content': '请选择客户！', 'type': 'i' });
+                }
+                else if (flag_sklx!='2'&&$(_ + "#sk_table>tbody>tr[data-item!='']").length <= 0) {
+                    $.DHB.message({ 'content': '请至少选择一个商品！', 'type': 'i' });
+                }
+                else if ($(_ + '#je_sf').val() == '' || $(_ + '#je_sf').val() == '') {
+                    $.DHB.message({ 'content': '实收金额不准为空！', 'type': 'i' });
+                }
+                else {
+                    app.sk.setresult();
+                    var objData = {};
+                    objData.skList = $(_ + 'input[name="sk_table_result"]').val();
+                    objData.remark = $(_ + '#remark').val();
+                    objData.id_kh = $(_ + '#kh_id').val();
+                    objData.id_shop = $(_ + '#id_shop').val();
+                    objData.id_jbr = $(_ + '#id_jbr').val();
+                    objData.dh = $(_ + '#dh').val();
+                    objData.rq = $(_ + '#rq').val();
+                    objData.je_sf = $(_ + '#je_sf').val();
+                    objData.type = '@type';
+                    objData.id = '@item_copy.head.id';
+
+                    $.post($.DHB.U('sk/add'), objData,
+                            function (data) {
+                                if (data.status == "success") {
+                                    debugger;
+                                    $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                    $.DHB.url('sk/list', 'cache');
+                                } else {
+                                    $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                    //btn.button('reset');
+                                    $("#submit-button1", _).button('reset');
+                                    $("#submit-button2", _).button('reset');
+                                }
+                            }, 'json'
+                   );
+                }
+                return false;
+            });
+            $(function () {
+                //$(_ + '#submit-button').removeAttr('disabled');
+                $("#submit-button1", _).removeAttr('disabled');
+                $("#submit-button2", _).removeAttr('disabled');
+
+            });
+        }
+    };
+
+
+    app.sk = app.sk || {};
+
+    //内页加载完成
+    app.sk.list_ready = function () {
+        if ('@type' == 'edit') {
+            $(_ + '#check-btn-header').click();
+            $(_ + "#gys_group_btn").attr("disabled", "disabled");
+            $(_ + "#kh_name").attr("disabled", "disabled");
+            $(_ + "#gys_group_span").attr("disabled", "disabled");
+        }
+        else {
+            $(_ + "#gys_group_btn").removeAttr("disabled");
+            $(_ + "#kh_name").removeAttr("disabled");
+            $(_ + "#gys_group_span").removeAttr("disabled");
+        }
+    };
+
+    //选择客户回调
+    app.sk.add__add_kh_callback = function (selectVal) {
+        selectVal = selectVal || '';
+        var selectValTem = selectVal.split('|');
+        var id_kh = '';
+        var kh_name = '';
+        var id_shop = $(_ + "#id_shop").val();
+
+        if (typeof (selectValTem[1]) != 'undefined' && selectValTem[1] != '') {
+            kh_name = selectValTem[1];
+            $('#kh_name', _).val(kh_name);
+        }
+
+        if (typeof (selectValTem[1]) != 'undefined' && selectValTem[0] != '') {
+            id_kh = selectValTem[0];
+            $('#kh_id', _).val(id_kh);
+        }
+        else {
+            $('#kh_id', _).val('');
+            $('#kh_name', _).val('');
+        }
+
+        var flag_sklx = $("#flag_sklx", _).val();
+
+        if (flag_sklx == '2') {
+            //去掉查询的html表体的数据
+            app.sk.set_defaul_table_info(e);
+        }
+        else {
+            //调用查询数据
+            app.sk.set_table_info(id_kh, kh_name, id_shop);
+        }
+    }
+    app.sk.flag1 = true;
+    app.sk.shopChange = function (e) {
+        var flag_sklx = $("#flag_sklx", _).val();
+        if (flag_sklx == '2') {
+
+        }
+        else {
+            if (app.sk.flag1 == true) {
+                $.messager.confirm("提示", "更改门店将刷新明细是否继续?", function () {
+                    var id_kh = $(_ + '#kh_id').val();
+                    var kh_name = $(_ + '#kh_name').val();
+                    var id_shop = $(_ + '#id_shop').val();
+                    app.sk.set_table_info(id_kh, kh_name, id_shop);
+                }, function () {
+                    debugger;
+                    app.sk.flag1 = false;
+                    $(e).prev().find('li').eq(app.sk.select_index1).find('a').click();
+                });
+            }
+        }
+
+    };
+    app.sk.option = function (e) {
+        //debugger;
+        app.sk.flag1 = true;
+        app.sk.select_index1 = $(e).find('li[class="selected"]').index();
+    };
+
+    //设置表格信息
+    app.sk.set_table_info = function (id_kh, kh_name, id_shop) {
+        debugger;
+        var url = '/sk/add?id_kh=' + id_kh + '&kh_name=' + kh_name + '&_search_=1';
+        if (id_shop != '')
+            url = url + '&id_shop=' + id_shop;
+        var options = {
+            url: $.DHB.U(url),
+            datatype: 'html',
+            beforeSend: function () {
+                $.DHB.showButterbar();
+            },
+            callback: function (data, textStatus, jqXHR) {
+                if ($('#sk-list-list-fresh-box', _).length > 0) {
+                    $('#sk-list-list-fresh-box', _).html(data);
+                }
+                app.search.do_search_pagination_sk_add_list();
+                app.sk.sk_add_bindkeypress();
+            },
+            complete: function (XHR, TS) {
+                $.DHB.closeButterbar();
+            }
+        };
+        cy.http.Get(options);
+        return false;
+    }
+
+    app.sk.sk_add_check_checked = function (e) {
+        var je_mxtotal_total = parseFloat('@defaultJE');
+        var je_ys_total = parseFloat('@defaultJE');
+        var je_ws_total = parseFloat('@defaultJE');
+        var je_yh_total = parseFloat('@defaultJE');
+        var je_bqyj_total = parseFloat('@defaultJE');
+        var sk_arr = [];
+
+        $('#sk_table>tbody').find('tr').each(function (e, obj) {
+            var checked_tr = $(obj).find('input[name="id_bill[]"]:checkbox:checked');
+            var data_item=$(obj).attr('id');
+            if (typeof (checked_tr) != 'undefined' && checked_tr.length > 0 && typeof (data_item) != 'undefined' && data_item != '' && data_item != 'row-sk-id-') {
+                checked_tr.each(function (el, obj2) {
+                    var tr = $(obj2).parents("tr");
+
+                    var je_mxtotal = limit_num($(tr.find('td')[5]).text(), '@digit["je_digit"]');
+                    var je_ys = limit_num($(tr.find('td')[6]).text(), '@digit["je_digit"]');
+                    var je_ws = limit_num($(tr.find('td')[7]).text(), '@digit["je_digit"]');
+                    var je_yh = limit_num(tr.find('input[name="je_yh"]').val(), '@digit["je_digit"]');
+
+
+                    if (typeof (tr.find('input[name="je_sk"]').attr('readonly')) != 'undefined' && tr.find('input[name="je_sk"]').attr('readonly') == 'readonly') {
+                        if ('@type' == 'edit') {
+                            var je_fk_old_data = tr.find('input[name="je_sk"]').attr('old-data');
+                            tr.find('input[name="je_sk"]').val(je_fk_old_data)
+                            tr.find('input[name="je_sk"]').attr('old-data', je_fk_old_data);
+                        } else {
+                            tr.find('input[name="je_sk"]').val(je_ws)
+                            tr.find('input[name="je_sk"]').attr('old-data', je_ws);
+                        }
+
+                    }
+
+                    var je_bqyj = limit_num(tr.find('input[name="je_sk"]').val(), '@digit["je_digit"]');
+                    je_mxtotal_total = parseFloat(je_mxtotal_total) + parseFloat(je_mxtotal);
+                    je_ys_total = parseFloat(je_ys_total) + parseFloat(je_ys);
+                    je_ws_total = parseFloat(je_ws_total) + parseFloat(je_ws);
+                    je_yh_total = parseFloat(je_yh_total) + parseFloat(je_yh);
+                    je_bqyj_total = parseFloat(je_bqyj_total) + parseFloat(je_bqyj);
+
+                    tr.find('input[name="je_yh"]').removeAttr('readonly');
+                    tr.find('input[name="je_sk"]').removeAttr('readonly');
+                    tr.find('input[name="bz"]').removeAttr('readonly');
+                    tr.attr('data-item', tr.find('input[name="id_bill[]"]').val());
+
+                    var jh_e = {};
+                    jh_e.id_bill_origin = $.trim(tr.attr("id_bill_origin"));//id_bill_origin
+                    jh_e.dh_origin = $.trim(tr.attr("dh_origin"));//dh_origin
+                    jh_e.bm_djlx_origin = $.trim(tr.attr("bm_djlx_origin"));//bm_djlx_origin
+                    jh_e.je_origin = $.trim(tr.attr("je_origin"));//je_origin
+                    jh_e.je_ys = $.trim(tr.attr("je_ys"));//je_ys
+                    jh_e.je_ws = $.trim(tr.attr("je_ws"));//je_ws
+                    jh_e.je_yh = $.trim(tr.find('input[name="je_yh"]').val()); //je_yh
+                    jh_e.je_sk = $.trim(tr.find('input[name="je_sk"]').val()); //je_sk
+                    jh_e.bz = $.trim(tr.find('input[name="bz"]').val()); //bz
+                    sk_arr.push(jh_e);
+                })
+            } else {
+                $(obj).find('input[name="je_yh"]').val('@defaultJE');
+                $(obj).find('input[name="je_yh"]').attr('readonly', 'readonly');
+                $(obj).find('input[name="je_sk"]').val('@defaultJE');
+                $(obj).find('input[name="je_sk"]').attr('readonly', 'readonly');
+                $(obj).find('input[name="bz"]').val('');
+                $(obj).find('input[name="bz"]').attr('readonly', 'readonly');
+                $(obj).attr('data-item', '');
+            }
+        });
+
+        $(_ + '#je_mxtotal_total').text(limit_num(parseFloat(je_mxtotal_total).toString(), '@digit["je_digit"]'));
+        $(_ + '#je_ys_total').text(limit_num(parseFloat(je_ys_total).toString(), '@digit["je_digit"]'));
+        $(_ + '#je_ws_total').text(limit_num(parseFloat(je_ws_total).toString(), '@digit["je_digit"]'));
+        $(_ + '#je_yh_total').text(limit_num(parseFloat(je_yh_total).toString(), '@digit["je_digit"]'));
+        $(_ + '#je_bqyj_total').text(limit_num(parseFloat(je_bqyj_total).toString(), '@digit["je_digit"]'));
+
+        var jsonStr = JSON.stringify(sk_arr);
+        $(_ + "#sk_table_result").val(jsonStr);
+
+    }
+
+
+    //默认设置单号
+    cy.http.Post({
+        url: '/sk/createdh',
+        beforeSend: function () {
+        },
+        callback: function (ret) {
+            if (ret.Success) {
+                if ('@type' != 'edit') {
+                    $(_ + "#dh").val(ret.Data);
+                    $(_ + "#dh").attr('old-data', ret.Data);
+                } else {
+                    $(_ + "#dh").val('@item_copy.head.dh');
+                    $(_ + "#dh").attr('old-data', '@item_copy.head.dh');
+                }
+            }
+        },
+        complete: function () {
+
+        }
+    });
+
+
+    //作废
+    app.sk.del = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定作废吗?", function () {
+            $.post($.DHB.U('sk/delete'),
+            {
+                id: id
+            },
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('sk/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                }, 'json');
+        });
+    };
+
+    app.sk.onmouseover = function onmouseover(e) {
+        var input = $(e);
+        input.css({ border: "1px solid #ccc" })
+    }
+
+    app.sk.onmouseout = function onmouseout(e) {
+        var input = $(e);
+        input.css({ border: "0px solid #ccc" })
+    }
+
+
+
+    //绑定事件
+    app.sk.sk_add_bindkeypress = function (obj) {
+        $('#sk_table>tbody',_).find('tr').each(function () {
+            bindEvent($(this));
+        });
+    }
+
+    //绑定事件执行
+    function bindEvent(ele) {
+        ele.each(function () {
+            var je_yh_obj = $(this).find('input[name="je_yh"]');
+            var je_obj = $(this).find('input[name="je_sk"]');
+            var bz_obj = $(this).find('input[name="bz"]');
+            je_yh_obj.focus(function () { $(this).select(); });
+            je_obj.focus(function () { $(this).select(); });
+            bz_obj.focus(function () { $(this).select(); });
+
+            je_yh_obj.blur(function () {
+                app.sk.sk_add_check_checked();
+            });
+
+            je_obj.blur(function () {
+                app.sk.sk_add_check_checked();
+            });
+
+            bz_obj.blur(function () {
+                app.sk.sk_add_check_checked();
+            });
+        });
+    }
+
+
+    //表单提交
+    app.sk.check_jh_yes = function (btn, addnew) {
+        $.DHB.checkForm("fm-jh-add", function () { });
+        setTimeout(function () {
+            var flag_sklx = $("#flag_sklx", _).val();
+
+            if (!$(_ + "#kh_id").val()) {
+                $.DHB.message({ 'content': '请选择客户！', 'type': 'i' });
+                $("#" + btn, _).button('reset');
+            }
+            else if (!$(_ + "#dh").val()) {
+                $.DHB.message({ 'content': '收款单号不可以为空！', 'type': 'i' });
+                $("#" + btn, _).button('reset');
+            }
+            else if (!$(_ + "#id_shop").val()) {
+                $.DHB.message({ 'content': '请选择门店！', 'type': 'i' }); $("#" + btn, _).button('reset');
+            }
+            else if (!$(_ + "#id_jbr").val()) {
+                $.DHB.message({ 'content': '请选择经办人！', 'type': 'i' }); $("#" + btn, _).button('reset');
+            }
+            else if (!$(_ + "#rq").val()) {
+                $.DHB.message({ 'content': '请选择开单时间！', 'type': 'i' }); $("#" + btn, _).button('reset');
+            }
+            else if (!$(_ + "#flag_sklx").val()) {
+                $.DHB.message({ 'content': '请选择收款类型！', 'type': 'i' }); $("#" + btn, _).button('reset');
+            }
+            else if (flag_sklx!='2'&&$(_ + "#sk_table>tbody>tr[data-item!='']").length <= 0) {
+                $.DHB.message({ 'content': '请至少选择一个收款单！', 'type': 'i' }); $("#" + btn, _).button('reset');
+            }
+            else {
+
+                var je_sk_totle_temp= parseFloat($(_ + '#je_bqyj_total').text());
+                var je_pre_temp =  parseFloat($(_ + '#je_pre').val());
+                var flag_sklx_temp =  parseFloat($(_ + '#flag_sklx').val());
+                if (je_pre_temp > je_sk_totle_temp && flag_sklx_temp == '1' && je_sk_totle_temp>0) {
+                    $.DHB.message({ 'content': '使用预收款 不能超过单据总收款金额！', 'type': 'i' });
+                    $("#" + btn, _).button('reset');
+                    return;
+                }
+
+                //$("#" + btn, _).button("loading");
+                $("#submit-button1", _).button('loading');
+                $("#submit-button2", _).button('loading');
+
+                app.sk.sk_add_check_checked();
+                var objData = {};
+                objData.skList = $(_ + 'input[name="sk_table_result"]').val();
+                objData.remark = $(_ + '#remark').val();
+                objData.id_kh = $(_ + '#kh_id').val();
+                objData.id_shop = $(_ + '#id_shop').val();
+                objData.id_jbr = $(_ + '#id_jbr').val();
+                objData.dh = $(_ + '#dh').val();
+                objData.rq = $(_ + '#rq').val();
+                objData.flag_sklx = $(_ + '#flag_sklx').val();
+                objData.je_pre = $(_ + '#je_pre').val();
+                objData.type = '@type';
+                objData.id = '@item_copy.head.id';
+
+                if (objData.flag_sklx == '2' && objData.je_pre == 0) {
+                    $.DHB.message({ 'content': '请选择预收款类型 预收款金额不允许为0！', 'type': 'i' });
+                    //$("#" + btn, _).button('reset');
+                    $("#submit-button1", _).button('reset');
+                    $("#submit-button2", _).button('reset');
+                    return;
+                }
+
+                $.post($.DHB.U('sk/add'), objData,
+                        function (data) {
+                            if (data.status == "success") {
+                                $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                                if (addnew == '0') {
+                                    $.fn.menuTab.deleteMenu('sk/add');
+                                    $.fn.menuTab.load({ url: '/sk/list', 'title': '收款管理', id: 'sk/list', nocache: '1' });
+                                } else {
+                                    //$("#" + btn, _).button('reset');
+                                    $("#submit-button1", _).button('reset');
+                                    $("#submit-button2", _).button('reset');
+                                    $.fn.menuTab.deleteMenu('sk/add');
+                                    $.fn.menuTab.load({ url: '/sk/add', 'title': '新增收款', id: 'sk/add', nocache: '0' });
+                                }
+
+                            } else {
+                                $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                                //$("#" + btn, _).button('reset');
+
+                                $("#submit-button1", _).button('reset');
+                                $("#submit-button2", _).button('reset');
+
+                            }
+                        }, 'json'
+               );
+
+            }
+        }, 400);
+    }
+
+
+    app.sk.onblur = function (e, num) {
+        var data = $(e).val();
+        $(e).val(limit_num($.trim(data), num));
+
+        if ($(e).attr('name') == 'je_yh') {
+            var $tr = $(e).parents('tr');
+            var yh = parseFloat($(e).val());
+            var wf = parseFloat($tr.find('td[name=weishou] div').html());
+            //var sf = $tr.find('input[name=je_fk]').val();
+            //if (yh >= 0 && parseFloat(wf - yh) > 0) {
+
+                $tr.find('input[name=je_sk]').val(parseFloat(wf - yh).toFixed('@digit["je_digit"]'));
+           // } else {
+            //    if (yh < 0) {
+            //        $.DHB.message({ 'content': '优惠金额大于0 ', 'time': 4000, 'type': 'i' });
+            //    } else {
+            //        $.DHB.message({ 'content': '优惠金额+本次付款金额不能超过未付款金额 ', 'time': 4000, 'type': 'i' });
+            //    }
+
+
+            //}
+        }
+        
+    };
+
+    app.sk.onfocus = function (e) {
+        $(e).select();
+    };
+
+    //当选择收款门店改变时 记录新值 并清空商品信息
+    app.sk.flag_sklx_onchange = function (e) {
+        debugger;
+        var flag_sklx = $("#flag_sklx", _).val();
+        if (flag_sklx == '1') {
+            //$("#ysk_title", _).html("使用预收款：");
+            $("#je_pre", _).val('@defaultJE');
+            //获取数据
+            var id_shop = $(_ + "#id_shop").val();
+            var kh_id = $(_ + "#kh_id").val();
+            var kh_name = $(_ + "#kh_name").val();
+            if (kh_id != '' && kh_name != '' && id_shop != '' && typeof (kh_id) != 'undefined' && typeof (kh_name) != 'undefined' && typeof (id_shop) != 'undefined') {
+                app.sk.set_table_info(kh_id, kh_name, id_shop);
+            }
+            else {
+                //去掉查询的html表体的数据
+                app.sk.set_defaul_table_info(e);
+            }
+        }
+        else if (flag_sklx == '2') {
+            //$("#ysk_title", _).html("预收款：");
+            $("#je_pre", _).val('@defaultJE');
+            //去掉查询的html表体的数据
+            app.sk.set_defaul_table_info(e);
+        }
+        app.sk.sk_add_check_checked();
+    };
+
+
+    app.sk.set_defaul_table_info = function (e) {
+        debugger;
+        var info='<tr id="row-sk-id-" class="tr-status-finished" data-item="" id_bill_origin="" dh_origin="" bm_djlx_origin="" je_origin="0" je_ys="0" je_ws="0">'
+        info+='<td class="text-center">   ';
+        info+='<label class="i-checks m-b-none">';
+        info+='<input type="checkbox" name="id_bill[]" value="" />';
+        info+='<i></i>';
+        info+='</label>';
+        info+='</td>';
+        info+='<td></td>';
+        info+='<td></td>';
+        info+='<td></td>';
+        info+='<td class="text-center"></td>';
+        info+='<td><div style="text-align:right;width:95%;">@defaultJE</div></td>';
+        info+='<td><div style="text-align:right;width:95%;">@defaultJE</div></td>';
+        info+='<td name="weishou"><div style="text-align:right;width:95%;">@defaultJE</div></td>';
+        info+='<td name="je_yh">';
+        info += '<input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" placeholder="优惠金额(元)" type="text" value="@defaultJE" name="je_yh"  onkeyup="check_digit(this,@digit["je_digit"])" onafterpaste="check_digit(this,@digit["je_digit"])" old-data="@defaultJE">';
+        info += '</td>';
+        info+='<td name="je_sk">';
+        info+='                                <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" placeholder="收款金额(元)" type="text" value="@defaultJE" name="je" onkeyup="check_digit(this,@digit["je_digit"])" onafterpaste="check_digit(this,@digit["je_digit"])" old-data="@defaultJE">';
+        info+='                            </td>';
+        info+='                              <td><input class="form-control user-input" readonly="readonly" style="width:96%;border:0px;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)"   type="text" value="" name="bz"></td>';
+        info+=' </tr>';
+
+        $(_+"#dwlist-main-tbody").html(info);
+
+    };
+
+
+
+
+</script>  

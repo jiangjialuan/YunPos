@@ -1,0 +1,428 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Utility
+@{
+    Layout = null;
+    IList<Tb_Role_Module_Tree> list = ViewData["list"] as IList<Tb_Role_Module_Tree>;
+    var FuncList= ViewData["FunList"] as IList<Tb_Function_Tree>;
+    FuncList = FuncList ?? new List<Tb_Function_Tree>();
+    var FuncListStr = JSON.Serialize(FuncList);
+    var a = 1;
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="rolemodule/list"]').attr({ controller: 'rolemodule', action: 'list' });
+        app.c.public_data['rolemodule/list'] = app.c.public_data['rolemodule/list'] || {};
+        app.c.public_data['rolemodule/list']['once'] = false;
+        app.rolemodule = app.rolemodule || {};
+    });
+</script>
+
+
+<div class="col" ng-app="myApp">
+    <input type="hidden" value="@FuncListStr" id="selectData"/>
+    <div class="panel panel-default m-b-none">
+        <div class="main-content">
+            <div class="m-b-md">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="nestable-menu" style="padding: 0; margin: 12px 0 0 15px;"  class="w-100">
+                            <select style="width: 100px; display: inline" class="form-control input-sm search-h select2" name="id" onchange="app.rolemodule.list.do_search_client_client()">
+                                <option value="-1" selected="selected">模板角色</option>
+                                <option value="1">系统角色</option>
+                                <option value="3">平台角色</option>
+                            </select>
+                            
+                        </div>
+                        <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="app.rolemodule.list.addspfl()">新增功能</button>
+                        <div class="shopsp_cont" style="margin-top: 20px;">
+                            <!--左侧树-->
+                            <div class="p-l-r-none tree_left col-xs-2">
+                                <div class="l-tree_head">
+                                    <ul>
+                                        <li>功能管理</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div id="tree_left" class="p-b-30" style="height: 600px; overflow: auto;"></div>
+                                </div>
+                            </div>
+                            <!--右侧表格-->
+                            <div class="right_table col-xs-10">
+                                <input type="hidden" xh="" value="" id="clicktree"/>
+                                <div id="spfl_list" class="p-l-r-none table_list table_max_h" style="height:445px;">
+                                    <table class="table m-b-none row1 selectAll-table sptable table_layout">
+                                        <thead>
+                                            <tr>
+                                                <th width="40">序号</th>
+                                                <th width="200">模板名称</th>
+                                                <th width="100">排序号</th>
+                                                <th width="270">绑定权限</th>
+                                                <th width="100">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <input id="testHeight" type="hidden"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+   ////console.log($('#selectData',_).val());
+    app.rolemodule = app.rolemodule || {};
+    app.rolemodule.list = app.rolemodule.list || {};
+    //url = $.DHB.U('RoleModule/QueryTree');
+    app.rolemodule.list.do_search_client_client = function () {
+        var kk = $('select[name=id]',_).val();
+        app.rolemodule.list_tree(kk);
+    }
+    app.rolemodule.list_ready = function () {
+        $('.right_table', _).height($('.tree_left').height());
+        $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+            var kk=$('select[name=id]',_).val();
+            app.rolemodule.list_tree(kk);
+        });
+        app.rolemodule.selectStr = '';
+        // app.rolemodule.selectNum = 0;
+        app.rolemodule.select_click = function (e) {
+            ////console.log(JSON.parse($('#selectData',_).val()));
+            if ($(e).find("ul").length == 0) {
+                var str = app.rolemodule.select_list(JSON.parse($('#selectData').val()));                
+                $(e).find('.role_list').append(str);
+            }
+            if ($('#testHeight',_).offset().top - $(e).offset().top < 250 && $(e).offset().top - $('#clicktree',_).offset().top>300) {
+                $(e).find('.role_list').css('top','-200px').show();
+            } else {
+                $(e).find('.role_list').show();
+            }
+                   
+            
+        }
+        $('#spfl_list', _).on('click', '.role_list li a', function () {
+            $(this).parents('.rolemodul_select').find('span').html($(this).text()).attr('id',$(this).parent().attr('id'));
+            $('.role_list',_).hide();
+        })
+        
+        app.rolemodule.select_data=function(data){
+            var str;
+            str = "<ul>";
+            for (var i = 0; i < data.length; i++) {
+                str += '<li id="' + data[i].id + '" ><a  href="###">' + data[i].name + '</a>';
+                if (data[i].children.length>0) {
+                    var yy = app.rolemodule.select_data(data[i].children);
+                    str += yy;
+                }
+                str+="</li>"
+           }
+            str += "</ul>";
+            return str;
+        }
+        app.rolemodule.select_list = function (data) {
+            if (app.rolemodule.selectStr == "") {
+                //
+                app.rolemodule.selectStr += '<ul>';
+
+                if (data.length == undefined) {
+                    app.rolemodule.selectStr += '<li id="' + data.id + '"><a href="###">' + data.name + '</a>';
+                    app.rolemodule.selectStr += app.rolemodule.select_data(data.children);
+                } else {
+                    app.rolemodule.selectStr += '<li id="0"><a  href="###" class="hidden">' + data[0].name + '</a>';
+                    app.rolemodule.selectStr += app.rolemodule.select_data(data[0].children);
+                }
+
+                app.rolemodule.selectStr += "</li>";
+                app.rolemodule.selectStr += '</ul>';
+            }
+            
+            return app.rolemodule.selectStr;
+        }
+        //功能模块接口
+        app.rolemodule.list_tree = function (kk) {
+            var tree_selector = '#tree_left';
+
+            $(_ + tree_selector)
+                .jstree("destroy")
+                .jstree({
+                    'plugins': ["dnd"],
+                    'core': {
+                        'data': {
+                            'url': function (obj) {
+                                var type = $.trim($('#hid_type').val());
+                                return '/rolemodule/querytree?rd=' + new Date().getTime() + '&type=' + type;
+                            },
+                            'data': function () {
+                                return { 'id_platform_role': kk }
+                            }
+                        },
+                        "themes": {
+                            "theme": "proton",
+                            "dots": true,
+                            "icons": true,
+                        },
+
+                    },
+
+                })
+                .on('ready.jstree', function (e, obj) {
+                   // //console.log(obj);
+                   // //console.log(e);
+                    obj.instance.select_node({ "id": "0" }, true, false);
+                    obj.instance.open_node({ "id": "0" });
+                })
+                .on("changed.jstree", function (e, data) {
+                    if (data.selected && data.selected.length) {
+                        var i, j, r = [];
+                        for (i = 0, j = data.selected.length; i < j; i++) {
+                            r.push(data.instance.get_node(data.selected[i]).id);
+                        }
+                        //TODO：赋值到hidden，触发查询事件等
+                        var child_id = r.join('_')
+                        ////console.log(r.join('_'));
+
+                        app.rolemodule.list.children(child_id);
+                        //app.search.do_search_shopsp_list();
+
+                    }
+                }).on('loaded.jstree', function () {
+                    app.rolemodule.list.children(0);
+                    //$(this).jstree('open_all');
+                }).on('move_node.jstree', function (e, data) {
+                    ////console.log(data);
+                    var smDate = {};
+                    smDate.id = data.node.id;
+                    smDate.id_father = data.parent;
+                    //$.post($.DHB.U('Spfl/MoveNode'), smDate, function (ret) {
+
+                    //    if (ret.Success == true) {
+                    //        $.DHB.message({ "content": "移动成功！" });
+                    //    } else {
+                    //        $.DHB.message({ "content": ret.Message });
+                    //        data.instance.refresh();
+
+                    //    }
+                    //}, 'json');
+                    app.httpAjax.post({
+                        data: smDate,
+                        headers: {},
+                        url: $.DHB.U('Spfl/MoveNode'),
+                        type: "POST",
+                        dataType: 'json',
+                        beforeSend: null,
+                        success: function (ret) {
+
+                            if (ret.Success == true) {
+                                $.DHB.message({ "content": "移动成功！" });
+                            } else {
+                                $.DHB.message({ "content": ret.Message });
+                                data.instance.refresh();
+
+                            }
+                        },
+                        error: null,
+                        complete: null
+                    });
+
+                });
+        }
+
+        //商品的子类
+        app.rolemodule.list.children = function (child_id) {
+            
+            var smData = {};
+            if ($('select[name=id]',_).val() == "-1") {
+                smData.id_platform_role = -1;
+            } else if ($('select[name=id]',_).val() == "1") {
+                smData.id_platform_role = 1;
+
+            } else if ($('select[name=id]',_).val() == "3") {
+                smData.id_platform_role =3;
+           }
+            smData.id = child_id;
+            app.request($.DHB.U('rolemodule/QuerySubList'), smData, function (data) {
+                ////console.log(data);
+                if (data.Success == true) {
+                    if ($('#spfl_list>table>tbody>tr',_).length > 0) {
+                        $('#spfl_list>table>tbody',_).html('');
+                    }
+                    $('#clicktree',_).val(child_id).attr('xh', data.Data.length);
+                    if (data.Data.length != 0) {
+                        for (var i = 0; i < data.Data.length; i++) {
+                            app.rolemodule.list.htmladd(data.Data[i]);
+                        }
+                        app.rolemodule.list.xhset();
+
+                    }
+                }
+                ////console.log(data);
+            }, function () {
+
+            });
+        }
+        //离开下拉框触发事件
+        app.rolemodule.select_leave = function (e) {
+            
+            $(e).find('.role_list').hide();
+        }
+        //表格行添加
+        app.rolemodule.list.htmladd = function (data) {
+            var trhtml = '<tr  id="' + data.id + ' " id_father="' + data.id_module_father + '">';
+            trhtml += '<td class="align_center" name="xh"></td>';
+            trhtml += '<td><input value="' + data.name + '" type="text" name="name" class="type-name form-control user-input"/></td>';
+            trhtml += '<td><input value="' + data.sort_id + '" type="text" name="sort_id" class="type-name form-control user-input"/></td>';
+            trhtml += '<td><div  onclick="app.rolemodule.select_click(this)" onmouseleave="app.rolemodule.select_leave(this)" class="rolemodul_select width260"><span id="' + data.id_function + '">' + data.name_function + '</span><i class="f-r fa fa-caret-down padding10" ></i><div class="role_list"></div></div></td>';
+            trhtml += '<td><div class="look-out1 supernatant position_static" style="width:100px;"><div class="second-height-operate position_static">' +
+                '<a class="bg-state bg-state-info fa fa-floppy-o" title="保存" onclick="app.rolemodule.list.addpost(this)"></a>' +
+                //'<a class="bg-state bg-state-info fa fa-pencil" title="编辑" onclick="app.rolemodule.list.editpost(this,\'' + data.id + '\')"></a>' +
+                '<a class="bg-state bg-state-info fa fa-trash" title="删除" onclick="app.rolemodule.list.delspfl(this)"></a>' +
+                '</div></div></td>';
+            trhtml += "</tr>";
+            $('#spfl_list>table>tbody',_).append(trhtml);
+        }
+        //删除商品分类
+        app.rolemodule.list.delspfl = function (e) {
+
+            $.messager.confirm("提示", "确定删除吗?", function () {
+
+                var id = $(e).parents('tr').attr('id');
+                if (id == " "||id ==undefined) {
+                    $(e).parents('tr').remove();
+                    app.spfl.list.xhset();
+                }else{
+                    //$.post($.DHB.U('rolemodule/delete'),
+                    //    {
+                    //        id: id
+                    //    },
+                    //                function (data) {
+                    //                    if (data.status == "success") {
+                    //                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                    //                        $(e).parents('tr').remove();
+                    //                        app.rolemodule.list.xhset();
+                    //                        app.rolemodule.list_tree();
+                    //                    }
+                    //                    else {
+                    //                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    //                    }
+                    //                }, 'json');
+                    app.httpAjax.post({
+                        data: { id: id },
+                        headers: {},
+                        url: $.DHB.U('rolemodule/delete'),
+                        type: "POST",
+                        dataType: 'json',
+                        beforeSend: null,
+                        success: function (data) {
+                            if (data.status == "success") {
+                                $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                $(e).parents('tr').remove();
+                                app.rolemodule.list.xhset();
+                                app.rolemodule.list_tree();
+                            }
+                            else {
+                                $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                            }
+                        },
+                        error: null,
+                        complete: null
+                    });
+                }
+
+            });
+        }
+
+
+        //新增分类
+        app.rolemodule.list.addspfl = function () {
+            ////console.log($('#clicktree').val());
+            if ($('#clicktree',_).val() == "" || $('#clicktree').val() == undefined) {
+                $.DHB.message({ 'content': "请先选功能" });
+            } else {
+                var htmldata = {};
+                htmldata.id = "";
+                htmldata.id_module_father = $('#clicktree').val();
+                htmldata.name = "";
+                htmldata.sort_id = "";
+                htmldata.id_function = "";
+                htmldata.name_function = "请选择上级分类(不选择默认为根目录)";
+                app.rolemodule.list.htmladd(htmldata);
+                app.rolemodule.list.xhset();
+            }
+        }
+        //重置序号
+        app.rolemodule.list.xhset = function () {
+            var xh = 1;
+            $('#spfl_list>table>tbody>tr',_).each(function (i, e) {
+                $(this).find('td[name=xh]').html(xh);
+                xh++;
+            });
+        }
+
+        //点击保存
+        app.rolemodule.list.addpost = function (e) {
+            var id = $(e).parents('tr').attr('id');
+           // //console.log(id);
+
+            var url;
+            var smDate = {};
+            smDate.name = $(e).parents('tr').find('input[name=name]').val();
+            smDate.sort_id = $(e).parents('tr').find('input[name=sort_id]').val();
+            smDate.id_function = $(e).parents('tr').find('.rolemodul_select span').attr('id');
+            smDate.id_platform_role = $('select[name=id]', _).val();
+            smDate.id_module_father = $(e).parents('tr').attr('id_father');
+           // //console.log(smDate.id_module_father);
+            smDate.id = $(e).parents('tr').attr('id');
+            if (id == " " || id == undefined) {
+                url = $.DHB.U('rolemodule/saveAdd');
+
+            } else {
+                url = $.DHB.U('rolemodule/saveEdit');
+
+            };
+           // //console.log(smDate);
+           // $.post(
+           //    url,
+           //    smDate,
+           //    function (data) {
+           //       // //console.log(url);
+           //        if (data.status == "success") {
+           //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+           //            app.rolemodule.list_tree();
+
+           //        }
+           //        else {
+           //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+           //            //btn.button('reset');
+           //        }
+           //    }, 'json'
+           //);
+            app.httpAjax.post({
+                data: smDate,
+                headers: {},
+                url: url,
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) {
+                    // //console.log(url);
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        app.rolemodule.list_tree();
+
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        //btn.button('reset');
+                    }
+                },
+                error: null,
+                complete: null
+            });
+        }
+
+    }
+</script>

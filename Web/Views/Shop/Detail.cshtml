@@ -1,0 +1,288 @@
+﻿@{
+    Layout = null;
+    var shopModel = ViewData["ShopModel"] as CySoft.Model.Tb.Tb_Shop;
+    shopModel = shopModel ?? new CySoft.Model.Tb.Tb_Shop();
+
+    var khModel = ViewData["khModel"] as CySoft.Model.Tb.Tb_Kh;
+    khModel = khModel ?? new CySoft.Model.Tb.Tb_Kh();
+
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="shop/add"]').attr({ controller: 'shop', action: 'add' });
+        app.c.public_data['shop/add'] = app.c.public_data['shop/add'] || {};
+        app.c.public_data['shop/add']['once'] = false;
+        app.shop = app.shop || {};
+    });
+</script>
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/shop/list', 'title': '门店管理', id: 'shop/list', nocache: '0' });">门店管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">门店详情</a>
+</div>
+
+
+<div class="col" style="min-width: 1110px;">
+    <div class="panel panel-default comform pad-l15">
+        <!-- 头部选项卡 
+        <div class="main-head" style="position:relative;">-->
+            <!--基础
+            <ul id="goods-tab" class="clearfix menu-list" tab="goods-tab">
+                <li class="selected-tab" onclick="$.DHB.func.tab(this);" style="width: 32px;"><a href="javascript:;">基础</a></li>
+            </ul>-->
+            <!--帮助文案
+            <label class="copy d-i-b  m-l-none" style="position: relative;left: 305px; top: -43px; display: none;">
+                <a class="icon-question tool"></a>
+                <div style="display: none;" class="popover fade bottom in tool-box">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>库存下限：当此商品的库存低于库存下限时，会被醒目地展示出来。</p><p>库存上限：当此商品的库存高于安全库存时，会被醒目地展示出来。</p>
+                        <p>安全库存：当此商品的库存低于安全库存时，会被醒目地展示出来。</p><p>设置数值大小要求：库存下限《安全库存《库存上限</p>
+                        <p>
+                            注意：设置0或者不设置，即不启用此功能
+                            <a href="javascript:void(0);" class="tool-link">查看更多帮助</a>
+                        </p>
+                    </div>
+                </div>
+            </label>
+
+        </div>-->
+
+        <form novalidate="novalidate" action="/shop/add" id="fm-shop-add">
+            <!-- start main-content -->
+            <div id="goods-main" class="main-content" tabcontent="goods-tab">
+                <!-- 基础 -->
+                <div class="m-b pad-t10">
+                    <!--基本信息-->
+                    <div class="fixed-input-group">
+                        <h2 class="form_title"><span>基本信息</span></h2>
+                        <div class="col-sm-12 form_content">
+                        
+                        
+                        @*<div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <span>验证码：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @shopModel.yzm
+                                </label>
+                               
+                            </div>
+                        </div>*@
+
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <span>门店编码：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @shopModel.bm
+                                </label>
+                               
+                            </div>
+                        </div>
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <span>门店名称：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                  @shopModel.mc
+                                </label>
+                            </div>
+                        </div>
+                          <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <span>门店状态：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                      @(shopModel.flag_state == 1 ? "正常" : "停用")                                                     
+                                </label>
+                            </div>
+                        </div>
+                        
+
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label">
+                                        <span>对应客户：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        @( (khModel!= null&&!string.IsNullOrEmpty(khModel.id)) ? khModel.mc: "未对应")
+                                    </label>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        
+                    </div>
+
+
+                    <!-- 商品图片 -->
+                    <div class="fixed-input-group dis-table">
+                        <h2 class="form_title"><span>门店图片</span></h2>
+                        <div class="col-sm-12 form_content">
+                        
+                        <div class="input-item-1 clearfix">
+                            <div class="add-img">
+                                <ol id="img-list" class="clearfix m-l-xxl m-b-none">
+                                    <li style="opacity: 1; z-index: auto; top: 0px; left: 0px;" id="img-list-1"  class="cover">
+                                        <div class="wrap-img">
+                                            <img id="img_pic_path" name="img_pic_path" src="@Html.Raw(string.IsNullOrEmpty(shopModel.pic_path) ? "/static/images/default.jpg" : shopModel.pic_path)" alt="">
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        <input name="pic_path" id="pic_path" type="hidden" autocomplete="off" value="@Html.Raw(string.IsNullOrEmpty(shopModel.pic_path) ? "/static/images/default.jpg" : shopModel.pic_path)">
+                       </div> 
+                        
+                    </div>
+
+
+                    <!-- 联系信息 -->
+                    <div class="fixed-input-group">
+                        <h2 class="form_title"><span>联系信息</span></h2>
+                        <div class="col-sm-12 form_content">
+                        <div class="input-item-2 clearfix add-client">
+
+                            <!-- 联系人 -->
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                   <span>联系人：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @shopModel.lxr
+                                </label>
+                            </div>
+
+                            <!-- 移动电话 -->
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                    <span>手机号码：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                   @shopModel.phone
+                                </label>
+                            </div>
+
+                            <!-- 座机电话 -->
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                    <span>电话号码：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                   @shopModel.tel 
+                                </label>
+                            </div>
+
+                            <!-- QQ -->
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                    <span>QQ：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @shopModel.qq 
+                                </label>
+                            </div>
+
+
+                            <!-- email -->
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                    <em class="tag">&nbsp; </em><span>电子邮箱：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @shopModel.email 
+                                </label>
+                            </div>
+
+                            <!-- 传真  -->
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                   <span>传真：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @shopModel.fax 
+                                </label>
+                            </div>
+
+                            <!-- 邮编  -->
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                    <span>邮编：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                   @shopModel.zipcode 
+                                </label>
+                            </div>
+                            <!-- 地址  -->
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                    <span>地址：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @shopModel.address  
+                                </label>
+                            </div>
+                           </div>
+                            
+                        </div>
+                    </div>
+                    <!-- 其它信息 -->
+                    <div class="fixed-input-group dis-table">
+                        <h2 class="form_title"><span>其它信息</span></h2>
+                         <div class="col-sm-12 form_content">
+                        <!-- 备注  -->
+                        <div class="input-item-2 clearfix add-client">
+                            <label class="item-2-label">
+                               <span>备注：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                               @shopModel.bz   
+                            </label>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- end main-content -->
+            <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+                <input id="is_need_new" value="" autocomplete="off" type="hidden">
+
+                <button type="button" class="btn w-138 btn-info" onclick="$.fn.menuTab.load({ url: '/shop/edit?id=@shopModel.id', 'title': '商品管理', id: 'shop/list', nocache: '0' }); " id="btn-goods-edit" data-loading-text="编辑中...">编辑门店</button>&nbsp;&nbsp;
+                <button type="button" class="btn w-xs btn-default" title="全部门店" onclick="$.fn.menuTab.load({ url: '/shop/list', 'title': '门店管理', id: 'shop/list', nocache: '0' }); ">返回</button>
+            </footer>
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+    .test {
+        width: 30px;
+    }
+</style>
+
+
+<script type="text/javascript">
+    var spflTree, treeData;
+
+    $.DHB._ = function () {
+        app.c.public_data['shop/add'] = app.c.public_data['shop/add'] || {};
+        if (app.c.public_data['shop/add']['once'] === false) {
+            app.c.public_data['shop/add']['once'] = true;
+        }
+    };
+
+    app.shop = app.shop || {};
+
+
+</script>

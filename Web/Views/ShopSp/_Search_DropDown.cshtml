@@ -1,0 +1,55 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    PageList<Tb_Shopsp_Query> list_shopsp = ViewData["list_shopsp"] as PageList<Tb_Shopsp_Query>;
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+}
+
+
+
+
+<div style="margin-bottom: 35px">
+    @{
+        if (list_shopsp == null || list_shopsp.Count <= 0)
+        {
+        }
+        else
+        {
+            foreach (var item in list_shopsp)
+            {
+
+                <a class="media list-group-item" onmouseover="$(this).parent().find('.hide-multi-item').hide();"
+                   data-realnumber="197" data-wholeinventory="186"
+                   data-name="@item.mc" data-id="@item.id" data-translation="1" data-category="@item.spfl_mc" data-goodsname="@item.mc"
+                   data-wholeprice="@item.dj_jh.Digit((int)digit["dj_digit"])" data-purchaseprice="@item.dj_ls.Digit((int)digit["dj_digit"])"
+                   data-numberprice="[]" data-baseunits="@item.dw" data-containerunits="" data-orderunits="@item.barcode" data-minorder="1" data-conversionnumber="1" data-goodsnum="@item.bm"
+                   data-goodspicture="@Html.Raw(string.IsNullOrWhiteSpace(item.pic_path) ? "/static/images/default.jpg" : item.pic_path) "
+                   data-id_kcsp="@item.id_kcsp"
+                   data-id_sp="@item.id_sp"
+                   data-zhl="@item.zhl"
+                   data-dj_jh="@item.dj_jh.Digit((int)digit["dj_digit"])"
+                   data-dj_ls="@item.dj_ls.Digit((int)digit["dj_digit"])"
+                   data-sl_qm="@item.sl_qm.Digit((int)digit["sl_digit"])"
+                   data-je_qm="@item.je_qm.Digit((int)digit["je_digit"])"
+                   data-dj_cb="@item.dj_cb.Digit((int)digit["dj_digit"])"
+
+
+
+                   style="padding:5px 15px;height:50px;line-height:40px;word-wrap: break-word; word-break: break-all;overflow:hidden;text-overflow:ellipsis;clear:both;">
+                    <span class="media-body block m-b-none">
+
+                        <div style="height:60px;line-height:40px;widht:120px;white-space:nowrap; overflow:hidden;text-overflow:ellipsis;color:#333;" title="@item.mc">
+                            @item.mc (条码:@item.barcode  单位:@item.dw)
+                        </div>
+
+                    </span>
+                </a>
+            }
+        }
+    }
+
+</div>
+
+<a class="media list-group-item list-group-item-more moreQ" style="padding-left:15px;">+ 选择更多</a>

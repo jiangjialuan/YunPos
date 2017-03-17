@@ -1,0 +1,936 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Model.Tz;
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tz_Yf_Jsc_Gx_QueryModel>;
+    string sort = ViewData["sort"].ToString();
+    var selectListShop = (ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>) ?? new List<Tb_User_ShopWithShopMc>();
+    var userList = (ViewData["userList"] as List<Tb_User>) ?? new List<Tb_User>();
+    var selectListGys = (ViewData["userGysList"] as List<Tb_Gys_User_QueryModel>) ?? new List<Tb_Gys_User_QueryModel>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var defaultSL = decimal.Parse("0").Digit((int)digit["sl_digit"]);
+    var defaultDJ = decimal.Parse("0").Digit((int)digit["dj_digit"]);
+    var defaultJE = decimal.Parse("0").Digit((int)digit["je_digit"]);
+    var id_gys = ViewData["id_gys"] == null ? "" : ViewData["id_gys"].ToString();
+    var gys_name = ViewData["gys_name"] == null ? "" : ViewData["gys_name"].ToString();
+    string id_user = ViewData["id_user"] == null ? "" : ViewData["id_user"].ToString();
+    var item_copy = ViewData["CopyInfo"] as Td_Fk_1_Query_DetailModel;
+    if (item_copy == null)
+    {
+        item_copy = new Td_Fk_1_Query_DetailModel();
+        item_copy.head = new Td_Fk_1_QueryModel() { id_jbr = id_user };
+        item_copy.body = new List<Td_Fk_2_QueryModel>();
+        item_copy.head.rq = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+    }
+    if (!string.IsNullOrEmpty(item_copy.head.id))
+    {
+        id_gys = item_copy.head.id_gys;
+        gys_name = item_copy.head.gys_name;
+    }
+    string type = ViewData["type"] == null ? "" : ViewData["type"].ToString();
+
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+    string show_shop_version = ViewData["show_shop_version"] == null ? "" : ViewData["show_shop_version"].ToString();
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="jhfk/add"]').attr({ controller: 'jhfk', action: 'add' });
+        app.c.public_data['jhfk/add'] = app.c.public_data['jhfk/add'] || {};
+        app.c.public_data['jhfk/add']['once'] = false;
+        app.jhfk = app.jhfk || {};
+    });
+</script>
+
+<link href="~/static/js/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" />
+
+
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/jhfk/list', 'title': '付款管理', id: 'jhfk/list', nocache: '0' }); ">付款管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">新增付款</a>
+</div>
+
+
+<div class="col">
+    <div class="row">
+            <div class="p-l">
+                <div class="panel panel-default">
+                    <div class="main-content">
+                        <!--页头-->
+                        <div class="jh_add_title page-header mar-ts">
+                            <h3 class="mar-t10 mar-b0">付款单</h3>
+                        </div>
+                        <div class="p-l border-c1 dis-table col-md-12 col-lg-12 col-sm-12 ">
+                            <form class="filter-form" action="/jhfk/add" id="fm-jh-add">
+                                <div class="">
+                                    <div class="common-no">
+                                        <div class="clearfix">
+                                            <!-- 内容搜索 -->
+                                            <div class="pull-left" style="margin-top: 7px">
+
+                                                <span data-toggle="editclient" class="m-r-sm">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <em class="tag">* </em>供应商：
+                                                        </span>
+                                                    </label>
+
+                                                    <div class="clear-padding f-l">
+                                                        <div class="input-group" style="width:150px;position:relative;" @*onmouseenter="$(this).find('span:last()').show();" onmouseleave="$(this).find('span:last()').hide();"*@>
+                                                            <input placeholder="" type="text" value="@gys_name" autocomplete="off"
+                                                                   id="gys_name" class="form-control btn-none {required:true}" data-toggle="dropdown" data-dialog_title=""
+                                                                   data-name="gys_name"
+                                                                   data-id="gys_id"
+                                                                   data-callback="app.jhfk.add_gys_callback" data-init="0" data-initenter="0" data-initkeydown="0" data-client_type=""
+                                                                   onclick="$.DHB.client.select_gys({ 'gys_name': 'gys_name', 'gys_id': 'gys_id', 'gys_callback': 'app.jhfk.add_gys_callback' });">
+                                                            <span class="input-group-btn">
+                                                                <button id="gys_group_btn" class="btn btn-default btn-sm f-h-30 m-l-none btn-none" type="button" onclick="$.DHB.client.select_gys({ 'gys_name': 'gys_name', 'gys_id': 'gys_id', 'gys_callback': 'app.jhfk.add_gys_callback' });">
+                                                                    <i class="icon-users"></i>
+                                                                </button>
+                                                            </span>
+                                                            <input type="hidden" name="gys_id" id="gys_id" value="@id_gys">
+
+
+                                                        </div>
+                                                    </div>
+
+                                                    <label class="copy " style="position: absolute;top:0px;margin-left: 5px">
+                                                        <a class="icon-question tool iconImg" style="position: relative; visibility: hidden;"></a>
+                                                        <div class="popover fade bottom in tool-box">
+                                                            <div class="arrow"></div>
+                                                            <div class="popover-content">
+                                                                <p>请选择供应商。</p>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </span>
+
+                                            </div>
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <span data-toggle="editclient" class="m-r-sm">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <em class="tag">* </em>单号：
+                                                        </span>
+                                                    </label>
+                                                    <div class="clear-padding f-l">
+                                                        <input class="form-control user-input {maxlength:80,required:true,messages:{required:&#39;请输入单号&#39;}} valid" style="width :150px;" maxlength="80" id="dh" name="dh" placeholder="请输入单号" type="text" value="">
+                                                    </div>
+                                                </span>
+
+                                            </div>
+
+                                          @if (show_shop_version == "1")
+                                                {
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">* </em>付款门店：
+                                                    </span>
+                                                </label>
+                                                <select id="id_shop" name="id_shop" onchange="app.jhfk.shopChange(this)" onmouseenter="app.jhfk.option(this)" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择门店&#39;}}" style="width:150px;">
+                                                    @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                    {
+                                                        var shopChecked = item_copy.head.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                        <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            }else{
+                                            	 <div class="pull-left m-r-sm dis-no" style="margin-top:7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">* </em>付款门店：
+                                                    </span>
+                                                </label>
+                                                <select id="id_shop" name="id_shop" onchange="app.jhfk.shopChange(this)" onmouseenter="app.jhfk.option(this)" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择门店&#39;}}" style="width:150px;">
+                                                    @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                    {
+                                                        var shopChecked = item_copy.head.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                        <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            }
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                    <span class="inline  text-left">
+                                                        <em class="tag">* </em>经办人：
+                                                    </span>
+                                                </label>
+                                                <select id="id_jbr" name="id_jbr" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择经办人&#39;}}" style="width:150px;">
+                                                    @foreach (var item in userList.OrderBy(d => d.rq_create))
+                                                    {
+                                                        var jbrChecked = item_copy.head.id_jbr == item.id ? "selected=\"selected\"" : "";
+                                                        <option value="@item.id" @jbrChecked>@(string.IsNullOrEmpty(item.name) ? item.username : item.name)</option>
+                                                    }
+                                                </select>
+                                            </div>
+
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                @*<span data-toggle="editclient" class="m-r-sm">*@
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <span class="inline"><em class="tag">* </em>开单日期：</span>
+                                                        </span>
+                                                    </label>
+                                                    <div class="col-xs-7 clear-padding">
+                                                        <div class="input-group">
+                                                            
+                                                            <input name="rq" id="rq" class="form-control input-sm {required:true,messages:{required:&#39;开单日期&#39;}}" type="text"
+                                                                   onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'rq' })" value="@(item_copy.head.rq == null ? DateTime.Now.ToString("yyyy-MM-dd") : ((DateTime)item_copy.head.rq).ToString("yyyy-MM-dd"))" style="width:123px;">
+                                                            <span class="input-group-btn" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',el:'rq'});">
+                                                                <button type="button" class="btn btn-default btn-sm btn-none g-h-34" style="margin-left:0px;">
+                                                                    <i class="glyphicon glyphicon-calendar"> </i>
+                                                                </button>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                 @*</span>*@
+                                            </div>
+
+
+
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <span data-toggle="editclient" class="m-r-sm">
+                                                    <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                                        <span class="inline  text-left">
+                                                            <em class="tag"></em>备注：
+                                                        </span>
+                                                    </label>
+                                                    <div class="clear-padding f-l">
+                                                        <textarea id="remark" name="remark" class=""   placeholder="请填写付款单备注" style="width:420px; height:30px;">@string.Format(item_copy.head.bz == null ? "" : item_copy.head.bz)</textarea>
+                                                    </div>
+                                                </span>
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        app.c.public_data['jhfk/add'] = app.c.public_data['jhfk/add'] || {};
+                                        app.c.public_data['jhfk/add']['search_all'] = false;
+                                        var currentSearch = 'app.c.public_data[\'jhfk/add\'][\'search\']';
+                                        eval(currentSearch + ' = false;');
+                                        $.DHB._search = function () {
+                                            eval('if(' + currentSearch + '===false){app.search.search_dw_list();' + currentSearch + '=true;}');
+                                        }
+
+                                        app.search = app.search || {};
+
+                                        app.search.search_dw_list = function () {
+                                            app.c.public_data['jhfk/add'] = app.c.public_data['jhfk/add'] || {};
+                                            app.c.public_data['jhfk/add']['_row_total_'] = '@pageList.ItemCount';
+                                            app.c.public_data['jhfk/add']['_page_size_'] = '@pageList.PageSize';
+                                            app.c.public_data['jhfk/add']['_current_page_'] = '@(pageList.PageIndex)';
+                                            app.search.do_search_pagination_dw_list();
+                                        }
+
+                                        //分页
+                                        app.search.do_search_pagination_dw_list = function () {
+                                            $.DHB.func.pagination({
+                                                module_name: 'Manager',
+                                                controller_name: 'jhfk',
+                                                action_name: 'add',
+                                                ready_once: false
+                                            });
+                                        }
+
+
+                                        app.search.wdatepicker_jh_list = function (el) {
+                                            var booStart = $(el).data('type') == 'start';
+                                            var option = {};
+                                            option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                            option['onpicked'] = function () {
+                                                $(el)
+                                                    .text($dp.cal.getP('y') +
+                                                        '-' +
+                                                        $dp.cal.getP('M') +
+                                                        '-' +
+                                                        $dp.cal.getP('d'));
+                                                if (booStart) {
+                                                    setTimeout(function () {
+                                                        $(el)
+                                                            .parent()
+                                                            .find('[data-type="end"]')
+                                                            .data('position', '1')
+                                                            .click();
+                                                    },
+                                                        5000);
+                                                }
+                                            };
+
+                                            if (booStart) {
+                                                option['maxDate'] =
+                                                    '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                            } else {
+                                                option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                if ($(el).data('position') == '1') {
+                                                }
+                                            }
+                                            option['oncleared'] = function () {
+                                                $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                app.search.do_search_dw_list();
+                                            };
+
+                                            WdatePicker(option);
+                                        }
+
+                                    </script>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="@sort" />
+                                </div>
+
+                            </form>
+                        </div>
+
+                        <input type="hidden" name="table_result" id="table_result" value="" />
+
+
+
+
+                        <div class="jh_add_down h-30"><span style="color:#4f9de0;">&nbsp;&nbsp;&nbsp;&nbsp;请先选择供应商,再勾选进货单据</span></div>
+                        <!--数据表格-->
+                        @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                        <div id="jhfk-list-list-fresh-box" class="table_list table_max_h" style="max-height:445px;">
+                            <table class="table m-b-none row1 selectAll-table status-box one-line" id="jh_table" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                                <thead>
+                                    <tr>
+                                        <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                                            <label class="i-checks m-b-none">
+                                                <input type="checkbox" id="check-btn-header" onclick="$.DHB.func.selectAllThis(this); app.jhfk.check_checked(this);">
+                                                <i></i>
+                                            </label>
+                                        </th>
+                                        <th>原单类型</th>
+                                        <th>结算单号</th>
+                                        <th>供应商</th>
+                                        <th>原单日期</th>
+                                        <th class="width120">原单总金额</th>
+                                        <th class="width120">已付金额</th>
+                                        <th class="width120">未付金额</th>
+                                        <th class="width120">优惠金额</th>
+                                        <th class="width120">付款金额</th>
+                                        <th>备注</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dwlist-main-tbody">
+                                    @{
+                                        if (item_copy == null || item_copy.head == null || string.IsNullOrEmpty(item_copy.head.id) || item_copy.body == null || item_copy.body.Count == 0)
+                                        {
+                                            <tr id="row-jhfk-id-" class="tr-status-finished" data-item="" id_bill_origin="" dh_origin="" bm_djlx_origin="" je_origin="0" je_yf="0" je_wf="0">
+                                                <td class="text-center">
+                                                    <label class="i-checks m-b-none">
+                                                        <input type="checkbox" name="id_bill[]" value="" />
+                                                        <i></i>
+                                                    </label>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-center"></td>
+                                                <td><div style="text-align:right;width:95%;">@defaultJE</div></td>
+                                                <td><div style="text-align:right;width:95%;">@defaultJE</div></td>
+                                                <td name="weifu"><div style="text-align:right;width:95%;">@defaultJE</div></td>
+                                                <td name="je_yh">
+                                                    <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;"  onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)" placeholder="优惠金额(元)" type="text" value="@defaultJE" name="je_yh" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@defaultJE">
+                                                </td>
+                                                <td name="je_fk">
+                                                    <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)" placeholder="付款金额(元)" type="text" value="@defaultJE" name="je" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@defaultJE">
+                                                </td>
+
+                                                <td><input class="form-control user-input" readonly="readonly" style="width:96%;border:0px;" onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)"   type="text" value="" name="bz"></td>
+                                            </tr>
+
+                                        }
+                                        else
+                                        {
+                                            var list = item_copy.body.ToList();
+                                            if (list != null && list.Any())
+                                            {
+                                                foreach (var item in list)
+                                                {
+                                                    <tr id="row-jhfk-id-@item.id" class="tr-status-finished" data-item="@item.id" id_bill_origin="@item.id_bill_origin" dh_origin="@item.dh_origin" bm_djlx_origin="@item.bm_djlx_origin" je_origin="@item.je_origin.Digit((int)digit["je_digit"])" je_yf="@item.je_yf.Digit((int)digit["je_digit"])" je_wf="@item.je_wf.Digit((int)digit["je_digit"])">
+                                                        <td class="text-center">
+                                                            <label class="i-checks m-b-none">
+                                                                <input type="checkbox" name="id_bill[]" value="@item.id_bill" checked="checked"  onclick="$.DHB.func.selectSingle(this);app.jhfk.check_checked(this);" />
+                                                                <i></i>
+                                                            </label>
+                                                        </td>
+                                                        <td>@item.bm_djlx_name</td>
+                                                        <td>@item.dh_origin</td>
+                                                        <td>@item_copy.head.gys_name</td>
+                                                        <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.rq_create)</td>
+                                                        <td><div style="text-align:right;width:95%;">@item.je_origin.Digit((int)digit["je_digit"])</div></td>
+                                                        <td><div style="text-align:right;width:95%;">@item.je_yf.Digit((int)digit["je_digit"])  </div></td>
+                                                        <td name="weifu"><div style="text-align:right;width:95%;">@item.je_wf.Digit((int)digit["je_digit"])</div></td>
+                                                        <td name="je_yh">
+                                                            <input class="form-control user-input"  style="width:95%;border:0px;text-align:right;" onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)" placeholder="优惠金额(元)" type="text" value="@item.je_yh.Digit((int)digit["je_digit"])" name="je_yh" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@item.je_yh.Digit((int)digit["je_digit"])" onfocus="app.jhfk.onfocus(this)" onblur="app.jhfk.onblur(this, @digit["je_digit"])">
+                                                        </td>
+                                                        <td name="je_fk">
+                                                            <input class="form-control user-input"  style="width:95%;border:0px;text-align:right;" onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)" placeholder="付款金额(元)" type="text" value="@item.je_fk.Digit((int)digit["je_digit"])" name="je_fk" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@item.je_fk.Digit((int)digit["je_digit"])" onfocus="app.jhfk.onfocus(this)" onblur="app.jhfk.onblur(this, @digit["je_digit"])">
+                                                        </td>
+
+                                                        <td><input class="form-control user-input" style="width:96%;border:0px;" onmouseover="app.jhfk.onmouseover(this)" onmouseout="app.jhfk.onmouseout(this)"   type="text" value="@item.bz" name="bz"></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!--页脚-->
+                        <footer class="panel-footer jh_add_down" style="overflow:visible;">
+                            <div class="dropup d-i-b" style="position: relative">
+                            </div>&nbsp;
+                            <ul id="Pagination" class="pagination pagination-sm pull-right m-t-none m-b-none"></ul>
+                            <div style="clear:both;">
+                            </div>
+                        </footer>
+
+
+                        <div style="clear:both;"></div>
+                        <ul class="jh_add_down ul_block  h-30">
+                            <li><span>原单总金额合计：￥</span><span id="je_mxtotal_total">@defaultJE</span></li>
+                            <li><span>已付金额：￥</span><span id="je_yf_total">@defaultJE</span></li>
+                            <li><span>未付金额：￥</span><span id="je_wf_total">@defaultJE</span></li>
+                            <li><span>优惠金额：￥</span><span id="je_yh_total">@defaultJE</span></li>
+                            <li><span>付款金额：￥</span><span id="je_bqyj_total">@defaultJE</span></li>
+                        </ul>
+
+                       <ul class="jh_add_down  ul_block  h-30" style="margin-bottom:50px;">
+                           <li><span>制单人：</span><span>@(ViewData["zdr_name"] == null ? "" : ViewData["zdr_name"].ToString())</span></li>
+                           <li><span>制单时间：</span><span>@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</span></li>
+                           <li><span>审核人：</span><span>@(ViewData["shr_name"] == null ? "" : ViewData["shr_name"].ToString())</span></li>
+                           <li><span>审核时间：</span><span>@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</span></li>
+                       </ul>
+
+
+                        @*<table class="f-r order-info m-b-sm1 m-t">
+                            <tr>
+                                <td>制单人：</td>
+                                <td>@(ViewData["zdr_name"] == null ? "" : ViewData["zdr_name"].ToString())</td>
+                                <td>制单时间：</td>
+                                <td style="width:150px;">@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</td>
+
+
+                                <td>审核人：</td>
+                                <td>@(ViewData["shr_name"] == null ? "" : ViewData["shr_name"].ToString())</td>
+                                <td>审核时间：</td>
+                                <td style="width:150px;">@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))</td>
+
+                            </tr>
+                        </table>*@
+
+
+
+
+                        <footer class="panel-footer  lter need-footer-fixed text-l">
+
+                            @if (type != "edit")
+                            {
+                                <button class="btn w-xs btn-info m-l-none" id="submit-button1" onclick="app.jhfk.check_jh_yes('submit-button1','1');" data-loading-text="正在提交...">
+                                    保存并新增
+                                </button>
+                            }
+
+                            <button class="btn w-xs btn-info m-l-none" id="submit-button2" onclick="app.jhfk.check_jh_yes('submit-button2','0');" data-loading-text="正在提交...">
+                                保存
+                            </button>
+                            <button type="button" class="btn w-xs btn-default" style="margin-left:3px;" title="付款管理" onclick="$.fn.menuTab.load({ url: '/jhfk/list', 'title': '付款管理', id: 'jhfk/list', nocache: '0' });$.DHB.close('jhfk/add'); ">取消</button>
+                        </footer>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $.DHB._ = function () {
+        app.c.public_data['jhfk/add'] = app.c.public_data['jhfk/add'] || {};
+        if (app.c.public_data['jhfk/add']['once'] === false) {
+            app.c.public_data['jhfk/add']['once'] = true;
+            $.DHB.checkForm(function () {
+                if (!$(_ + "#gys_id").val()) {
+                    $.DHB.message({ 'content': '请选择供应商！', 'type': 'i' });
+                }
+                else if ($(_ + "#jh_table>tbody>tr[data-item!='']").length <= 0) {
+                    $.DHB.message({ 'content': '请至少选择一个商品！', 'type': 'i' });
+                }
+                else if ($(_ + '#je_sf').val() == '' || $(_ + '#je_sf').val() == '') {
+                    $.DHB.message({ 'content': '实收金额不准为空！', 'type': 'i' });
+                }
+                else {
+                    app.jhfk.setresult();
+                    var objData = {};
+                    objData.shopspList = $(_ + 'input[name="table_result"]').val();
+                    objData.remark = $(_ + '#remark').val();
+                    objData.id_gys = $(_ + '#gys_id').val();
+                    objData.id_shop = $(_ + '#id_shop').val();
+                    objData.id_jbr = $(_ + '#id_jbr').val();
+                    objData.dh = $(_ + '#dh').val();
+                    objData.rq = $(_ + '#rq').val();
+                    objData.je_sf = $(_ + '#je_sf').val();
+                    objData.type = '@type';
+                    objData.id = '@item_copy.head.id';
+
+                    $.post($.DHB.U('jhfk/add'), objData,
+                            function (data) {
+                                if (data.status == "success") {
+
+                                    $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                    $.DHB.url('jhfk/list', 'cache');
+                                } else {
+                                    $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                                    btn.button('reset');
+                                }
+                            }, 'json'
+                   );
+                }
+                return false;
+            });
+            $(function () {
+                $(_ + '#submit-button').removeAttr('disabled');
+            });
+        } 
+    };
+
+
+    app.jhfk = app.jhfk || {};
+
+    //内页加载完成
+    app.jhfk.list_ready = function () {
+        if ('@type' == 'edit') {
+            $(_ + '#check-btn-header').click();
+            $(_ + "#gys_group_btn").attr("disabled", "disabled");
+            $(_ + "#gys_name").attr("disabled", "disabled");
+            $(_ + "#gys_group_span").attr("disabled", "disabled");
+        }
+        else {
+            $(_ + "#gys_group_btn").removeAttr("disabled");
+            $(_ + "#gys_name").removeAttr("disabled");
+            $(_ + "#gys_group_span").removeAttr("disabled");
+        }
+
+    };
+    //优惠金额键盘事件
+    $('#jh_table>tbody', _).on('keyup', 'tr td[name=je_yh] input',function(){
+        debugger;
+    })
+
+
+    //选择供应商回调
+    app.jhfk.add_gys_callback = function (selectVal) {
+        selectVal = selectVal || '';
+        var selectValTem = selectVal.split('|');
+        var id_gys = '';
+        var gys_name = '';
+        var id_shop = $(_ + "#id_shop").val();
+
+        if (typeof (selectValTem[1]) != 'undefined' && selectValTem[1] != '') {
+            gys_name = selectValTem[1];
+            $('#gys_name', _).val(gys_name);
+        }
+        if (typeof (selectValTem[1]) != 'undefined' && selectValTem[0] != '') {
+            id_gys = selectValTem[0];
+            $('#gys_id', _).val(id_gys);
+            app.jhfk.set_table_info(id_gys, gys_name, id_shop);
+
+        }
+        else {
+            $('#gys_id', _).val('');
+            $('#gys_name', _).val('');
+            app.jhfk.set_table_info('', '', id_shop);
+        }
+    }
+    app.jhfk.flag1 = true;
+    app.jhfk.shopChange = function (e) {
+        if (app.jhfk.flag1 ==true) {
+            $.messager.confirm("提示", "更改门店将刷新明细是否继续?", function () {
+                var id_gys = $(_+'#gys_id').val();
+                var gys_name = $(_ + '#gys_name').val();
+                var id_shop = $(_ + '#id_shop').val();
+                app.jhfk.set_table_info(id_gys, gys_name, id_shop);
+            }, function () {
+
+                app.jhfk.flag1 = false;
+                $(e).prev().find('li').eq(app.jhfk.select_index1).find('a').click();
+
+            });
+            }
+    };
+    app.jhfk.option = function (e) {
+        //
+        app.jhfk.flag1 = true;
+        app.jhfk.select_index1 = $(e).find('li[class="selected"]').index();
+    };
+
+    //设置表格信息
+    app.jhfk.set_table_info = function (id_gys, gys_name, id_shop) {
+
+        var url = '/jhfk/add?id_gys=' + id_gys + '&gys_name=' + gys_name + '&_search_=1';
+        if (id_shop != '')
+            url = url + '&id_shop=' + id_shop;
+        var options = {
+            url: $.DHB.U(url),
+            datatype: 'html',
+            beforeSend: function () {
+                $.DHB.showButterbar();
+            },
+            success: function (data, textStatus, jqXHR) {
+                if ($('#jhfk-list-list-fresh-box', _).length > 0) {
+                    $('#jhfk-list-list-fresh-box', _).html(data);
+                }
+                app.search.do_search_pagination_dw_list();
+                app.jhfk.bindkeypress();
+            },
+            complete: function (XHR, TS) {
+                $.DHB.closeButterbar();
+            }
+        };
+        //cy.http.Get(options);
+        app.httpAjax.post(options);
+        return false;
+    }
+
+    app.jhfk.check_checked = function (e) {
+        var je_mxtotal_total = parseFloat('@defaultJE');
+        var je_yf_total = parseFloat('@defaultJE');
+        var je_wf_total = parseFloat('@defaultJE');
+        var je_yh_total = parseFloat('@defaultJE');
+        var je_bqyj_total = parseFloat('@defaultJE');
+        var jh_arr = [];
+
+        $('#jh_table>tbody',_).find('tr').each(function (e, obj) {
+            var checked_tr = $(obj).find('input[name="id_bill[]"]:checkbox:checked');
+            var data_item=$(obj).attr('id');
+            if (typeof (checked_tr) != 'undefined' && checked_tr.length > 0 && typeof (data_item) != 'undefined' && data_item != '' && data_item != 'row-jhfk-id-') {
+                checked_tr.each(function (el, obj2) {
+                    var tr = $(obj2).parents("tr");
+
+                    var je_mxtotal = limit_num($(tr.find('td')[5]).text(), '@digit["je_digit"]');
+                    var je_yf = limit_num($(tr.find('td')[6]).text(), '@digit["je_digit"]');
+                    var je_wf = limit_num($(tr.find('td')[7]).text(), '@digit["je_digit"]');
+                    var je_yh = limit_num(tr.find('input[name="je_yh"]').val(), '@digit["je_digit"]');
+
+
+                    if (typeof (tr.find('input[name="je_fk"]').attr('readonly')) != 'undefined' && tr.find('input[name="je_fk"]').attr('readonly') == 'readonly') {
+                        if ('@type' == 'edit') {
+                            var je_fk_old_data = tr.find('input[name="je_fk"]').attr('old-data');
+                            tr.find('input[name="je_fk"]').val(je_fk_old_data)
+                            tr.find('input[name="je_fk"]').attr('old-data', je_fk_old_data);
+                        } else {
+                            tr.find('input[name="je_fk"]').val(je_wf)
+                            tr.find('input[name="je_fk"]').attr('old-data', je_wf);
+                        }
+
+                    }
+
+                    var je_bqyj = limit_num(tr.find('input[name="je_fk"]').val(), '@digit["je_digit"]');
+                    je_mxtotal_total = parseFloat(je_mxtotal_total) + parseFloat(je_mxtotal);
+                    je_yf_total = parseFloat(je_yf_total) + parseFloat(je_yf);
+                    je_wf_total = parseFloat(je_wf_total) + parseFloat(je_wf);
+                    je_yh_total = parseFloat(je_yh_total) + parseFloat(je_yh);
+                    je_bqyj_total = parseFloat(je_bqyj_total) + parseFloat(je_bqyj);
+
+                    tr.find('input[name="je_yh"]').removeAttr('readonly');
+                    tr.find('input[name="je_fk"]').removeAttr('readonly');
+                    tr.find('input[name="bz"]').removeAttr('readonly');
+                    tr.attr('data-item', tr.find('input[name="id_bill[]"]').val());
+
+                    var jh_e = {};
+                    jh_e.id_bill_origin = $.trim(tr.attr("id_bill_origin"));//id_bill_origin
+                    jh_e.dh_origin = $.trim(tr.attr("dh_origin"));//dh_origin
+                    jh_e.bm_djlx_origin = $.trim(tr.attr("bm_djlx_origin"));//bm_djlx_origin
+                    jh_e.je_origin = $.trim(tr.attr("je_origin"));//je_origin
+                    jh_e.je_yf = $.trim(tr.attr("je_yf"));//je_yf
+                    jh_e.je_wf = $.trim(tr.attr("je_wf"));//je_wf
+                    jh_e.je_yh = $.trim(tr.find('input[name="je_yh"]').val()); //je_yh
+                    jh_e.je_fk = $.trim(tr.find('input[name="je_fk"]').val()); //je_fk
+                    jh_e.bz = $.trim(tr.find('input[name="bz"]').val()); //bz
+                    jh_arr.push(jh_e);
+                })
+            } else {
+                $(obj).find('input[name="je_yh"]').val('@defaultJE');
+                $(obj).find('input[name="je_yh"]').attr('readonly', 'readonly');
+                $(obj).find('input[name="je_fk"]').val('@defaultJE');
+                $(obj).find('input[name="je_fk"]').attr('readonly', 'readonly');
+                $(obj).find('input[name="bz"]').val('');
+                $(obj).find('input[name="bz"]').attr('readonly', 'readonly');
+                $(obj).attr('data-item', '');
+            }
+        });
+
+        $(_ + '#je_mxtotal_total').text(limit_num(parseFloat(je_mxtotal_total).toString(), '@digit["je_digit"]'));
+        $(_ + '#je_yf_total').text(limit_num(parseFloat(je_yf_total).toString(), '@digit["je_digit"]'));
+        $(_ + '#je_wf_total').text(limit_num(parseFloat(je_wf_total).toString(), '@digit["je_digit"]'));
+        $(_ + '#je_yh_total').text(limit_num(parseFloat(je_yh_total).toString(), '@digit["je_digit"]'));
+        $(_ + '#je_bqyj_total').text(limit_num(parseFloat(je_bqyj_total).toString(), '@digit["je_digit"]'));
+
+        var jsonStr = JSON.stringify(jh_arr);
+        $(_ + "#table_result").val(jsonStr);
+
+    }
+
+
+    @*//默认设置单号
+    cy.http.Post({
+        url: '/jhfk/createdh',
+        beforeSend: function () {
+        },
+        callback: function (ret) {
+            if (ret.Success) {
+                if ('@type' != 'edit') {
+                    $(_ + "#dh").val(ret.Data);
+                    $(_ + "#dh").attr('old-data', ret.Data);
+                } else {
+                    $(_ + "#dh").val('@item_copy.head.dh');
+                    $(_ + "#dh").attr('old-data', '@item_copy.head.dh');
+                }
+            }
+        },
+        complete: function () {
+
+        }
+    });*@
+
+
+
+    var options_createdh = {
+        data: {},
+        url: $.DHB.U('/jhfk/createdh'),
+        type: "POST",
+        datatype: 'json',
+        beforeSend: function () { },
+        success: function (ret, textStatus, jqXHR) {
+            if (ret.Success) {
+                if ('@type' != 'edit') {
+                    $(_ + "#dh").val(ret.Data);
+                    $(_ + "#dh").attr('old-data', ret.Data);
+                } else {
+                    $(_ + "#dh").val('@item_copy.head.dh');
+                    $(_ + "#dh").attr('old-data', '@item_copy.head.dh');
+                }
+            }
+        },
+        complete: function (XHR, TS) { }
+    };
+    app.httpAjax.post(options_createdh)
+
+
+
+    //作废
+    app.jhfk.del = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定作废吗?", function () {
+            $.post($.DHB.U('jhfk/delete'),
+            {
+                id: id
+            },
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('jhfk/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                }, 'json');
+        });
+    };
+
+    app.jhfk.onmouseover = function onmouseover(e) {
+        var input = $(e);
+        input.css({ border: "1px solid #ccc" })
+    }
+
+    app.jhfk.onmouseout = function onmouseout(e) {
+        var input = $(e);
+        input.css({ border: "0px solid #ccc" })
+    }
+
+
+
+    //绑定事件
+    app.jhfk.bindkeypress = function (obj) {
+        $('#jh_table>tbody',_).find('tr').each(function () {
+            bindEvent($(this));
+        });
+    }
+
+    //绑定事件执行
+    function bindEvent(ele) {
+        ele.each(function () {
+            var je_yh_obj = $(this).find('input[name="je_yh"]');
+            var je_obj = $(this).find('input[name="je_fk"]');
+            var bz_obj = $(this).find('input[name="bz"]');
+            je_yh_obj.focus(function () { $(this).select(); });
+            je_obj.focus(function () { $(this).select(); });
+            bz_obj.focus(function () { $(this).select(); });
+
+            je_yh_obj.blur(function () {
+                app.jhfk.check_checked();
+            });
+
+            je_obj.blur(function () {
+                app.jhfk.check_checked();
+            });
+
+            bz_obj.blur(function () {
+                app.jhfk.check_checked();
+            });
+        });
+    }
+
+
+    //表单提交
+    app.jhfk.check_jh_yes = function (btn, addnew) {
+        $.DHB.checkForm("fm-jh-add", function () { });
+        setTimeout(function () {
+            if (!$(_ + "#gys_id").val()) {
+                $.DHB.message({ 'content': '请选择供应商！', 'type': 'i' });
+            }
+            else if (!$(_ + "#dh").val()) {
+                $.DHB.message({ 'content': '收款单号不可以为空！', 'type': 'i' });
+            }
+            else if (!$(_ + "#id_shop").val()) {
+                $.DHB.message({ 'content': '请选择门店！', 'type': 'i' });
+            }
+            else if (!$(_ + "#id_jbr").val()) {
+                $.DHB.message({ 'content': '请选择经办人！', 'type': 'i' });
+            }
+            else if (!$(_ + "#rq").val()) {
+                $.DHB.message({ 'content': '请选择开单时间！', 'type': 'i' });
+            }
+            else if ($(_ + "#jh_table>tbody>tr[data-item!='']").length <= 0) {
+                $.DHB.message({ 'content': '请至少选择一个付款单！', 'type': 'i' });
+            }
+            else {
+                //$("#" + btn, _).button("loading");
+
+                $("#submit-button1", _).button("loading");
+                $("#submit-button2", _).button("loading");
+
+
+
+
+                app.jhfk.check_checked();
+                var objData = {};
+                objData.jhList = $(_ + 'input[name="table_result"]').val();
+                objData.remark = $(_ + '#remark').val();
+                objData.id_gys = $(_ + '#gys_id').val();
+                objData.id_shop = $(_ + '#id_shop').val();
+                objData.id_jbr = $(_ + '#id_jbr').val();
+                objData.dh = $(_ + '#dh').val();
+                objData.rq = $(_ + '#rq').val();
+
+                objData.type = '@type';
+                objData.id = '@item_copy.head.id';
+
+               // $.post($.DHB.U('jhfk/add'), objData,
+               //         function (data) {
+               //             if (data.status == "success") {
+               //                 $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+               //                 if (addnew == '0') {
+               //                     $.fn.menuTab.deleteMenu('jhfk/add');
+               //                     $.fn.menuTab.load({ url: '/jhfk/list', 'title': '付款管理', id: 'jhfk/list', nocache: '1' });
+               //                 } else {
+               //                     $("#" + btn, _).button('reset');
+               //                     $.fn.menuTab.deleteMenu('jhfk/add');
+               //                     $.fn.menuTab.load({ url: '/jhfk/add', 'title': '新增付款', id: 'jhfk/add', nocache: '0' });
+               //                 }
+
+               //             } else {
+               //                 $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+               //                 $("#" + btn, _).button('reset');
+               //             }
+               //         }, 'json'
+               //);
+
+                var options = {
+                    data: objData,
+                    url: $.DHB.U('jhfk/add'),
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                            if (addnew == '0') {
+                                $.fn.menuTab.deleteMenu('jhfk/add');
+                                $.fn.menuTab.load({ url: '/jhfk/list', 'title': '付款管理', id: 'jhfk/list', nocache: '1' });
+                            } else {
+                                //$("#" + btn, _).button('reset');
+                                $("#submit-button1", _).button("reset");
+                                $("#submit-button1", _).button("reset");
+                                $.fn.menuTab.deleteMenu('jhfk/add');
+                                $.fn.menuTab.load({ url: '/jhfk/add', 'title': '新增付款', id: 'jhfk/add', nocache: '0' });
+                            }
+
+                        } else {
+
+                            $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'i' });
+                            //$("#" + btn, _).button('reset');
+                            $("#submit-button1", _).button("reset");
+                            $("#submit-button1", _).button("reset");
+                        }
+                    },
+                    complete: function (XHR, TS) {
+                        $("#submit-button1", _).button("reset");
+                        $("#submit-button1", _).button("reset");
+                        $("#submit-button2", _).button("reset");
+                        $("#submit-button2", _).button("reset");
+                    }
+                };
+                app.httpAjax.post(options);
+
+
+
+            }
+        }, 400);
+    }
+
+
+    app.jhfk.onblur = function (e, num) {
+        var data = $(e).val();
+        $(e).val(limit_num($.trim(data), num));
+
+        if ($(e).attr('name') == 'je_yh') {
+            var $tr = $(e).parents('tr');
+            var yh = parseFloat($(e).val());
+            var wf = parseFloat($tr.find('td[name=weifu] div').html());
+            $tr.find('input[name=je_fk]').val(parseFloat(wf - yh).toFixed('@digit["je_digit"]'));
+        }
+
+
+
+    };
+
+    app.jhfk.onfocus = function (e) {
+        $(e).select();
+    };
+
+</script>  

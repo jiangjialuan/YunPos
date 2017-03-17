@@ -1,0 +1,117 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Model.Ts
+@{
+    var pageList = ViewData["List"] as PageList<Td_Promote_1WithUserName>;
+    pageList = pageList ?? new PageList<Td_Promote_1WithUserName>(10);
+    var cxlist = ViewData["cxlist"] as List<Ts_Flag>;
+    cxlist = cxlist ?? new List<Ts_Flag>();
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+    var func = ViewData["GetBackViewName"] as Func<string, string>;
+    var HandlePromote1State = ViewData["HandlePromote1State"] as Func<Td_Promote_1WithUserName, string>;
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                序号
+            </th>
+            <th width="170">促销单号</th>
+            <th width="200">促销名称</th>
+            <th width="120">促销类型</th>
+            <th width="55">促销单状态</th>
+            <th width="100">开始日期</th>
+            <th width="100">结束日期</th>
+            <th width="120">制单人</th>
+            <th width="120">制单日期</th>
+            <th width="120">审核人</th>
+            <th width="120">审核日期</th>
+            <th class="text-center width200">操作</th>
+        </tr>
+    </thead>
+    <tbody id="promotelist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="12" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = pageList.PageIndex * pageList.PageSize + 1;
+                    var mindate = new DateTime(2000, 01, 01);
+                    foreach (var item in list)
+                    {
+                        var datestr = "";
+                        if (item.rq_sh > mindate)
+                        {
+                            datestr = string.Format("{0:yyyy-MM-dd}", item.rq_sh);
+                        }
+                        <tr id="row-promote-id-@item.id" class="tr-status-finished">
+                            <td class="text-center">
+                                @(index++)
+                            </td>
+                            <td><a class="list-link">@item.dh</a></td>
+                            <td><a class="list-link">@item.rule_name</a></td>
+                            <td>@(cxlist.FirstOrDefault(a => a.listcode == item.bm_djlx).listdisplay)</td>
+                            <td class="text-center">@(HandlePromote1State(item))</td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.day_b)</td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.day_e)</td>
+                            <td class="text-center">@item.zdr</td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.rq_create)</td>
+                            <td class="text-center">@item.shr</td>
+                            <td class="text-center">@datestr</td>
+                            <td class="list-operate">
+                                <div class="look-out1">
+                                    <div class="second-height-operate width200">
+                                        @if (IsPermissionShow("detial", actionlist))
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="app.promote.detial('@item.id','@item.bm_djlx','@func(item.bm_djlx).ToLower()',this)" title="详细"></a>
+                                        }
+                                        @if (IsPermissionShow("edit", actionlist) && item.flag_sh == 0)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.promote.edit('@item.id', '@item.bm_djlx','@func(item.bm_djlx).ToLower()',    this)" title="编辑"></a>
+                                        }
+                                        @if (IsPermissionShow("copy", actionlist))
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-copy" href="javascript:;" onclick="app.promote.copy('@item.id', '@item.bm_djlx','@func(item.bm_djlx).ToLower()',    this)" title="复制"></a>
+                                        }
+                                        @if (IsPermissionShow("delete", actionlist) && item.flag_sh == 0)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.promote.del('@item.id', this)" title="删除"></a>
+                                        }
+                                        @if (IsPermissionShow("sh", actionlist) && item.flag_sh == 0)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-user" href="javascript:;" onclick="app.promote.sh('@item.id', this)" title="审核"></a>
+                                        }
+                                        @if (IsPermissionShow("zf", actionlist) && item.flag_sh == 1 && item.flag_cancel == 0)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-ban" href="javascript:;" onclick="app
+                                               .promote.zf('@item.id', this)" title="作废"></a>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    app.c.public_data['promote/list'] = app.c.public_data['promote/list'] || {};
+    app.c.public_data['promote/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['promote/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['promote/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

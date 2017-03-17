@@ -1,0 +1,2129 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Model.Ts
+@using CySoft.Model.Tz
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    var digit = ViewData["DigitHashtable"] as Hashtable;//小数点控制
+    digit = digit ?? new Hashtable();
+    var id_shop = ViewData["id_shop"] == null ? "" : ViewData["id_shop"].ToString();
+    var selectListShopShop = ViewData["shopList"] as List<Tb_User_ShopWithShopMc>;
+    selectListShopShop = selectListShopShop ?? new List<Tb_User_ShopWithShopMc>();
+    var selectListDigitlx = ViewData["digitlx"] as List<Ts_Flag>;
+    selectListDigitlx = selectListDigitlx ?? new List<Ts_Flag>();
+    var hyfls = ViewData["hyfls"] as List<Tb_Hyfl>;
+    hyfls = hyfls ?? new List<Tb_Hyfl>();
+    var defaultStarTime = DateTime.Now.ToString("yyyy-MM-dd");
+    var defaultEndTime = DateTime.Now.AddYears(1).ToString("yyyy-MM-dd");
+    var defaultEndTime_Sp = DateTime.Now.AddYears(1).ToString("yyyy-MM-dd");
+
+    var is_master = ViewData["is_master"] == null ? "false" : ViewData["is_master"].ToString().ToLower();
+    //门店
+    string optinShopList = "";
+    if (is_master == "true") { optinShopList = " <option value=\"0\">All-所有门店</option> "; }
+    foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+    { optinShopList += Html.Raw("<option value=\"" + item.id_shop + "\">" + item.mc + "</option>"); }
+    //会员类型
+    var optinHyflList = "  <option value=\"0\">All-所有会员卡类别</option>";
+    foreach (var item in hyfls.OrderBy(d => d.rq_create))
+    { optinHyflList += Html.Raw("<option value=\"" + item.id + "\">" + item.mc + "</option>"); }
+    //截取小数类型
+    var optinJqxslxList = "";
+    foreach (var item in selectListDigitlx.OrderBy(d => d.listsort))
+    { optinJqxslxList += Html.Raw("<option value=\"" + item.listdata + "\">" + item.listdisplay + "</option>"); }
+    var db_data = ViewData["db_data"] as List<Tb_Hy_Jfrule_Query>;
+    db_data = db_data ?? new List<Tb_Hy_Jfrule_Query>();
+    var db_dbjf_data = ViewData["db_dbjf_data"] as Ts_HykDbjf;
+    db_dbjf_data = db_dbjf_data ?? new Ts_HykDbjf();
+    var version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    var db_dbjf_dhsp_data = ViewData["db_dbjf_dhsp_data"] as List<Tb_Hy_Jfconvertsp_Query>;
+    db_dbjf_dhsp_data = db_dbjf_dhsp_data ?? new List<Tb_Hy_Jfconvertsp_Query>();
+    var defaultDJ = decimal.Parse("0").Digit((int)digit["dj_digit"]);
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="hyjfrule/jfruleset"]').attr({ controller: 'hyjfrule', action: 'jfruleset' });
+        app.c.public_data['hyjfrule/jfruleset'] = app.c.public_data['hyjfrule/jfruleset'] || {};
+        app.c.public_data['hyjfrule/jfruleset']['once'] = false;
+
+    });
+</script>
+<input pagesize="" value="" type="hidden">
+<input page="" value="" type="hidden">
+<div class="contentbox-header">
+    <a class="" onclick="$.DHB.refresh();">积分规则</a>
+</div>
+
+<div class="col" id="jfruleset">
+    <div class="panel panel-default">
+        <div class="main-content comform" style="overflow:hidden;">
+            <form novalidate="novalidate" class="client-box" id="update_promote_form" onkeyup="if(event.keyCode==13){return false;}" onkeydown="if(event.keyCode==13){return false;}" class="comform">
+                <div class="row">
+                    <div class="col-xs-12">
+                    </div>
+                </div>
+
+
+                <div class="fixed-input-group" id="_div_hyjfrule_jfruleset">
+
+                    <!--多倍积分-->
+                    <div class="input-item-2 clearfix add-client">
+                        <div>
+                            <label class="">
+                                <span>多倍积分设置：</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+
+                        @if (version == "20" && is_master == "true")
+                        {
+                        <!--选择门店-->
+                            <div class="input-item-2 clearfix add-client form_line">
+                                <div>
+                                    <label class="item-2-label f-l">
+                                        <span>&nbsp;</span>
+                                    </label>
+                                    <label class="com_font">
+                                        <select name="id_shop_dbjf" id="id_shop_dbjf" onchange="app.hyjfrule.jfruleset.shopChange()" style="width:180px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                            <option value="0" @(string.Format(db_dbjf_data.id_shop == "0" ? "selected=\"selected\"" : ""))>All-所有门店</option>
+                                            @foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+                                            {
+                                                <option value="@item.id_shop" @(string.Format(db_dbjf_data.id_shop == item.id_shop ? "selected=\"selected\"" : ""))>@item.mc</option>
+                                            }
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="display:none;">
+                                <select name="id_shop_dbjf" id="id_shop_dbjf" onchange="app.hyjfrule.jfruleset.shopChange()" style="width:180px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                    <option value="@db_dbjf_data.id_shop" selected="selected">@db_dbjf_data.id_shop</option>
+                                </select>
+                            </div>
+                        }
+
+
+                        <!--会员生日积分设置-->
+                        <div class="input-item-2 clearfix add-client form_line">
+                            <div>
+                                <label class="item-2-label f-l">
+                                    <em class="tag">&nbsp;</em><span>按生日：&nbsp;</span>
+                                </label>
+
+
+
+                                <div class="com_font">
+                                    <label>&nbsp; 会员阳历生日 &nbsp;</label>
+                                    <select name="hy_jfsz_hysr_lx" id="hy_jfsz_hysr_lx" style="width:70px; float:left; margin-right:-1px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">
+                                        <option value="" @(string.Format(db_dbjf_data.hy_jfsz_hysr_lx == "" ? "selected=\"selected\"" : ""))>未选择</option>
+                                        <option value="day" @(string.Format(db_dbjf_data.hy_jfsz_hysr_lx == "day" ? "selected=\"selected\"" : ""))>当日</option>
+                                        <option value="week" @(string.Format(db_dbjf_data.hy_jfsz_hysr_lx == "week" ? "selected=\"selected\"" : ""))>本周</option>
+                                        <option value="month" @(string.Format(db_dbjf_data.hy_jfsz_hysr_lx == "month" ? "selected=\"selected\"" : ""))>本月</option>
+                                    </select>
+                                    <label>内</label>
+                                    <input class="form-control user-input {required:true,isNum:true}" style="width:70px;" name="hy_jfsz_hysr_nbjf" id="hy_jfsz_hysr_nbjf" value="@(string.Format(db_dbjf_data.hy_jfsz_hysr_nbjf??""))" type="text">
+                                    <label class="borderR">&nbsp; 倍积分 &nbsp;</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--按星期积分设置-->
+                        <div class="input-item-2 clearfix add-client form_line">
+                            <div>
+                                <label class="item-2-label f-l">
+                                    <em class="tag">&nbsp;</em><span>按星期：&nbsp;</span>
+                                </label>
+                                <div class="week_data">
+                                    <div class="selct_data" style="padding-left:1px !important;">
+
+                                        <label>
+                                            <input data-group="hy_jfsz_week_val" value="2" type="checkbox" @(db_dbjf_data.hy_jfsz_week_val.Contains(",2,") ? "checked='checked'" : "")><i>星期一</i>
+                                        </label>
+                                        <label>
+                                            <input data-group="hy_jfsz_week_val" value="3" type="checkbox" @(db_dbjf_data.hy_jfsz_week_val.Contains(",3,") ? "checked='checked'" : "")><i>星期二</i>
+                                        </label>
+                                        <label>
+                                            <input data-group="hy_jfsz_week_val" value="4" type="checkbox" @(db_dbjf_data.hy_jfsz_week_val.Contains(",4,") ? "checked='checked'" : "")><i>星期三</i>
+                                        </label>
+                                        <label>
+                                            <input data-group="hy_jfsz_week_val" value="5" type="checkbox" @(db_dbjf_data.hy_jfsz_week_val.Contains(",5,") ? "checked='checked'" : "")><i>星期四</i>
+                                        </label>
+                                        <label>
+                                            <input data-group="hy_jfsz_week_val" value="6" type="checkbox" @(db_dbjf_data.hy_jfsz_week_val.Contains(",6,") ? "checked='checked'" : "")><i>星期五</i>
+                                        </label>
+                                        <label>
+                                            <input data-group="hy_jfsz_week_val" value="7" type="checkbox" @(db_dbjf_data.hy_jfsz_week_val.Contains(",7,") ? "checked='checked'" : "")><i>星期六</i>
+                                        </label>
+                                        <label>
+                                            <input data-group="hy_jfsz_week_val" value="1" type="checkbox" @(db_dbjf_data.hy_jfsz_week_val.Contains(",1,") ? "checked='checked'" : "")><i>星期日</i>
+                                        </label>
+                                        <label class="com_font" style="width:200px;">
+                                            <input class="form-control user-input {required:true,isNum:true}" style="width:81px;" name="hy_jfsz_week_nbjf" id="hy_jfsz_week_nbjf" value="@(string.Format(db_dbjf_data.hy_jfsz_week_nbjf??""))" type="text">
+                                            <label class="borderR">倍积分</label>
+                                        </label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--按日积分设置-->
+                        <div class="input-item-2 clearfix add-client form_line">
+                            <label class="item-2-label f-l">
+                                <em class="tag">&nbsp;</em><span>按日期：&nbsp;</span>
+                            </label>
+                            
+                            <div class="selct_data" style="padding-left:1px !important; width:890px !important;">
+
+
+                                @for (int i = 0; i <= 31; i++)
+                                {
+                                    if (i == 0)
+                                    {
+                                        <label>
+                                            <input name="all_days" type="checkbox" data-type="rq" onclick="app.hyjfrule.jfruleset.setSelectAll(this)"><i>全选</i>
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <label>
+                                            <input name="hy_jfsz_day_val" value="@i" data-type="rq" type="checkbox" onclick="app.hyjfrule.jfruleset.bindinput(this)" @(db_dbjf_data.hy_jfsz_day_val.Contains("," + i + ",") ? "checked='checked'" : "")><i>@(i + "号")</i>
+                                        </label>
+                                    }
+                                }
+                                <label class="com_font" style="width:200px;">
+                                    <input class="form-control user-input {required:true,isNum:true}" style="width:70px;" name="hy_jfsz_day_nbjf" id="hy_jfsz_day_nbjf" value="@(string.Format(db_dbjf_data.hy_jfsz_day_nbjf??""))" type="text">
+                                    <label class="borderR" style="width:80px">&nbsp; 倍积分 &nbsp;   </label>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!--按销售金额积分设置-->
+                        <div class="input-item-2 clearfix add-client form_line">
+                            <label class="item-2-label f-l">
+                                <em class="tag">&nbsp;</em><span>按金额：</span>
+                            </label>
+
+                            <label class="com_font">
+                                <label>在</label>
+                                <input class="form-control {required:true}" name="hy_jfsz_xs_rq_b" id="hy_jfsz_xs_rq_b" type="text" readonly="readonly" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', el: 'hy_jfsz_xs_rq_b', startDate: '%y-%M-%d 00:00:00' })" value="@( string.IsNullOrEmpty(db_dbjf_data.hy_jfsz_xs_rq_b)?"":(DateTime.Parse(db_dbjf_data.hy_jfsz_xs_rq_b)).ToString("yyyy-MM-dd HH:mm:ss"))">
+                                <label>到</label>
+                                <input class="form-control {required:true}" name="hy_jfsz_xs_rq_e" id="hy_jfsz_xs_rq_e" type="text" readonly="readonly" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', el: 'hy_jfsz_xs_rq_e', startDate: '%y-%M-%d 23:59:59' })" value="@(string.IsNullOrEmpty(db_dbjf_data.hy_jfsz_xs_rq_e)?"":(DateTime.Parse(db_dbjf_data.hy_jfsz_xs_rq_e)).ToString("yyyy-MM-dd HH:mm:ss"))">
+                                <label>&nbsp; 期间每单消费满 &nbsp;</label>
+                                <input class="form-control user-input {required:true,isNum:true}" style="width:70px;" name="hy_jfsz_xs_je" id="hy_jfsz_xs_je" value="@(string.Format(db_dbjf_data.hy_jfsz_xs_je??""))" type="text">
+                                <label class="borderR">元 </label>
+                                <input class="form-control user-input {required:true,isNum:true}" style="width:70px;" name="hy_jfsz_xs_nbjf" id="hy_jfsz_xs_nbjf" value="@(db_dbjf_data.hy_jfsz_xs_nbjf ?? "")" type="text">
+                                <label class="borderR">&nbsp; 倍积分 &nbsp; </label>
+                            </label>
+
+
+
+                        </div>
+
+
+
+
+
+                        <div class="input-item-2 clearfix add-client form_line">
+                            <div>
+                                <label class="item-2-label f-l">
+                                    <span>&nbsp;</span>
+                                </label>
+                                <label class="m-l-xs1 com_font">
+                                    <div>
+                                        <button class="btn btn-info w-xs" type="button" onclick="app.hyjfrule.jfruleset.add_dbjf(this)">保存</button>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!--积分规则-->
+                    <div class="input-item-2 clearfix add-client">
+                        <label class="">
+                            <span>积分获取规则：</span>
+                        </label>
+                        <!--表头-->
+                        <div id="shop_fl_title">
+                            <label class="item-2-label">
+                            </label>
+                            <label class="m-l-xs1">
+                                <a class="xzsp_a form_title" href="javascript:void(0)" data-group="_jfgz" data-group-name="xfje" onclick="changeSelectTab(this)"><span>按消费金额设置</span></a>
+                                <a class="xzsp_a" href="javascript:void(0)" data-group="_jfgz" data-group-name="splb" data-divid="show_lwsp" onclick="changeSelectTab(this)"><span>按商品类别设置</span></a>
+                                <a class="xzsp_a" href="javascript:void(0)" data-group="_jfgz" data-group-name="sp" data-divid="show_lwsp" onclick="changeSelectTab(this)"><span>按商品设置</span></a>
+                            </label>
+                        </div>
+                        <!--表体-->
+                        <div class="cx_block">
+                            <input id="table_sort_num" value="1" type="hidden">
+                            <!--按消费金额设置-->
+                            <div data-group="_jfgz" data-name="xfje" style="display: inherit;" class="xzsp_div table_list">
+                                <table class="table table_input" id="table_hyjfrule_jfruleset_xfje" style="table-layout:fixed;">
+                                    <thead>
+                                        <tr>
+                                            <th width="55">序号</th>
+                                            <th class="w-138">门店</th>
+                                            <th  class="width100">开始日期</th>
+                                            <th class="width100">结束日期</th>
+                                            <th class="width120">指定会员卡类别</th>
+                                            <th class="width100">是否积分</th>
+                                            <th class="hidden width120">会员价是否积分</th>
+                                            <th class="width100">促销是否积分</th>
+                                            <th class="width100">销售额</th>
+                                            <th class="width100">对应积分</th>
+                                            <th class="width120">截取小数类型</th>
+                                            <th class="width100">每一笔最小金额</th>
+                                            <th class="hidden width100">星期</th>
+                                            <th  class="width100">操作类型</th>
+                                            <th width="55">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var item_xfje in db_data.Where(d => d.style == "bill").OrderBy(d => d.sort_id))
+                                        {
+
+                                            if (is_master != "true" && item_xfje.id_shop != id_shop && item_xfje.id_shop != "0") { continue; }
+                                            var checkDisabled = (is_master != "true" && item_xfje.id_shop == "0") ? "disabled=\"disabled\"" : "";
+
+
+                                            <tr data-item="id_xfje_@item_xfje.id">
+                                                <td class="align_center">
+                                                    <div name="xh">@item_xfje.sort_id</div>
+                                                    <input type="hidden" name="id" value="@item_xfje.id">
+                                                </td>
+
+                                                <td class="align_center">
+                                                    <select name="id_shop" disabled="disabled" style="width:130px;" class="btn-group bootstrap-select user-input  select22_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                                        <option value="0">All-所有门店</option>
+                                                        @foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+                                                        {
+                                                            var shopChecked = item_xfje.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                            <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td class="align_center"><input name="day_b" id="day_b_@item_xfje.id" @checkDisabled class="form-control input-sm {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_b_@item_xfje.id' })" value="@(item_xfje.day_b == null ? defaultStarTime : ((DateTime)item_xfje.day_b).ToString("yyyy-MM-dd"))"></td>
+                                                <td class="align_center"><input name="day_e" id="day_e_@item_xfje.id" @checkDisabled class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_e_@item_xfje.id' })" value="@(item_xfje.day_e == null ? defaultEndTime : ((DateTime)item_xfje.day_e).ToString("yyyy-MM-dd"))" ></td>
+
+
+                                                <td class="align_center">
+                                                    <select name="id_hyfl" @checkDisabled style="width:100px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">
+                                                        <option value="0">All-所有会员卡类别</option>
+                                                        @foreach (var item in hyfls.OrderBy(d => d.mc))
+                                                        {
+                                                            var hyflChecked = item_xfje.id_hyfl == item.id ? "selected=\"selected\"" : "";
+                                                            <option value="@item.id" @hyflChecked>@item.mc</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td class="align_center"><input name="flag_jf" @checkDisabled value="1" type="checkbox" @(item_xfje.flag_jf == 1 ? "checked='checked'" : "")><i></i></td>
+                                                @*<td class="align_center"><input name="flag_hyjjf" value="1" type="checkbox" @(item_xfje.flag_hyjjf == 1 ? "checked='checked'" : "")><i></i></td>*@
+                                                <td class="align_center"><input name="flag_cxjf" @checkDisabled value="1" type="checkbox" @(item_xfje.flag_cxjf == 1 ? "checked='checked'" : "" )><i></i></td>
+                                                <td class="align_center"><input type="text" name="je" @checkDisabled class="w-65" style="text-align:right;" value="@item_xfje.je.Digit((int)digit["je_digit"])"></td>
+                                                <td class="align_center"><input type="text" name="jf" @checkDisabled class="w-65" style="text-align:right;" value="@item_xfje.jf.Digit((int)digit["je_digit"])"></td>
+
+                                                <td class="align_center">
+                                                    <select name="flag_digitlx" @checkDisabled style="width:100px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择截取小数类型&#39;}} valid ">
+                                                        @foreach (var item in selectListDigitlx.OrderBy(d => d.listsort))
+                                                        {
+                                                            var digitChecked = item_xfje.flag_digitlx == item.listdata ? "selected=\"selected\"" : "";
+                                                            <option value="@item.listdata" @digitChecked>@item.listdisplay</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td class="align_right"><input type="text" name="je_min" @checkDisabled class="w-65" style="text-align:right;" value="@item_xfje.je_min.Digit((int)digit["je_digit"])"></td>
+
+                                                <td class="align_center hidden">
+
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="2" @checkDisabled type="checkbox" @(item_xfje.weeks.Contains(",1,") ? "checked='checked'" : "")><i></i>星期天
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="3" @checkDisabled type="checkbox" @(item_xfje.weeks.Contains(",2,") ? "checked='checked'" : "")><i></i>星期一
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="4" @checkDisabled type="checkbox" @(item_xfje.weeks.Contains(",3,") ? "checked='checked'" : "")><i></i>星期二
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="5" @checkDisabled type="checkbox" @(item_xfje.weeks.Contains(",4,") ? "checked='checked'" : "")><i></i>星期三
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="6" @checkDisabled type="checkbox" @(item_xfje.weeks.Contains(",5,") ? "checked='checked'" : "")><i></i>星期四
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="7" @checkDisabled type="checkbox" @(item_xfje.weeks.Contains(",6,") ? "checked='checked'" : "")><i></i>星期五
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="1" @checkDisabled type="checkbox" @(item_xfje.weeks.Contains(",7,") ? "checked='checked'" : "")><i></i>星期六
+                                                    </label>
+
+                                                </td>
+
+                                                <td class="align_center"><div name="czlx">原数据</div></td>
+
+                                                <td class="align_center">
+                                                    @if (is_master == "true" || item_xfje.id_shop != "0")
+                                                    {
+                                                        <a onclick="app.hyjfrule.jfruleset.choice_xfje_del(this);" title="删除" class="bg-state bg-state-info blockbtn fa fa-trash"></a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                                @*<div>
+                                    <button class="btn btn-info w-xs" type="button" onclick="app.hyjfrule.jfruleset.add_xfje_row(this)">增加行</button>
+                                </div>*@
+                            </div>
+                            <!--按商品类别设置-->
+                            <div data-group="_jfgz" data-name="splb" class="xzsp_div table_list" style="display:none;">
+                                <table class="table table_input" id="table_hyjfrule_jfruleset_splb" style="table-layout:fixed;">
+                                    <thead>
+                                        <tr>
+                                            <th width="55">序号</th>
+                                            <th class="width200">门店</th>
+                                            <th  class="width100">开始日期</th>
+                                            <th class="width100">结束日期</th>
+                                            <th  class="width120">指定会员卡类别</th>
+                                            <th class="width100">是否积分</th>
+                                            <th class="hidden">会员价是否积分</th>
+                                            <th  class="width100">促销是否积分</th>
+                                            <th class="width260">商品类别</th>
+                                            <th  class="width100">销售额</th>
+                                            <th class="width100">对应积分</th>
+                                            <th  class="width120">截取小数类型</th>
+                                            <th  class="width100">每一笔最小金额</th>
+                                            <th class="hidden">星期</th>
+                                            <th  class="width100">操作类型</th>
+                                            <th width="55">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                        @foreach (var item_splb in db_data.Where(d => d.style == "spfl").OrderBy(d => d.sort_id))
+                                        {
+                                            if (is_master != "true" && item_splb.id_shop != id_shop && item_splb.id_shop != "0") { continue; }
+                                            var checkDisabled = (is_master != "true" && item_splb.id_shop == "0") ? "disabled=\"disabled\"" : "";
+
+                                            <tr data-item="id_splb_@item_splb.id">
+                                                <td class="align_center">
+                                                    <div name="xh">@item_splb.sort_id</div>
+                                                    <input type="hidden" name="id" value="@item_splb.id">
+                                                </td>
+
+                                                <td class="align_center">
+                                                    <select name="id_shop" style="width:130px;" disabled="disabled" class="btn-group bootstrap-select user-input  select22_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                                        <option value="0">All-所有门店</option>
+                                                        @foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+                                                        {
+                                                            var shopChecked = item_splb.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                            <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td class="align_center"><input name="day_b" id="day_b_@item_splb.id" @checkDisabled class="form-control input-sm {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_b_@item_splb.id' })" value="@(item_splb.day_b == null ? defaultStarTime : ((DateTime)item_splb.day_b).ToString("yyyy-MM-dd"))" ></td>
+                                                <td class="align_center"><input name="day_e" id="day_e_@item_splb.id"  @checkDisabled class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_e_@item_splb.id' })" value="@(item_splb.day_e == null ? defaultEndTime : ((DateTime)item_splb.day_e).ToString("yyyy-MM-dd"))" ></td>
+
+
+                                                <td class="align_center">
+                                                    <select name="id_hyfl" style="width:100px;"  @checkDisabled class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">
+                                                        <option value="0">All-所有会员卡类别</option>
+                                                        @foreach (var item in hyfls.OrderBy(d => d.mc))
+                                                        {
+                                                            var hyflChecked = item_splb.id_hyfl == item.id ? "selected=\"selected\"" : "";
+                                                            <option value="@item.id" @hyflChecked>@item.mc</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td class="align_center"><input name="flag_jf"  @checkDisabled value="1" type="checkbox" @(item_splb.flag_jf == 1 ? "checked='checked'" : "")><i></i></td>
+                                                @*<td class="align_center"><input name="flag_hyjjf" value="1" type="checkbox" @(item_splb.flag_hyjjf == 1 ? "checked='checked'" : "")><i></i></td>*@
+                                                <td class="align_center"><input name="flag_cxjf"  @checkDisabled value="1" type="checkbox" @(item_splb.flag_cxjf == 1 ? "checked='checked'" : "" )><i></i></td>
+
+                                                <td class="align_center" style="width:180px;"><input type="hidden" name="id_object" value="@item_splb.id_object"><span class="inline lineheight-30" name="lb">@item_splb.spflmc</span><a class="btn btn-info f-r" onclick="app.hyjfrule.jfruleset.showspfl(this)">选择商品分类</a></td>
+
+                                                <td class="align_center"><input type="text" name="je"  @checkDisabled class="w-65" style="text-align:right;" value="@item_splb.je.Digit((int)digit["je_digit"])"></td>
+                                                <td class="align_center"><input type="text" name="jf"  @checkDisabled class="w-65" style="text-align:right;" value="@item_splb.jf.Digit((int)digit["je_digit"])"></td>
+
+                                                <td class="align_center">
+                                                    <select name="flag_digitlx"  @checkDisabled style="width:100px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择截取小数类型&#39;}} valid ">
+                                                        @foreach (var item in selectListDigitlx.OrderBy(d => d.listsort))
+                                                        {
+                                                            var digitChecked = item_splb.flag_digitlx == item.listdata ? "selected=\"selected\"" : "";
+                                                            <option value="@item.listdata" @digitChecked>@item.listdisplay</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td class="align_right"><input type="text" name="je_min"  @checkDisabled class="w-65" style="text-align:right;" value="@item_splb.je_min.Digit((int)digit["je_digit"])"></td>
+
+                                                <td class="align_center hidden">
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="2"  @checkDisabled type="checkbox" @(item_splb.weeks.Contains(",1,") ? "checked='checked'" : "")><i></i>星期天
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="3"  @checkDisabled type="checkbox" @(item_splb.weeks.Contains(",2,") ? "checked='checked'" : "")><i></i>星期一
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="4"  @checkDisabled type="checkbox" @(item_splb.weeks.Contains(",3,") ? "checked='checked'" : "")><i></i>星期二
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="5"  @checkDisabled type="checkbox" @(item_splb.weeks.Contains(",4,") ? "checked='checked'" : "")><i></i>星期三
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="6"  @checkDisabled type="checkbox" @(item_splb.weeks.Contains(",5,") ? "checked='checked'" : "")><i></i>星期四
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="7"  @checkDisabled type="checkbox" @(item_splb.weeks.Contains(",6,") ? "checked='checked'" : "")><i></i>星期五
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="1"  @checkDisabled type="checkbox" @(item_splb.weeks.Contains(",7,") ? "checked='checked'" : "")><i></i>星期六
+                                                    </label>
+                                                </td>
+
+                                                <td class="align_center"><div name="czlx">原数据</div></td>
+
+                                                <td class="align_center">
+@if (is_master == "true" || item_splb.id_shop != "0")
+{
+                                                <a onclick="app.hyjfrule.jfruleset.choice_splb_del(this);" title="删除" class="bg-state bg-state-info blockbtn fa fa-trash"></a>
+}
+                                                </td>
+                                            </tr>
+                                        }
+
+
+                                    </tbody>
+                                </table>
+                                @*<div>
+                                    <button class="btn btn-info w-xs" type="button" onclick="app.hyjfrule.jfruleset.add_splb_row(this)">增加行</button>
+                                </div>*@
+                            </div>
+                            <!--按商品设置-->
+                            <div data-group="_jfgz" data-name="sp" class="xzsp_div table_list" style="display:none;">
+                                <table class="table table_input" id="table_hyjfrule_jfruleset_sp" style="table-layout:fixed;">
+                                    <thead>
+                                        <tr>
+                                            <th width="55">序号</th>
+                                            <th class="width200">门店</th>
+                                            <th class="width100">开始日期</th>
+                                            <th class="width100">结束日期</th>
+                                            <th class="width120">指定会员卡类别</th>
+                                            <th class="width100">是否积分</th>
+                                            <th class="hidden width100">会员价是否积分</th>
+                                            <th class="width100">促销是否积分</th>
+                                            <th class="width260">商品名称</th>
+                                            <th class="width100">销售额</th>
+                                            <th class="width100">对应积分</th>
+                                            <th class="width120">截取小数类型</th>
+                                            <th class="width100">每一笔最小金额</th>
+                                            <th class="hidden width100">星期</th>
+                                            <th class="width100">操作类型</th>
+                                            <th width="55">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var item_dp in db_data.Where(d => d.style == "dp").OrderBy(d => d.sort_id))
+                                        {
+                                            if (is_master != "true" && item_dp.id_shop != id_shop && item_dp.id_shop != "0") { continue; }
+                                            var checkDisabled = (is_master != "true" && item_dp.id_shop == "0") ? "disabled=\"disabled\"" : "";
+
+                                            <tr data-item="id_sp_@item_dp.id">
+                                                <td class="align_center">
+                                                    <div name="xh">@item_dp.sort_id</div>
+                                                    <input type="hidden" name="id" value="@item_dp.id">
+                                                </td>
+
+                                                <td class="align_center">
+                                                    <select name="id_shop" style="width:130px;" disabled="disabled" class="btn-group bootstrap-select user-input  select22_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                                        <option value="0">All-所有门店</option>
+                                                        @foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+                                                        {
+                                                            var shopChecked = item_dp.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                            <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td class="align_center"><input name="day_b" id="day_b_@item_dp.id"  @checkDisabled class="form-control input-sm {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_b_@item_dp.id' })" value="@(item_dp.day_b == null ? defaultStarTime : ((DateTime)item_dp.day_b).ToString("yyyy-MM-dd"))" ></td>
+                                                <td class="align_center"><input name="day_e" id="day_e_@item_dp.id"  @checkDisabled class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_e_@item_dp.id' })" value="@(item_dp.day_e == null ? defaultEndTime : ((DateTime)item_dp.day_e).ToString("yyyy-MM-dd"))" ></td>
+
+
+                                                <td class="align_center">
+                                                    <select name="id_hyfl" style="width:100px;"  @checkDisabled class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">
+                                                        <option value="0">All-所有会员卡类别</option>
+                                                        @foreach (var item in hyfls.OrderBy(d => d.mc))
+                                                        {
+                                                            var hyflChecked = item_dp.id_hyfl == item.id ? "selected=\"selected\"" : "";
+                                                            <option value="@item.id" @hyflChecked>@item.mc</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td class="align_center"><input name="flag_jf"  @checkDisabled value="1" type="checkbox" @(item_dp.flag_jf == 1 ? "checked='checked'" : "")><i></i></td>
+                                                @*<td class="align_center"><input name="flag_hyjjf" value="1" type="checkbox" @(item_dp.flag_hyjjf == 1 ? "checked='checked'" : "")><i></i></td>*@
+                                                <td class="align_center"><input name="flag_cxjf"  @checkDisabled value="1" type="checkbox" @(item_dp.flag_cxjf == 1 ? "checked='checked'" : "" )><i></i></td>
+
+                                                <td class="align_center" style="width:180px;"><input type="hidden" name="id_object" value="@item_dp.id_object"><span class="inline lineheight-30" name="lb">@item_dp.spmc</span><a class="btn btn-info f-r" onclick="app.hyjfrule.jfruleset.showshopsp(this)">选择商品</a></td>
+
+
+                                                <td class="align_center"><input type="text" name="je"  @checkDisabled class="w-65" style="text-align:right;" value="@item_dp.je.Digit((int)digit["je_digit"])"></td>
+                                                <td class="align_center"><input type="text" name="jf"  @checkDisabled class="w-65" style="text-align:right;" value="@item_dp.jf.Digit((int)digit["je_digit"])"></td>
+
+                                                <td class="align_center">
+                                                    <select name="flag_digitlx"  @checkDisabled style="width:100px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择截取小数类型&#39;}} valid ">
+                                                        @foreach (var item in selectListDigitlx.OrderBy(d => d.listsort))
+                                                        {
+                                                            var digitChecked = item_dp.flag_digitlx == item.listdata ? "selected=\"selected\"" : "";
+                                                            <option value="@item.listdata" @digitChecked>@item.listdisplay</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td class="align_right"><input type="text" name="je_min"  @checkDisabled class="w-65" style="text-align:right;" value="@item_dp.je_min.Digit((int)digit["je_digit"])"></td>
+
+                                                <td class="align_center hidden">
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="2"  @checkDisabled type="checkbox" @(item_dp.weeks.Contains(",1,") ? "checked='checked'" : "")><i></i>星期天
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="3"  @checkDisabled type="checkbox" @(item_dp.weeks.Contains(",2,") ? "checked='checked'" : "")><i></i>星期一
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="4"  @checkDisabled type="checkbox" @(item_dp.weeks.Contains(",3,") ? "checked='checked'" : "")><i></i>星期二
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="5"  @checkDisabled type="checkbox" @(item_dp.weeks.Contains(",4,") ? "checked='checked'" : "")><i></i>星期三
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="6"  @checkDisabled type="checkbox" @(item_dp.weeks.Contains(",5,") ? "checked='checked'" : "")><i></i>星期四
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="7"  @checkDisabled type="checkbox" @(item_dp.weeks.Contains(",6,") ? "checked='checked'" : "")><i></i>星期五
+                                                    </label>
+                                                    <label class="i-checks">
+                                                        <input data-group="weeks" value="1"  @checkDisabled type="checkbox" @(item_dp.weeks.Contains(",7,") ? "checked='checked'" : "")><i></i>星期六
+                                                    </label>
+                                                </td>
+
+                                                <td class="align_center"><div name="czlx">原数据</div></td>
+
+                                                <td class="align_center">
+                                                @if (is_master == "true" || item_dp.id_shop != "0")
+                                                {
+                                                <a onclick="app.hyjfrule.jfruleset.choice_sp_del(this);" title="删除" class="bg-state bg-state-info blockbtn fa fa-trash"></a>
+                                                }
+                                                </td>
+                                            </tr>
+                                        }
+
+
+
+
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                            
+                        </div>
+                        <div style="padding-left:100px;">
+                            @*<button class="btn btn-info w-xs" type="button" onclick="app.hyjfrule.jfruleset.add_dp_row(this)">增加行</button>*@
+                            <button class="btn btn-info w-xs" type="button" onclick="app.hyjfrule.tab_add_row(this)">增加行</button>
+                            <button type="button" id="submit-button" class="btn w-xs btn-info m-l-none  mr5" data-loading-text="正在提交..." onclick="app.hyjfrule.jfruleset.save();">保存</button>
+                        </div>
+                    </div>
+                    <!--积分兑换商品-->
+                    <div class="input-item-2 clearfix add-client form_line">
+                        <div>
+                            <label class="">
+                                <span>积分兑换商品：</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div data-name="dhsp"  class="xzsp_div table_list" style="display: inherit; overflow:auto;max-height:400px;">
+                            <table class="table table_input" id="table_hyjfrule_jfruleset_dhsp" style="table-layout:fixed;">
+                                <thead>
+                                    <tr>
+                                        <th width="55">序号</th>
+                                        <th class="w-138">门店</th>
+                                        <th class="width100">开始日期</th>
+                                        <th class="width100">结束日期</th>
+                                        <th class="width100">指定会员卡类别</th>
+                                        <th class="hidden width120">星期</th>
+                                        <th class="width260">商品名称</th>
+                                        <th class="width100">加价</th>
+                                        <th class="width100">积分</th>
+                                        <th class="width100">零售价</th>
+
+                                        <th class="width100">操作类型</th>
+                                        <th width="55">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item_dhsp in db_dbjf_dhsp_data.OrderBy(d => d.sort_id))
+                                    {
+                                        if (is_master != "true" && item_dhsp.id_shop != id_shop && item_dhsp.id_shop != "0") { continue; }
+                                        var checkDisabled = (is_master != "true" && item_dhsp.id_shop == "0") ? "disabled=\"disabled\"" : "";
+
+                                        <tr data-item="id_dhsp_@item_dhsp.id">
+                                            <td class="align_center">
+                                                <div name="xh">@item_dhsp.sort_id</div>
+                                                <input type="hidden" name="id" value="@item_dhsp.id">
+                                            </td>
+
+                                            <td class="align_center">
+                                                <select name="id_shop" @checkDisabled style="width:130px;" class="btn-group bootstrap-select user-input  select22_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                                    <option value="0">All-所有门店</option>
+                                                    @foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+                                                    {
+                                                        var shopChecked = item_dhsp.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                                        <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td class="align_center"><input name="day_b" id="day_b_@item_dhsp.id" @checkDisabled class="form-control input-sm {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_b_@item_dhsp.id' })" value="@(item_dhsp.day_b == null ? defaultStarTime : ((DateTime)item_dhsp.day_b).ToString("yyyy-MM-dd"))"></td>
+                                            <td class="align_center"><input name="day_e" id="day_e_@item_dhsp.id" @checkDisabled class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_e_@item_dhsp.id' })" value="@(item_dhsp.day_e == null ? defaultEndTime : ((DateTime)item_dhsp.day_e).ToString("yyyy-MM-dd"))" ></td>
+
+
+                                            <td class="align_center">
+                                                <select name="id_hyfl" @checkDisabled style="width:100px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">
+                                                    <option value="0">All-所有会员卡类别</option>
+                                                    @foreach (var item in hyfls.OrderBy(d => d.mc))
+                                                    {
+                                                        var hyflChecked = item_dhsp.id_hyfl == item.id ? "selected=\"selected\"" : "";
+                                                        <option value="@item.id" @hyflChecked>@item.mc</option>
+                                                    }
+                                                </select>
+                                            </td>
+
+                                            <td class="align_center hidden">
+
+                                                <label class="i-checks">
+                                                    <input data-group="weeks" value="1" @checkDisabled type="checkbox" @(item_dhsp.weeks.Contains(",1,") ? "checked='checked'" : "")><i></i>星期天
+                                                </label>
+                                                <label class="i-checks">
+                                                    <input data-group="weeks" value="2" @checkDisabled type="checkbox" @(item_dhsp.weeks.Contains(",2,") ? "checked='checked'" : "")><i></i>星期一
+                                                </label>
+                                                <label class="i-checks">
+                                                    <input data-group="weeks" value="3" @checkDisabled type="checkbox" @(item_dhsp.weeks.Contains(",3,") ? "checked='checked'" : "")><i></i>星期二
+                                                </label>
+                                                <label class="i-checks">
+                                                    <input data-group="weeks" value="4" @checkDisabled type="checkbox" @(item_dhsp.weeks.Contains(",4,") ? "checked='checked'" : "")><i></i>星期三
+                                                </label>
+                                                <label class="i-checks">
+                                                    <input data-group="weeks" value="5" @checkDisabled type="checkbox" @(item_dhsp.weeks.Contains(",5,") ? "checked='checked'" : "")><i></i>星期四
+                                                </label>
+                                                <label class="i-checks">
+                                                    <input data-group="weeks" value="6" @checkDisabled type="checkbox" @(item_dhsp.weeks.Contains(",6,") ? "checked='checked'" : "")><i></i>星期五
+                                                </label>
+                                                <label class="i-checks">
+                                                    <input data-group="weeks" value="7" @checkDisabled type="checkbox" @(item_dhsp.weeks.Contains(",7,") ? "checked='checked'" : "")><i></i>星期六
+                                                </label>
+
+                                            </td>
+
+
+                                            <td class="align_center" style="width:180px;">
+                                                <input type="hidden" name="id_sp" value="@item_dhsp.id_sp">
+                                                <span class="inline lineheight-30" name="lb">@item_dhsp.spmc</span>
+                                                <a class="btn btn-info f-r" @checkDisabled onclick="app.hyjfrule.jfruleset.showshopsp_dhsp(this)">选择商品</a>
+                                            </td>
+
+
+                                            <td class="align_center"><input type="text" name="je" @checkDisabled class="w-65" style="text-align:right;" value="@item_dhsp.je.Digit((int)digit["je_digit"])"></td>
+                                            <td class="align_center"><input type="text" name="jf" @checkDisabled class="w-65" style="text-align:right;" value="@item_dhsp.jf.Digit((int)digit["je_digit"])"></td>
+                                            <td class="align_center"><input type="hidden" name="dj_ls" @checkDisabled value="@item_dhsp.dj_ls.Digit((int)digit["dj_digit"])"><span class="inline lineheight-30" name="lb_dj_ls">@item_dhsp.dj_ls.Digit((int)digit["dj_digit"])</span></td>
+
+                                            <td class="align_center"><div name="czlx">原数据</div></td>
+
+                                            <td class="align_center">
+                                                @if (is_master == "true" || item_dhsp.id_shop != "0")
+                                                {
+                                                    <a onclick="app.hyjfrule.jfruleset.choice_dhsp_del(this);" title="删除" class="bg-state bg-state-info blockbtn fa fa-trash"></a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+
+
+                            
+                        </div>
+                        <div style="padding-left:100px;">
+
+                            <input type="hidden" id="jfruleset_showshopsp_sp" name="jfruleset_showshopsp_sp" value="">
+                            <input type="hidden" id="jfruleset_showshopsp_spfl" name="jfruleset_showshopsp_spfl" value="">
+
+                            <input type="hidden" id="jfruleset_showshopsp_dhsp" name="jfruleset_showshopsp_dhsp" value="">
+
+
+                            <button class="btn btn-info w-xs" type="button" onclick="app.hyjfrule.jfruleset.add_dhsp_row(this)">增加行</button>
+                            <button class="btn w-xs btn-info m-l-none  mr5" type="button" id="submit-button-dhsp" onclick="app.hyjfrule.jfruleset.save_dhsp(this)">保存</button>
+                        </div>
+                      </div>
+                    <input type="hidden" id="fldata" lwfl="0" />
+                </div>
+
+
+
+                @*<footer class="panel-footer lter need-footer-fixed need-footer-fixed-box text-left">
+                    
+
+                   
+
+                    &nbsp;&nbsp;
+
+                    <button class="btn w-xs btn-default" type="button" onclick="app.hyjfrule.jfruleset.cancel()">关闭</button>
+                </footer>*@
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //定义全局容器
+    $.DHB._ = function () {
+        app.c.public_data['hyjfrule/jfruleset'] = app.c.public_data['hyjfrule/jfruleset'] || {};
+        if (app.c.public_data['hyjfrule/jfruleset']['once'] === false) {
+            app.c.public_data['hyjfrule/jfruleset']['once'] = true;
+            $.DHB.checkForm(function () {
+                return false;
+            });
+        }
+    };
+
+    //定义全局变量
+    app.hyjfrule = app.hyjfrule || {};
+
+    //定义全局变量
+    app.hyjfrule.jfruleset = app.hyjfrule.jfruleset || {};
+
+    //初始页面后执行一次
+    app.hyjfrule.jfruleset_ready = function () {
+        app.hyjfrule.jfruleset.currentSelectSpTab = "xfje";
+    }
+    //积分获取规则添加行
+    app.hyjfrule.tab_add_row = function (obj) {
+        $(_ + '#jfruleset_showshopsp_sp').val('');
+        $(_ + '#jfruleset_showshopsp_spfl').val('');
+        var way_name = $('#shop_fl_title .form_title').attr('data-group-name');
+        if (way_name == "sp") {
+            app.hyjfrule.jfruleset.add_dp_row(obj);
+        }else if(way_name =="splb"){
+            app.hyjfrule.jfruleset.add_splb_row(obj)
+        } else if (way_name == "xfje") {
+            app.hyjfrule.jfruleset.add_xfje_row(obj)
+        }
+    }
+
+    //点击选中执行事件
+    app.hyjfrule.jfruleset.bindinput = function (e) {
+        if (!$(e).is(':checked')) {
+     
+            $('input[data-type=rq]', _).eq(0).removeAttr('checked');
+        } else {
+        
+            if ($('input[data-type=rq]:checked', _).length == 31) {
+                $('input[data-type=rq]', _).eq(0).click();
+            }
+        }
+    }
+
+    //表TAB切换
+    function changeSelectTab(input) {
+        var _input = $(input);
+        var divgroup = _input.attr("data-group");
+        var divname = _input.attr("data-group-name");
+        $(input).addClass('form_title');
+        $(input).siblings().removeClass('form_title');
+        app.hyjfrule.jfruleset.currentSelectSpTab = divname;
+        $("div[data-group=" + divgroup + "]")
+            .each(function (index, item) {
+                if ($(item).attr("data-name") === divname) {
+                    $(item).css("display", "inherit");
+                } else {
+                    $(item).css("display", "none");
+                }
+            });
+    }
+
+    //关闭
+    app.hyjfrule.jfruleset.cancel = function (obj) {
+        $.fn.menuTab.deleteMenu('hyjfrule/jfruleset');
+    }
+
+    //按消费金额设置----增加行
+    app.hyjfrule.jfruleset.add_xfje_row = function (obj) {
+        app.hyjfrule.jfruleset.addtr_xfje();
+        app.hyjfrule.jfruleset.reset_xfje_xh();
+    };
+
+    //按消费金额设置----增加行实现方法
+    app.hyjfrule.jfruleset.addtr_xfje = function (obj) {
+        var xfje = [];
+        var xfje_e = {};
+        xfje_e.id_object = "";
+        xfje_e.mc = "";
+        xfje.push(xfje_e);
+        var jsonStr = JSON.stringify(xfje);
+        app.hyjfrule.jfruleset.callbackwork_xfje(jsonStr);
+    }
+
+    //按消费金额设置----重置table序号
+    app.hyjfrule.jfruleset.reset_xfje_xh = function (e) {
+        var xh = 1;
+        $('#table_hyjfrule_jfruleset_xfje>tbody', _).find('tr').each(function () {
+            $(this).find('div[name="xh"]').text(xh);
+            xh++;
+        });
+    }
+
+    //按消费金额设置----回调
+    app.hyjfrule.jfruleset.callbackwork_xfje = function (jsonStr) {
+        var data_item_last = '';
+        var objList = jQuery.parseJSON(jsonStr);
+
+        $(objList).each(function (index, obj) {
+            var guid = NewGuid();
+            var resultHtml = GetResultHtml('xfje','',guid);
+            $(_ + "#table_hyjfrule_jfruleset_xfje>tbody").append(resultHtml);
+            data_item_last = obj.id_shopsp;
+        });
+    }
+
+    //按消费金额设置----删除行
+    app.hyjfrule.jfruleset.choice_xfje_del = function (el) {
+
+        var id = $(el).parents('tr').find('input[name=id]').val();
+        if (typeof (id) != 'undefined' && id != 'undefined' && id != '') {
+            $.messager.confirm("提示", "确定删除吗?", function () {
+
+                var options = {
+                    data: {
+                        ids: id
+                    },
+                    url: $.DHB.U('hyjfrule/delete'),
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                            $(el).parents('tr').remove();
+                            app.hyjfrule.jfruleset.reset_xfje_xh();
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        }
+                    },
+                    complete: function (XHR, TS) { }
+                };
+                app.httpAjax.post(options)
+
+
+
+            });
+        }
+        else {
+            $(el).parents('tr').remove();
+            app.hyjfrule.jfruleset.reset_xfje_xh();
+        }
+    }
+
+    //按消费金额设置----设置Data
+    app.hyjfrule.jfruleset.getdata = function (tab) {
+        var obj_list = [];
+      
+        $('#table_hyjfrule_jfruleset_' + tab + '>tbody>tr', _).each(function (i, item) {
+          
+            var obj = {};
+            obj.id_shop = $(this).find('select[name="id_shop"] option:selected').val();
+            obj.day_b = $(this).find('input[name=day_b]').val();
+            obj.day_e = $(this).find('input[name=day_e]').val();
+            obj.id_hyfl = $(this).find('select[name="id_hyfl"] option:selected').val();
+            if ($(this).find('input[name=flag_jf]').is(':checked')) { obj.flag_jf = 1 } else { obj.flag_jf = 0 }
+            if ($(this).find('input[name=flag_hyjjf]').is(':checked')) { obj.flag_hyjjf = 1 } else { obj.flag_hyjjf = 0 }
+            if ($(this).find('input[name=flag_cxjf]').is(':checked')) { obj.flag_cxjf = 1 } else { obj.flag_cxjf = 0 }
+            obj.je = $(this).find('input[name=je]').val();
+            obj.jf = $(this).find('input[name=jf]').val();
+            obj.flag_digitlx = $(this).find('select[name="flag_digitlx"] option:selected').val();
+            obj.je_min = $(this).find('input[name=je_min]').val();
+            var weeks = ',';
+            $(this).find('input[data-group=weeks]').each(function (index, item_week) {
+                if (item_week.checked === true) {
+                    weeks += $(item_week).val() + ",";
+                }
+                weeks = ',1,2,3,4,5,6,7,';
+            });
+            if (weeks == ",") { weeks = ''; }
+            obj.weeks = weeks;
+
+            obj.id_object = '0';
+            var id_object = $(this).find('input[name=id_object]').val();
+            if (typeof (id_object) != 'undefined' && id_object != 'undefined' && id_object != '') {
+                obj.id_object = id_object;
+            }
+
+            obj.id = $(this).find('input[name=id]').val();
+
+            obj_list.push(obj);
+        });
+        //console.log(obj_list);
+        return obj_list;
+    }
+
+    //按商品分类设置----选择商品分类
+    app.hyjfrule.jfruleset.showspfl = function (e) {
+        var tr = $(e).parents('tr');
+        var obj = {};
+        obj.id_shop = tr.find('select[name=id_shop]').val();
+        obj.day_b = tr.find('input[name=day_b]').val();
+        obj.day_e = tr.find('input[name=day_e]').val();
+        obj.id_hyfl = tr.find('select[name=id_hyfl]').val();
+
+        if (tr.find('input[name=flag_jf]').is(":checked") == true) {
+            obj.flag_jf = '1';
+        } else {
+            obj.flag_jf = '0';
+        }
+
+        if (tr.find('input[name=flag_cxjf]').is(":checked") == true) {
+            obj.flag_cxjf = '1';
+        } else {
+            obj.flag_cxjf = '0';
+        }
+
+        obj.je = tr.find('input[name=je]').val();
+        obj.jf = tr.find('input[name=jf]').val();
+        obj.flag_digitlx = tr.find('select[name=flag_digitlx]').val();
+        obj.je_min = tr.find('input[name=je_min]').val();
+        $(_ + '#jfruleset_showshopsp_spfl').val(JSON.stringify(obj));
+
+        $.DHB.dialog({ 'title': '选择商品分类', 'url': $.DHB.U('promote/shopfl'), 'id': 'dialog-jfruleset-shopfl-search', 'confirm': app.hyjfrule.jfruleset.dialogCallBackSPFL });
+    }
+
+    //按商品分类设置----选择商品分类回调函数
+    app.hyjfrule.jfruleset.dialogCallBackSPFL = function () {
+   
+        if ($('#fldata', _).val() == '' || $('#fldata').val() == undefined) {
+            $.DHB.message({ content: '请至少选择一项' });
+
+        } else {
+            var fldata = $('#fldata', _).val();
+            app.hyjfrule.jfruleset.callbackwork_splb(fldata);
+            $.DHB.dialog({ 'id': 'dialog-jfruleset-shopfl-search', 'action': 'destroy' });
+            app.hyjfrule.jfruleset.remove_tr_splb();
+            app.hyjfrule.jfruleset.reset_splb_xh();
+        }
+    }
+
+    //按商品分类设置----删除多余的行
+    app.hyjfrule.jfruleset.remove_tr_splb = function () {
+        $('#table_hyjfrule_jfruleset_splb>tbody>tr', _).each(function (i, item) {
+            var id_object = $(this).find('input[name=id_object]').val();
+            if (typeof (id_object) == 'undefined' || id_object == 'undefined' || id_object == '') {
+                $(this).remove();
+            }
+        });
+    };
+
+    //按商品分类设置----增加行
+    app.hyjfrule.jfruleset.add_splb_row = function (obj) {
+        app.hyjfrule.jfruleset.addtr_splb();
+        app.hyjfrule.jfruleset.reset_splb_xh();
+    };
+
+    //按商品分类设置----增加行实现方法
+    app.hyjfrule.jfruleset.addtr_splb = function (obj) {
+        var splb = [];
+        var splb_e = {};
+        splb_e.id = "";
+        splb_e.text = "";
+        splb.push(splb_e);
+        var jsonStr = JSON.stringify(splb);
+        app.hyjfrule.jfruleset.callbackwork_splb(jsonStr);
+    }
+
+    //按商品分类设置----回调
+    app.hyjfrule.jfruleset.callbackwork_splb = function (jsonStr) {
+  
+        var data_item_last = '';
+        var objList = jQuery.parseJSON(jsonStr);
+        $(objList).each(function (index, obj) {
+            var guid = NewGuid();
+            var resultHtml = GetResultHtml('splb', obj,guid);
+            $(_ + "#table_hyjfrule_jfruleset_splb>tbody").append(resultHtml);
+            data_item_last = obj.id_shopsp;
+
+            //设置默认的选中项
+            var defaulVal = $(_ + '#jfruleset_showshopsp_spfl').val();
+            if (typeof (defaulVal) != undefined && defaulVal != '') {
+                var obj = jQuery.parseJSON(defaulVal);
+                var tr = $(_ + "#table_hyjfrule_jfruleset_splb>tbody").find('tr[data-item=id_splb_' + guid + ']');
+                if (typeof (tr) != undefined) {
+                    tr.find('select[name=id_shop]').val(obj.id_shop);
+                    tr.find('input[name=day_b]').val(obj.day_b);
+                    tr.find('input[name=day_e]').val(obj.day_e);
+                    tr.find('select[name=id_hyfl]').val(obj.id_hyfl);
+                    tr.find('input[name=je]').val(obj.je);
+                    tr.find('input[name=jf]').val(obj.jf);
+                    if (obj.flag_jf == '1') {
+                        tr.find('input[name=flag_jf]').attr('checked', "checked");
+                    } else {
+                        tr.find('input[name=flag_jf]').removeAttr('checked');
+                    }
+                    if (obj.flag_cxjf == '1') {
+                        tr.find('input[name=flag_cxjf]').attr('checked', "checked");
+                    } else {
+                        tr.find('input[name=flag_cxjf]').removeAttr('checked');
+                    }
+                    tr.find('select[name=flag_digitlx]').val(obj.flag_digitlx);
+                    tr.find('input[name=je_min]').val(obj.je_min);
+                }
+            }
+
+        });
+    }
+
+    //按商品分类设置----重置table序号
+    app.hyjfrule.jfruleset.reset_splb_xh = function (e) {
+        var xh = 1;
+        $('#table_hyjfrule_jfruleset_splb>tbody', _).find('tr').each(function () {
+            $(this).find('div[name="xh"]').text(xh);
+            xh++;
+        });
+    }
+
+    //按商品分类设置----删除行
+    app.hyjfrule.jfruleset.choice_splb_del = function (el) {
+        var id = $(el).parents('tr').find('input[name=id]').val();
+        if (typeof (id) != 'undefined' && id != 'undefined' && id != '') {
+            $.messager.confirm("提示", "确定删除吗?", function () {
+
+                var options = {
+                    data: {
+                        ids: id
+                    },
+                    url: $.DHB.U('hyjfrule/delete'),
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                            $(el).parents('tr').remove();
+                            app.hyjfrule.jfruleset.reset_splb_xh();
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        }
+                    },
+                    complete: function (XHR, TS) { }
+                };
+                app.httpAjax.post(options);
+
+
+
+
+            });
+        }
+        else {
+            $(el).parents('tr').remove();
+            app.hyjfrule.jfruleset.reset_splb_xh();
+        }
+    }
+
+    //按商品设置----增加行
+    app.hyjfrule.jfruleset.add_dp_row = function (obj) {
+        app.hyjfrule.jfruleset.addtr_dp();
+        app.hyjfrule.jfruleset.reset_dp_xh();
+    };
+
+    //按商品设置----增加行实现方法
+    app.hyjfrule.jfruleset.addtr_dp = function (obj) {
+        var dp = [];
+        var dp_e = {};
+        dp_e.id_shopsp = "";
+        dp_e.mc = "";
+        dp.push(dp_e);
+        var jsonStr = JSON.stringify(dp);
+        app.hyjfrule.jfruleset.callbackwork_dp(jsonStr);
+    }
+
+    //按商品设置----回调
+    app.hyjfrule.jfruleset.callbackwork_dp = function (jsonStr) {
+        var data_item_last = '';
+        var objList = jQuery.parseJSON(jsonStr);
+        $(objList).each(function (index, obj) {
+            var guid = NewGuid();
+            var resultHtml = GetResultHtml('sp', obj, guid);
+            $(_ + "#table_hyjfrule_jfruleset_sp>tbody").append(resultHtml);
+            data_item_last = obj.id_shopsp;
+            //设置默认的选中项
+            var defaulVal = $(_ + '#jfruleset_showshopsp_sp').val();
+            if (typeof (defaulVal) != undefined && defaulVal != '') {
+                var obj = jQuery.parseJSON(defaulVal);
+                var tr = $(_ + "#table_hyjfrule_jfruleset_sp>tbody").find('tr[data-item=id_sp_' + guid + ']');
+                if (typeof (tr) != undefined) {
+                    
+                    tr.find('select[name=id_shop]').val(obj.id_shop);
+                    tr.find('input[name=day_b]').val(obj.day_b);
+                    tr.find('input[name=day_e]').val(obj.day_e);
+                    tr.find('select[name=id_hyfl]').val(obj.id_hyfl);
+                    tr.find('input[name=je]').val(obj.je);
+                    tr.find('input[name=jf]').val(obj.jf);
+                    
+
+                    if (obj.flag_jf == '1') {
+                        tr.find('input[name=flag_jf]').attr('checked', "checked");
+                    } else {
+                        tr.find('input[name=flag_jf]').removeAttr('checked');
+                    }
+
+                    if (obj.flag_cxjf == '1') {
+                        tr.find('input[name=flag_cxjf]').attr('checked', "checked");
+                    } else {
+                        tr.find('input[name=flag_cxjf]').removeAttr('checked');
+                    }
+
+                    tr.find('select[name=flag_digitlx]').val(obj.flag_digitlx);
+                    tr.find('input[name=je_min]').val(obj.je_min);
+                }
+            }
+
+
+
+        });
+    }
+
+    //按商品设置----重置table序号
+    app.hyjfrule.jfruleset.reset_dp_xh = function (e) {
+        var xh = 1;
+        $('#table_hyjfrule_jfruleset_sp>tbody', _).find('tr').each(function () {
+            $(this).find('div[name="xh"]').text(xh);
+            xh++;
+        });
+    }
+
+    //按商品设置----删除行
+    app.hyjfrule.jfruleset.choice_sp_del = function (el) {
+        var id = $(el).parents('tr').find('input[name=id]').val();
+        if (typeof (id) != 'undefined' && id != 'undefined' && id != '') {
+            $.messager.confirm("提示", "确定删除吗?", function () {
+
+                var options = {
+                    data: {
+                        ids: id
+                    },
+                    url: $.DHB.U('hyjfrule/delete'),
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                            $(el).parents('tr').remove();
+                            app.hyjfrule.jfruleset.reset_dp_xh();
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        }
+                    },
+                    complete: function (XHR, TS) { }
+                };
+                app.httpAjax.post(options);
+
+            });
+        }
+        else {
+            $(el).parents('tr').remove();
+            app.hyjfrule.jfruleset.reset_dp_xh();
+        }
+    }
+
+    //按商品设置----选择商品
+    app.hyjfrule.jfruleset.showshopsp = function (e) {
+        var tr = $(e).parents('tr');
+        var obj = {};
+        obj.id_shop = tr.find('select[name=id_shop]').val();
+        obj.day_b = tr.find('input[name=day_b]').val();
+        obj.day_e = tr.find('input[name=day_e]').val();
+        obj.id_hyfl = tr.find('select[name=id_hyfl]').val();
+
+        if (tr.find('input[name=flag_jf]').is(":checked") == true) {
+            obj.flag_jf = '1';
+        } else {
+            obj.flag_jf = '0';
+        }
+        
+        if (tr.find('input[name=flag_cxjf]').is(":checked") == true) {
+            obj.flag_cxjf = '1';
+        } else {
+            obj.flag_cxjf = '0';
+        }
+
+        obj.je = tr.find('input[name=je]').val();
+        obj.jf = tr.find('input[name=jf]').val();
+        obj.flag_digitlx = tr.find('select[name=flag_digitlx]').val();
+        obj.je_min = tr.find('input[name=je_min]').val();
+        $(_ + '#jfruleset_showshopsp_sp').val(JSON.stringify(obj));
+        $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?id_shop='+'@id_shop'), 'id': 'dialog-shopsp-search', 'confirm': app.hyjfrule.jfruleset.dialogCallBackShopsp });
+    };
+
+    //按商品设置----选择商品回调函数
+    app.hyjfrule.jfruleset.dialogCallBackShopsp = function (array) {
+        //var jsonStr = array[5].value;
+        var jsonStr = "";
+        $.each(array, function (index, item) {
+            if (item.name == "shopsp_table_json") {
+                jsonStr = item.value;
+            }
+        });
+        app.hyjfrule.jfruleset.callbackwork_dp(jsonStr);
+        $.DHB.dialog({ 'id': 'dialog-shopsp-search', 'action': 'destroy' });
+        app.hyjfrule.jfruleset.remove_tr_dp();
+        app.hyjfrule.jfruleset.reset_dp_xh();
+    }
+
+    //按商品设置----删除多余的行
+    app.hyjfrule.jfruleset.remove_tr_dp = function () {
+        $('#table_hyjfrule_jfruleset_sp>tbody>tr', _).each(function (i, item) {
+            var id_object = $(this).find('input[name=id_object]').val();
+            if (typeof (id_object) == 'undefined' || id_object == 'undefined' || id_object == '') {
+                $(this).remove();
+            }
+        });
+    };
+
+
+    //保存按钮事件
+    app.hyjfrule.jfruleset.save = function () {
+        var tab = app.hyjfrule.jfruleset.currentSelectSpTab;
+       
+        var btn = $(_ + '#submit-button').button('loading');
+
+        if (tab == "xfje") {
+
+            var tableobj = [], flag;
+            flag = true;
+            $('#table_hyjfrule_jfruleset_' + tab + '>tbody>tr', _).each(function (i, item) {
+
+                var tempobj = {};
+                tempobj.id_shop = $(this).find('select[name="id_shop"] option:selected').val();
+                tempobj.id_hyfl = $(this).find('select[name="id_hyfl"] option:selected').val();
+                
+                var lwsp = {}; var rezj = [];
+                rezj = app.hyjfrule.jfruleset.delrepeat(tempobj, tableobj, 'xfje');
+                if (rezj[rezj.length - 1]) {
+                    $.DHB.message({ 'content': '第' + $(this).find('div[name=xh]').html() + '行和第' + rezj[0] + '行 门店/会员类别 重复，请删除其中一项！' });
+                    flag = false;
+                    btn.button('reset');
+                    return;
+                }
+                else {
+                    lwsp.id_shop = tempobj.id_shop;
+                    lwsp.id_hyfl = tempobj.id_hyfl;
+                    tableobj.push(lwsp);
+                }
+            });
+
+            if (flag) {
+                app.hyjfrule.jfruleset.dopost(tab);
+            }
+
+        }
+        else {
+            var err_xh = '';
+            var tableobj = [], flag;
+            var name = '商品';
+            if (tab == 'splb') { name = '商品分类'; }
+            flag = true;
+            $('#table_hyjfrule_jfruleset_' + tab + '>tbody>tr', _).each(function (i, item) {
+                var id_object = $(this).find('input[name=id_object]').val();
+                if (typeof (id_object) == 'undefined' || id_object == 'undefined' || id_object == '') {
+                    err_xh = $(this).find('div[name=xh]').html();
+                }
+
+                if (err_xh != '') {
+                    $.DHB.message({ 'content': '第 ' + err_xh + ' 行 还未选择' + name + ',请先选择！ ', 'time': 4000, 'type': 'i' });
+                    btn.button('reset');
+                    flag = false;
+                    return;
+                }
+
+                var tempobj = {};
+                tempobj.id_shop = $(this).find('select[name="id_shop"] option:selected').val();
+                tempobj.id_hyfl = $(this).find('select[name="id_hyfl"] option:selected').val();
+                tempobj.id_object = id_object;
+                var lwsp = {}; var rezj = [];
+
+                rezj = app.hyjfrule.jfruleset.delrepeat(tempobj, tableobj, tab);
+                if (rezj[rezj.length - 1]) {
+                    $.DHB.message({ 'content': '第' + $(this).find('div[name=xh]').html() + '行和第' + rezj[0] + '行 门店/会员类别/' + name + ' 重复，请删除其中一项！' });
+                    flag = false;
+                    btn.button('reset');
+                    return;
+                }
+                else {
+                    lwsp.id_object = id_object;
+                    lwsp.id_shop = tempobj.id_shop;
+                    lwsp.id_hyfl = tempobj.id_hyfl;
+                    tableobj.push(lwsp);
+                }
+            });
+            if (flag) {
+                app.hyjfrule.jfruleset.dopost(tab);
+            }
+            btn.button('reset');
+        }
+
+        btn.button('reset');
+    }
+
+    //调用接口执行保存
+    app.hyjfrule.jfruleset.dopost = function (tab) {
+
+        var objData = {};
+        objData.tab = tab;
+        objData.table_info = JSON.stringify(app.hyjfrule.jfruleset.getdata(tab));
+
+        var options = {
+            data: objData,
+            url: $.DHB.U('HYJFRule/JFRuleSet'),
+            type: "POST",
+            datatype: 'json',
+            beforeSend: function () { },
+            success: function (data, textStatus, jqXHR) {
+                if (data.status == "success") {
+                    $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                    $.DHB.url('hyjfrule/jfruleset', 'cache');
+                } else {
+                    $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                }
+            },
+            complete: function (XHR, TS) { }
+        };
+        app.httpAjax.post(options);
+
+
+    }
+
+    //日期全选
+    app.hyjfrule.jfruleset.setSelectAll = function (input) {
+        var t = $(input).attr("data-type");
+        if ($(input).is(':checked')) {
+            $("input[data-type=" + t + "]", _).not("input:checked").each(function (i, obj) {
+                obj.checked = true;
+            });
+        } else {
+            $("input[data-type=" + t + "]:checked", _).each(function (i, obj) {
+            
+                obj.checked = false;
+            });
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //多倍积分----保存
+    app.hyjfrule.jfruleset.add_dbjf = function (obj) {
+
+        var obj = {};
+
+        obj.id_shop = $(_ + "#id_shop_dbjf").find('option:selected').val();//门店
+
+        obj.hy_jfsz_hysr_nbjf = $(_ + "#hy_jfsz_hysr_nbjf").val();//阳历生日--几倍
+        obj.hy_jfsz_hysr_lx = $(_ + "#hy_jfsz_hysr_lx").find('option:selected').val();//阳历生日--时间内
+
+
+        obj.hy_jfsz_week_nbjf = $(_ + "#hy_jfsz_week_nbjf").val();//按星期--几倍
+        var hy_jfsz_week_val = ',';//按星期--星期
+        $(_ + "#_div_hyjfrule_jfruleset").find('input[data-group="hy_jfsz_week_val"]').each(function (index, item_week) {
+            if (item_week.checked === true) {
+                hy_jfsz_week_val += $(item_week).val() + ",";
+            }
+        });
+        if (hy_jfsz_week_val == ",") { hy_jfsz_week_val = ''; }
+        obj.hy_jfsz_week_val = hy_jfsz_week_val;
+
+        obj.hy_jfsz_day_nbjf = $(_ + "#hy_jfsz_day_nbjf").val();//按天--几倍
+        var hy_jfsz_day_val = ',';//按天--天
+        $(_ + "#_div_hyjfrule_jfruleset").find('input[name="hy_jfsz_day_val"]').each(function (index, item_week) {
+            if (item_week.checked === true) {
+                hy_jfsz_day_val += $(item_week).val() + ",";
+            }
+        });
+        if (hy_jfsz_day_val == ",") { hy_jfsz_day_val = ''; }
+        obj.hy_jfsz_day_val = hy_jfsz_day_val;
+
+        obj.hy_jfsz_xs_nbjf = $(_ + "#hy_jfsz_xs_nbjf").val();//按金额--几倍
+        obj.hy_jfsz_xs_rq_b = $(_ + "#hy_jfsz_xs_rq_b").val();//按金额--开始时间
+        obj.hy_jfsz_xs_rq_e = $(_ + "#hy_jfsz_xs_rq_e").val();//按金额--结束时间
+        obj.hy_jfsz_xs_je = $(_ + "#hy_jfsz_xs_je").val();//按金额--满多少元
+
+        //验证倍数参数
+        if (obj.hy_jfsz_hysr_nbjf == '' && obj.hy_jfsz_week_nbjf == '' && obj.hy_jfsz_day_nbjf == '' && obj.hy_jfsz_xs_nbjf == '') {
+            //$.DHB.message({ 'content': '请先填写积分倍数', 'time': 4000, 'type': 'i' });
+            //return;
+            //$.DHB.message({ 'content': '请先填写积分倍数', 'time': 4000, 'type': 'i' });
+        }
+
+        //验证阳历生日参数
+        if (obj.hy_jfsz_hysr_nbjf != '') {
+            if (obj.hy_jfsz_hysr_lx == '') {
+                $.DHB.message({ 'content': '请选择会员生日期间类型', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+
+        if (obj.hy_jfsz_hysr_lx != '') {
+            if (obj.hy_jfsz_hysr_nbjf == '') {
+                $.DHB.message({ 'content': '请选择会员生日多倍积分', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+
+
+
+        //验证星期参数
+        if (obj.hy_jfsz_week_nbjf != '') {
+            if (obj.hy_jfsz_week_val == '') {
+                $.DHB.message({ 'content': '请选择星期积分倍数的星期', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+        if (obj.hy_jfsz_week_val != '') {
+            if (obj.hy_jfsz_week_nbjf == '') {
+                $.DHB.message({ 'content': '请选择星期多倍积分', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+
+        //验证日期参数
+        if (obj.hy_jfsz_day_nbjf != '') {
+            if (obj.hy_jfsz_day_val == '') {
+                $.DHB.message({ 'content': '请选择日期积分倍数的日期', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+        if (obj.hy_jfsz_day_val != '') {
+            if (obj.hy_jfsz_day_nbjf == '') {
+                $.DHB.message({ 'content': '请选择日期多倍积分', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+        //验证金额参数
+        if (obj.hy_jfsz_xs_nbjf != '') {
+            if (obj.hy_jfsz_xs_rq_b == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的开始时间', 'time': 4000, 'type': 'i' });
+                return;
+            }
+            else if (obj.hy_jfsz_xs_rq_e == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的结束时间', 'time': 4000, 'type': 'i' });
+                return;
+            }
+            else if (obj.hy_jfsz_xs_je == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的消费满金额', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+        if (obj.hy_jfsz_xs_rq_b != '') {
+            if (obj.hy_jfsz_xs_nbjf == '') {
+                $.DHB.message({ 'content': '请填写金额积分倍数', 'time': 4000, 'type': 'i' });
+                return;
+            }
+            else if (obj.hy_jfsz_xs_rq_e == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的结束时间', 'time': 4000, 'type': 'i' });
+                return;
+            }
+            else if (obj.hy_jfsz_xs_je == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的消费满金额', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+        if (obj.hy_jfsz_xs_rq_e!= '') {
+            if (obj.hy_jfsz_xs_nbjf == '') {
+                $.DHB.message({ 'content': '请填写金额积分倍数', 'time': 4000, 'type': 'i' });
+                return;
+            }
+            else if (obj.hy_jfsz_xs_rq_b == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的开始时间', 'time': 4000, 'type': 'i' });
+                return;
+            }
+            else if (obj.hy_jfsz_xs_je == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的消费满金额', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+
+        if (obj.hy_jfsz_xs_je!= '') {
+            if (obj.hy_jfsz_xs_nbjf == '') {
+                $.DHB.message({ 'content': '请填写金额积分倍数', 'time': 4000, 'type': 'i' });
+                return;
+            }
+            else if (obj.hy_jfsz_xs_rq_b == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的开始时间', 'time': 4000, 'type': 'i' });
+                return;
+            }
+            else if (obj.hy_jfsz_xs_rq_e == '') {
+                $.DHB.message({ 'content': '请选择金额积分倍数的结束时间', 'time': 4000, 'type': 'i' });
+                return;
+            }
+        }
+
+
+            //post执行操作
+        $.messager.confirm("提示", "确定修改多倍积分设置吗?", function () {
+                var options = {
+                    data: {
+                        dbjf: JSON.stringify(obj)
+                    },
+                    url: $.DHB.U('hyjfrule/setdbjf'),
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        }
+                    },
+                    complete: function (XHR, TS) { }
+                };
+                app.httpAjax.post(options)
+            });
+    };
+
+
+    //多倍积分----按门店查询
+    app.hyjfrule.jfruleset.shopChange = function (obj) {
+        var id_shop = $(_ + "#id_shop_dbjf").find('option:selected').val();
+        $.post($.DHB.U('hyjfrule/getdbjf'), { id_shop: id_shop },
+                function (data) {
+                    if (data.status == "success") {
+                        var obj = data.data;
+                        $(_ + "#hy_jfsz_hysr_nbjf").val(obj.hy_jfsz_hysr_nbjf);
+                        $(_ + "#hy_jfsz_hysr_lx").val(obj.hy_jfsz_hysr_lx);
+
+                        $(_ + "#hy_jfsz_week_nbjf").val(obj.hy_jfsz_week_nbjf);
+
+
+                        $(_ + "#_div_hyjfrule_jfruleset").find('input[data-group="hy_jfsz_week_val"]').each(function (index, item_week) {
+                            var value = $(item_week).val();
+                            if (obj.hy_jfsz_week_val.toString().indexOf(',' + value + ',') >= 0) {
+                                item_week.checked = true;
+                            } else {
+                                item_week.checked = false;
+                            }
+                        });
+
+
+                        $(_ + "#hy_jfsz_day_nbjf").val(obj.hy_jfsz_day_nbjf);
+
+                        $(_ + "#_div_hyjfrule_jfruleset").find('input[name="hy_jfsz_day_val"]').each(function (index, item_day) {
+                        
+                            var value = $(item_day).val();
+                            if (obj.hy_jfsz_day_val.toString().indexOf(',' + value + ',') >= 0) {
+                                item_day.checked = true;
+                            } else {
+                                item_day.checked = false;
+                            }
+                        });
+
+
+
+                        $(_ + "#hy_jfsz_xs_nbjf").val(obj.hy_jfsz_xs_nbjf);
+
+
+                        $(_ + "#hy_jfsz_xs_rq_b").val(obj.hy_jfsz_xs_rq_b);
+
+
+                        $(_ + "#hy_jfsz_xs_rq_e").val(obj.hy_jfsz_xs_rq_e);
+
+
+                        $(_ + "#hy_jfsz_xs_je").val(obj.hy_jfsz_xs_je);
+
+                    }
+                }, 'json'
+            );
+
+
+    };
+
+
+
+    //获取插入表格的HTML方法
+    function GetResultHtml(tab, obj,guid) {
+     
+        //var guid = NewGuid();
+        var option = '';
+        var resultHtml = '';
+        var optinShopList = '@Html.Raw(optinShopList)';
+        var optinHyflList = '@Html.Raw(optinHyflList)';
+        var optinJqxslxList = '@Html.Raw(optinJqxslxList)';
+
+        resultHtml += '<tr data-item="id_' + tab + '_' + guid + '">';
+        resultHtml += '<td class="align_center">';
+        resultHtml += '   <div name="xh">1</div>   <input type="hidden" name="id" value="">';
+        resultHtml += '</td>';
+
+        resultHtml += '<td class="align_center">';
+        resultHtml += '    <select  name="id_shop" style="width:130px;" class="btn-group bootstrap-select user-input  select2_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">';
+        resultHtml += optinShopList;
+        resultHtml += '    </select>';
+        resultHtml += '</td>';
+
+        resultHtml += '<td class="align_center"><input name="day_b" id="day_b_' + guid + '"  class="form-control input-sm {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: \'yyyy-MM-dd\', el: \'day_b_' + guid + '\' })"  value="@defaultStarTime" ></td>';
+
+
+        if (tab == 'splb' || tab == 'sp') {
+            resultHtml += '<td class="align_center"><input name="day_e" id="day_e_' + guid + '"  class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: \'yyyy-MM-dd\', el: \'day_e_' + guid + '\' })" value="@defaultEndTime_Sp"></td>';
+        } else {
+            resultHtml += '<td class="align_center"><input name="day_e" id="day_e_' + guid + '"  class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: \'yyyy-MM-dd\', el: \'day_e_' + guid + '\' })" value="@defaultEndTime"></td>';
+        }
+
+        resultHtml += '<td class="align_center">';
+        resultHtml += '    <select name="id_hyfl" style="width:100px;" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">';
+        resultHtml += optinHyflList;
+        resultHtml += '    </select>';
+        resultHtml += '</td>';
+
+
+        resultHtml += '<td class="align_center"><input name="flag_jf" value="1" type="checkbox" checked="checked")><i></i></td>';
+        resultHtml += '<td class="align_center hidden"><input name="flag_hyjjf" value="1" type="checkbox" checked="checked" )><i></i></td>';
+        resultHtml += '<td class="align_center"><input name="flag_cxjf" value="1" type="checkbox" checked="checked" )><i></i></td>';
+
+
+        if (tab == 'splb') {
+            resultHtml += '<td class="align_center" style="width:180px;"><input type="hidden" name="id_object" value="' + obj.id + '"><span class="inline lineheight-30" name="lb">' + obj.text + '</span><a class="btn btn-info f-r" onclick="app.hyjfrule.jfruleset.showspfl(this)">选择商品分类</a></td>';
+        }
+        else if (tab == 'sp') {
+            resultHtml += '<td class="align_center" style="width:180px;"><input type="hidden" name="id_object" value="' + obj.id_sp + '"><span class="inline lineheight-30" name="lb">' + obj.mc + '</span><a class="btn btn-info f-r" onclick="app.hyjfrule.jfruleset.showshopsp(this)">选择商品</a></td>';
+        }
+
+        resultHtml += '<td class="align_center"><input type="text" name="je" class="w-65" style="text-align:right;"  value="1.00"></td>';
+        resultHtml += '<td class="align_center"><input type="text" name="jf" class="w-65" style="text-align:right;" value="1.00"></td>';
+
+        resultHtml += '<td class="align_center">';
+        resultHtml += '    <select name="flag_digitlx" style="width:100px;" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择截取小数类型&#39;}} valid ">';
+        resultHtml += optinJqxslxList;
+        resultHtml += '    </select>';
+        resultHtml += '</td>';
+
+        resultHtml += '<td class="align_right"><input type="text" name="je_min" class="w-65" style="text-align:right;" value="0.00"></td>';
+
+
+        resultHtml += '<td class="align_center hidden">';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="1" type="checkbox"  checked="checked")><i></i>星期天</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="2" type="checkbox"  checked="checked")><i></i>星期一</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="3" type="checkbox"  checked="checked")><i></i>星期二</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="4" type="checkbox"  checked="checked")><i></i>星期三</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="5" type="checkbox"  checked="checked")><i></i>星期四</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="6" type="checkbox"  checked="checked")><i></i>星期五</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="7" type="checkbox"  checked="checked")><i></i>星期六</label>';
+        resultHtml += '</td>';
+
+        resultHtml += '<td class="align_center"><div name="czlx">新增数据</div></td>';
+
+        resultHtml += '<td class="align_center"><a onclick="app.hyjfrule.jfruleset.choice_' + tab + '_del(this);" title="删除" class="bg-state bg-state-info blockbtn fa fa-trash"></a></td>';
+
+
+        resultHtml += '</tr>';
+
+        return resultHtml;
+    }
+
+
+    //兑换商品----删除行
+    app.hyjfrule.jfruleset.choice_dhsp_del = function (el) {
+        $(_ + '#jfruleset_showshopsp_dhsp').val('');
+        var id = $(el).parents('tr').find('input[name=id]').val();
+        if (typeof (id) != 'undefined' && id != 'undefined' && id != '') {
+            $.messager.confirm("提示", "确定删除吗?", function () {
+
+                var options = {
+                    data: {
+                        ids: id
+                    },
+                    url: $.DHB.U('hyjfrule/deletedhsp'),
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                            $(el).parents('tr').remove();
+                            app.hyjfrule.jfruleset.reset_dhsp_xh();
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        }
+                    },
+                    complete: function (XHR, TS) { }
+                };
+                app.httpAjax.post(options);
+
+
+            });
+        }
+        else {
+            $(el).parents('tr').remove();
+            app.hyjfrule.jfruleset.reset_dhsp_xh();
+        }
+    }
+
+    //兑换商品----重置table序号
+    app.hyjfrule.jfruleset.reset_dhsp_xh = function (e) {
+        var xh = 1;
+        $('#table_hyjfrule_jfruleset_dhsp>tbody', _).find('tr').each(function () {
+            $(this).find('div[name="xh"]').text(xh);
+            xh++;
+        });
+    }
+
+
+    //兑换商品----增加行
+    app.hyjfrule.jfruleset.add_dhsp_row = function (obj) {
+        $(_ + '#jfruleset_showshopsp_dhsp').val('');
+        app.hyjfrule.jfruleset.addtr_dhsp();
+        app.hyjfrule.jfruleset.reset_dhsp_xh();
+    };
+
+    //兑换商品----增加行实现方法
+    app.hyjfrule.jfruleset.addtr_dhsp = function (obj) {
+        var dhsp = [];
+        var dhsp_e = {};
+        dhsp_e.id_sp = "";
+        dhsp_e.mc = "";
+        dhsp_e.dj_ls = "@defaultDJ";
+        dhsp.push(dhsp_e);
+        var jsonStr = JSON.stringify(dhsp);
+        app.hyjfrule.jfruleset.callbackwork_dhsp(jsonStr);
+    }
+
+    //兑换商品----回调
+    app.hyjfrule.jfruleset.callbackwork_dhsp = function (jsonStr) {
+        var data_item_last = '';
+        var objList = jQuery.parseJSON(jsonStr);
+
+        $(objList).each(function (index, obj) {
+            
+            var guid = NewGuid();
+            var resultHtml = GetDHSPResultHtml('dhsp', obj, guid);
+            $(_ + "#table_hyjfrule_jfruleset_dhsp>tbody").append(resultHtml);
+            data_item_last = obj.id_shopsp;
+
+            var defaulVal = $(_ + '#jfruleset_showshopsp_dhsp').val();
+            if (typeof (defaulVal) != undefined && defaulVal != '') {
+                
+                var obj = jQuery.parseJSON(defaulVal);
+                var tr = $(_ + "#table_hyjfrule_jfruleset_dhsp>tbody").find('tr[data-item=id_dhsp_' + guid + ']');
+                if (typeof (tr) != undefined) {
+                    
+                    tr.find('select[name=id_shop]').val(obj.id_shop);
+                    tr.find('input[name=day_b]').val(obj.day_b);
+                    tr.find('input[name=day_e]').val(obj.day_e);
+                    tr.find('select[name=id_hyfl]').val(obj.id_hyfl);
+                    tr.find('input[name=je]').val(obj.je);
+                    tr.find('input[name=jf]').val(obj.jf);
+
+                }
+            }
+
+        });
+    }
+
+    //兑换商品----保存按钮事件
+    app.hyjfrule.jfruleset.save_dhsp = function () {
+        var tab = 'dhsp';
+        var btn = $(_ + '#submit-button-dhsp').button('loading');
+        var err_xh = '';
+        var tableobj = [], flag;
+        flag = true;
+        $('#table_hyjfrule_jfruleset_dhsp>tbody>tr', _).each(function (i, item) {
+            var id_sp = $(this).find('input[name=id_sp]').val();
+            if (typeof (id_sp) == 'undefined' || id_sp == 'undefined' || id_sp == '') {
+                err_xh = $(this).find('div[name=xh]').html();
+            }
+
+            if (err_xh != '') {
+                $.DHB.message({ 'content': '第 ' + err_xh + ' 行 还未选择商品,请先选择！ ', 'time': 4000, 'type': 'i' });
+                btn.button('reset');
+                flag = false;
+                return;
+            }
+
+            var tempobj = {};
+            tempobj.id_shop = $(this).find('select[name="id_shop"] option:selected').val();
+            tempobj.id_hyfl = $(this).find('select[name="id_hyfl"] option:selected').val();
+            tempobj.id_sp = id_sp;
+
+            var lwsp = {}; var rezj = [];
+            
+            rezj = app.hyjfrule.jfruleset.delrepeat(tempobj, tableobj, 'dhsp');
+            if (rezj[rezj.length - 1]) {
+                $.DHB.message({ 'content': '第' + $(this).find('div[name=xh]').html() + '行和第' + rezj[0] + '行 门店/会员类别/商品 重复，请删除其中一项！' });
+                flag = false;
+                return;
+            }
+            else {
+                lwsp.id_shop = tempobj.id_shop;
+                lwsp.id_hyfl = tempobj.id_hyfl;
+                lwsp.id_sp = tempobj.id_sp;
+                tableobj.push(lwsp);
+            }
+
+        });
+
+        if (flag) {
+            app.hyjfrule.jfruleset.dopost_dhsp(tab);
+        }
+        btn.button('reset');
+
+    }
+
+    //检测相同商品
+    app.hyjfrule.jfruleset.delrepeat = function (a, arr, tab) {
+        if (tab == 'xfje') {
+            var b = [], flag = false;
+            for (var i = 0; i < arr.length; i++) {
+                if (a.id_shop == arr[i].id_shop && a.id_hyfl == arr[i].id_hyfl) {
+                    flag = true;
+                    b.push(i + 1);
+                }
+            }
+            b.push(flag);
+            return b;
+        } else if (tab == 'splb'||tab=='sp') {
+            var b = [], flag = false;
+            for (var i = 0; i < arr.length; i++) {
+                if (a.id_shop == arr[i].id_shop && a.id_hyfl == arr[i].id_hyfl && a.id_object == arr[i].id_object) {
+                    flag = true;
+                    b.push(i + 1);
+                }
+            }
+            b.push(flag);
+            return b;
+        }
+        else if (tab == 'dhsp') {
+            var b = [], flag = false;
+            for (var i = 0; i < arr.length; i++) {
+                if (a.id_shop == arr[i].id_shop && a.id_hyfl == arr[i].id_hyfl && a.id_sp == arr[i].id_sp) {
+                    flag = true;
+                    b.push(i + 1);
+                }
+            }
+            b.push(flag);
+            return b;
+        }
+
+        var b = [];
+        return b;
+    }
+
+
+    //兑换商品----调用接口执行保存
+    app.hyjfrule.jfruleset.dopost_dhsp = function (tab) {
+        $.messager.confirm("提示", "确定修改积分兑换商品设置吗?", function () {
+            var objData = {};
+            objData.tab = tab;
+            objData.table_info = JSON.stringify(app.hyjfrule.jfruleset.getdata_dhsp(tab));
+
+            var options = {
+                data: objData,
+                url: $.DHB.U('HYJFRule/JFRuleSetDHSP'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                        $.DHB.url('hyjfrule/jfruleset', 'cache');
+                    } else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options);
+
+        });
+    }
+
+    //兑换商品----按消费金额设置----设置Data
+    app.hyjfrule.jfruleset.getdata_dhsp = function (tab) {
+        var obj_list = [];
+        
+        $('#table_hyjfrule_jfruleset_' + tab + '>tbody>tr', _).each(function (i, item) {
+            
+            var obj = {};
+            obj.id_shop = $(this).find('select[name="id_shop"] option:selected').val();
+            obj.day_b = $(this).find('input[name=day_b]').val();
+            obj.day_e = $(this).find('input[name=day_e]').val();
+            obj.id_hyfl = $(this).find('select[name="id_hyfl"] option:selected').val();
+
+            obj.je = $(this).find('input[name=je]').val();
+            obj.jf = $(this).find('input[name=jf]').val();
+
+            obj.id_sp = $(this).find('input[name=id_sp]').val();
+            obj.dj_ls = $(this).find('input[name=dj_ls]').val();
+
+            var weeks = ',';
+            $(this).find('input[data-group=weeks]').each(function (index, item_week) {
+                if (item_week.checked === true) {
+                    weeks += $(item_week).val() + ",";
+                }
+                weeks = ',1,2,3,4,5,6,7,';
+            });
+            if (weeks == ",") { weeks = ''; }
+            obj.weeks = weeks;
+
+            obj.id = $(this).find('input[name=id]').val();
+
+            obj_list.push(obj);
+        });
+        return obj_list;
+    }
+
+
+
+
+    //兑换商品----选择商品
+    app.hyjfrule.jfruleset.showshopsp_dhsp = function (e) {
+
+  
+        var tr = $(e).parents('tr');
+        var obj = {};
+        obj.id_shop = tr.find('select[name=id_shop]').val();
+        obj.day_b = tr.find('input[name=day_b]').val();
+        obj.day_e = tr.find('input[name=day_e]').val();
+        obj.id_hyfl = tr.find('select[name=id_hyfl]').val();
+        obj.je = tr.find('input[name=je]').val();
+        obj.jf = tr.find('input[name=jf]').val();
+        $(_ + '#jfruleset_showshopsp_dhsp').val(JSON.stringify(obj));
+        $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?id_shop='+'@id_shop'), 'id': 'dialog-shopsp-search', 'confirm': app.hyjfrule.jfruleset.dialogCallBackShopspDHSP });
+
+    };
+
+    //兑换商品----选择商品回调函数
+    app.hyjfrule.jfruleset.dialogCallBackShopspDHSP = function (array) {
+        //var jsonStr = array[5].value;
+        var jsonStr = "";
+        $.each(array, function (index, item) {
+            if (item.name == "shopsp_table_json") {
+                jsonStr = item.value;
+            }
+        });
+        app.hyjfrule.jfruleset.callbackwork_dhsp(jsonStr);
+        $.DHB.dialog({ 'id': 'dialog-shopsp-search', 'action': 'destroy' });
+        app.hyjfrule.jfruleset.remove_tr_dhsp();
+        app.hyjfrule.jfruleset.reset_dhsp_xh();
+    }
+
+    //兑换商品----删除多余的行
+    app.hyjfrule.jfruleset.remove_tr_dhsp = function () {
+        $('#table_hyjfrule_jfruleset_dhsp>tbody>tr', _).each(function (i, item) {
+            var id_object = $(this).find('input[name=id_sp]').val();
+            if (typeof (id_object) == 'undefined' || id_object == 'undefined' || id_object == '') {
+                $(this).remove();
+            }
+        });
+    };
+
+
+
+    //兑换商品----获取插入表格的HTML方法
+    function GetDHSPResultHtml(tab, obj,guid) {
+      
+        //var guid = NewGuid();
+        var option = '';
+        var resultHtml = '';
+        var optinShopList = '@Html.Raw(optinShopList)';
+        var optinHyflList = '@Html.Raw(optinHyflList)';
+        var optinJqxslxList = '@Html.Raw(optinJqxslxList)';
+
+        resultHtml += '<tr data-item="id_' + tab + '_' + guid + '"  >';
+        resultHtml += '<td class="align_center">';
+        resultHtml += '   <div name="xh">1</div>   <input type="hidden" name="id" value="">';
+        resultHtml += '</td>';
+
+        resultHtml += '<td class="align_center">';
+        resultHtml += '    <select  name="id_shop" style="width:130px;" class="btn-group bootstrap-select user-input  select2_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">';
+        resultHtml += optinShopList;
+        resultHtml += '    </select>';
+        resultHtml += '</td>';
+
+        resultHtml += '<td class="align_center"><input name="day_b" id="day_b_' + guid + '"  class="form-control input-sm {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: \'yyyy-MM-dd\', el: \'day_b_' + guid + '\' })"  value="@defaultStarTime" ></td>';
+        resultHtml += '<td class="align_center"><input name="day_e" id="day_e_' + guid + '"  class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: \'yyyy-MM-dd\', el: \'day_e_' + guid + '\' })" value="@defaultEndTime" ></td>';
+
+        resultHtml += '<td class="align_center">';
+        resultHtml += '    <select name="id_hyfl" style="width:100px;" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">';
+        resultHtml += optinHyflList;
+        resultHtml += '    </select>';
+        resultHtml += '</td>';
+
+
+        resultHtml += '<td class="align_center hidden">';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="1" type="checkbox"  checked="checked")><i></i>星期天</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="2" type="checkbox"  checked="checked")><i></i>星期一</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="3" type="checkbox"  checked="checked")><i></i>星期二</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="4" type="checkbox"  checked="checked")><i></i>星期三</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="5" type="checkbox"  checked="checked")><i></i>星期四</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="6" type="checkbox"  checked="checked")><i></i>星期五</label>';
+        resultHtml += '     <label class="i-checks"><input data-group="weeks" value="7" type="checkbox"  checked="checked")><i></i>星期六</label>';
+        resultHtml += '</td>';
+
+        resultHtml += '<td class="align_center" style="width:180px;"><input type="hidden" name="id_sp" value="' + obj.id_sp + '"><span class="inline lineheight-30" name="lb">' + obj.mc + '</span><a class="btn btn-info f-r" onclick="app.hyjfrule.jfruleset.showshopsp_dhsp(this)">选择商品</a></td>';
+
+        resultHtml += '<td class="align_center"><input type="text" name="je" class="w-65" style="text-align:right;"  value="0.00"></td>';
+        resultHtml += '<td class="align_center"><input type="text" name="jf" class="w-65" style="text-align:right;" value="1.00"></td>';
+        //resultHtml += '<td class="align_center"><input type="text" name="dj_ls" class="w-65" style="text-align:right;" value="1.00"></td>';
+
+        resultHtml += '<td class="align_center"><input type="hidden" name="dj_ls" value="' + obj.dj_ls + '"><span class="inline lineheight-30" name="lb_dj_ls">' + obj.dj_ls + '</span></td>';
+
+        resultHtml += '<td class="align_center"><div name="czlx">新增数据</div></td>';
+        resultHtml += '<td class="align_center"><a onclick="app.hyjfrule.jfruleset.choice_' + tab + '_del(this);" title="删除" class="bg-state bg-state-info blockbtn fa fa-trash"></a></td>';
+        resultHtml += '</tr>';
+
+        return resultHtml;
+    }
+
+
+
+</script>
+

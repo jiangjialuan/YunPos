@@ -1,0 +1,33 @@
+﻿@model string
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/favicon.ico" mce_href="/favicon.ico" type="image/x-icon">
+    @Styles.Render("~/static/cy-1.0.0.css")
+    <title>出错啦</title>
+</head>
+<body>
+    @{
+        switch (Model.ToLower())
+        {
+            case "500":
+                Html.RenderPartial("_500Error");
+                break;
+            case "nopurview":
+                Html.RenderPartial("_noPurviewError");
+                break;
+            case "404":
+            default:
+                Html.RenderPartial("_404Error");
+                break;
+
+        }}
+</body>
+</html>

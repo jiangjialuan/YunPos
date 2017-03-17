@@ -1,0 +1,186 @@
+﻿@using CySoft.Model.Tb;
+@{
+    Layout = null;
+    List<Tb_Gysfl_Tree> list_tree = ViewData["list_tree"] as List<Tb_Gysfl_Tree>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var isImport = actionlist.Any(l => l.ToLower() == "importin");
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="gysfl/list"]').attr({ controller: 'gysfl', action: 'list' });
+        app.c.public_data['gysfl/list'] = app.c.public_data['gysfl/list'] || {};
+        app.c.public_data['gysfl/list']['once'] = false;
+        app.gysfl = app.gysfl || {};
+    });
+</script>
+<input type="hidden" pagesize value="" />
+<input type="hidden" page value="" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        供应商分类
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['gysfl/list'] = app.c.public_data['gysfl/list'] || {};
+    app.c.public_data['gysfl/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['gysfl/list']['threemenu'] === false) {
+            app.c.public_data['gysfl/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="panel panel-default m-b-none">
+        <div class="main-content">
+            <!-- 商品分类 -->
+            <div class="m-b-md">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="nestable-menu" style="padding: 0; margin: 12px 0 0 15px;">
+                            @if (isAdd)
+                            {
+                                <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="app.gysfl.add(this, '');">新增分类</button>
+                            }
+                            @if (isImport)
+                            {
+                                <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="$.DHB.dialog({ 'title': '导入分类', 'url': $.DHB.U('/gysfl/ImportIn'), 'id': 'dialog-gysfl-importIn' });">导入分类</button>
+                            }
+                            <button id="UButton" style="display: none;">＋操作分类</button>
+                            <button class="btn m-b-xs btn-default m-b-none btn-sm w-xs" type="button" data-action="expand-all"><i class="fa fa-angle-double-down"></i> 展开/收起</button>
+                        </div>
+                        @* 树排序信息 *@
+                        <input type="hidden" name="nestable-result" id="nestable-result" value="" />
+
+                        <div class="col-sm-12 m-t-xs" style="max-height:600px;">
+                            <!-- 分类树 -->
+                            <div class="dd" style="max-width:95%;">
+                                @helper NodeHelper(List<Tb_Gysfl_Tree> _list_gysfl, bool isAdd, bool isEdit, bool idDelete)
+                                {
+                                        if (_list_gysfl != null && _list_gysfl.Count > 0)
+{
+        <ol class="dd-list">
+            @foreach (Tb_Gysfl_Tree _gysfl in _list_gysfl)
+            {
+                <li class="dd-item" data-id="@_gysfl.id">
+                    <div class="dd-handle" onmouseenter="$.DHB.func.nestableHover(this);" onmouseleave="$.DHB.func.nestableHover(this,'leave');">
+                        @_gysfl.text&nbsp;<span style="color:#98a6ad;">（编码：@_gysfl.bm）</span>
+                        @*<span class="label label-success input-sm label-lg">默认</span>*@
+                        <span class="pull-right">
+                            @if (isAdd)
+                            {
+                                <a onclick="app.gysfl.add(this, '@_gysfl.id' );">增加子类</a>
+                            }
+                            @if (isEdit)
+                            {
+                                <span class="vertical-line"></span>                                <a onclick="app.gysfl.edit(this, '@_gysfl.id');">编辑</a> <span class="vertical-line"></span>
+                            }
+                            @if (idDelete)
+                            {
+                                <a onclick="app.gysfl.del(this, '@_gysfl.id');">删除</a>
+                            }
+                        </span>
+                    </div>
+
+                    <!-- 子分类 -->
+                    @NodeHelper(_gysfl.children, isAdd, isEdit, idDelete)
+                </li>
+            }
+        </ol>
+}
+}
+                                @NodeHelper(list_tree, isAdd, isEdit, isDel)
+                            </div>
+                            @* 下面加入源代码 *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+            <button class="btn w-xs btn-info m-l-none" autocomplete="off" data-loading-text="正在提交..." id="nestable-submit-button" disabled="disabled">
+                确定
+            </button>
+            <button class="btn w-xs btn-default" autocomplete="off" onclick="$.DHB.refresh();">
+                取消
+            </button>
+        </footer>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var catenestable = null;
+    app.gysfl = app.gysfl || {};
+
+    // 命名规则 app.{controller}.{action}_ready
+    app.gysfl.list_ready = function () {
+        $.DHB.loadJs([{ id: 'nestable', url: '/static/js/jquery/nestable/jquery.nestable.js' }], function () {
+            //更新排序
+            catenestable = $.DHB.func.nestable({ 'save_url': 'gysfl/updatetree', save_on: true });
+            //设置默认节点展开
+            setTimeout(function () {
+            }, 100);
+        });
+    }
+
+    //编辑分类
+    app.gysfl.edit = function (obj, id) {
+        $(obj).trigger('blur');
+        $.DHB.dialog({ 'title': '编辑分类', 'url': $.DHB.U('gysfl/edit?id=' + id), 'id': 'dialog-category' });
+    };
+
+    //新增分类
+    app.gysfl.add = function (obj, id) {
+        $(obj).trigger('blur');
+        $.DHB.dialog({ 'title': '新增分类', 'url': $.DHB.U('gysfl/add?parent_id=' + id), 'id': 'dialog-category' });
+    };
+
+    //删除分类
+    app.gysfl.del = function (obj, id) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定删除吗?", function () {
+            var options = {
+                data: {
+                    id: id,
+                    id_cyuser: $.trim($('#hid_id_cyuser').val())
+                },
+                url: $.DHB.U('/gysfl/delete'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $(_ + ".dd .dd-item[data-id='" + id + "']").remove();
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options)
+
+        });
+    };
+
+</script>

@@ -1,0 +1,418 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts
+
+@{
+    Tb_Gys item_edit = ViewData["item_edit"] as Tb_Gys;
+    item_edit = item_edit ?? new Tb_Gys();
+    string option = ViewData["option"].ToString();
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+
+    var selectListGysfl = ViewData["selectListGysfl"] as List<Tb_Gysfl>;
+    selectListGysfl = selectListGysfl ?? new List<Tb_Gysfl>();
+
+    var selectListGYSFLJsonStr = ViewData["selectListGYSFLJsonStr"] == null ? "" : ViewData["selectListGYSFLJsonStr"].ToString();
+
+}
+
+<head>
+    <link rel="stylesheet" href="~/static/css/common/modify.css" />
+
+
+</head>
+<style>
+    .dropdown-menu {
+        max-height: 510px;
+    }
+</style>
+
+<div class="modal fade in" id="dialog-gys" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">@Html.Raw(option.ToLower() == "update" ? "编辑供应商" : "新增供应商")</h4>
+            </div>
+            <form class="form-horizontal validate f0 comform" method="post" id="">
+                <div class="modal-body tab-content ">
+                	
+                  <div class="fixed-input-group">
+                    <h2 class="form_title"><span>基本信息</span></h2>
+                     <div class="form_content">
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>供应商分类：</span>
+                            </label>
+
+                            <label class="m-l-xs1" id="tree-id_gysfl"></label>
+
+                            @*<label class="sub-label w-340 m-l-xs">
+                                    <select id="id_gysfl" name="id_gysfl" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择供应商分类&#39;}} valid" style="width:400px;">
+                                        @foreach (var item in selectListDW.OrderBy(d => d.dw))
+                                        {
+                                            var flChecked = item_edit.mc == item.dw ? "selected=\"selected\"" : "";
+                                            <option value="@item.dw" @flChecked>@item.dw</option>
+                                        }
+                                    </select>
+                                </label>*@
+                        </div>
+                    </div>
+
+
+                     <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>编码：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:16}" placeholder="请输入供应商编码" type="text" name="bm" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.bm)" id="bm" onkeyup="app.gys.checkbarcode(this)" onafterpaste="app.gys.checkbarcode(this)" old-data="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.bm)">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>名称：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:100}" placeholder="请输入供应商名称" type="text" name="mc" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.mc)" id="mc">
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>状态：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+
+                                @{int firststate = 0;}
+                                @foreach (var item in selectListState.OrderBy(d => d.listsort))
+                                {
+                                    if (option.ToLower() == "add")
+                                    {
+                                        if (firststate == 0)
+                                        {
+                                            <label class="i-checks showIcon">
+                                                <input name="flag_state" value="@item.listdata" checked="checked" type="radio"><i></i>@item.listdisplay
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <label class="i-checks showIcon">
+                                                <input name="flag_state" value="@item.listdata" type="radio"><i></i>@item.listdisplay
+                                            </label>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var stateChecked = item_edit.flag_state == item.listdata ? "checked=\"checked\"" : "";
+                                        <label class="i-checks showIcon">
+                                            <input name="flag_state" value="@item.listdata" @stateChecked type="radio"><i></i>@item.listdisplay
+                                        </label>
+                                    }
+                                    firststate++;
+                                }
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>联系人：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control" placeholder="请输入供应商联系人" type="text" name="lxr" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.lxr)" id="lxr">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>联系电话：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control" placeholder="请输入联系电话" type="tel" name="tel" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.tel)" id="tel">
+                            </label>
+                        </div>
+                    </div>
+
+
+                   
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>公司电话：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control" placeholder="请输入公司电话" type="text" name="companytel" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.companytel)" id="companytel">
+                            </label>
+                        </div>
+                    </div>
+                     </div>
+                      </div>
+                     
+                   <div class="fixed-input-group">
+                    	 <h2 class="form_title"><span>更多</span></h2>
+                        <div class="form_content">
+                  
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>邮箱：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control " placeholder="请输入邮箱" type="text" name="email" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.email)" id="email">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>邮编：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control" placeholder="请输入邮编" type="text" name="zipcode" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.zipcode)" id="zipcode">
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>地址：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control" placeholder="请输入地址" type="text" name="address" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.address)" id="address">
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>备注：</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control" placeholder="请输入备注" type="text" name="bz" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.bz)" id="bz">
+                            </label>
+                        </div>
+                    </div>
+                  </div>
+                   </div>
+                 
+
+                
+
+                    <input type="hidden" id="id" name="id" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.id)" />
+                    <input type="hidden" id="hid_option" value="@option">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button').button('loading');
+
+            $.post(
+                $.DHB.U('gys/' + (Tnum > 0 ? 'Edit' : 'Add')),
+                $(_ + ".validate").serialize(),
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 3000, 'type': 's' });
+                        $(_ + '#submit-button').text("提交成功！");
+                        $.DHB.url('gys/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 3000, 'type': 'e' });
+                        btn.button('reset');
+                    }
+                }, 'json'
+            );
+
+            return false;
+        });
+    };
+
+    app.gys = app.gys || {};
+
+
+    $(function () {
+        setTimeout(function () {
+            //绑定供应商分类
+            var selectListGYSFLJsonStr = '@Html.Raw(selectListGYSFLJsonStr)';
+            gysflTree = JSON.parse(selectListGYSFLJsonStr);
+            treeData = {
+                el: '#tree-id_gysfl', title: '供应商分类', name: 'id_gysfl', data: gysflTree, width: 340, callback: function (cur, el) {
+                    el.find('button').removeClass('error');
+                }, class: '{required:true,messages:{required:&#39;请选择供应商分类&#39;}} valid', more: false, has_title: false
+            };
+            treeData.value = '@item_edit.id_gysfl';
+            $.DHB.tree(treeData);
+
+            //$(_ + "#tree-id_gysfl .dhb-more").bind('click', function () {
+            //    $.DHB.dialog({ 'url': $.DHB.U('/gysfl/add'), 'id': 'dialog-category' });
+            //});
+
+        }, 200);
+    });
+
+
+
+
+    app.gys.checkbarcode = function (obj) {
+
+        //如果是上下左右Tab按键 回车 不处理
+        var event = arguments.callee.caller.arguments[0] || window.event;//消除浏览器差异
+        if (typeof (event) != 'undefined') {
+            var keyCode = event.keyCode;
+
+            if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40 || keyCode == 9 || keyCode == 13 || keyCode == 8) {
+                return false;
+            }
+        }
+
+        var value = new String($(obj).val().replace(/\s+/g, ""));
+        $(obj).val(value);
+        if (isNaN(value) || value.indexOf(".") != -1) {
+            $.DHB.message({ 'content': '仅允许输入数字', 'time': 4000, 'type': 'i' });
+            
+            var old_data = $(obj).attr('old-data');
+            if (typeof (old_data) == 'undefined') { old_data = ''; }
+            value = old_data;
+            $(obj).val(value);
+        }
+        value = value + "";
+        $(obj).attr('old-data', value);
+    }
+
+
+     $(function () {
+        setTimeout(function () {
+            //绑定供应商分类
+            var selectListGYSFLJsonStr = '@Html.Raw(selectListGYSFLJsonStr)';
+            gysflTree = JSON.parse(selectListGYSFLJsonStr);
+            treeData = {
+                el: '#tree-id_gysfl', title: '供应商分类', name: 'id_gysfl', data: gysflTree, width: 340, callback: function (cur, el) {
+                    el.find('button').removeClass('error');
+                }, class: '{required:true,messages:{required:&#39;请选择供应商分类&#39;}} valid', more: false, has_title: false
+            };
+            treeData.value = '@item_edit.id_gysfl';
+            $.DHB.tree(treeData);
+
+            //$(_ + "#tree-id_gysfl .dhb-more").bind('click', function () {
+            //    $.DHB.dialog({ 'url': $.DHB.U('/gysfl/add'), 'id': 'dialog-category' });
+            //});
+
+        }, 200);
+    });
+
+
+
+
+    app.gys.checkbarcode = function (obj) {
+
+        //如果是上下左右Tab按键 回车 不处理
+        var event = arguments.callee.caller.arguments[0] || window.event;//消除浏览器差异
+        if (typeof (event) != 'undefined') {
+            var keyCode = event.keyCode;
+
+            if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40 || keyCode == 9 || keyCode == 13 || keyCode == 8) {
+                return false;
+            }
+        }
+
+        var value = new String($(obj).val().replace(/\s+/g, ""));
+        $(obj).val(value);
+        if (isNaN(value) || value.indexOf(".") != -1) {
+            $.DHB.message({ 'content': '仅允许输入数字', 'time': 4000, 'type': 'i' });
+            
+            var old_data = $(obj).attr('old-data');
+            if (typeof (old_data) == 'undefined') { old_data = ''; }
+            value = old_data;
+            $(obj).val(value);
+        }
+        value = value + "";
+        $(obj).attr('old-data', value);
+    }
+
+    //排除浏览器缓存 --表单提交
+    function submitForm($fm, $btn, goods) {
+        var dbzJsonStr = "";
+        $('#dbz_table tr', _).each(function (index, obj) {
+            //
+            var isFirst = obj.attributes["data-options"];
+            if (typeof (isFirst) != 'undefined') {
+                var barcode = obj.cells[1].children[0].value;
+                var mc = obj.cells[2].children[0].value;
+                var dw = obj.cells[3].children[0].value;
+                var zhl = obj.cells[4].children[0].value;
+                var dj_jh = obj.cells[5].children[0].value;
+                var dj_ls = obj.cells[6].children[0].value;
+                var dj_hy = obj.cells[7].children[0].value;
+                if (dbzJsonStr != "") {
+                    dbzJsonStr += ',{"barcode":"' + barcode + '","mc":"' + mc + '","dw":"' + dw + '","zhl":"' + zhl + '" ,"dj_jh":"' + dj_jh + '" ,"dj_ls":"' + dj_ls + '" ,"dj_hy":"' + dj_hy + '"  }';
+                } else {
+                    dbzJsonStr += '{"barcode":"' + barcode + '","mc":"' + mc + '","dw":"' + dw + '","zhl":"' + zhl + '" ,"dj_jh":"' + dj_jh + '" ,"dj_ls":"' + dj_ls + '","dj_hy":"' + dj_hy + '"  }';
+                }
+            }
+        });
+
+        if (dbzJsonStr != "") { $(_ + '#dbzList').val("[" + dbzJsonStr + "]") }
+
+        $(_ + '#sp_qc').val('{"sl_qc":"' + $(_ + '#sl_qc').val() + '","je_qc":"' + $(_ + '#je_qc').val() + '" }')
+
+        
+        $.post(
+
+           $fm.attr('action'),
+           $fm.serialize(),
+           function (data) {
+               $btn.button("reset");
+               if (data.status == "success") {
+                   $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                   if ($(_ + '#is_need_new').val() != '1') {
+                       //$.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品管理', id: 'shopsp/list', nocache: '0' });
+                       //$.DHB.url('/shopsp/list', 'cache');
+                       $.DHB.url('gys/list', 'cache');
+                       $.fn.menuTab.deleteMenu('gys/list');
+
+                   }
+                   else {
+                       $.fn.menuTab.deleteMenu('gys/edit');
+                       $.fn.menuTab.load({ url: '/gys/edit', 'title': '新增供应商', id: 'gye/edit', nocache: '0' });
+                   }
+               }
+               else {
+                   $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                   $btn.button('reset');
+               }
+           }, 'json');
+    }
+
+</script>

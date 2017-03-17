@@ -1,0 +1,665 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Model.Ts
+@using CySoft.Model.Tz
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    var digit = ViewData["DigitHashtable"] as Hashtable;//小数点控制
+    digit = digit ?? new Hashtable();
+    var id_shop = ViewData["id_shop"] ==null? "" : ViewData["id_shop"].ToString();
+    var selectListShopShop = ViewData["shopList"] as List<Tb_User_ShopWithShopMc>;
+    selectListShopShop = selectListShopShop ?? new List<Tb_User_ShopWithShopMc>();
+    var selectListDigitlx = ViewData["digitlx"] as List<Ts_Flag>;
+    selectListDigitlx = selectListDigitlx ?? new List<Ts_Flag>();
+    var hyfls = ViewData["hyfls"] as List<Tb_Hyfl>;
+    hyfls = hyfls ?? new List<Tb_Hyfl>();
+    var defaultStarTime = DateTime.Now.ToString("yyyy-MM-dd");
+    var defaultEndTime = DateTime.Now.AddYears(50).ToString("yyyy-MM-dd");
+    //门店
+    var optinShopList = " <option value=\"0\">All-所有门店</option> ";
+    foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+    { optinShopList += Html.Raw("<option value=\"" + item.id_shop + "\">" + item.mc + "</option>"); }
+    //会员类型
+    var optinHyflList = "  <option value=\"0\">All-所有会员卡类别</option>";
+    foreach (var item in hyfls.OrderBy(d => d.rq_create))
+    { optinHyflList += Html.Raw("<option value=\"" + item.id + "\">" + item.mc + "</option>"); }
+    //截取小数类型
+    var optinJqxslxList = "";
+    foreach (var item in selectListDigitlx.OrderBy(d => d.listsort))
+    { optinJqxslxList += Html.Raw("<option value=\"" + item.listdata + "\">" + item.listdisplay + "</option>"); }
+
+    var db_data = ViewData["db_data"] as List<Tb_Hy_Czrule_Query>;
+    db_data = db_data ?? new List<Tb_Hy_Czrule_Query>();
+
+    var db_dbjf_data = ViewData["db_dbjf_data"] as Ts_HykDbjf;
+    db_dbjf_data = db_dbjf_data ?? new Ts_HykDbjf();
+
+    var version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    var is_master=ViewData["is_master"] == null ? "false" : ViewData["is_master"].ToString().ToLower();
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="hyczrule/czruleset"]').attr({ controller: 'hyczrule', action: 'czruleset' });
+        app.c.public_data['hyczrule/czruleset'] = app.c.public_data['hyczrule/czruleset'] || {};
+        app.c.public_data['hyczrule/czruleset']['once'] = false;
+
+    });
+</script>
+<input pagesize="" value="" type="hidden">
+<input page="" value="" type="hidden">
+<div class="contentbox-header">
+    <a class="" onclick="$.DHB.refresh();">充值规则</a>
+</div>
+
+<div class="col" id="CZRuleSet">
+    <div class="panel panel-default">
+        <div class="main-content comform" style="overflow:hidden;">
+            <form novalidate="novalidate" class="client-box" id="update_promote_form" onkeyup="if(event.keyCode==13){return false;}" onkeydown="if(event.keyCode==13){return false;}">
+                <div class="row">
+                    <div class="col-xs-12">
+                    </div>
+                </div>
+
+                <!--充值规则-->
+                <div class="fixed-input-group" id="_div_hyczrule_czruleset">
+                    <!--充值设置-->
+                    <div class="input-item-2 clearfix add-client form_line">
+                        <div style="margin-bottom:0px;">
+                            <label class="item-2-label">
+                                <em class="tag">* </em><span>充值设置：</span>
+                            </label>
+                            <button class="btn btn-info w-xs f-r" type="button" onclick="app.hyczrule.czruleset.add_dbjf(this)">保存</button>
+                            <label class="m-l-xs1 com_font">
+
+                            </label>
+                        </div>
+                    </div>
+
+                    @if (version == "20"&& is_master=="true")
+                    {
+                        <!--选择门店-->
+                        <div class="input-item-2 clearfix add-client form_line">
+                            <div class="p-l-75">
+                                
+                                <label class="m-l-xs1 com_font">
+                                    <select name="id_shop_dbjf" id="id_shop_dbjf" onchange="app.hyczrule.czruleset.shopChange()" style="width:180px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                        <option value="0" @(string.Format(db_dbjf_data.id_shop == "0" ? "selected=\"selected\"" : ""))>All-所有门店</option>
+                                        @foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+                                        {
+                                            <option value="@item.id_shop" @(string.Format(db_dbjf_data.id_shop == item.id_shop ? "selected=\"selected\"" : ""))>@item.mc</option>
+                                        }
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="display:none;">
+                            <select name="id_shop_dbjf" id="id_shop_dbjf" onchange="app.hyczrule.czruleset.shopChange()" style="width:180px;" class="form-control input-sm box-shawn user-input search-result select22 {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                <option value="@db_dbjf_data.id_shop" selected="selected">@db_dbjf_data.id_shop</option>
+                            </select>
+                        </div>
+                     }
+
+
+                            <!--会员卡充值设置-->
+                            <div class="input-item-2 clearfix add-client form_line">
+                               
+                                <div class="p-l-75">
+                                    <ul class="col-sm-12">
+                                        <li class="col-sm-3"><label class="f-l">&nbsp; 每次最小金额 &nbsp;</label>
+<input class="form-control f-l user-input {required:true,isNum:true}" style="width:70px;" name="hy_czje_min_onec" id="hy_czje_min_onec" value="@(string.Format(db_dbjf_data.hy_czje_min_onec??""))" type="text"></li>
+                                        <li class="col-sm-3"><label class="f-l">&nbsp; 每次最大金额 &nbsp;</label>
+<input class="form-control f-l user-input {required:true,isNum:true}" style="width:70px;" name="hy_czje_max_onec" id="hy_czje_max_onec" value="@(string.Format(db_dbjf_data.hy_czje_max_onec??""))" type="text"></li>
+                                        <li class="col-sm-3"><label class="f-l">&nbsp; 每月最大金额 &nbsp;</label>
+<input class="form-control f-l user-input {required:true,isNum:true}" style="width:70px;" name="hy_czje_max_month" id="hy_czje_max_month" value="@(string.Format(db_dbjf_data.hy_czje_max_month??""))" type="text"></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="input-item-2 clearfix add-client p-t row1">
+                                <div>
+                                    <label class="item-2-label">
+                                        <span>充值规则：</span>
+                                    </label>
+                                    <button class="btn btn-info w-xs f-r" type="button" id="add_rule" onclick="app.hyczrule.czruleset.add_czgz(this,'add')">增加规则</button>
+                                </div>
+                                
+                                <!--表头-->
+                                <div id="shop_fl_title">
+                                    
+                                    <label class="m-l-xs1">
+                                        <a class="xzsp_a form_title" href="javascript:void(0)" data-group="_jfgz" data-group-name="yx" onclick="changeSelectTab(this)"><span>当前有效</span></a>
+                                        <a class="xzsp_a" href="javascript:void(0)" data-group="_jfgz" data-group-name="ysx" data-divid="show_lwsp" onclick="changeSelectTab(this)"><span>已失效</span></a>
+                                        <a class="xzsp_a" href="javascript:void(0)" data-group="_jfgz" data-group-name="jjsx" data-divid="show_lwsp" onclick="changeSelectTab(this)"><span>即将生效</span></a>
+                                    </label>
+                                </div>
+                                <!--表体-->
+                                <div class="li_list">
+                                    <input id="table_sort_num" value="1" type="hidden">
+                                    
+                                    <!--当前有效-->
+                                    <div data-group="_jfgz" data-name="yx" style="display: inherit;" class="">
+                                        <ul>
+                                            @foreach (var item_yx in db_data.Where(d => d.day_b <= DateTime.Now && d.day_e > DateTime.Now && d.flag_stop == (byte)CySoft.Model.Enums.Enums.FlagStop.Start).OrderByDescending(d => d.sort_id))
+                                            {
+                                               if (is_master != "true" && item_yx.id_shop != id_shop && item_yx.id_shop != "0") { continue; }
+
+                                            <li>
+                                                <div class="width200 f-l">
+                                                    <label>门店：</label>
+                                                    <span>@item_yx.shopmc</span>
+                                                </div>
+                                                <div class="width200 f-l">
+                                                    <label>指定会员类别：</label>
+                                                    <span>@item_yx.hyflmc</span>
+                                                </div>
+                                                <div class="width200 f-l">
+                                                    <label>日期：</label>
+                                                    <input disabled="disabled" name="day_b" id="day_b_@item_yx.id" class="form-control input-sm w_80 {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_b_@item_yx.id' })" value="@(item_yx.day_b == null ? defaultStarTime : ((DateTime)item_yx.day_b).ToString("yyyy-MM-dd"))">
+                                                    <label>至</label>
+                                                    <input disabled="disabled" name="day_e" id="day_e_@item_yx.id" class="form-control input-sm w_80 {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_e_@item_yx.id' })" value="@(item_yx.day_e == null ? defaultEndTime : ((DateTime)item_yx.day_e).ToString("yyyy-MM-dd"))">
+                                                </div>
+                                                <div class="width200 f-l">
+                                                    <label>充值金额：</label>
+                                                    <input type="text" disabled="disabled" name="je" class="w-65" value="@item_yx.je_cz.Digit((int)digit["je_digit"])">
+                                                </div>
+                                                <div class="width200 f-l">
+                                                    <label>赠送金额：</label>
+                                                    <input type="text" disabled="disabled" name="jf" class="w-65" value="@item_yx.je_cz_zs.Digit((int)digit["je_digit"])">
+                                                </div>
+                                                <div class="width200 f-l">
+                                                    <label>赠送商品：</label>
+                                                    <label>
+                                                    @foreach(var sp_data in item_yx.body_list)
+                                                    {
+                                                        @(sp_data.mc +"[" + sp_data.sl.Digit((int)digit["je_digit"]) + "]  "+sp_data.dw.Trim()+",")
+                                                    }
+                                                
+                                                    </label>
+                                                </div>
+                                                <div class="width200 f-r">
+                                                    @if (is_master == "true" || item_yx.id_shop != "0")
+                                                    {
+                                                    <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.add_czgz(this,'add')" title="新增">新增</a>
+                                                    <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.copy('@item_yx.id','copy')" title="复制">复制</a>
+                                                    <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.eidt('@item_yx.id','edit')" title="设置">设置</a>
+                                                    <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.stop('@item_yx.id_bill', this)" title="作废">作废</a>
+                                                    }
+                                                </div>
+                                           </li>
+                                                    
+                                                    }
+
+                                        </ul>
+
+                                    </div>
+                                    <!--已失效-->
+                                    <div data-group="_jfgz" data-name="ysx" class="" style="display:none;">
+                                        
+                                        <ul>
+
+                                            @foreach (var item_ysx in db_data.Where(d => !(d.day_b <= DateTime.Now && d.day_e > DateTime.Now) || d.flag_stop == (byte)CySoft.Model.Enums.Enums.FlagStop.Stopped).OrderByDescending(d => d.sort_id))
+                                            {
+                                                if (is_master != "true" && item_ysx.id_shop != id_shop && item_ysx.id_shop != "0") { continue; }
+                                                <li data-item="item_ysx_@item_ysx.id">
+                                                    
+                                                    <div class="width200 f-l">
+                                                        <label>门店：</label>
+                                                        <span>@item_ysx.shopmc</span>
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>指定会员类别：</label>
+                                                        <span>@item_ysx.hyflmc</span>
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>日期：</label>
+                                                        <input disabled="disabled" name="day_b" id="day_b_@item_ysx.id" class="form-control input-sm w_80 {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_b_@item_ysx.id' })" value="@(item_ysx.day_b == null ? defaultStarTime : ((DateTime)item_ysx.day_b).ToString("yyyy-MM-dd"))">
+                                                        <label>至</label>
+                                                        <input disabled="disabled" name="day_e" id="day_e_@item_ysx.id" class="form-control input-sm w_80 {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_e_@item_ysx.id' })" value="@(item_ysx.day_e == null ? defaultEndTime : ((DateTime)item_ysx.day_e).ToString("yyyy-MM-dd"))">
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>充值金额：</label>
+                                                        <input type="text" disabled="disabled" name="je" class="w-65" value="@item_ysx.je_cz.Digit((int)digit["je_digit"])">
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>赠送金额：</label>
+                                                        <input type="text" disabled="disabled" name="jf" class="w-65" value="@item_ysx.je_cz_zs.Digit((int)digit["je_digit"])">
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>赠送商品：</label>
+                                                        <label>
+                                                            @foreach (var sp_data in item_ysx.body_list)
+                                                            {
+                                                                @(sp_data.mc + "[" + sp_data.sl.Digit((int)digit["je_digit"]) + "]  " + sp_data.dw.Trim() + ",")
+                                                            }
+                                                        </label>
+                                                    </div>
+                                                    <div class="width200 f-r">
+                                                        @if (is_master == "true" || item_ysx.id_shop != "0")
+                                                        {
+                                                            <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.add_czgz(this,'add')" title="新增">新增</a>
+                                                            <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.copy('@item_ysx.id','copy')" title="复制">复制</a>
+                                                            @*<a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.eidt('@item_ysx.id','edit')" title="设置">设置</a>
+                                                            <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.stop('@item_ysx.id_bill', this)" title="作废">作废</a>*@
+                                                        }
+                                                    </div>
+                                                    
+                                                </li>
+                                            }
+
+                                        </ul>
+
+
+
+                                    </div>
+                                    <!--即将生效-->
+                                    <div data-group="_jfgz" data-name="jjsx" class="" style="display:none;">
+                                        <ul>
+
+                                            @foreach (var item_jjsx in db_data.Where(d => !(d.day_b <= DateTime.Now && d.day_e > DateTime.Now) && (d.day_b <= DateTime.Now.AddHours(24) && d.day_e > DateTime.Now.AddHours(24)) && d.flag_stop == (byte)CySoft.Model.Enums.Enums.FlagStop.Start).OrderByDescending(d => d.sort_id))
+                                            {
+                                                if (is_master != "true" && item_jjsx.id_shop != id_shop && item_jjsx.id_shop != "0") { continue; }
+                                                <li data-item="item_jjsx_@item_jjsx.id">
+                                                    <div class="width200 f-l">
+                                                        <label>门店：</label>
+                                                        <span>@item_jjsx.shopmc</span>
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>指定会员类别：</label>
+                                                        <span>@item_jjsx.hyflmc</span>
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>日期：</label>
+                                                        <input disabled="disabled" name="day_b" id="day_b_@item_jjsx.id" class="form-control input-sm w_80 {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_b_@item_jjsx.id' })" value="@(item_jjsx.day_b == null ? defaultStarTime : ((DateTime)item_jjsx.day_b).ToString("yyyy-MM-dd"))">
+                                                        <label>至</label>
+                                                        <input disabled="disabled" name="day_e" id="day_e_@item_jjsx.id" class="form-control input-sm w_80 {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'day_e_@item_jjsx.id' })" value="@(item_jjsx.day_e == null ? defaultEndTime : ((DateTime)item_jjsx.day_e).ToString("yyyy-MM-dd"))">
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>充值金额：</label>
+                                                        <input type="text" disabled="disabled" name="je" class="w-65" value="@item_jjsx.je_cz.Digit((int)digit["je_digit"])">
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>赠送金额：</label>
+                                                        <input type="text" disabled="disabled" name="jf" class="w-65" value="@item_jjsx.je_cz_zs.Digit((int)digit["je_digit"])">
+                                                    </div>
+                                                    <div class="width200 f-l">
+                                                        <label>赠送商品：</label>
+                                                        <label>
+                                                            @foreach (var sp_data in item_jjsx.body_list)
+                                                            {
+                                                                @(sp_data.mc + "[" + sp_data.sl.Digit((int)digit["je_digit"]) + "]  " + sp_data.dw.Trim() + ",")
+                                                            }
+                                                        </label>
+                                                    </div>
+                                                    <div class="width200 f-r">
+                                                        @if (is_master == "true" || item_jjsx.id_shop != "0")
+                                                        {
+                                                            <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.add_czgz(this,'add')" title="新增">新增</a>
+                                                            <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.copy('@item_jjsx.id','copy')" title="复制">复制</a>
+                                                            <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.eidt('@item_jjsx.id','edit')" title="设置">设置</a>
+                                                            <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.stop('@item_jjsx.id_bill', this)" title="作废">作废</a>
+                                                        }
+                                                    </div>
+                                                </li>
+                                            }
+
+
+
+
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                </div>
+
+                        </div>
+
+                <input type="hidden" id="addspid" value=""/>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //定义全局容器
+    $.DHB._ = function () {
+        app.c.public_data['hyczrule/czruleset'] = app.c.public_data['hyczrule/czruleset'] || {};
+        if (app.c.public_data['hyczrule/czruleset']['once'] === false) {
+            app.c.public_data['hyczrule/czruleset']['once'] = true;
+            $.DHB.checkForm(function () {
+                return false;
+            });
+        }
+    };
+
+    //定义全局变量
+    app.hyczrule = app.hyczrule || {};
+
+    //定义全局变量
+    app.hyczrule.czruleset = app.hyczrule.czruleset || {};
+
+    //初始页面后执行一次
+    app.hyczrule.czruleset_ready = function () {
+        app.hyczrule.czruleset.currentSelectSpTab = "xfje";
+    }
+
+    //表TAB切换
+    function changeSelectTab(input) {
+        var _input = $(input);
+        var divgroup = _input.attr("data-group");
+        var divname = _input.attr("data-group-name");
+        $(input).addClass('form_title');
+        $(input).siblings().removeClass('form_title');
+        app.hyczrule.czruleset.currentSelectSpTab = divname;
+        $("div[data-group=" + divgroup + "]")
+            .each(function (index, item) {
+                if ($(item).attr("data-name") === divname) {
+                    $(item).css("display", "inherit");
+                } else {
+                    $(item).css("display", "none");
+                }
+            });
+    }
+
+    //关闭
+    app.hyczrule.czruleset.cancel = function (obj) {
+        $.fn.menuTab.deleteMenu('hyczrule/czruleset');
+    }
+
+    //新增规则
+    app.hyczrule.czruleset.add_czgz = function (obj, type) {
+        //
+        $(obj).trigger('blur');
+        $.DHB.dialog({
+            'title': '新增充值规则', 'url': $.DHB.U('hyczrule/add?type=' + type), 'id': 'dialog-hyczrule-add', 'confirm': app.hyczrule.czruleset.dialogadd
+        });
+    };
+
+    //新增规则回调函数
+    app.hyczrule.czruleset.dialogadd = function () {
+        //$.DHB.url('hyczrule/czruleset', 'cache');
+        //$.DHB.dialog({ 'id': 'dialog-hyczrule-add', 'action': 'destroy' });
+    }
+    //复制规则
+    app.hyczrule.czruleset.copy = function (id_bill, type) {
+
+        $.DHB.dialog({
+            'title': '新增充值规则', 'url': $.DHB.U('hyczrule/add?id=' + id_bill + "&type=" + type), 'id': 'dialog-hyczrule-add'
+        });
+        ////console.log($.DHB.U('hyczrule/add?id=' + id_bill + "&type=" + type));
+
+    }
+    //设置规则
+    app.hyczrule.czruleset.eidt = function (id_bill, type) {
+        $.DHB.dialog({
+            'title': '新增充值规则', 'url': $.DHB.U('hyczrule/add?id=' + id_bill + "&type=" + type), 'id': 'dialog-hyczrule-add'
+        });
+        ////console.log($.DHB.U('hyczrule/add?id=' + id_bill + "&type=" + type));
+    }
+    //作废规则
+    app.hyczrule.czruleset.stop = function (id_bill) {
+        var objData = {};
+        objData.ids = id_bill;
+        $.messager.confirm("提示", "确定作废此规则吗?", function () {
+
+            var options = {
+                data: objData,
+                url: $.DHB.U('hyczrule/stop'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                        $.DHB.url('hyczrule/czruleset', 'cache');
+
+                    } else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options);
+
+        });
+    }
+   
+
+    
+
+    
+
+    //新增----删除行
+    //app.hyczrule.czruleset.choice_del = function (el) {
+    //        $(el).parents('tr').remove();
+    //        app.hyczrule.czruleset.reset_xh();
+    //}
+
+    ////新增----保存按钮事件
+    //app.hyczrule.czruleset.save = function () {
+    //    var btn = $(_ + '#submit-button').button('loading');
+
+    //    $.messager.confirm("提示", "确定新增的规则吗?", function () {
+    //        app.hyczrule.czruleset.dopost();
+    //    });
+    //    btn.button('reset');
+    //}
+
+    ////新增----调用接口执行保存
+    //app.hyczrule.czruleset.dopost = function () {
+    //    var objData = {};
+    //    objData.table_info = JSON.stringify(app.hyczrule.czruleset.getdata());
+
+    //    $.post($.DHB.U('hyczrule/czruleset'), objData,
+    //                  function (data) {
+    //                      if (data.status == "success") {
+    //                          $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+    //                          //$.DHB.url('hyczrule/czruleset', 'cache');
+    //                      } else {
+    //                          $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+    //                      }
+    //                  }, 'json'
+    //         );
+    //}
+
+    ////新增----按消费金额设置----设置Data
+    //app.hyczrule.czruleset.getdata = function () {
+    //    var obj_list = [];
+        
+    //    $('#table_hyczrule_czruleset_db_new>tbody>tr', _).each(function (i, item) {
+    //        
+    //        var obj = {};
+    //        obj.id_shop_cz = $(this).find('select[name="id_shop"] option:selected').val();
+    //        obj.day_b = $(this).find('input[name=day_b]').val();
+    //        obj.day_e = $(this).find('input[name=day_e]').val();
+    //        obj.id_hyfl = $(this).find('select[name="id_hyfl"] option:selected').val();
+    //        obj.je_cz = $(this).find('input[name=je_cz]').val();
+    //        obj.je_cz_zs = $(this).find('input[name=je_cz_zs]').val();
+    //        obj.bz = $(this).find('input[name=bz]').val();
+
+            
+    //        var sp_list = [];
+    //        $(this).find('table[name="sp_info"]').find('tbody>tr').each(function (i, item) {
+    //            
+    //            var sp = {};
+    //            var id_sp_input= $(item).find('input[name="id_sp"]');
+    //            if(typeof(id_sp_input)!='undefined'&&id_sp_input.val()!='undefined'&&id_sp_input.val()!=''){
+    //                
+    //                sp.id_sp=id_sp_input.val();
+    //                sp.sl=$(item).find('input[name="sl"]').val();
+    //                sp_list.push(sp);
+    //            }
+    //        });
+
+    //        obj.sp_list = JSON.stringify(sp_list);
+
+    //        obj_list.push(obj);
+    //    });
+    //    return obj_list;
+    //}
+
+    
+
+    
+
+    
+
+    
+
+
+
+    //查看商品
+    app.hyczrule.czruleset.seesp = function (tr_data_item, id_bill, tab,e) {
+        //
+        var objData = {};
+        objData.id_bill = id_bill;
+        if ($(e).html() == '查看商品') {
+            $.post($.DHB.U('hyczrule/getczrule_zssp'), objData,
+                      function (data) {
+                          if (data.status == "success") {
+
+                              var tr_info = $(_ + "#table_hyczrule_czruleset_" + tab).find("tr[data-item=" + tr_data_item + "]");
+                              var table_info = tr_info.find('div[name="sp_info"]');
+                              table_info.text('');
+
+                              var resultHtml = ' <tr><td colspan="9"><ul name="sp_info" width="100%">';
+                              //resultHtml += '  <thead>';
+                              resultHtml += '   <li class="col-sm-3"><div  class="f-l">名称<input type="hidden" name="id_sp" value=""/></div><div class="f-l">数量</div></li>';
+                              resultHtml += '   <li class="col-sm-3"><div  class="f-l">名称<input type="hidden" name="id_sp" value=""/></div><div class="f-l">数量</div></li>';
+                              resultHtml += '   <li class="col-sm-3"><div  class="f-l">名称<input type="hidden" name="id_sp" value=""/></div><div class="f-l">数量</div></li>';
+                              resultHtml += '   <li class="col-sm-3"><div  class="f-l">名称<input type="hidden" name="id_sp" value=""/></div><div class="f-l">数量</div></li>';
+                              //resultHtml += '  </thead><tbody>';
+                              for (var item in data.data) {
+                                  resultHtml += '  <li class="col-sm-3"><div class="f-l"><span name="sp_mc">' + data.data[item].mc + '</span> <input type="hidden" name="id_sp" value="' + data.data[item].id_shopsp + '"/>   </div><div class="align_center f-l"><input name="sl" style="width:40px;" value="1"></div>  </li>';
+                              }
+
+                              //resultHtml += '  </tbody>';
+                              resultHtml += ' </ul></td></tr>';
+                              $(e).html("关闭商品");
+                              tr_info.after(resultHtml);
+
+
+                          } else {
+                              $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                          }
+                      }, 'json'
+             );
+        } else {
+            var tr_info = $(_ + "#table_hyczrule_czruleset_" + tab).find("tr[data-item=" + tr_data_item + "]");
+            $(e).html("查看商品");
+            tr_info.next('tr').remove();
+        }
+        
+    }
+    
+
+    
+
+    
+
+
+
+
+    //充值设置----保存
+    app.hyczrule.czruleset.add_dbjf = function (obj) {
+
+        var obj = {};
+
+        obj.id_shop = $(_ + "#id_shop_dbjf").find('option:selected').val();//门店
+        obj.hy_czje_min_onec = $(_ + "#hy_czje_min_onec").val();//hy_czje_min_onec
+        obj.hy_czje_max_onec = $(_ + "#hy_czje_max_onec").val();//hy_czje_max_onec
+        obj.hy_czje_max_month = $(_ + "#hy_czje_max_month").val();//hy_czje_max_month
+
+        //验证金额参数
+        //if (obj.hy_czje_min_onec == '' && obj.hy_czje_max_onec == '' && obj.hy_czje_max_month == '') {
+        //    $.DHB.message({ 'content': '请先填写充值金额参数', 'time': 4000, 'type': 'i' });
+        //    return;
+        //}
+        debugger;
+        if (obj.hy_czje_min_onec != '' && obj.hy_czje_max_onec != '')
+        {
+            if (parseFloat(obj.hy_czje_min_onec) > parseFloat(obj.hy_czje_max_onec)) {
+                $.DHB.message({ 'content': '每次最小金额 不能大于 每次最大金额！', 'time': 0, 'type': 'e' });
+                return;
+            }
+        }
+
+        if (obj.hy_czje_min_onec != '' && obj.hy_czje_max_month != '') {
+            if (parseFloat(obj.hy_czje_min_onec) > parseFloat(obj.hy_czje_max_month)) {
+                $.DHB.message({ 'content': '每次最小金额 不能大于 每月最大金额！', 'time': 0, 'type': 'e' });
+                return;
+            }
+        }
+
+        if (obj.hy_czje_max_onec != '' && obj.hy_czje_max_month != '') {
+            if (parseFloat(obj.hy_czje_max_onec) > parseFloat(obj.hy_czje_max_month)) {
+                $.DHB.message({ 'content': '每次最大金额 不能大于 每月最大金额！', 'time': 0, 'type': 'e' });
+                return;
+            }
+        }
+
+        
+        //post执行操作
+        $.messager.confirm("提示", "确定修改充值设置吗?", function () {
+
+            var options = {
+                data: {
+                    je_obj: JSON.stringify(obj)
+                },
+                url: $.DHB.U('hyczrule/setjeminmax'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options);
+
+        });
+    };
+
+    //充值设置----按门店查询
+    app.hyczrule.czruleset.shopChange = function (obj) {
+        var id_shop = $(_ + "#id_shop_dbjf").find('option:selected').val();
+        $.post($.DHB.U('hyczrule/getjeminmax'), { id_shop: id_shop },
+                function (data) {
+                    
+                    if (data.status == "success") {
+                        var obj = data.data;
+                            $(_ + "#hy_czje_min_onec").val(obj.hy_czje_min_onec);
+                            $(_ + "#hy_czje_max_onec").val(obj.hy_czje_max_onec);
+                            $(_ + "#hy_czje_max_month").val(obj.hy_czje_max_month);
+                    }
+                }, 'json'
+            );
+
+
+    };
+
+    
+
+
+    
+
+</script>
+

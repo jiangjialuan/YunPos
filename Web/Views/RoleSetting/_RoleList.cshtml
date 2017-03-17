@@ -1,0 +1,104 @@
+﻿@using CySoft.Model.Flags
+@using CySoft.Model.Tb
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tb_Role_Query>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var isBind = actionlist.Any(l => l.ToLower() == "editrolemodule");//EditRoleModule
+    var isBindPos = actionlist.Any(l => l.ToLower() == "bindposfunction");//BindPosFunction
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                序号
+            </th>
+            <th>角色名称</th>
+            <th>角色描述</th>
+            <th>登录管理后台</th>
+            <th>登录POS端</th>
+            <th width="300" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="rolelist-main-tbody">
+        @{
+            if (pageList != null)
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-dw-id-@item.id" class="tr-status-finished">
+                            <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                @(index++)
+                            </td>
+                            <td><a class="list-link">@item.name</a></td>
+                            <td>@item.role_describe</td>
+                            <td class="cnert">
+                                @if (item.admin_mgr > 0)
+                                {
+                                    <i class="fa fa-check"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-times"></i>
+                                }
+                            </td>
+                            <td class="cnert">
+                                @if (item.pos_mgr > 0 || item.id == "3")
+                                {
+                                    <i class="fa fa-check"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-times"></i>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @*
+                                    <p class="cut-out">
+                                        &nbsp;
+                                    </p>
+                                *@
+                                @if (true)//(item.flag_update == (int)YesNoFlag.Yes)
+                                {
+                                    <div class="look-out1">
+                                        <div class="second-height-operate pull-left">
+                                            @if (isEdit && item.flag_update == (int)YesNoFlag.Yes)
+                                            {
+                                                <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.rolesetting.edit(this,'@item.id')" title="编辑"></a>
+                                            }
+                                            @if (isBind)
+                                            {
+                                                <a class="bg-state bg-state-info fa fa-cog" href="javascript:;" onclick="$.fn.menuTab.load({url: '/rolesetting/editrolemodule?id=@item.id&rolename=@item.name','title': '权限设置',id: 'rolesetting/editrolemodule',nocache: '0'}); " title="权限设置"></a>
+                                            }
+                                            @if (isDel && item.flag_update == (int)YesNoFlag.Yes)
+                                            {
+                                                <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.rolesetting.del(this,'@item.id')" title="删除"></a>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript">
+    app.c.public_data['rolesetting/rolelist'] = app.c.public_data['rolesetting/rolelist'] || {};
+    app.c.public_data['rolesetting/rolelist']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['rolesetting/rolelist']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['rolesetting/rolelist']['_current_page_'] = '@pageList.PageIndex';
+</script>

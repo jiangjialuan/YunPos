@@ -1,0 +1,532 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Model.Ts
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tb_Promote_Query>;
+    pageList = pageList ?? new PageList<Tb_Promote_Query>(10);
+    var cxlist= ViewData["cxlist"] as List<Ts_Flag>;
+    cxlist = cxlist ?? new List<Ts_Flag>();
+    var userShopList= ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>;
+    userShopList=userShopList??new List<Tb_User_ShopWithShopMc>();
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    string sort = ViewData["sort"].ToString();
+    var func= ViewData["GetBackViewName"] as Func<string, string>;
+    var datafunc = new Func<DateTime,DateTime, string>((date_b,date_e) =>
+    {
+        var date = DateTime.Now;
+        if (date < date_b)
+        {
+            return "未开始";
+        }
+        if (date > date_e)
+        {
+            return "已过期";
+        }
+        return "进行中";
+    });
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="promote/currentlist"]').attr({ controller: 'promote', action: 'currentlist' });
+        app.c.public_data['promote/currentlist'] = app.c.public_data['promote/currentlist'] || {};
+        app.c.public_data['promote/currentlist']['once'] = false;
+        app.promote = app.promote || {};
+
+        //分页
+        app.promote.currentlist_pagination_callback = function (data, textStatus, idx, jq) {
+            app.promote.currentlist_search_callback(data, textStatus);
+        };
+
+        //查询回调
+        app.promote.currentlist_search_callback = function (data, textStatus) {
+            
+            var sort_array = $('#promote-currentlist-list-fresh-box a[data-sort]');
+            var $current_sort = ($('#hid_sort').val().toLowerCase()).split(' ', 2);       //这是当前排序
+
+            //绑定UI
+            sort_array.each(function (index, obj) {
+                var $current = $(obj);
+                ////console.log($current);
+                if ($current.attr('data-sort') === $current_sort[0]) {
+                    $current.attr('data-dir', $current_sort[1]);
+                    if ($current_sort[1] === 'asc')
+                        $current.append(app.sort_icon.asc);      //升序
+                    else
+                        $current.append(app.sort_icon.desc);     //降序
+                }
+                else {
+                    $current.append(app.sort_icon.sort);
+                }
+            });
+
+            //绑定事件
+            sort_array.off('click').on('click', function (e) {
+                
+                var e = e || event;
+                var $current = $(e.target);        //获取当前点击派序列
+                var _dir = 'desc';
+                if ($.trim($current.attr('data-dir')).length == 0 || $.trim($current.attr('data-dir')) === 'asc') {
+                    $current.attr('data-dir', _dir);
+                }
+                else {
+                    _dir = 'asc';
+                    $current.attr('data-dir', _dir);
+                }
+                $('#hid_sort').val($current.attr('data-sort') + ' ' + _dir);
+                app.search.do_search_promote_currentlist();
+            });
+        };
+
+        //Init Sort
+        app.promote.currentlist_search_callback(null, null);
+    });
+</script>
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        促销管理
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        @*<p>1、查找你所有的商品单位信息</p>
+                        <p>2、添加商品单位信息</p>*@
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['promote/currentlist'] = app.c.public_data['promote/currentlist'] || {};
+    app.c.public_data['promote/currentlist']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['promote/currentlist']['threemenu'] === false) {
+            app.c.public_data['promote/currentlist']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                            <form class="filter-form" action="/promote/list">
+                            <div class="col-xs-10 pull-right">
+                            <div class="search-box-container">
+                                <div class="clearfix">
+                                    <!-- 内容搜索 -->
+                                    <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                        <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                            <input type="text" value="" onkeypress="app.search.trigger_search_promote_currentlist(event);" class="form-control input-sm search-h inline v-middle search-result search" name="s_rule_name" id="rule_name" style="width: 250px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="编码/商品条码/促销名称/促销单号/商品名称" ondblclick="app.search.search_item_clear_promote_currentlist(this);" /><span><button type="button" onclick="    app.search
+    .do_search_promote_currentlist(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span>
+                                            <span onclick="app.search.search_item_clear_promote_currentlist(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;">
+                                                            <i class="fa fa-times-circle"></i>
+                                                        </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                        <select id="s_bm_djlx" name="s_bm_djlx" class="form-control input-sm box-shawn user-input search-result select2" style="width: 115px;" onchange="app.search
+    .do_search_promote_currentlist(this);">
+                                            <option value="">全部促销类型</option>
+                                            @foreach (var item in cxlist)
+                                            {
+                                                <option value="@item.listcode">@item.listdisplay</option>
+                                            }
+                                        </select>
+
+                                    </div>
+                                    <div class="pull-right m-r-sm" style="margin-top:7px">
+                                        <select id="s_id_shop" name="s_id_shop" class="form-control input-sm box-shawn user-input search-result select2" style="width:115px;" onchange="app.search.do_search_promote_currentlist(this);">
+                                            <option value="">全部促销门店</option>
+                                            @foreach (var item in userShopList)
+                                            {
+                                                <option value="@item.id_shop">@item.mc</option>
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                app.c.public_data['promote/currentlist'] = app.c.public_data['promote/currentlist'] || {};
+                                app.c.public_data['promote/currentlist']['search_all'] = false;
+                                var currentSearch = 'app.c.public_data[\'promote/currentlist\'][\'search\']';
+                                eval(currentSearch + ' = false;');
+                                $.DHB._search = function() {
+                                    eval('if(' +
+                                        currentSearch +
+                                        '===false){app.search.search_promote_currentlist();' +
+                                        currentSearch +
+                                        '=true;}');
+                                }
+
+                                app.search = app.search || {}; 
+                                app.search.search_promote_currentlist = function () {
+                                    app.c.public_data['promote/currentlist'] = app.c.public_data['promote/currentlist'] || {};
+                                    app.c.public_data['promote/currentlist']['_row_total_'] = '@pageList.ItemCount';
+                                    app.c.public_data['promote/currentlist']['_page_size_'] = '@pageList.PageSize';
+                                    app.c.public_data['promote/currentlist']['_current_page_'] = '@(pageList.PageIndex)';
+                                    app.search.do_search_pagination_promote_currentlist();
+                                }
+
+
+                                app.search.trigger_search_promote_currentlist = function (event) {
+                                    //绑定回车键
+                                    event = event || window.event
+                                    if (event.keyCode == 13) {
+                                        app.search.do_search_promote_currentlist();
+                                        event.preventDefault();
+                                    }
+                                }
+
+                                //查询
+                                app.search.do_search_promote_currentlist = function (el, isExport) { 
+                                    isExport = isExport || 0;
+                                    var v = $(_ + ".filter-form").serialize();
+                                    ////console.log(v);
+                                    var url = '/promote/currentlist?_search_=1&' + v;
+                                    if (isExport == 1) {
+                                        url += '&export=1';
+                                        url = $.DHB.U(url);
+                                        window.location.href = url;
+                                    } else {
+                                        var options = {
+                                            url: $.DHB.U(url),
+                                            datatype: 'html',
+                                            beforeSend: function() {
+                                                $.DHB.showButterbar();
+                                            },
+                                            success: function (data, textStatus, jqXHR) {
+                                                if ($('#promote-currentlist-list-fresh-box', _).length > 0) {
+                                                    $('#promote-currentlist-list-fresh-box', _).html(data);
+                                                }
+                                                var curSearchcallback = 'app.promote.currentlist_search_callback';
+                                                var curListcallback = 'app.promote.currentlist_listready';
+                                                eval('try {if(' +
+                                                    curSearchcallback +
+                                                    ' && typeof(' +
+                                                    curSearchcallback +
+                                                    ')=="function"){' +
+                                                    curSearchcallback +
+                                                    '(data, textStatus); }}catch(e){}');
+                                                eval('try {if(' +
+                                                    curListcallback +
+                                                    ' && typeof(' +
+                                                    curListcallback +
+                                                    ')=="function"){' +
+                                                    curListcallback +
+                                                    '(); }}catch(e){}');
+                                                app.search.do_search_pagination_promote_currentlist();
+                                            },
+                                            complete: function(XHR, TS) {
+                                                $.DHB.closeButterbar();
+                                            }
+                                        };
+                                        //cy.http.Get(options);
+                                        app.httpAjax.post(options);
+                                    }
+                                    return false;
+                                };
+
+                                //分页
+                                app.search.do_search_pagination_promote_currentlist = function () {
+                                    $.DHB.func.pagination({
+                                        module_name: 'Manager',
+                                        controller_name: 'promote',
+                                        action_name: 'currentlist',
+                                        ready_once: false
+                                    });
+                                }
+
+
+                                app.search.do_search_option_promote_currentlist = function (el) {
+                                    if ($(el).attr('class') != '') {
+                                        $(el)
+                                            .find('span')
+                                            .each(function() {
+                                                if ($(this).attr('class') == '') {
+                                                    $(this).attr('class', 'order-active');
+                                                } else {
+                                                    $(this).attr('class', '');
+                                                }
+                                            });
+
+                                        if ($(el).find('span:eq(0)').attr('class') == '') {
+                                            $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                        } else {
+                                            $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                        }
+                                    }
+
+                                    if ($(el).attr('class') == '') {
+                                        $(el).parent().find('.active').removeClass('active');
+                                        $(el).addClass('active');
+                                        $(el)
+                                            .parents('.btn-group')
+                                            .find('input:eq(0)')
+                                            .val($(el).attr('value'));
+                                    }
+
+                                    $(el).parents('.btn-group').removeClass('open');
+                                    var selectA = $(el).find('a').clone();
+                                    selectA.find('span[class=""]').remove();
+                                    $(el)
+                                        .parents('.btn-group')
+                                        .find('button span:eq(0)')
+                                        .html(selectA.html());
+
+                                    app.search.do_search_promote_currentlist();
+                                }
+
+
+                                app.search.search_enter = function(el) {
+                                    if (app.c.public_data['promote/currentlist']['search_all'] === false) {
+                                        $(el)
+                                            .parents('.search-box-container')
+                                            .find(".bootstrap-select ul.dropdown-menu")
+                                            .each(function() {
+                                                var ts = $(this).find('li:first() span:first()');
+                                                ts.text('全部');
+                                            });
+                                        /*$(el).parents('.search-box-container').find(".treeview .list-group>li:first()").each(function(){
+                                            $(this).text('全部');
+                                        });*/
+                                        app.c.public_data['promote/currentlist']['search_all'] = true;
+                                    }
+                                }
+
+
+                                app.search.search_leave = function(el) {
+                                }
+
+                                app.search.search_client_clear_promote_currentlist = function (el) {
+                                    $(el).parents('.input-group').find('input').val('');
+                                    app.search.do_search_promote_currentlist();
+                                }
+
+
+                                app.search.wdatepicker_promote_currentlist = function (el) {
+                                    var booStart = $(el).data('type') == 'start';
+                                    var option = {};
+                                    option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                    option['onpicked'] = function() {
+                                        $(el)
+                                            .text($dp.cal.getP('y') +
+                                                '-' +
+                                                $dp.cal.getP('M') +
+                                                '-' +
+                                                $dp.cal.getP('d'));
+                                        if (booStart) {
+                                            setTimeout(function() {
+                                                    $(el)
+                                                        .parent()
+                                                        .find('[data-type="end"]')
+                                                        .data('position', '1')
+                                                        .click();
+                                                },
+                                                5000);
+                                        }
+                                        app.search.do_search_promote_currentlist();
+                                    };
+
+                                    if (booStart) {
+                                        option['maxDate'] =
+                                            '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                    } else {
+                                        option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                        if ($(el).data('position') == '1') {
+                                            //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                                            //$(el).data('position','');
+                                        }
+                                    }
+                                    option['oncleared'] = function() {
+                                        $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                        app.search.do_search_promote_currentlist();
+                                    };
+
+                                    WdatePicker(option);
+                                }
+
+
+                                app.search.search_item_clear_promote_currentlist = function (el) {
+                                    var par = $(el).parents('form');
+                                    par.get(0).reset();
+                                    par.find("select.select2_")
+                                        .selectpicker({ liveSearch: true })
+                                        .selectpicker('refresh');
+                                    par.find("select.select2").selectpicker('refresh');
+                                    app.search.do_search_promote_currentlist();
+                                }
+                            </script>
+                            </div>
+
+                            <input id="hid_sort" type="hidden" name="sort" value="@sort"/>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--数据表格-->
+                    @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                    <div id="promote-currentlist-list-fresh-box" class="table_list table_max_h">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="40" class="table-p-l-sm table-p-r-xsm-fixed">
+                                        序号
+                                    </th>
+                                    <th width="120">商品条码</th>
+                                    <th width="120">编码</th>
+                                    <th width="200">商品名称</th>
+                                    <th width="40">单位</th>
+                                    <th width="150">促销单号</th>
+                                    <th width="200">促销名称</th>
+                                    <th width="100">促销类型</th>
+                                    <th width="120">促销门店</th>
+                                    <th width="80">开始日期</th>
+                                    <th  width="80">结束日期</th>
+                                    <th width="110" class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="promotelist-main-tbody">
+                                @{
+                                    if (pageList == null || pageList.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="12" align="center">
+                                                <img src="~/static/images/nodata.png" class="table_nodata">
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        var list = pageList.Items;
+                                        if (list != null && list.Any())
+                                        {
+                                            int index = pageList.PageIndex * pageList.PageSize + 1;
+                                            var mindate = new DateTime(2000, 01, 01);
+                                            foreach (var item in list)
+                                            {
+                                                <tr id="row-promote-id-@item.id" class="tr-status-finished">
+                                                    <td class="text-center">
+                                                        @(index++)
+                                                    </td>
+                                                    <td><a class="list-link">@item.barcode</a></td>
+                                                    <td><a class="list-link">@item.bm</a></td>
+                                                    <td><a class="list-link">@item.sp_mc</a></td>
+                                                    <td class="align_center">@item.dw</td>
+                                                    <td class="align_center">@item.dh</td>
+                                                    <td><a onclick="app.promote.detial_current('@item.id_bill', '@item.bm_djlx', '@func(item.bm_djlx).ToLower()', this)" class="list-link">@item.rule_name</a></td>
+                                                    <td>@(cxlist.FirstOrDefault(a => a.listcode == item.bm_djlx).listdisplay)</td>
+                                                    <td><a class="list-link">@item.shop_mc</a></td>
+                                                    <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.day_b)</td>
+                                                    <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.day_e)</td>
+                                                    <td class="list-operate align_center">
+                                                        <div class="look-out1">
+                                                            <div class="second-height-operate">
+                                                                @if (true && item.flag_stop == 0)
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-ban" href="javascript:;" onclick="app.promote.stop('@item.id',this)" title="终止"></a>
+                                                                }
+                                                                <a class="bg-state bg-state-info fa fa-eye" title="查看" onclick="app.promote.detial_current('@item.id_bill', '@item.bm_djlx', '@func(item.bm_djlx).ToLower()', this)" style="margin-top: 5px;"></a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--页脚-->
+                    <footer class="panel-footer">
+                        <div class="dropup d-i-b" style="position: relative">
+                        </div>&nbsp;
+                        <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    app.promote = app.promote || {};
+
+    app.promote.detial_current = function (id, bm_djlx, method, obj) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ title: '促销单详细', url: $.DHB.U('promote/detial?id=' + id + '&bm_djlx=' + bm_djlx + '&form=currentlist'), id: 'promote/' + method, nocache: '0' });
+    };
+    //终止
+    app.promote.stop = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定终止吗?", function () {
+            //$.post($.DHB.U('promote/stop'),
+            //{
+            //    id: id
+            //},
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+            //            $.DHB.url('promote/currentlist', 'cache','当前查询');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //        }
+            //    }, 'json'); 
+            app.httpAjax.post({
+                data: { id: id },                    //请求参数
+                headers: {},                 //请求头
+                url: $.DHB.U('promote/stop'),
+                type: "POST",
+                datatype: 'json',             //服务器返回的数据类型
+                beforeSend: null,             //发送请求前
+                success: function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('promote/currentlist', 'cache', '当前查询');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },               //成功回调
+                error: null,                 //异常回调
+                complete: null              //请求完成后回调函数
+            });
+        }); 
+    };
+</script>  

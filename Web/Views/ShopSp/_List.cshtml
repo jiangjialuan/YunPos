@@ -1,0 +1,165 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Utility;
+@using CySoft.Model.Ts;
+
+@{
+    Layout = null;
+    PageList<Tb_Shopsp_Query> list_shopsp = ViewData["list_shopsp"] as PageList<Tb_Shopsp_Query>;
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+}
+
+
+<table class="table m-b-none row1 selectAll-table sptable" id="view-manager-goods" onmouseover="$.DHB.func.listOperate(this);" style="table-layout:fixed;">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                <label class="i-checks m-b-none">
+                    <input type="checkbox" id="check-btn-header" onclick="$.DHB.func.selectAllThis(this);">
+                    <i></i>
+                </label>
+            </th>
+            <th width="55">序号</th>
+            <th width="170">
+                商品条码
+            </th>
+            <th width="200">
+                商品名称
+            </th>
+            <th width="100">
+                商品分类
+            </th>
+            <th width="55">
+                单位
+            </th>
+            <th width="120">
+                零售价
+            </th>
+            <th width="120">
+                进货价
+            </th>
+
+            <th width="120">
+                会员价
+            </th>
+            <th width="120">
+                配送价
+            </th>
+            <th width="120">
+                批发价
+            </th>
+            <th width="77">
+                状态
+            </th>
+            <th  class="text-center" style="width:140px;">
+                操作
+            </th>
+        </tr>
+    </thead>
+    <tbody id="goodslist-main-tbody">
+        @{
+            if (list_shopsp == null || list_shopsp.Count == 0)
+            {
+                <tr>
+                    <td colspan="13" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                int index = 1;
+                foreach (var item in list_shopsp)
+                {
+                    <tr id="row-goods-id-@item.id">
+                        <td class="table-p-l-sm align_center">
+                            <label class="i-checks m-b-none">
+                                <input type="checkbox" name="goods_id[]" value="@item.id" id_sp="@item.id_sp" onclick="$.DHB.func.selectSingle(this)" />
+                                <i></i>
+                            </label>
+
+                        </td>
+                        <td class="align_center">@(index++)</td>
+                        <td class="align_center">
+                            <p class="list-link niceTitle cut-out color_blue" title="@item.barcode" onclick="$.fn.menuTab.load({ url: '/shopsp/detail?id=@item.id', 'title': '商品详情', id: 'shopsp/add', nocache: '0' }); ">@item.barcode</p>
+                        </td>
+                        <td>
+                            <p class="list-link niceTitle cut-out color_blue" title="@item.mc" onclick="$.fn.menuTab.load({ url: '/shopsp/detail?id=@item.id', 'title': '商品详情', id: 'shopsp/add', nocache: '0' }); ">@item.mc</p>
+                        </td>
+                        <td>
+                            @item.spfl_mc
+                        </td>
+                        <td class="align_center">
+                            @item.dw
+                        </td>
+                        <td class="align_right">
+                            @item.dj_ls.Digit((int)digit["dj_digit"])
+                        </td>
+                        <td class="align_right">
+                            @item.dj_jh.Digit((int)digit["dj_digit"])
+                        </td>
+
+                        <td class="align_right">
+                            @item.dj_hy.Digit((int)digit["dj_digit"])
+                        </td>
+
+                        <td class="align_right">
+                            @item.dj_ps.Digit((int)digit["dj_digit"])
+                        </td>
+
+                        <td class="align_right">
+                            @item.dj_pf.Digit((int)digit["dj_digit"])
+                        </td>
+
+                        <td class="align_center">
+                            @Html.Raw(selectListState.Where(d => d.listdata == (int)item.flag_state).FirstOrDefault() == null ? "" : selectListState.Where(d => d.listdata == (int)item.flag_state).FirstOrDefault().listdisplay)
+                        </td>
+                        <td class="list-operate">
+                            <div class="look-out1 supernatant position_static" style="width:140px;">
+                                <div class="second-height-operate position_static">
+                                    @if (IsPermissionShow("copy", actionlist))
+                                    {
+                                        <a class="bg-state bg-state-info fa fa-copy " onclick="app.shopsp.copy_goods(this, '@item.id');" title="复制"></a>
+                                    }
+                                    @if (IsPermissionShow("edit", actionlist))
+                                    {
+                                        <a class="bg-state bg-state-info fa fa-pencil" onclick="app.shopsp.edit_goods(this, '@item.id');" title="编辑"></a>
+                                    }
+                                    @if (IsPermissionShow("delete", actionlist))
+                                    {
+                                        <a class="bg-state bg-state-info fa fa-trash" onclick="app.shopsp.delete_goods(this, '@item.id');" title="删除"></a>
+                                    }
+                                    @if (IsPermissionShow("list", actionlist))
+                                    {
+                                        <a class="bg-state bg-state-info fa fa-eye" title="查看" onclick="$.fn.menuTab.load({ url: '/shopsp/detail?id=@item.id', 'title': '商品详情', id: 'shopsp/add', nocache: '0' }); " style="margin-top: 5px;"></a>
+                                    }
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+
+
+
+<script>
+    app.c.public_data['shopsp/list'] = app.c.public_data['shopsp/list'] || {};
+    app.c.public_data['shopsp/list']['_row_total_'] = '@list_shopsp.ItemCount',
+    app.c.public_data['shopsp/list']['_page_size_'] = '@list_shopsp.PageSize',
+    app.c.public_data['shopsp/list']['_current_page_'] = '@(list_shopsp.PageIndex)';
+    //$('.tree_left',_).height($('.right_table',_).height() + 16);
+</script>
+

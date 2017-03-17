@@ -1,0 +1,477 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_User"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tb_User" type="CySoft.Model.Tb.Tb_User,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="idList">
+          db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+        <isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+        <isNotNull prepend="and" property="id_cyuser">db.[id_cyuser]=#id_cyuser#</isNotNull>
+        <isNotNull prepend="and" property="id_masteruser">db.[id_masteruser]=#id_masteruser#</isNotNull>
+        <isNotNull prepend="and" property="username">db.[username]=#username#</isNotNull>
+        <isNotNull prepend="and" property="password">db.[password]=#password#</isNotNull>
+        <isNotNull prepend="and" property="name">db.[name]=#name#</isNotNull>
+        <isNotNull prepend="and" property="companyname">db.[companyname]=#companyname#</isNotNull>
+        <isNotNull prepend="and" property="flag_sex">db.[flag_sex]=#flag_sex#</isNotNull>
+        <isNotNull prepend="and" property="id_father">db.[id_father]=#id_father#</isNotNull>
+        <isNotNull prepend="and" property="job">db.[job]=#job#</isNotNull>
+        <isNotNull prepend="and" property="qq">db.[qq]=#qq#</isNotNull>
+        <isNotNull prepend="and" property="email">db.[email]=#email#</isNotNull>
+        <isNotNull prepend="and" property="phone">db.[phone]=#phone#</isNotNull>
+        <isNotNull prepend="and" property="tel">db.[tel]=#tel#</isNotNull>
+        <isNotNull prepend="and" property="fax">db.[fax]=#fax#</isNotNull>
+        <isNotNull prepend="and" property="rq_start">db.[rq_start]=#rq_start#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_start">Datediff(day,#start_rq_start#,db.[rq_start]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_start">Datediff(day,db.[rq_start],Convert(date,#end_rq_start#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="rq_stop">db.[rq_stop]=#rq_stop#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_stop">Datediff(day,#start_rq_stop#,db.[rq_stop]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_stop">Datediff(day,db.[rq_stop],Convert(date,#end_rq_stop#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="flag_state">db.[flag_state]=#flag_state#</isNotNull>
+        <isNotNull prepend="and" property="flag_master">db.[flag_master]=#flag_master#</isNotNull>
+        <isNotNull prepend="and" property="bz">db.[bz]=#bz#</isNotNull>
+        <isNotNull prepend="and" property="id_province">db.[id_province]=#id_province#</isNotNull>
+        <isNotNull prepend="and" property="id_city">db.[id_city]=#id_city#</isNotNull>
+        <isNotNull prepend="and" property="id_county">db.[id_county]=#id_county#</isNotNull>
+        <isNotNull prepend="and" property="zipcode">db.[zipcode]=#zipcode#</isNotNull>
+        <isNotNull prepend="and" property="address">db.[address]=#address#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+
+
+        <isNotNull prepend="and" property="account">EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id and [username]=#account#)</isNotNull>
+        <isNotNull prepend="and" property="flag_account">
+          <isEqual property="flag_account" compareValue="1">
+            EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id)
+          </isEqual>
+          <isEqual property="flag_account" compareValue="0">
+            not EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id)
+          </isEqual>
+        </isNotNull>
+        <isNotNull prepend="and" property="flag_phone_check">
+          <isEqual property="flag_phone_check" compareValue="1">
+            EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id and db.phone=username)
+          </isEqual>
+          <isEqual property="flag_phone_check" compareValue="0">
+            not EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id and db.phone=username)
+          </isEqual>
+        </isNotNull>
+        <isNotNull prepend="and" property="have_account">
+          EXISTS(SELECT 1 FROM Tb_account WHERE db.id=id_user)
+        </isNotNull>
+        <isNotNull prepend="and" property="id_user_master">
+          (db.fatherId=#id_user_master# OR db.id=#id_user_master#)
+        </isNotNull>
+
+        <isNotNull prepend="and" property="id_info">
+          exists(select 1 from info_user where id_info=#id_info# and flag_reade=#flag_reade# and db.id= id_user)
+        </isNotNull>
+
+        <isNotNull prepend="and" property="keyword"> (db.phone like #keyword# or db.name like #name# or db.tel like #keyword#  or EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id and username like #keyword#) )</isNotNull>
+
+        
+
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_cyuser">db.[id_cyuser]=#new_id_cyuser#</isNotNull>
+        <isNotNull prepend="," property="new_id_masteruser">db.[id_masteruser]=#new_id_masteruser#</isNotNull>
+        <isNotNull prepend="," property="new_username">db.[username]=#new_username#</isNotNull>
+        <isNotNull prepend="," property="new_password">db.[password]=#new_password#</isNotNull>
+        <isNotNull prepend="," property="new_name">db.[name]=#new_name#</isNotNull>
+        <isNotNull prepend="," property="new_companyname">db.[companyname]=#new_companyname#</isNotNull>
+        <isNotNull prepend="," property="new_flag_sex">db.[flag_sex]=#new_flag_sex#</isNotNull>
+        <isNotNull prepend="," property="new_id_father">db.[id_father]=#new_id_father#</isNotNull>
+        <isNotNull prepend="," property="new_job">db.[job]=#new_job#</isNotNull>
+        <isNotNull prepend="," property="new_qq">db.[qq]=#new_qq#</isNotNull>
+        <isNotNull prepend="," property="new_email">db.[email]=#new_email#</isNotNull>
+        <isNotNull prepend="," property="new_phone">db.[phone]=#new_phone#</isNotNull>
+        <isNotNull prepend="," property="new_tel">db.[tel]=#new_tel#</isNotNull>
+        <isNotNull prepend="," property="new_fax">db.[fax]=#new_fax#</isNotNull>
+        <isNotNull prepend="," property="new_rq_start">db.[rq_start]=#new_rq_start#</isNotNull>
+        <isNotNull prepend="," property="new_rq_stop">db.[rq_stop]=#new_rq_stop#</isNotNull>
+        <isNotNull prepend="," property="new_flag_state">db.[flag_state]=#new_flag_state#</isNotNull>
+        <isNotNull prepend="," property="new_flag_master">db.[flag_master]=#new_flag_master#</isNotNull>
+        <isNotNull prepend="," property="new_bz">db.[bz]=#new_bz#</isNotNull>
+        <isNotNull prepend="," property="new_id_province">db.[id_province]=#new_id_province#</isNotNull>
+        <isNotNull prepend="," property="new_id_city">db.[id_city]=#new_id_city#</isNotNull>
+        <isNotNull prepend="," property="new_id_county">db.[id_county]=#new_id_county#</isNotNull>
+        <isNotNull prepend="," property="new_zipcode">db.[zipcode]=#new_zipcode#</isNotNull>
+        <isNotNull prepend="," property="new_address">db.[address]=#new_address#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[tb_user]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_User">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_cyuser],db.[id_masteruser],db.[id],db.[username],db.[password],db.[name],db.[companyname],db.[flag_sex],db.[id_father],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[rq_start],db.[rq_stop],db.[flag_state],db.[flag_master],db.[bz],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_User">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_User">
+      set nocount on
+      <include refid="NoLock" />
+      select db.key_email,db.rq_email_key,db.[id],db.[username],db.[password],db.[name],isnull(master.companyname,db.[companyname])companyname,db.[flag_sex],db.[flag_master],db.[flag_stop],db.[fatherId],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[id_hy],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[id_cyuser]
+      ,<isNotNull property="picuri">#picuri#+</isNotNull>db.pic pic
+      ,master.location
+      ,master.location_des
+      from <include refid="Table"/> as db
+      LEFT JOIN Tb_user master ON db.fatherId=master.id
+      <include refid="Where"/>
+    </select>
+
+
+  </statements>
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_User"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<alias>
+		<typeAlias alias="Tb_User" type="CySoft.Model.Tb.Tb_User,CySoft.Model" />
+    <typeAlias alias="Tb_User_Master" type="CySoft.Model.Tb.Tb_User_Master,CySoft.Model" />
+    <typeAlias alias="Tb_User_Query" type="CySoft.Model.Tb.Tb_User_Query,CySoft.Model" />
+  </alias>
+	<statements>
+		<sql id="Where">
+			<dynamic prepend="where">
+				<isNotNull prepend="and" property="idList">
+					db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+				</isNotNull>
+				<isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+				<isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+				<isNotNull prepend="and" property="username">db.[username] like #username#</isNotNull>
+				<isNotNull prepend="and" property="password">db.[password]=#password#</isNotNull>
+				<isNotNull prepend="and" property="name">db.[name] like #name#</isNotNull>
+        <isNotNull prepend="and" property="id_cyuser">db.[id_cyuser]=#id_cyuser#</isNotNull>
+				<isNotNull prepend="and" property="companyname">db.[companyname] like #companyname#</isNotNull>
+				<isNotNull prepend="and" property="flag_sex">db.[flag_sex]=#flag_sex#</isNotNull>
+				<isNotNull prepend="and" property="flag_master">db.[flag_master]=#flag_master#</isNotNull>
+				<isNotNull prepend="and" property="flag_stop">db.[flag_stop]=#flag_stop#</isNotNull>
+				<isNotNull prepend="and" property="fatherId">db.[fatherId]=#fatherId#</isNotNull>
+				<isNotNull prepend="and" property="job">db.[job]=#job#</isNotNull>
+				<isNotNull prepend="and" property="qq">db.[qq]=#qq#</isNotNull>
+				<isNotNull prepend="and" property="email">db.[email] like #email#</isNotNull>
+				<isNotNull prepend="and" property="phone">db.[phone] like #phone#</isNotNull>
+        <isNotNull prepend="and" property="zcphone">db.[phone] = #zcphone#</isNotNull>
+				<isNotNull prepend="and" property="tel">db.[tel] like #tel#</isNotNull>
+				<isNotNull prepend="and" property="fax">db.[fax]=#fax#</isNotNull>
+				<isNotNull prepend="and" property="id_hy">db.[id_hy]=#id_hy#</isNotNull>
+				<isNotNull prepend="and" property="id_province">db.[id_province]=#id_province#</isNotNull>
+				<isNotNull prepend="and" property="id_city">db.[id_city]=#id_city#</isNotNull>
+				<isNotNull prepend="and" property="id_county">db.[id_county]=#id_county#</isNotNull>
+				<isNotNull prepend="and" property="zipcode">db.[zipcode]=#zipcode#</isNotNull>
+				<isNotNull prepend="and" property="address">db.[address]=#address#</isNotNull>
+				<isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+				<isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="key_email">db.[key_email]=#key_email#</isNotNull>
+        <isNotNull prepend="and" property="rq_email_key">db.[rq_email_key]=#rq_email_key#</isNotNull>
+				<isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+				<isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+				<isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+				<isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+				<isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+				<isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="rq_start_reg">Datediff(day,#rq_start_reg#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="rq_end_reg">Datediff(day,db.[rq_create],Convert(date,#rq_end_reg#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="account">EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id and [username]=#account#)</isNotNull>
+        <isNotNull prepend="and" property="flag_account">
+          <isEqual property="flag_account" compareValue="1">
+            EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id)
+          </isEqual>
+          <isEqual property="flag_account" compareValue="0">
+            not EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id)
+          </isEqual>
+        </isNotNull>
+        <isNotNull prepend="and" property="flag_phone_check">
+          <isEqual property="flag_phone_check" compareValue="1">
+            EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id and db.phone=username)
+          </isEqual>
+          <isEqual property="flag_phone_check" compareValue="0">
+            not EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id and db.phone=username)
+          </isEqual>
+        </isNotNull>
+        <isNotNull prepend="and" property="have_account">
+          EXISTS(SELECT 1 FROM Tb_account WHERE db.id=id_user)           
+        </isNotNull>
+        <isNotNull prepend="and" property="id_user_master">
+          (db.fatherId=#id_user_master# OR db.id=#id_user_master#)
+        </isNotNull>
+        
+        <isNotNull prepend="and" property="id_info">
+          exists(select 1 from info_user where id_info=#id_info# and flag_reade=#flag_reade# and db.id= id_user)
+        </isNotNull>
+        
+        <isNotNull prepend="and" property="keyword"> (db.phone like #keyword# or db.name like #name# or db.tel like #keyword#  or EXISTS(select 1 from Tb_account where flag_lx=1 and id_user=db.id and username like #keyword#) )</isNotNull>
+        
+      </dynamic>
+		</sql>
+
+		<sql id="Order">
+			<dynamic prepend="order by">
+				<isNull property="sort">db.[id] asc</isNull>
+				<isNotNull property="sort">
+					db.$sort$
+					<isNotNull property="dir">
+						<isEqual compareValue="asc" property="dir">asc</isEqual>
+						<isEqual compareValue="desc" property="dir">desc</isEqual>
+					</isNotNull>
+				</isNotNull>
+			</dynamic>
+		</sql>
+
+		<sql id="Set">
+			<dynamic prepend="set">
+				<isNotNull prepend="," property="new_username">db.[username]=#new_username#</isNotNull>
+				<isNotNull prepend="," property="new_password">db.[password]=#new_password#</isNotNull>
+				<isNotNull prepend="," property="new_name">db.[name]=#new_name#</isNotNull>
+				<isNotNull prepend="," property="new_companyname">db.[companyname]=#new_companyname#</isNotNull>
+				<isNotNull prepend="," property="new_flag_sex">db.[flag_sex]=#new_flag_sex#</isNotNull>
+				<isNotNull prepend="," property="new_flag_master">db.[flag_master]=#new_flag_master#</isNotNull>
+				<isNotNull prepend="," property="new_flag_stop">db.[flag_stop]=#new_flag_stop#</isNotNull>
+				<isNotNull prepend="," property="new_fatherId">db.[fatherId]=#new_fatherId#</isNotNull>
+				<isNotNull prepend="," property="new_job">db.[job]=#new_job#</isNotNull>
+				<isNotNull prepend="," property="new_qq">db.[qq]=#new_qq#</isNotNull>
+				<isNotNull prepend="," property="new_email">db.[email]=#new_email#</isNotNull>
+				<isNotNull prepend="," property="new_phone">db.[phone]=#new_phone#</isNotNull>
+				<isNotNull prepend="," property="new_tel">db.[tel]=#new_tel#</isNotNull>
+				<isNotNull prepend="," property="new_fax">db.[fax]=#new_fax#</isNotNull>
+				<isNotNull prepend="," property="new_id_hy">db.[id_hy]=#new_id_hy#</isNotNull>
+				<isNotNull prepend="," property="new_id_province">db.[id_province]=#new_id_province#</isNotNull>
+				<isNotNull prepend="," property="new_id_city">db.[id_city]=#new_id_city#</isNotNull>
+				<isNotNull prepend="," property="new_id_county">db.[id_county]=#new_id_county#</isNotNull>
+				<isNotNull prepend="," property="new_zipcode">db.[zipcode]=#new_zipcode#</isNotNull>
+				<isNotNull prepend="," property="new_address">db.[address]=#new_address#</isNotNull>
+				<isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+				<isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+				<isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+				<isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+        <isNotNull prepend="," property="new_key_email">db.[key_email]=#new_key_email#</isNotNull>
+        <isNotNull prepend="," property="new_rq_email_key">db.[rq_email_key]=#new_rq_email_key#</isNotNull>
+        <isNotNull prepend="," property="new_flag_from">db.[flag_from]=#new_flag_from#</isNotNull>
+        <isNotNull prepend="," property="new_pic">db.[pic]=#new_pic#</isNotNull>
+        <isNotNull prepend="," property="new_id_masteruser">db.[id_masteruser]=#new_id_masteruser#</isNotNull>
+        <isNotNull prepend="," property="new_location">db.[location]=#new_location#</isNotNull>
+        <isNotNull prepend="," property="new_location_des">db.[location_des]=#new_location_des#</isNotNull>
+        <isNotNull prepend="," property="new_pic_erwei">db.[pic_erwei]=#new_pic_erwei#</isNotNull>
+			</dynamic>
+		</sql>
+
+		<sql id="RowBetween">
+			<dynamic prepend="where">
+				<isNotNull prepend="and" property="start">
+					t.rownumber between (#start# + 1)
+					<isNotNull prepend="and" property="limit">
+						(#start# + #limit#)
+					</isNotNull>
+				</isNotNull>
+			</dynamic>
+		</sql>
+
+		<sql id="Table">
+			<isNotNull property="database">[$database$]..</isNotNull>[Tb_user]
+		</sql>
+
+		<sql id="NoLock">
+			set transaction isolation level read uncommitted
+		</sql>
+
+		<delete id="Delete" parameterClass="System.Collections.IDictionary">
+			set nocount on
+			delete db from <include refid="Table"/> as db <include refid="Where"/>
+		</delete>
+		
+		<update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+			set nocount on
+			update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+		</update>
+
+		<select id="GetNextKey" parameterClass="System.Collections.IDictionary" resultClass="int">
+			set nocount on
+			select (isnull(max(db.id),0)+1) as value from <include refid="Table"/> as db <include refid="Where"/>
+		</select>
+
+		<select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_User">
+			set nocount on
+			<include refid="NoLock" />
+      select db.key_email,db.rq_email_key,db.[id],db.[username],db.[password],db.[name],isnull(master.companyname,db.[companyname])companyname,db.[flag_sex],db.[flag_master],db.[flag_stop],db.[fatherId],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[id_hy],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[id_cyuser]
+      ,<isNotNull property="picuri">#picuri#+</isNotNull>db.pic pic
+      ,master.location
+      ,master.location_des
+      from <include refid="Table"/> as db
+      LEFT JOIN Tb_user master ON db.fatherId=master.id
+      <include refid="Where"/>
+			<include refid="Order"/>
+		</select>
+
+		<select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_User_Query">
+			--><!--set nocount on
+			<include refid="NoLock" />
+			select t.* from (select row_number() over(<include refid="Order" />) as rownumber,isnull(r.id_role,0)flag_role,db.* from <include refid="Table"/> as db 
+      LEFT JOIN Tb_user_role r ON db.id=r.id_user AND r.id_role=6 <include refid="Where"/>) as t
+			<include refid="RowBetween" />--><!--
+
+
+      --><!--set nocount on
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,isnull(r.id_role,0) flag_role
+      ,db.*
+      from <include refid="Table"/> as db
+      LEFT JOIN Tb_user_role r ON db.id=r.id_user
+      <include refid="Where"/>
+      
+      )
+      as t--><!--
+
+
+      set nocount on
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,0 flag_role
+      ,db.*
+      from <include refid="Table"/> as db
+      <include refid="Where"/>
+      )
+      as t
+      <include refid="RowBetween" />
+		</select>
+
+    <select id="PageUserMaster" parameterClass="System.Collections.IDictionary" resultClass="Tb_User_Master">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (
+      select row_number() over(<include refid="Order" />) as rownumber,db.*
+      from (
+      select
+      db.*
+      from <include refid="Table"/> as db
+      LEFT JOIN (SELECT count(1)amt,a.fatherId id_master FROM Tb_user a WHERE a.flag_master=0 GROUP BY a.fatherId)staffc ON staffc.id_master=db.id
+      <include refid="Where"/>
+      )db
+      )t
+      <include refid="RowBetween" />
+    </select>
+    
+		<select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+			set nocount on
+			<include refid="NoLock" />
+			select count(1) as value from <include refid="Table"/> as db
+			<include refid="Where"/>
+		</select>
+
+		<select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_User">
+			set nocount on
+			<include refid="NoLock" />
+      select db.key_email,db.rq_email_key,db.[id],db.[username],db.[password],db.[name],isnull(master.companyname,db.[companyname])companyname,db.[flag_sex],db.[flag_master],db.[flag_stop],db.[fatherId],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[id_hy],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[id_cyuser]
+      ,<isNotNull property="picuri">#picuri#+</isNotNull>db.pic pic
+      ,master.location
+      ,master.location_des
+      from <include refid="Table"/> as db
+      LEFT JOIN Tb_user master ON db.fatherId=master.id
+      <include refid="Where"/>
+		</select>
+
+		<select id="QueryItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_User_Query">
+			set nocount on
+			<include refid="NoLock" />
+      select isnull(email.id,0)valid_email,isnull(photo.id,0)valid_phone,db.key_email,db.rq_email_key,db.[id],db.[username],db.[password],db.[name],isnull(master.companyname,db.[companyname])companyname,db.[flag_sex],db.[flag_master],db.[flag_stop],db.[fatherId],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[id_hy],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_cyuser]
+      ,isnull(db.location,master.location)location
+      ,isnull(db.location_des,master.location_des)location_des
+      ,isnull(db.pic_erwei,master.pic_erwei)pic_erwei
+      ,db.[id_edit],db.[rq_edit],<isNotNull property="picuri">#picuri#+</isNotNull>db.pic pic
+      ,'' as name_hy
+      ,p.name as name_province
+      ,c.name as name_city
+      ,county.name as name_county
+      from <include refid="Table"/> as db
+      left join Tb_hy hy on hy.id =db.id_hy-->
+<!-- LEFT JOIN Tb_user master ON db.fatherId=master.id
+      left join Tb_Districts p on db.id_province =p.id
+      left join Tb_Districts c on db.id_city =c.id
+      left join  Tb_Districts county on db.id_county =county.id
+      LEFT JOIN Tb_account photo ON photo.id_user=db.id AND photo.username=db.phone
+      LEFT JOIN Tb_account email ON email.id_user=db.id AND email.username=db.email
+      <include refid="Where"/>
+		</select>
+    
+	</statements>
+</sqlMap>-->

@@ -1,0 +1,125 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Model.Tz;
+@using CySoft.Utility;
+
+
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tz_Ys_Jsc_QueryModel>;
+    string sort = ViewData["sort"].ToString();
+    var selectListShop = (ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>) ?? new List<Tb_User_ShopWithShopMc>();
+    var userList = (ViewData["userList"] as List<Tb_User>) ?? new List<Tb_User>();
+    var selectListKh = (ViewData["userKhList"] as List<Tb_Kh>) ?? new List<Tb_Kh>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var defaultSL = decimal.Parse("0").Digit((int)digit["sl_digit"]);
+    var defaultDJ = decimal.Parse("0").Digit((int)digit["dj_digit"]);
+    var defaultJE = decimal.Parse("0").Digit((int)digit["je_digit"]);
+    var id_kh = ViewData["id_kh"] == null ? "" : ViewData["id_kh"].ToString();
+    var kh_name = ViewData["kh_name"] == null ? "" : ViewData["kh_name"].ToString();
+    string id_user = ViewData["id_user"] == null ? "" : ViewData["id_user"].ToString();
+    var item_copy = ViewData["CopyInfo"] as Td_Sk_1_Query_DetailModel;
+    if (item_copy == null)
+    {
+        item_copy = new Td_Sk_1_Query_DetailModel();
+        item_copy.head = new Td_Sk_1_QueryModel() { id_jbr = id_user };
+        item_copy.body = new List<Td_Sk_2_QueryModel>();
+        item_copy.head.rq = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+    }
+    if (!string.IsNullOrEmpty(item_copy.head.id))
+    {
+        id_kh = item_copy.head.id_kh;
+        kh_name = item_copy.head.kh_name;
+    }
+    string type = ViewData["type"] == null ? "" : ViewData["type"].ToString();
+
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+    string show_shop_version = ViewData["show_shop_version"] == null ? "" : ViewData["show_shop_version"].ToString();
+
+}
+
+
+
+<table class="table m-b-none row1 selectAll-table status-box one-line" id="sk_table" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                <label class="i-checks m-b-none">
+                    <input type="checkbox" id="check-btn-header" onclick="$.DHB.func.selectAllThis(this); app.sk.sk_add_check_checked(this);">
+                    <i></i>
+                </label>
+            </th>
+            <th>原单类型</th>
+            <th>结算单号</th>
+            <th>客户</th>
+            <th>原单日期</th>
+            <th class="width120">原单总金额</th>
+            <th class="width120">已收金额</th>
+            <th class="width120">未收金额</th>
+            <th class="width120">优惠金额</th>
+            <th class="width120">收款金额</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody id="dwlist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="11" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    foreach (var item in list)
+                    {
+                        <tr id="row-sk-id-@item.id_bill" class="tr-status-finished" data-item="" id_bill_origin="@item.id_bill" dh_origin="@item.dh" bm_djlx_origin="@item.bm_djlx" je_origin="@item.je.Digit((int)digit["je_digit"])" je_ys="@(item.je_sk.Digit((int)digit["je_digit"]) + item.je_yh.Digit((int)digit["je_digit"]))" je_ws="@item.je_ws.Digit((int)digit["je_digit"])">
+                            <td class="text-center">
+                                <label class="i-checks m-b-none">
+                                    <input type="checkbox" name="id_bill[]" value="@item.id_bill" onclick="$.DHB.func.selectSingle(this); app.sk.sk_add_check_checked(this);" />
+                                    <i></i>
+                                </label>
+                            </td>
+                            <td>@item.bm_djlx_name</td>
+                            <td>@item.dh</td>
+                            <td>@item.kh_name</td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.rq)</td>
+                            <td><div style="text-align:right;width:95%;">@item.je.Digit((int)digit["je_digit"])</div></td>
+                            <td><div style="text-align:right;width:95%;">@(item.je_sk.Digit((int)digit["je_digit"]) + item.je_yh.Digit((int)digit["je_digit"])) </div></td>
+                            <td name="weishou"><div style="text-align:right;width:95%;">@item.je_ws.Digit((int)digit["je_digit"])</div></td>
+                            <td name="je_yh">
+                                <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" placeholder="优惠金额(元)" type="text" value="@defaultJE" name="je_yh" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@defaultJE" onfocus="app.sk.onfocus(this)" onblur="app.sk.onblur(this, @digit["je_digit"])">
+                            </td>
+                            <td name="je_sk">
+                                <input class="form-control user-input" readonly="readonly" style="width:95%;border:0px;text-align:right;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" placeholder="收款金额(元)" type="text" value="@defaultJE" name="je_sk" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" old-data="@defaultJE" onfocus="app.sk.onfocus(this)" onblur="app.sk.onblur(this, @digit["je_digit"])">
+                            </td>
+
+                            <td><input class="form-control user-input" readonly="readonly" style="width:96%;border:0px;" onmouseover="app.sk.onmouseover(this)" onmouseout="app.sk.onmouseout(this)" type="text" value="@item.bz" name="bz"></td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+
+
+
+<script>
+    app.c.public_data['sk/add'] = app.c.public_data['sk/add'] || {};
+    app.c.public_data['sk/add']['_row_total_'] = '@pageList.ItemCount';
+    app.c.public_data['sk/add']['_page_size_'] = '@pageList.PageSize';
+    app.c.public_data['sk/add']['_current_page_'] = '@(pageList.PageIndex)';
+</script>
+

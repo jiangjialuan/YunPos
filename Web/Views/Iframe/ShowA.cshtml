@@ -1,0 +1,43 @@
+﻿@{
+    Layout = null;
+    var url = ViewData["url"] == null ? "" : ViewData["url"].ToString();
+    var msg = ViewData["msg"] == null ? "" : ViewData["msg"].ToString();
+    
+}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>云Pos</title>
+    <meta name="description" content="云Pos" />
+</head>
+<body>
+    <div class="modal fade in" role="dialog" style="display: block;">
+        <div class="modal-dialog" style="width:500px;">
+            <div class="modal-content">
+                <div class="modal-header poptitle">
+                    <button data-dismiss="modal" class="close" type="button" onclick="app.upload.close(this)">×</button>
+                    <p class="name">温馨提示：</p>
+                </div>
+                <form class="form-horizontal validate f0" method="post" id="save-single-upload">
+                    <div class="modal-body tab-content popcontent" style="padding:20px;">
+                        <div class="single-upload-area">
+                            <p style="margin-bottom:10px;">@msg</p>
+                            <a target="_Blank" class="btn btn-primary blue-bgb mar-b15" href="@url">购买服务信息</a>
+                            <p style="margin-bottom:10px;">购买后请重新登录</p>
+                        </div>
+                        <span class="clear"></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+﻿@using CySoft.Model.Ts
+@{
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed"></th>
+            <th width="">参数名称</th>
+            <th width="">参数值</th>
+            <th width="60" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="parmlist-main-tbody">
+        @{
+            var pageList = ViewData["List"] as PageList<Ts_Parm>;
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="4" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-parm-id-@item.id" class="tr-status-finished">
+                            <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                <i>
+                                </i>@(index++)
+                            </td>
+                            <td><a class="list-link">@item.parmname</a></td>
+                            <td class="table-p-r-xsm">@item.parmvalue</td>
+                            <td class="list-operate table-p-r-sm">
+                                <div class="look-out1">
+                                    <div class="second-height-operate">
+                                        <a class="bg-state bg-state-info" href="javascript:;" onclick="app.parm.save('@item.id',this)">保存</a>
+                                        @*@if (isEdit)
+                                        {
+                                            <a class="bg-state bg-state-info" href="javascript:;" onclick="app.parm.edit('@item.id')">编辑</a>
+                                        }*@
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    app.c.public_data['parm/list'] = app.c.public_data['parm/list'] || {};
+    app.c.public_data['parm/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['parm/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['parm/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

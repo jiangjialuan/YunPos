@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tz_Yf_Jsc_Gx"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tz_Yf_Jsc_Gx" type="CySoft.Model.Tz.Tz_Yf_Jsc_Gx,CySoft.Model" />
+    <typeAlias alias="Tz_Yf_Jsc_Gx_QueryModel" type="CySoft.Model.Tz.Tz_Yf_Jsc_Gx_QueryModel,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="idList">
+          db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+        <isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+        <isNotNull prepend="and" property="id_masteruser">db.[id_masteruser]=#id_masteruser#</isNotNull>
+        <isNotNull prepend="and" property="id_shop">db.[id_shop]=#id_shop#</isNotNull>
+        <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>
+        <isNotNull prepend="and" property="id_bill">db.[id_bill]=#id_bill#</isNotNull>
+        <isNotNull prepend="and" property="dh">db.[dh]=#dh#</isNotNull>
+        <isNotNull prepend="and" property="rq">db.[rq]=#rq#</isNotNull>
+        <isNotNull prepend="and" property="start_rq">Datediff(day,#start_rq#,db.[rq]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq">Datediff(day,db.[rq],Convert(date,#end_rq#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="bm_djlx">db.[bm_djlx]=#bm_djlx#</isNotNull>
+        <isNotNull prepend="and" property="bz">db.[bz]=#bz#</isNotNull>
+        <isNotNull prepend="and" property="je">db.[je]=#je#</isNotNull>
+        <isNotNull prepend="and" property="je_fk">db.[je_fk]=#je_fk#</isNotNull>
+        <isNotNull prepend="and" property="je_yh">db.[je_yh]=#je_yh#</isNotNull>
+        <isNotNull prepend="and" property="je_wf">db.[je_wf]=#je_wf#</isNotNull>
+
+        <isNotNull prepend="and" property="je_wf_more_zero">
+          db.[je_wf]<![CDATA[<>]]>0
+          and (
+          case
+          when db.bm_djlx='JH020' and exists(select 1 from dbo.td_jh_1 jh1 where jh1.id=db.id_bill and flag_sh=1 and flag_delete=0 and flag_cancel=0) then '1'
+          when db.bm_djlx='JH030' and exists(select 1 from dbo.td_jh_th_1 th1 where th1.id=db.id_bill and flag_sh=1 and flag_delete=0 and flag_cancel=0) then '1'
+          else '0' end
+          )='1'
+
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_masteruser">db.[id_masteruser]=#new_id_masteruser#</isNotNull>
+        <isNotNull prepend="," property="new_id_shop">db.[id_shop]=#new_id_shop#</isNotNull>
+        <isNotNull prepend="," property="new_id_gys">db.[id_gys]=#new_id_gys#</isNotNull>
+        <isNotNull prepend="," property="new_id_bill">db.[id_bill]=#new_id_bill#</isNotNull>
+        <isNotNull prepend="," property="new_dh">db.[dh]=#new_dh#</isNotNull>
+        <isNotNull prepend="," property="new_rq">db.[rq]=#new_rq#</isNotNull>
+        <isNotNull prepend="," property="new_bm_djlx">db.[bm_djlx]=#new_bm_djlx#</isNotNull>
+        <isNotNull prepend="," property="new_bz">db.[bz]=#new_bz#</isNotNull>
+        <isNotNull prepend="," property="new_je">db.[je]=#new_je#</isNotNull>
+        <isNotNull prepend="," property="new_je_fk">db.[je_fk]=#new_je_fk#</isNotNull>
+        <isNotNull prepend="," property="new_je_yh">db.[je_yh]=#new_je_yh#</isNotNull>
+        <isNotNull prepend="," property="new_je_wf">db.[je_wf]=#new_je_wf#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[tz_yf_jsc_gx]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tz_Yf_Jsc_Gx_QueryModel">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_masteruser],db.[id],db.[id_shop],db.[id_gys],db.[id_bill],db.[dh],db.[rq],db.[bm_djlx],db.[bz],db.[je],db.[je_fk],db.[je_yh],db.[je_wf]
+      ,isnull(shop.mc,'') shop_name
+      ,isnull(gys.mc,'') gys_name
+      ,isnull(ts_djlx.mc,'') bm_djlx_name
+      from <include refid="Table"/> as db
+      left join tb_shop shop on shop.id=db.id_shop
+      left join tb_gys gys on gys.id=db.id_gys
+      left join ts_djlx ts_djlx on ts_djlx.bm=db.bm_djlx
+
+
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tz_Yf_Jsc_Gx_QueryModel">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.*
+      
+      ,isnull(shop.mc,'') shop_name
+      ,isnull(gys.mc,'') gys_name
+      ,isnull(ts_djlx.mc,'') bm_djlx_name
+      
+      from <include refid="Table"/> as db
+      left join tb_shop shop on shop.id=db.id_shop
+      left join tb_gys gys on gys.id=db.id_gys
+      left join ts_djlx ts_djlx on ts_djlx.bm=db.bm_djlx
+      
+      <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value 
+      from <include refid="Table"/> as db
+      left join tb_shop shop on shop.id=db.id_shop
+      left join tb_gys gys on gys.id=db.id_gys
+      left join ts_djlx ts_djlx on ts_djlx.bm=db.bm_djlx
+
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tz_Yf_Jsc_Gx_QueryModel">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_masteruser],db.[id],db.[id_shop],db.[id_gys],db.[id_bill],db.[dh],db.[rq],db.[bm_djlx],db.[bz],db.[je],db.[je_fk],db.[je_yh],db.[je_wf]
+      
+      ,isnull(shop.mc,'') shop_name
+      ,isnull(gys.mc,'') gys_name
+      ,isnull(ts_djlx.mc,'') bm_djlx_name
+      
+      from <include refid="Table"/> as db
+      left join tb_shop shop on shop.id=db.id_shop
+      left join tb_gys gys on gys.id=db.id_gys
+      left join ts_djlx ts_djlx on ts_djlx.bm=db.bm_djlx
+      
+      <include refid="Where"/>
+    </select>
+
+  </statements>
+</sqlMap>
+

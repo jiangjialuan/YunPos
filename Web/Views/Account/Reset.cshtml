@@ -1,0 +1,124 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <!--[if lte IE 9]><script>window.location.replace("http://yun.pos.cn/download.html");</script><![endif]-->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>云POS重置密码</title>
+    <meta name="description" content="云POS重置密码" />
+    @Styles.Render(
+    "~/static/css/register/register.css",
+    "~/static/bootstrap/bootstrap.min.css")
+</head>
+<body style="background:url('../../manager/img/login/login_bg.jpg') repeat-x top center;">
+    @*<div class="header clearfix" style="background: url('../static/images/register/login-bg.jpg')">
+        <img src="/Manager/img/login/login-logo.png" alt="" class="logo">
+        <h4 class="company-name">欢迎使用云POS</h4>
+    </div>*@
+    <div class="header login_logo"><img src="~/manager/img/login/login_login.png" /></div>
+    <div class="con-row" style="min-height: 530px">
+        <div class="login_content_bg">
+            <div class="content clearfix">
+                <form method="post" class="form forget" id="recover">
+                    <p class="form-title">找回密码</p>
+                    <p class="warn-info  error" id="error0"><i></i><label></label></p>
+                    <!--手机号码-->
+                    <div class="login-block cleafix">
+                        <div class="input-name">
+                            手机号
+                        </div>
+                        <input type="text" name="phone" class="fr phone" maxlength="11" />
+                    </div>
+                    <!--密码-->
+                    <p class="warn-info  error" id="error1" ><i></i><label></label></p>
+                    <div class="login-block cleafix">
+                        <div class="input-name">
+                            新密码
+                        </div>
+                        <input type="password" style="display: none" />
+                        <input type="password" class="fr password" maxlength="20" />
+                    </div>
+                    <p class="warn-info  error" id="error2" ><i></i><label></label></p>
+                    <div class="login-block cleafix m-b-sm">
+                        <div class="input-name">
+                            确认密码
+                        </div>
+                        <input type="password" style="display: none" />
+                        <input type="password" name="new_password" class="fr confirm-password" maxlength="20" />
+                    </div>
+                    <p class="warn-info  error" id="error3"><i></i><label></label></p>
+                    <div class="login-block cleafix m-b-sm">
+                        <div class="input-name">
+                            识别码
+                        </div>
+                        <input type="text" name="img_code" class="img-code" maxlength="4">
+                        <div class="code">
+                            <img class="btn_img_code left15" alt="图片识别码" src="/utility/vaildcode?t=@Guid.NewGuid().ToString("N").Substring(0, 6)" title="点击刷新" onclick="javascript: refreshCode(this);">
+                        </div>
+                    </div>
+                    <p class="warn-info  error" id="error4"><i></i><label></label></p>
+                    <div class="login-block cleafix">
+                        <div class="input-name">
+                            短信验证码
+                        </div>
+                        <input type="text" name="phonevaildcode" class="fr verification-code" maxlength="4" />
+                        <div class="verification-code-btn">
+                            获取短信验证码
+                        </div>
+                    </div>
+                    <!--错误提示-->
+                    <div class="warn check-pwd">
+                        <p class="warn-info" id="error"></p>
+                        <p class="warn-info" id="success"></p>
+                    </div>
+                    <div class="clearFix login-go next">
+                        <a class="reset" href="javascript:;">立即找回</a>
+                    </div>
+                    <div class="login-block cleafix m-t-lg">
+                        <div class="f-l">
+                            <a href="login" class="to-login">返回登录</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+
+    <div class="footer clearfix">
+        <p>
+            Copyright © 2016 <a href="http://www.pos.cn" target="_blank" style="text-decoration:none;">pos.cn</a>
+        </p>
+    </div>
+
+    <div class="modal fade in" id="register-ok" role="dialog">
+        <div class="modal-dialog" style="width:400px;">
+            <div class="modal-content"> 
+                <form class="form-horizontal validate f0" method="post" id="">
+                    <div class="modal-body tab-content ">
+                        <div class="clearfix" style="padding: 50px 67px">
+                            <div class="register_ok f-l"></div>
+                            <div class="f-l register-info">
+                                <h4>密码修改成功！</h4>
+                                <p>正在返回登录页....</p>
+                            </div>
+                        </div>
+                    </div> 
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="@Scripts.Url("~/static/js/jquery/jquery.min.js")"></script>
+<script src="@Scripts.Url("~/static/js/util.js")"></script>
+<script src="@Scripts.Url("~/static/js/app/reset.js")"></script>

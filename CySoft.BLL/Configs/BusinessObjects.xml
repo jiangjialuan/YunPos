@@ -1,0 +1,2143 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!--异常拦截通知-->
+  <object id="Exception" type="CySoft.BLL.Base.Proxy.ExceptionAdvice,CySoft.BLL" />
+
+  <!--事务拦截通知-->
+  <object id="advice" type="CySoft.BLL.Base.Proxy.TransactionAdvice,CySoft.BLL" />
+  <object id="Transaction" type="Spring.Aop.Support.AttributeMatchMethodPointcutAdvisor, Spring.Aop">
+    <property name="advice" ref="advice"/>
+    <property name="attribute" value="CySoft.Frame.Attributes.TransactionAttribute, CySoft.Frame" />
+  </object>
+
+  <!--系统日志-->
+  <object id="LogManager" type="CySoft.BLL.SystemBLL.LogBLL.LogBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="LogService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="LogManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--公共业务-->
+  <object id="UtiletyManager" type="CySoft.BLL.SystemBLL.UtiletyBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="UtiletyService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="UtiletyManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--用户-->
+  <object id="AccountManager" type="CySoft.BLL.AccountBLL.AccountBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="AccountService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="AccountManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--用户参数设置-->
+  <object id="SettingManager" type="CySoft.BLL.SystemBLL.SettingBLL.SettingBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="SettingService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="SettingManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--用户功能-->
+  <object id="AccountFunctionManager" type="CySoft.BLL.AccountBLL.AccountFunctionBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="AccountFunctionService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="AccountFunctionManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--角色管理-->
+  <object id="RoleSettingManager" type="CySoft.BLL.SystemBLL.SettingBLL.RoleSettingBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="RoleSettingService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="RoleSettingManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--用户角色管理-->
+  <object id="UserRoleManager" type="CySoft.BLL.SystemBLL.SettingBLL.UserRoleBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="UserRoleService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="UserRoleManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--客户分类-->
+  <!--
+  <object id="CustomerTypeManager" type="CySoft.BLL.SupplierBLL.CustomerBLL.CustomerTypeBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="CustomerTypeService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="CustomerTypeManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--客户-->
+  <!--
+  <object id="CustomerManager" type="CySoft.BLL.SupplierBLL.CustomerBLL.CustomerBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_Gys_CgsDAL" ref="Tb_Gys_CgsDAL"/>
+  </object>
+  <object id="CustomerService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="CustomerManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--供应商-->
+  <!--
+  <object id="SupplierManager" type="CySoft.BLL.SupplierBLL.SupplierBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_Gys_CgsDAL" ref="Tb_Gys_CgsDAL"/>
+  </object>
+  <object id="SupplierService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="SupplierManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--采购商关注供应商-->
+  <!--
+  <object id="BuyerAttentionManager" type=" CySoft.BLL.SupplierBLL.BuyerAttentionBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_Gys_Cgs_CheckDAL" ref="Tb_Gys_Cgs_CheckDAL"/>
+    <property name="Tb_Gys_CgsDAL" ref="Tb_Gys_CgsDAL"/>
+  </object>
+  <object id="BuyerAttentionService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="BuyerAttentionManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--供应商通过关注采购商-->
+  <!--
+  <object id="SupplierAttentionManager" type=" CySoft.BLL.SupplierBLL.SupplierAttentionBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="SupplierAttentionService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="SupplierAttentionManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--资金管理-->
+  <!--
+  <object id="FundsManager" type=" CySoft.BLL.FundsBLL.FundsBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Td_sale_payDAL" ref="Td_sale_payDAL"/>
+  </object>
+  <object id="FundsService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="FundsManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+
+  <!--采购商-->
+  <!--
+  <object id="BuyerManager" type="CySoft.BLL.BuyerBLL.BuyerBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="BuyerService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="BuyerManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--商品-->
+  <!--
+  <object id="GoodsManager" type="CySoft.BLL.GoodsBLL.GoodsBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_SpDAL" ref="Tb_SpDAL"/>
+    <property name="Tb_Sp_SkuDAL" ref="Tb_Sp_SkuDAL"/>
+    <property name="Tb_Sp_DjDAL" ref="Tb_Sp_DjDAL"/>
+  </object>
+  <object id="GoodsService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--商品 by Service-->
+  <!--<object id="GoodsServiceManager" type="CySoft.BLL.GoodsBLL.GoodsServiceBLL,CySoft.BLL">
+		<property name="DAL" ref="BaseDAL"/>
+		<property name="Tb_SpDAL" ref="Tb_SpDAL"/>
+		<property name="Tb_Sp_SkuDAL" ref="Tb_Sp_SkuDAL"/>
+		<property name="Tb_Sp_DjDAL" ref="Tb_Sp_DjDAL"/>
+	</object>
+	<object id="GoodsServiceService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+		<property name="Target" ref="GoodsServiceManager" />
+		<property name="InterceptorNames">
+			<list>
+				<value>Transaction</value>
+				<value>Exception</value>
+			</list>
+		</property>
+	</object>-->
+
+  <!--商品库存-->
+  <!--
+  <object id="GoodsInventoryManager" type="CySoft.BLL.GoodsBLL.GoodsInventoryBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="GoodsInventoryService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsInventoryManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--商品分类-->
+  <!--
+  <object id="GoodsTypeManager" type="CySoft.BLL.GoodsBLL.GoodsTypeBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="GoodsTypeService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsTypeManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--商品收藏-->
+  <!--
+  <object id="GoodsFavoritesManager" type="CySoft.BLL.GoodsBLL.GoodsFavoritesBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="GoodsFavoritesService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsFavoritesManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--商品规格-->
+  <!--
+  <object id="GoodsSpecManager" type="CySoft.BLL.GoodsBLL.GoodsSpecBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="GoodsSpecService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsSpecManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--计量单位-->
+  <!--
+  <object id="GoodsUnitsManager" type="CySoft.BLL.GoodsBLL.GoodsUnitsBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="GoodsUnitsService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsUnitsManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--购物车-->
+  <!--
+  <object id="GoodsCartManager" type="CySoft.BLL.GoodsBLL.GoodsCartBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="GoodsCartService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsCartManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--出库/发货记录-->
+  <!--
+  <object id="ShippingRecordManager" type="CySoft.BLL.OrderBLL.ShippingRecordBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Td_Sale_Out_BodyDAL" ref="Td_Sale_Out_BodyDAL"/>
+  </object>
+  <object id="ShippingRecordService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="ShippingRecordManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--订单-->
+  <!--
+  <object id="OrderManager" type="CySoft.BLL.OrderBLL.OrderBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Td_Sale_Order_HeadDAL" ref="Td_Sale_Order_HeadDAL"/>
+    <property name="Info_UserDAL" ref="Info_UserDAL"/>
+  </object>
+  <object id="OrderService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="OrderManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--订单 by Service-->
+  <!--
+  <object id="OrderServiceManager" type="CySoft.BLL.OrderBLL.OrderServiceBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="OrderServiceService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="OrderServiceManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--配置信息-->
+  <!--
+  <object id="ConfigManager" type="CySoft.BLL.SystemBLL.ConfigBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="ConfigService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="ConfigManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--行业-->
+  <!--
+  <object id="IndustrieManager" type="CySoft.BLL.IndustrieBLL.IndustrieBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="IndustrieService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="IndustrieManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--规则-->
+  <!--
+  <object id="CodingRuleManager" type="CySoft.BLL.SystemBLL.CodingRuleBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="CodingRuleService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="CodingRuleManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--收货地址管理-->
+  <!--
+  <object id="RecieverAddressManager" type="CySoft.BLL.BuyerBLL.RecieverAddressBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="RecieverAddressService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="RecieverAddressManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--公司信息-->
+  <!--
+  <object id="CompanyManager" type="CySoft.BLL.SystemBLL.SettingBLL.CompanyBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="CompanyService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="CompanyManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--订单日志-->
+  <!--
+  <object id="OrderLogManager" type="CySoft.BLL.OrderBLL.OrderLogBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="OrderLogService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="OrderLogManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--系统参数-->
+  <!--
+  <object id="ParametersManager" type="CySoft.BLL.SystemBLL.SettingBLL.ParametersBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="ParametersService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="ParametersManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--系统设置-->
+  <!--
+  <object id="SystemManager" type="CySoft.BLL.SystemBLL.SettingBLL.SystemBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="SystemService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="SystemManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+  <!--销售订单-->
+  <!--
+  <object id="SaleOrderManager" type="CySoft.BLL.SaleBLL.SaleOrderBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Td_Sale_Order_HeadDAL" ref="Td_Sale_Order_HeadDAL"/>
+    <property name="Td_Sale_Order_BodyDAL" ref="Td_Sale_Order_BodyDAL"/>
+  </object>
+  <object id="SaleOrderService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="SaleOrderManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--销售出库-->
+  <!--
+  <object id="SaleOutManager" type="CySoft.BLL.SaleBLL.SaleOutBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="SaleOutService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="SaleOutManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--银行账号-->
+  <!--
+  <object id="BankAccountManager" type="CySoft.BLL.FundsBLL.BankAccountBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="BankAccountService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="BankAccountManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  -->
+  <!--报表-->
+  
+  <object id="ReportManager" type="CySoft.BLL.ReportBLL.ReportBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="ReportService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="ReportManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  
+  <!--反馈管理-->
+  <!--
+  <object id="FaqManager" type="CySoft.BLL.FaqBLL.FaqBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="FaqDAL" ref="FaqDAL"/>
+  </object>
+  <object id="FaqService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="FaqManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--接口凭证管理-->
+  <!--
+  <object id="UserAccreditManager" type="CySoft.BLL.UserBLL.UserAccreditBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="UserAccreditService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="UserAccreditManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--通知公告管理-->
+  <!--
+  <object id="InfoManager" type="CySoft.BLL.InfoBLL.InfoBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Info_UserDAL" ref="Info_UserDAL"/>
+  </object>
+  <object id="InfoService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="InfoManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--通知公告收信管理-->
+  <!--
+  <object id="InfoUserManager" type="CySoft.BLL.InfoBLL.InfoUserBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Info_UserDAL" ref="Info_UserDAL"/>
+  </object>
+  <object id="InfoUserService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="InfoUserManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  -->
+  <!--通知公告类型管理-->
+  <!--
+  <object id="InfoTypeManager" type="CySoft.BLL.InfoBLL.InfoTypeBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="InfoTypeService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="InfoTypeManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--所在地管理-->
+
+  <object id="DistrictsManager" type="CySoft.BLL.SystemBLL.DistrictsBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="DistrictsService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="DistrictsManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--用户图册管理-->
+  <!--
+  <object id="UserPicManager" type="CySoft.BLL.UserBLL.UserPicBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="UserPicService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="UserPicManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--用户签到管理-->
+  <!--
+  <object id="UserCheckInManager" type="CySoft.BLL.UserBLL.UserCheckInBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="UserCheckInService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="UserCheckInManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--系统后台主用户管理-->
+  <!--
+  <object id="UserMasterManager" type="CySoft.BLL.AdminBLL.UserMasterBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_UserDAL" ref="Tb_UserDAL"/>
+  </object>
+  <object id="UserMasterService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="UserMasterManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--系统后台主功能管理-->
+  <object id="FunctionManager" type="CySoft.BLL.AdminBLL.FunctionBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="FunctionService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="FunctionManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--角色模块管理-->
+  <object id="RoleModuleManager" type="CySoft.BLL.AdminBLL.RoleModuleBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="RoleModuleService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="RoleModuleManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--商品推荐-->
+  <!--
+  <object id="GoodsRecommendManager" type="CySoft.BLL.GoodsBLL.GoodsRecommendBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="GoodsRecommendService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsRecommendManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  -->
+  <!--商品分单关系-->
+  <!--
+  <object id="GoodsSkuFdManager" type="CySoft.BLL.GoodsBLL.GoodsSkuFdBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_Gys_DAL" ref="Tb_Gys_DAL"/>
+  </object>
+  <object id="GoodsSkuFdService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsSkuFdManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  -->
+  <!--商品标签-->
+  <!--
+  <object id="GoodsTagManager" type="CySoft.BLL.GoodsBLL.GoodsTagBll,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="GoodsTagService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="GoodsTagManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  -->
+  <!--广告管理-->
+  <!--
+  <object id="AdvertisManager" type="CySoft.BLL.AdvertisBLL.AdvertisBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="AdvertisService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="AdvertisManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  -->
+
+
+
+  <!--点击广告用户-->
+  <!--
+  <object id="AdvertisLogManager" type="CySoft.BLL.AdvertisBLL.AdvertisLogBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="AdvertisLogService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="AdvertisLogManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>-->
+
+
+  <!--Tb_Dw-->
+  <object id="Tb_DwManager" type="CySoft.BLL.GoodsBLL.Tb_DwBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_DwService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_DwManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Spfl-->
+  <object id="Tb_SpflManager" type="CySoft.BLL.GoodsBLL.Tb_SpflBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_SpflDAL" ref="Tb_SpflDAL"/>
+  </object>
+  <object id="Tb_SpflService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_SpflManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Pay-->
+  <object id="Tb_PayManager" type="CySoft.BLL.GoodsBLL.Tb_PayBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_PayService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_PayManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Ts_Flag-->
+  <object id="Ts_FlagManager" type="CySoft.BLL.FlagBLL.Ts_FlagBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Ts_FlagService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Ts_FlagManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Shopsp-->
+  <object id="Tb_ShopspManager" type="CySoft.BLL.GoodsBLL.Tb_ShopspBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_ShopspDAL" ref="Tb_ShopspDAL"/>
+  </object>
+  <object id="Tb_ShopspService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_ShopspManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Shopsp_Exportdata-->
+  <object id="Tb_Shopsp_ExportdataManager" type="CySoft.BLL.GoodsBLL.Tb_Shopsp_ExportdataBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Shopsp_ExportdataService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Shopsp_ExportdataManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Role_Pos_Function-->
+  <object id="Tb_Role_Pos_FunctionManager" type="CySoft.BLL.SystemBLL.SettingBLL.PosRoleFuncSettingBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Role_Pos_FunctionService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Role_Pos_FunctionManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Post_Function-->
+  <object id="Tb_Pos_FunctionManager" type="CySoft.BLL.SystemBLL.SettingBLL.PosFunctionBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Pos_FunctionService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Pos_FunctionManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Pos_Role_Module-->
+  <object id="Tb_Pos_Role_ModuleManager" type="CySoft.BLL.AdminBLL.Tb_Pos_Role_ModuleBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Pos_Role_ModuleService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Pos_Role_ModuleManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Shopsp_Qc_Md-->
+  <object id="Tb_Shopsp_Qc_MdManager" type="CySoft.BLL.GoodsBLL.Tb_Shopsp_Qc_MdBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Shopsp_Qc_MdService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Shopsp_Qc_MdManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Shop-->
+  <object id="Tb_ShopManager" type="CySoft.BLL.GoodsBLL.Tb_ShopBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_ShopDAL" ref="Tb_ShopDAL"/>
+  </object>
+  <object id="Tb_ShopService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_ShopManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Ts_Parm-->
+  <object id="Ts_ParmManager" type="CySoft.BLL.ParmBLL.Ts_ParmBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Ts_ParmService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Ts_ParmManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Ts_Parm_Shop-->
+  <object id="Ts_Parm_ShopManager" type="CySoft.BLL.ParmBLL.Ts_Parm_ShopBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Ts_Parm_ShopService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Ts_Parm_ShopManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_User_Shop-->
+  <object id="Tb_User_ShopManager" type="CySoft.BLL.UserBLL.Tb_User_ShopBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_User_ShopService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_User_ShopManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Pay_Config-->
+  <object id="Tb_Pay_ConfigManager" type="CySoft.BLL.SystemBLL.Tb_Pay_ConfigBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Pay_ConfigService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Pay_ConfigManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Ts_Lszd-->
+  <object id="Ts_LszdManager" type="CySoft.BLL.LszdBLL.Ts_LszdBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Ts_LszdService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Ts_LszdManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  <!--Tb_Promote-->
+  <object id="Tb_PromoteManager" type="CySoft.BLL.PromoteBLL.Tb_PromoteBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_PromoteService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_PromoteManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  <!--Td_Promote_Shop-->
+  <object id="Td_Promote_ShopManager" type="CySoft.BLL.PromoteBLL.Td_Promote_ShopBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Promote_ShopService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Promote_ShopManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Promote_1-->
+  <object id="Td_Promote_1Manager" type="CySoft.BLL.PromoteBLL.Td_Promote_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Td_Promote_2DAL" ref="Td_Promote_2DAL"/>
+  </object>
+  <object id="Td_Promote_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Promote_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  <!--Td_Promote_2-->
+  <object id="Td_Promote_2Manager" type="CySoft.BLL.PromoteBLL.Td_Promote_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Td_Promote_2DAL" ref="Td_Promote_2DAL"/>
+  </object>
+  <object id="Td_Promote_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Promote_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  <!--Tb_Promote_Sort-->
+  <object id="Tb_Promote_SortManager" type="CySoft.BLL.PromoteBLL.Tb_Promote_SortBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Promote_SortService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Promote_SortManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Promote_Largess-->
+  <object id="Tb_Promote_LargessManager" type="CySoft.BLL.PromoteBLL.Tb_Promote_LargessBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Promote_LargessService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Promote_LargessManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Gysfl-->
+  <object id="Tb_GysflManager" type="CySoft.BLL.GoodsBLL.Tb_GysflBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_GysflDAL" ref="Tb_GysflDAL"/>
+  </object>
+  <object id="Tb_GysflService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_GysflManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Tb_Gys-->
+  <object id="Tb_GysManager" type="CySoft.BLL.GoodsBLL.Tb_GysBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_GysService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_GysManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Shop_Shop-->
+  <object id="Tb_Shop_ShopManager" type="CySoft.BLL.GoodsBLL.Tb_Shop_ShopBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Shop_ShopService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Shop_ShopManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Td_Jh_1-->
+  <object id="Td_Jh_1Manager" type="CySoft.BLL.BusinessBLL.Td_Jh_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_ShopspDAL" ref="Tb_ShopspDAL"/>
+  </object>
+  <object id="Td_Jh_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Jh_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Ticket-->
+  <object id="Tb_TicketManager" type="CySoft.BLL.SystemBLL.Tb_TicketBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_TicketService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_TicketManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Hyfl-->
+  <object id="Tb_HyflManager" type="CySoft.BLL.MemberBLL.Tb_HyflBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_HyflService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_HyflManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Hy-->
+  <object id="Tb_HyManager" type="CySoft.BLL.MemberBLL.Tb_HyBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_HyService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_HyManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Hy_Shop-->
+  <object id="Tb_Hy_ShopManager" type="CySoft.BLL.MemberBLL.Tb_Hy_ShopBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Hy_ShopService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Hy_ShopManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+  <!--Td_Jh_Th_1-->
+  <object id="Td_Jh_Th_1Manager" type="CySoft.BLL.BusinessBLL.Td_Jh_Th_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Jh_Th_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Jh_Th_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Td_Fk_1-->
+  <object id="Td_Fk_1Manager" type="CySoft.BLL.BusinessBLL.Td_Fk_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Fk_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Fk_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+  <!--Tz_Yf_Jsc_Gx-->
+  <object id="Tz_Yf_Jsc_GxManager" type="CySoft.BLL.BusinessBLL.Tz_Yf_Jsc_GxBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tz_Yf_Jsc_GxService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tz_Yf_Jsc_GxManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ls_Jb_1-->
+  <object id="Td_Ls_Jb_1Manager" type="CySoft.BLL.LSBLL.Td_Ls_Jb_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ls_Jb_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ls_Jb_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ls_Jb_2-->
+  <object id="Td_Ls_Jb_2Manager" type="CySoft.BLL.LSBLL.Td_Ls_Jb_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ls_Jb_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ls_Jb_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  <!--Td_Ls_1-->
+  <object id="Td_Ls_1Manager" type="CySoft.BLL.LSBLL.Td_Ls_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Td_Ls_1DAL" ref="Td_Ls_1DAL"/>
+  </object>
+  <object id="Td_Ls_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ls_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ls_2-->
+  <object id="Td_Ls_2Manager" type="CySoft.BLL.LSBLL.Td_Ls_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ls_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ls_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tz_Jxc_Flow-->
+  <object id="Tz_Jxc_FlowManager" type="CySoft.BLL.BusinessBLL.Tz_Jxc_FlowBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tz_Jxc_FlowService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tz_Jxc_FlowManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Td_Ps_Ck_1-->
+  <object id="Td_Ps_Ck_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Ck_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Ck_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Ck_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Ck_2-->
+  <object id="Td_Ps_Ck_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Ck_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Ck_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Ck_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Tz_Hy_Je-->
+  <object id="Tz_Hy_JeManager" type="CySoft.BLL.MemberBLL.Tz_Hy_JeBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tz_Hy_JeDAL" ref="Tz_Hy_JeDAL"/>
+    <property name="Tz_Hy_Je_FlowDAL" ref="Tz_Hy_Je_FlowDAL"/>
+    <property name="Td_Hy_Cz_1DAL" ref="Td_Hy_Cz_1DAL"/>
+  </object>
+  <object id="Tz_Hy_JeService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tz_Hy_JeManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+
+  <!--Tz_Hy_Je_Flow-->
+  <object id="Tz_Hy_Je_FlowManager" type="CySoft.BLL.MemberBLL.Tz_Hy_Je_FlowBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tz_Hy_Je_FlowService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tz_Hy_Je_FlowManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Tz_Hy_Jf-->
+  <object id="Tz_Hy_JfManager" type="CySoft.BLL.MemberBLL.Tz_Hy_JfBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tz_Hy_Jf_FlowDAL" ref="Tz_Hy_Jf_FlowDAL"/>
+  </object>
+  <object id="Tz_Hy_JfService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tz_Hy_JfManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Td_Hy_Cz_1-->
+  <object id="Td_Hy_Cz_1Manager" type="CySoft.BLL.MemberBLL.Td_Hy_Cz_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Hy_Cz_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Hy_Cz_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+
+
+  <!--BusinessBLL-->
+  <object id="BusinessBLLManager" type="CySoft.BLL.BusinessBLL.BusinessBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="BusinessBLLService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="BusinessBLLManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+  <!--Td_Kc_Kspd_1-->
+  <object id="Td_Kc_Kspd_1Manager" type="CySoft.BLL.BusinessBLL.Td_Kc_Kspd_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_ShopspDAL" ref="Tb_ShopspDAL"/>
+    <property name="Td_Kc_Kspd_2DAL" ref="Td_Kc_Kspd_2DAL"/>
+  </object>
+  <object id="Td_Kc_Kspd_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Kc_Kspd_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+
+  <!--Td_Jh_Dd_1-->
+  <object id="Td_Jh_Dd_1Manager" type="CySoft.BLL.BusinessBLL.Td_Jh_Dd_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Jh_Dd_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Jh_Dd_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Td_Ps_Rk_1-->
+  <object id="Td_Ps_Rk_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Rk_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Rk_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Rk_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Rk_2-->
+  <object id="Td_Ps_Rk_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Rk_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Rk_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Rk_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Fpck_1-->
+  <object id="Td_Ps_Fpck_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Fpck_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Fpck_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Fpck_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Fpck_2-->
+  <object id="Td_Ps_Fpck_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Fpck_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Fpck_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Fpck_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Fprk_1-->
+  <object id="Td_Ps_Fprk_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Fprk_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Fprk_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Fprk_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Fprk_2-->
+  <object id="Td_Ps_Fprk_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Fprk_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Fprk_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Fprk_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+  <!--Td_Hy_Czrule_1-->
+  <object id="Td_Hy_Czrule_1Manager" type="CySoft.BLL.MemberBLL.Td_Hy_Czrule_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Td_Hy_Czrule_1DAL" ref="Td_Hy_Czrule_1DAL"/>
+  </object>
+  <object id="Td_Hy_Czrule_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Hy_Czrule_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Tb_Hy_Czrule-->
+  <object id="Tb_Hy_CzruleManager" type="CySoft.BLL.MemberBLL.Tb_Hy_CzruleBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Hy_CzruleService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Hy_CzruleManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Tb_Hy_Czrule_Zssp-->
+  <object id="Tb_Hy_Czrule_ZsspManager" type="CySoft.BLL.MemberBLL.Tb_Hy_Czrule_ZsspBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_Hy_Czrule_ZsspService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Hy_Czrule_ZsspManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  
+  
+
+  <!--Td_Ps_Sq_1-->
+  <object id="Td_Ps_Sq_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Sq_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_ShopspDAL" ref="Tb_ShopspDAL"/>
+  </object>
+  <object id="Td_Ps_Sq_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Sq_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Td_Ps_Sq_2-->
+  <object id="Td_Ps_Sq_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Sq_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Sq_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Sq_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Dbck_1-->
+  <object id="Td_Ps_Dbck_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Dbck_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Dbck_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Dbck_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Dbck_2-->
+  <object id="Td_Ps_Dbck_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Dbck_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Dbck_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Dbck_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Dbrk_1-->
+  <object id="Td_Ps_Dbrk_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Dbrk_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Dbrk_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Dbrk_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Dbrk_2-->
+  <object id="Td_Ps_Dbrk_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Dbrk_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Dbrk_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Dbrk_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Cktzd_1-->
+  <object id="Td_Ps_Cktzd_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Cktzd_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Cktzd_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Cktzd_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Cktzd_2-->
+  <object id="Td_Ps_Cktzd_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Cktzd_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Cktzd_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Cktzd_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Fpsq_1-->
+  <object id="Td_Ps_Fpsq_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Fpsq_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Fpsq_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Fpsq_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Td_Ps_Fpsq_2-->
+  <object id="Td_Ps_Fpsq_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Fpsq_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Fpsq_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Fpsq_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Fptzd_1-->
+  <object id="Td_Ps_Fptzd_1Manager" type="CySoft.BLL.PSBLL.Td_Ps_Fptzd_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Fptzd_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Fptzd_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Ps_Fptzd_2-->
+  <object id="Td_Ps_Fptzd_2Manager" type="CySoft.BLL.PSBLL.Td_Ps_Fptzd_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Ps_Fptzd_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Ps_Fptzd_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Hy_Jfrule-->
+  <object id="Tb_Hy_JfruleManager" type="CySoft.BLL.MemberBLL.Tb_Hy_JfruleBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_Hy_JfruleDAL" ref="Tb_Hy_JfruleDAL"/>
+  </object>
+  <object id="Tb_Hy_JfruleService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Hy_JfruleManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Tb_Hy_Jfconvertsp-->
+  <object id="Tb_Hy_JfconvertspManager" type="CySoft.BLL.MemberBLL.Tb_Hy_JfconvertspBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tz_Hy_JfBLL" ref="Tz_Hy_JfService"/>
+  </object>
+  <object id="Tb_Hy_JfconvertspService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Hy_JfconvertspManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--商业服务-->
+<object id="PayManager" type="CySoft.BLL.PayBLL.PayBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tz_Hy_JeBLL" ref="Tz_Hy_JeService"/>
+</object>
+  <object id="PayService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="PayManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Td_Kc_Sltz_1-->
+  <object id="Td_Kc_Sltz_1Manager" type="CySoft.BLL.BusinessBLL.Td_Kc_Sltz_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_ShopspDAL" ref="Tb_ShopspDAL"/>
+  </object>
+  <object id="Td_Kc_Sltz_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Kc_Sltz_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+  <!--Ts_Notice-->
+  <object id="Ts_NoticeManager" type="CySoft.BLL.SystemBLL.Ts_NoticeBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Ts_NoticeService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Ts_NoticeManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  
+
+  
+
+  <!--Tb_Khfl-->
+  <object id="Tb_KhflManager" type="CySoft.BLL.KHBLL.Tb_KhflBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_KhflDAL" ref="Tb_KhflDAL"/>
+  </object>
+  <object id="Tb_KhflService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_KhflManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+  
+
+
+  <!--Tb_Kh-->
+  <object id="Tb_KhManager" type="CySoft.BLL.KHBLL.Tb_KhBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tb_KhService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_KhManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Td_Sk_1-->
+  <object id="Td_Sk_1Manager" type="CySoft.BLL.BusinessBLL.Td_Sk_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Sk_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Sk_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+  <!--Td_Sk_2-->
+  <object id="Td_Sk_2Manager" type="CySoft.BLL.BusinessBLL.Td_Sk_2BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Sk_2Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Sk_2Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Tz_Ys-->
+  <object id="Tz_YsManager" type="CySoft.BLL.BusinessBLL.Tz_YsBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tz_YsService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tz_YsManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+  <!--Tz_Ys_Jsc-->
+  <object id="Tz_Ys_JscManager" type="CySoft.BLL.BusinessBLL.Tz_Ys_JscBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tz_Ys_JscService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tz_Ys_JscManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tz_Ys_Flow-->
+  <object id="Tz_Ys_FlowManager" type="CySoft.BLL.BusinessBLL.Tz_Ys_FlowBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Tz_Ys_FlowService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tz_Ys_FlowManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+  <!--Td_Xs_Dd_1-->
+  <object id="Td_Xs_Dd_1Manager" type="CySoft.BLL.BusinessBLL.Td_Xs_Dd_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Xs_Dd_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Xs_Dd_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Td_Xs_1-->
+  <object id="Td_Xs_1Manager" type="CySoft.BLL.BusinessBLL.Td_Xs_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+    <property name="Tb_ShopspDAL" ref="Tb_ShopspDAL"/>
+  </object>
+  <object id="Td_Xs_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Xs_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+
+
+  <!--Td_Xs_Th_1-->
+  <object id="Td_Xs_Th_1Manager" type="CySoft.BLL.BusinessBLL.Td_Xs_Th_1BLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/>
+  </object>
+  <object id="Td_Xs_Th_1Service" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Td_Xs_Th_1Manager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+  <!--Tb_Sp_Jgzh-->
+  <object id="Tb_Sp_JgzhManager" type="CySoft.BLL.GoodsBLL.Tb_Sp_JgzhBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/> 
+  </object>
+  <object id="Tb_Sp_JgzhService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Sp_JgzhManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+
+  <!--Tb_Sp_Fgcf-->
+  <object id="Tb_Sp_FgcfManager" type="CySoft.BLL.GoodsBLL.Tb_Sp_FgcfBLL,CySoft.BLL">
+    <property name="DAL" ref="BaseDAL"/> 
+  </object>
+  <object id="Tb_Sp_FgcfService" type="Spring.Aop.Framework.ProxyFactoryObject,Spring.Aop">
+    <property name="Target" ref="Tb_Sp_FgcfManager" />
+    <property name="InterceptorNames">
+      <list>
+        <value>Transaction</value>
+        <value>Exception</value>
+      </list>
+    </property>
+  </object>
+
+</objects>
+
+
+
+

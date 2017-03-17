@@ -1,0 +1,528 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "门店管理";
+    PageList<CySoft.Model.Tb.Tb_Shop> pageList = ViewData["List"] as PageList<CySoft.Model.Tb.Tb_Shop>;
+    var shopMaster = ViewData["ShopMaster"] as CySoft.Model.Tb.Tb_Shop;
+    shopMaster = shopMaster ?? new CySoft.Model.Tb.Tb_Shop();
+    var _view_page_ = ViewData["_view_page_"] == null ? "1" : ViewData["_view_page_"].ToString();
+    var fromType = ViewData["fromType"] == null ? "0" : ViewData["fromType"].ToString();
+    if (fromType == "1") { _view_page_ = "1"; }
+    var hone_css = _view_page_ == "1" ? "tab-pane fade active in" : "tab-pane fade  container";
+    var ios_css = _view_page_ == "1" ? "tab-pane fade  container" : "tab-pane fade  container active in";
+    int index = 1;
+    var buyNum = ViewData["vBuyNum"] == null ? "" : ViewData["vBuyNum"].ToString();//购买服务数量
+    var openNum= ViewData["openNum"] == null ? "-99" : ViewData["openNum"].ToString();//已开启的门店数量
+    var vEndData = ViewData["vEndData"] == null ? "" : ViewData["vEndData"].ToString();//到期日期 注意 如果是小于 1900-01-01 则认为是无限期的
+    var endData = "";//到期剩余天数
+    if (!string.IsNullOrEmpty(vEndData))
+    {
+        DateTime d1 = DateTime.Parse(vEndData);
+        DateTime d2 = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
+        if (d1 > DateTime.Parse("1900-01-01"))
+        {
+            endData = ((int)(d1 - d2).TotalDays).ToString();//天数差
+        }
+    }
+    var version = ViewData["version"] == null ? "" : ViewData["version"].ToString();
+    string bb = "单店版";
+    if (version == "20") {
+        bb = "连锁版";
+    }
+    else if (version == "30") {
+        bb = "集团版";
+    }
+
+}
+
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="shop/list"]').attr({ controller: 'shop', action: 'list' });
+        app.c.public_data['shop/list'] = app.c.public_data['shop/list'] || {};
+        app.c.public_data['shop/list']['once'] = false;
+        app.qc = app.qc || {};
+    });
+</script>
+<input type="hidden" pagesize value="" />
+<input type="hidden" page value="" />
+
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        门店管理
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['shop/list'] = app.c.public_data['shop/list'] || {};
+    app.c.public_data['shop/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['shop/list']['threemenu'] === false) {
+            app.c.public_data['shop/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 6;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+
+
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/shop/list">
+                                    <div class="col-xs-10 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <!-- 内容搜索 -->
+                                                <div class="pull-right m-r-sm" style="margin-top:7px">
+                                                    <div class="1" style="position:relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="text" value="" onkeypress="app.search.trigger_search_client_client(event);" class="form-control input-sm search-h inline v-middle search-result search" name="keyword" id="keyword" style="width:250px;border-right:none;border-radius: 2px 0 0 2px;" placeholder="编码/名称/联系人姓名/手机号" ondblclick="app.search.search_item_clear_client_client(this);" onblur="app.search.do_search_client_client(this);" /><span><button type="button" onclick="app.search.do_search_client_client(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span><span onclick="app.search.search_item_clear_client_client(this);" style="display:none;position:absolute;right:27px;top:4px;padding:2px 2px 2px 4px;cursor:pointer;color:#d5d3d5;width:19px;height:25px;background:#fff;"><i class="fa fa-times-circle"></i></span>
+                                                        <input type="hidden" name="_view_page_" id="_view_page_" value="1" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script type="text/javascript">
+                                            app.c.public_data['shop/list'] = app.c.public_data['shop/list'] || {};
+                                            app.c.public_data['shop/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'shop/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' + currentSearch + '===false){app.search.search_client_client();' + currentSearch + '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            //TODO：分页参数
+                                            app.search.search_client_client = function () {
+                                                app.c.public_data["shop/list"] = app.c.public_data['shop/list'] || {};
+                                                app.c.public_data['shop/list']['_row_total_'] = '@pageList.ItemCount',
+                                                app.c.public_data['shop/list']['_page_size_'] = '@pageList.PageSize',
+                                                app.c.public_data['shop/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                
+                                                app.search.do_search_pagination_client_client();
+
+                                            }
+                                            app.search.trigger_search_client_client = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_client_client();
+                                                    event.preventDefault();
+                                                }
+                                            }
+                                            app.search.do_search_client_client = function (el, isExport) {
+                                                
+
+                                                isExport = isExport || 0;
+                                                //var _view_page_ = $('#_view_page_').val();//动态
+                                                var url = '/shop/list?_search_=1'+ '&' + $(_ + ".filter-form").serialize();
+
+                                                url = url + '&page=' + app.c.public_data['shop/list']['_current_page_'];
+
+
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    window.location.href = $.DHB.U(url);
+                                                }
+                                                else {
+
+                                                    //$.DHB.showButterbar();
+                                                    
+                                                    //$.get($.DHB.U(url), function (data, textStatus) {
+                                                    //    $.DHB.closeButterbar();
+                                                    //    if ($('#shop-list-list-fresh-box', _).length > 0) {
+                                                    //        $('#shop-list-list-fresh-box', _).html(data);
+
+                                                    //        var _view_page_ = $('#_view_page_').val();//动态
+                                                    //        if (_view_page_ == "2") {
+                                                    //            $('#myTab li:eq(1) a').tab('show');
+                                                    //        }
+                                                    //        else {
+                                                    //            $('#myTab li:eq(0) a').tab('show');
+                                                    //        }
+                                                    //    }
+                                                    //    app.search.do_search_pagination_client_client();
+                                                    //}, 'html'
+                                                    //);
+
+                                                    var options = {
+                                                        url: $.DHB.U(url),
+                                                        datatype: 'html',
+                                                        beforeSend: function () {
+                                                            $.DHB.showButterbar();
+                                                        },
+                                                        success: function (data, textStatus, jqXHR) {
+                                                            $.DHB.closeButterbar();
+                                                            if ($('#shop-list-list-fresh-box', _).length > 0) {
+                                                                $('#shop-list-list-fresh-box', _).html(data);
+
+                                                                var _view_page_ = $('#_view_page_').val();//动态
+                                                                if (_view_page_ == "2") {
+                                                                    $('#myTab li:eq(1) a').tab('show');
+                                                                }
+                                                                else {
+                                                                    $('#myTab li:eq(0) a').tab('show');
+                                                                }
+                                                            }
+                                                            app.search.do_search_pagination_client_client();
+                                                        },
+                                                        complete: function (XHR, TS) {
+                                                            $.DHB.closeButterbar();
+                                                        }
+                                                    };
+                                                    app.httpAjax.post(options);
+
+                                                }
+                                                return false;
+                                            }
+
+                                            //分页
+                                            app.search.do_search_pagination_client_client = function () {
+                                                
+
+                                                $.DHB.func.pagination({ module_name: 'Manager', controller_name: 'shop', action_name: 'list', ready_once: false });
+                                            }
+
+                                            app.search.do_search_option_client_client = function (el) {
+                                                
+
+                                                if ($(el).attr('class') != '') {
+                                                    $(el).find('span').each(function () {
+                                                        if ($(this).attr('class') == '') {
+                                                            $(this).attr('class', 'order-active');
+                                                        } else {
+                                                            $(this).attr('class', '');
+                                                        }
+                                                    });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el).parents('.btn-group').find('input:eq(0)').val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el).parents('.btn-group').find('button span:eq(0)').html(selectA.html());
+
+                                                app.search.do_search_client_client();
+                                            }
+
+                                            app.search.search_enter = function (el) {
+                                                if (app.c.public_data['shop/list']['search_all'] === false) {
+                                                    $(el).parents('.search-box-container').find(".bootstrap-select ul.dropdown-menu").each(function () {
+                                                        var ts = $(this).find('li:first() span:first()');
+                                                        ts.text('全部');
+                                                    });
+                                                    app.c.public_data['shop/list']['search_all'] = true;
+                                                }
+                                            }
+
+                                            app.search.search_leave = function (el) {
+                                            }
+
+                                            app.search.search_client_clear_client_client = function (el) {
+                                                
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_client_client();
+                                            }
+
+                                            app.search.search_item_clear_client_client = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                par.find("select.select2_").selectpicker({ liveSearch: true }).selectpicker('refresh');
+                                                par.find("select.select2").selectpicker('refresh');
+                                                app.search.do_search_client_client();
+                                            }
+
+                                        </script>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-2 pull-left">
+                            <button class="btn m-t-12 m-b-sm btn-sm btn-info btn-addon w-xs" style="float:left" onclick="$.fn.menuTab.load({ url: '/shop/add', 'title': '注册新门店', id: 'shop/add', nocache: '0' }); " title="注册新门店" href="javascript:void(0);"> <span class="fa fa-plus btn_icon"></span>注册新门店 </button>
+                        </div>
+
+
+
+
+                        <div class="contentBox">
+                            <div class="title">
+                                <span class="right"></span>
+                                <span class="left">
+                                @bb 账户信息
+                                </span>
+
+                            </div>
+                        </div>
+                        <div class="height10 clear"></div>
+                        <div style="padding: 10px 13px;">
+                            <table class="indexFormTable" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding:0 10px 15px 0;height:120px;" class="wf49" align="center">
+                                            <div class="whiteBox" style="height:120px;width:75.333%;">
+                                                <div class="countArea borderR" style="padding:10px 0; width:20%; height:100px;">
+                                                    <div class="countDataTitle txtC  BlueWord">当前账户门店总数</div>
+                                                    <div class="countData txtC mr5">@pageList.ItemCount<span class="font12">/个</span></div>
+                                                    <input spellcheck="false" id="allowbranchcount" value="2" type="hidden">
+                                                    <div class=" txtC font999">
+                                                    @*（还可增加门店数）*@
+                                                    @if (string.IsNullOrEmpty(buyNum))
+                                                    {
+                                                        @Html.Raw(string.Format("（您还未购买服务）"));
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw(string.Format("（您已购买 {0} 个门店服务）", buyNum));
+                                                    }
+                                                    </div>
+                                                </div>
+
+                                                <div class="countArea" style="padding:10px 0; width:32%; height:100px;">
+                                                    <div style="padding: 0px 22px;">
+                                                        <table style="line-height:180%;" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td align="right"><span class="font999" style="white-space:nowrap;">总部门店：</span></td>
+                                                                    <td style="width:5%;"> </td>
+                                                                    <td><div style="width:380px;text-overflow:ellipsis; white-space:nowrap; overflow:hidden;height:21px" title="@shopMaster.mc">@shopMaster.mc</div></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right"><span class="font999">联系人：</span></td>
+                                                                    <td width="5%"> </td>
+                                                                    <td>@shopMaster.lxr</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right"><span class="font999">手机号码：</span></td>
+                                                                    <td width="5%"> </td>
+                                                                    <td>@shopMaster.phone</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right"><span class="font999">地址：</span></td>
+                                                                    <td width="5%"> </td>
+                                                                    <td><div style="width:480px;text-overflow:ellipsis; white-space:nowrap; overflow:hidden;height:21px" title="">@shopMaster.address</div></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- whiteBox -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- ka1--start---->
+                        <input type="hidden" name="page" value="@ViewData["pagesize"]" />
+
+                        <div class="ka-start">
+                            <!--nav--->
+                            <ul id="myTab" class="nav nav-tabs">
+                                <li id="liImg" class="active" onclick="shopTabChange('1');">
+                                    <a href="#home" data-toggle="tab">
+                                        已添加门店
+                                        &nbsp;
+                                        <span class="glyphicon glyphicon-th-large"></span>
+                                        <small>大图</small>
+                                    </a>
+                                </li>
+                                <li id="liList" onclick="shopTabChange('2');">
+                                    <a href="#ios" data-toggle="tab">
+                                        门店列表查看
+                                        &nbsp;
+                                        <span class="glyphicon glyphicon-list"></span>
+                                        <small>列表</small>
+                                    </a>
+                                </li>
+                            </ul>
+                            <!--con---->
+                            <div id="shop-list-list-fresh-box">
+                                <div id="myTabContent" class="tab-content">
+                                    <div class="@hone_css" id="home">
+                                        <ul id="banner_ul" class="col-xs-12 m-l-none m-b-none wrapper-md">
+                                            @foreach (var item in pageList)
+                                            {
+                                                <li id="banner_li_@item.id" class="m-r-md m-b-md pull-left banner-set-box out-box banner_li " style="position: relative">
+
+                                                    <div class="move retail-store" style="clear: both">
+                                                        <div class="w-406 h-200 b wrapper-xs banner-set img-set bor-b">
+                                                            <img src="@Html.Raw(string.IsNullOrWhiteSpace(item.pic_path) ? "/static/images/register/stores.png" : item.pic_path) " alt="@item.mc" onclick="$.fn.menuTab.load({ url: '/shop/detail?id=@item.id', 'title': '门店详情', id: 'shop/list', nocache: '0' }); ">
+                                                            <input name="banner_img[]" value="@item.pic_path" type="hidden">
+                                                        </div>
+                                                        <div class="m-t banner-link" style="margin-left: 15px !important;">
+                                                            <label class="item-2-label" style="margin-left:0px;"><span>门店编码：</span></label><label class="m-l-xs1">@item.bm</label><br />
+                                                            <label class="item-2-label" style="margin-left:0px;"><span>门店名称：</span></label><label class="m-l-xs1">@item.mc</label><br />
+                                                            <label class="item-2-label" style="margin-left:0px;"><span>联系人：</span></label> <label class="m-l-xs1">@item.lxr</label><br />
+                                                            <label class="item-2-label" style="margin-left:0px;"> <span>手机号码：</span></label><label class="m-l-xs1">@item.phone</label><br />
+                                                            <label class="item-2-label" style="margin-left:0px;"><span>联系地址：</span></label><label class="m-l-xs1">@item.address</label><br />
+                                                            <label class="item-2-label" style="margin-left:0px;"><span>状态：</span></label><label class="m-l-xs1">@Html.Raw(item.flag_state.ToString() != "1" ? "停用" : "正常")</label><br />
+                                                        </div>
+                                                    </div>
+                                                    <ul style="display: block;bottom:10px;" class="do-banner a-hover1">
+                                                        <li class="ho1"><a class="fa fa-copy pad-rl4" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/add?id=@item.id'+'&fromType=0', 'title': '门店复制', id: 'shop/add', nocache: '1' }); "><span class="mar-l3">复制</span></a></li>
+                                                        <li class="ho2"><a class="fa fa-pencil pad-rl4" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/edit?id=@item.id'+'&fromType=0', 'title': '门店编辑', id: 'shop/edit', nocache: '1' }); "><span class="mar-l3">编辑</span></a></li>
+                                                    </ul>
+                                                </li>
+                                            }
+
+                                            <li id="banner_li_add" class="m-r-md m-b-md pull-left banner-set-box out-box banner_li" style="position: relative">
+                                                <div class="move" style="clear: both">
+                                                    <div class="w-406 h-200 b wrapper-xs banner-set img-set retail-store">
+                                                        <img src="/static/images/default7.png" alt="新增" onclick="window.scrollTo(0, 0);$.fn.menuTab.load({ url: '/shop/add', 'title': '新增门店', id: 'shop/add', nocache: '1' });">
+                                                        <input name="banner_img[]" value="pic_add" type="hidden">
+                                                    </div>
+                                                </div>
+                                                <ul style="display: block;bottom:20px;" class="do-banner a-hover1">
+                                                    <li class="fa fa-plus btn_icon"><a class="mar-l3" href="javascript:void(0);" onclick="window.scrollTo(0, 0);$.fn.menuTab.load({ url: '/shop/add', 'title': '新增门店', id: 'shop/add', nocache: '1' });">新增门店</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+
+                                    <div class="@ios_css" id="ios">
+                                        <div id="hy-list-list-fresh-box" class="table_list table_max_h">
+                                            <table class="table table-bordered" id="xuh">
+                                                <caption>
+                                                    <button class="btn m-t-12 m-b-sm btn-sm btn-info btn-addon w-xs" style="float:left" onclick="$.fn.menuTab.load({ url: '/shop/add?fromType=1', 'title': '注册新门店', id: 'shop/add', nocache: '1' }); " title="注册新门店" href="javascript:void(0);"> <span class="fa fa-plus btn_icon"></span>注册新门店 </button>
+                                                </caption>
+                                                <thead>
+                                                    <tr>
+                                                        <th width="55">序号</th>
+                                                        <th class="col-md-2">门店编码</th>
+                                                        <th class="col-md-2">门店名称</th>
+                                                        <th class="col-md-1">联系人</th>
+                                                        <th class="col-md-2">手机号码</th>
+                                                        <th>联系地址</th>
+                                                        <th class="col-md-1">状态</th>
+                                                        <th class="col-md-1">操作</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    @foreach (var item in pageList)
+                                                    {
+
+                                                        <tr>
+                                                            <td class="text-c">@(index++)</td>
+                                                            <td>@item.bm</td>
+                                                            <td>@item.mc</td>
+                                                            <td>@item.lxr</td>
+                                                            <td>@item.phone</td>
+                                                            <td>@item.address</td>
+                                                            <td>@Html.Raw(item.flag_state.ToString() != "1" ? "停用" : "正常")</td>
+                                                            <td>
+                                                                <div class="look-out1 supernatant position_static" style="width:140px;">
+                                                                    <div class="second-height-operate position_static">
+                                                                        <a class="fa fa-copy pad-rl4" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/add?id=@item.id'+'&fromType=1', 'title': '门店复制', id: 'shop/add', nocache: '1' }); "></a>
+                                                                        <a class="fa fa-pencil pad-rl4" href="javascript:void(0);" onclick="$.fn.menuTab.load({ url: '/shop/edit?id=@item.id'+'&fromType=1', 'title': '门店编辑', id: 'shop/edit', nocache: '1' }); "></a>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <footer class="panel-footer bor-no">
+                            <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"><li>3</li></ul>
+                            <div style="clear:both;">
+                            </div>
+                        </footer>
+
+
+
+
+                        <!----ka--start---->
+
+
+                    </div>
+                    <!--ka--end-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(function () {
+        var $tab = $(_);
+        $tab.find('.hide-btn').on('click', function () {
+            var flag = this.checked;
+            app.search.do_search_client_client(this);
+        });
+    });
+
+
+    $(function () {
+        if ('@fromType' == '1') {
+            $('#myTab li:eq(1) a').tab('show');
+        }
+        else {
+            $('#myTab li:eq(0) a').tab('show');
+        }
+    });
+
+    //排序
+    $(function () {
+        var umo = $('#xuh tr').length;
+        for (var i = 1; i < umo; i++) {
+            $('#xuh tr:eq(' + i + ') td:first').text(i);
+        }
+
+    });
+
+    function shopTabChange(id) {
+        $('#_view_page_').val(id.toString());
+
+        app.search.do_search_client_client();
+    }
+
+
+</script>

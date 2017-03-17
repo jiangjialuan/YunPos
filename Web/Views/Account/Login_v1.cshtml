@@ -1,0 +1,178 @@
+﻿@{
+    Layout = null;
+    var loginCount = 0;
+    int.TryParse(ViewData["loginCount"] + "", out loginCount);
+}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <!--[if lte IE 9]><script>window.location.replace("/brower.html");</script><![endif]-->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>云Pos</title>
+    <meta name="description" content="云Pos" />
+    @Styles.Render(
+    "~/manager/img/login/login.css",
+    "~/static/bootstrap/bootstrap.min.css")
+
+    <link href="~/static/css/global/font_awesome.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="header clearfix">
+        <img src="~/manager/img/login/login-logo.png" alt="" class="logo"><h4 class="company-name">个人用户</h4><p class="slogan"></p>
+    </div>
+    <div class="con-row" style="height: 472px;">
+        <div class="content">
+            <div class="banner"></div>
+            <div class="loginItem">
+                <div class="col-xs-6 login_item_left active">快捷登录</div>
+                <div class="col-xs-6 login_item_right">普通登录</div>
+            </div>
+            <form action="" class="form" id="form1">
+                <!--登录账号-->
+                <div class="login-block clearfix" style="margin-bottom:15px;">
+                    <div class="back-icon user"></div>
+                    <input type="text" name="username" placeholder="手机号" class="fr u-name" tabindex="1" style="margin-bottom:0px;" autocomplete="off">
+                    @*<span class="forget-box f-r"   >&nbsp;
+                    </span>*@
+                    @*<span style="color:#999;">
+                        (主用户手机号/企业号或主用户手机号/企业号:员工号)
+                    </span>*@
+                </div>
+                <!--密码-->
+                <div class="login-block clearfix m-b-sm">
+                    <div class="back-icon password"></div>
+                    <input type="password" name="password" placeholder="密码" class="fr u-password" maxlength="20" tabindex="2" autocomplete="off">
+                </div>
+                
+                <!--识别码-->
+                <div id="div_img_code" class="login-block cleafix" style="display: @(loginCount >= 3 ? "inherit" : "none")">
+                    <div class="back-icon password"></div>
+                    <input type="text" name="img_code" placeholder="验证码" class="recognition-code u-code" maxlength="4" tabindex="3" autocomplete="off">
+                    <div class="code">
+                        <img class="btn_img_code left15" alt="图片识别码" src="/utility/vaildcode?t=@Guid.NewGuid().ToString("N").Substring(0, 4)" title="点击刷新" onclick="javascript: refreshCode(this);">
+                    </div>
+                </div>
+
+                <!--错误提示-->
+                <div class="warn">
+                    <p class="warn-info"></p>
+                </div>
+            </form>
+            <form action="" class="form" id="form2">
+                <!--企业号-->
+                <div class="login-block clearfix" style="margin-bottom:15px;">
+                    <div class="user"><i class="fa fa-desktop"></i></div>
+                    <input type="text" name="qynumber" placeholder="企业号" class="fr u-qynumber" tabindex="0" style="margin-bottom:0px;" autocomplete="off">                    
+                </div>
+                <!--登录账号-->
+                <div class="login-block clearfix" style="margin-bottom:15px;">
+                    <div class="back-icon user"></div>
+                    <input type="text" name="username" placeholder="帐号" class="fr u-name" tabindex="1" style="margin-bottom:0px;" autocomplete="off">                    
+                </div>
+                <!--密码-->
+                <div class="login-block clearfix m-b-sm">
+                    <div class="back-icon password"></div>
+                    <input type="password" name="password" placeholder="密码" class="fr u-password" maxlength="20" tabindex="2" autocomplete="off">
+                </div>
+
+                <!--识别码-->
+                <div id="div_img_code2" class="login-block cleafix" style="display: @(loginCount >= 3 ? "inherit" : "none")">
+                    <div class="back-icon password"></div>
+                    <input type="text" name="img_code" placeholder="验证码" class="recognition-code u-code" maxlength="4" tabindex="3" autocomplete="off">
+                    <div class="code">
+                        <img class="btn_img_code left15" alt="图片识别码" src="/utility/vaildcode?t=@Guid.NewGuid().ToString("N").Substring(0, 4)" title="点击刷新" onclick="javascript: refreshCode(this);">
+                    </div>
+                </div>
+
+                <!--错误提示-->
+                <div class="warn">
+                    <p class="warn-info"></p>
+                </div>
+            </form>            
+            <!--账号操作-->
+            <div class="clearFix control-box clearfix">
+                <span class="i-checks f-l" tabindex="4">
+                    <input type="hidden" class="checks" name="is_remember">
+                    <span id="span_is_remember" class="remember back-icon f-l"></span>
+                    <span class="remember-font f-l">记住密码</span>
+                </span>
+                <span class="forget-box f-r">
+                    <a href="reset" tabindex="-1">找回密码</a>
+                </span>
+            </div>
+            <!--登录-->
+            <div class="clearFix login-go">
+                <input class="login-btn" type="button" value="登 录" style="font-size: 22px;" tabindex="5">
+            </div>
+
+            <!--注册-->
+            <div class="to-register">
+                <a href="register">没有账号？10秒完成注册</a>
+            </div>
+            <!--演示帐号-->
+            <div class="to-register" id="yanshi">
+                <a href="###">演示帐号</a>
+            </div>
+        </div>
+    </div>
+
+    <!--演示弹框-->
+    <div id="demoDiv">
+        <div class="cover"></div>
+        <div class="choseVersion" style="position:fixed">
+            <div class="title">
+                <span class="fr" onclick="closeDemo()" style="background:#999; text-align:center; padding-right:10px;"><img src="~/manager/img/login/close_btn.png" alt="" width="15" height="15"></span>
+                <span class="fl">请您选择要体验的版本</span>
+            </div>
+            <div class="content">
+                <a class="baseVersion fl" id="ddversion">
+                    单店版收银软件
+                </a>
+                <a class="chainVersion fl" id="lsversion">
+                    连锁版收银软件
+                </a>
+            </div>
+        </div>
+    </div>
+    <!--登录页面弹窗-->
+    <div class="dialog_box_ " id="to_login" style="left: 721.5px; top: 280px; display: none;">
+        <div class="dialog_header clearfix">
+            <div class="dialog_title">
+                <h2 id="MsgLogin"></h2>
+            </div>
+            <div class="dialog_lose"><img src="~/manager/img/login/close_btn.png" alt=""></div>
+        </div>
+            <div class="dialog_content clearfix">
+                <div class="dialog_left">
+                    <a id="a_buy_service" target="_blank" href="" class="client_login_2">购买服务</a>
+                </div>
+                <div class="dialog_right" id="div_right" style="display:none;">
+                    <a id="a_go_login" onclick="go_login();" class="manager_login_2">稍后购买服务</a>
+                </div>
+            </div>
+            <div class="dialog_footer">
+            </div>
+    </div>
+
+    <div class="footer clearfix">
+        <p>
+            Copyright © 2016 <a href="http://www.pos.cn/" target="_blank" style="text-decoration:none;" tabindex="-1">pos.cn</a>
+        </p>
+    </div>
+
+    <script src="@Scripts.Url("~/static/js/jquery/jquery.min.js")"></script>
+    <script src="@Scripts.Url("~/static/js/util.js")"></script>
+    <script src="@Scripts.Url("~/static/js/placeholder/placeholder.js")"></script>
+<script src="@Scripts.Url("~/static/js/app/login.js")"></script>
+<script type="text/javascript">
+    var loginCount = @loginCount;
+</script>
+</body>
+</html>

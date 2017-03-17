@@ -1,0 +1,275 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts
+
+@{
+    Tb_Gys item_edit = ViewData["item_edit"] as Tb_Gys;
+    item_edit = item_edit ?? new Tb_Gys();
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+
+    var selectListGysfl = ViewData["selectListGysfl"] as List<Tb_Gysfl>;
+    selectListGysfl = selectListGysfl ?? new List<Tb_Gysfl>();
+
+    var selectListGYSFLJsonStr = ViewData["selectListGYSFLJsonStr"] == null ? "" : ViewData["selectListGYSFLJsonStr"].ToString();
+
+}
+<style>
+    .dropdown-menu {
+        max-height: 510px;
+    }
+</style>
+
+<div class="modal fade in" id="dialog-gys" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">供应商详情</h4>
+            </div>
+            
+                <div class="modal-body tab-content ">
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>供应商分类</span>
+                            </label>
+
+                            <label class="m-l-xs1" id="tree-id_gysfl" ></label>
+
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>名称</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.mc)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>编码</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.bm)
+                            </label>
+                        </div>
+                    </div>
+
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>状态</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                               
+                                @foreach (var item in selectListState.OrderBy(d => d.listsort))
+                                {
+                                    var stateChecked = item_edit.flag_state == item.listdata ? "checked=\"checked\"" : "";
+                                    <label class="i-checks showIcon">
+                                        <input name="flag_state" value="@item.listdata" @stateChecked type="radio" disabled="disabled"><i></i>@item.listdisplay
+                                    </label>
+                                   
+                                }
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>联系人</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.lxr)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>联系电话</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.tel)
+                            </label>
+                        </div>
+                    </div>
+
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>公司电话</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.companytel)
+                            </label>
+                        </div>
+                    </div>
+
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>邮箱</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.email)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>邮编</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.zipcode)
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>地址</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.address)
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>备注</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @string.Format("{0}", item_edit == null ? string.Empty : item_edit.bz)
+                            </label>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="id" name="id" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.id)" />
+                    <input type="hidden" id="hid_option" value="">
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" id="submit-button" class="btn btn-info w-xs" onclick="app.gys.edit_c('@string.Format("{0}", item_edit == null ? string.Empty : item_edit.id)')">修改</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button').button('loading');
+
+            $.post(
+                $.DHB.U('gys/' + (Tnum > 0 ? 'Edit' : 'Add')),
+                $(_ + ".validate").serialize(),
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 3000, 'type': 's' });
+                        $(_ + '#submit-button').text("提交成功！");
+                        $.DHB.url('gys/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 3000, 'type': 'e' });
+                        btn.button('reset');
+                    }
+                }, 'json'
+            );
+
+            return false;
+        });
+    };
+
+    app.gys = app.gys || {};
+
+
+    //编辑供应商
+    app.gys.edit_c = function (id) {
+        //$.DHB.dialog({ id: 'dialog-gys', action: 'destroy' });
+        $.DHB.dialog({ 'title': '编辑供应商', 'url': $.DHB.U('gys/edit?id=' + id), 'id': 'dialog-gys' });
+    };
+
+
+    $(function () {
+        setTimeout(function () {
+            //绑定供应商分类
+            var selectListGYSFLJsonStr = '@Html.Raw(selectListGYSFLJsonStr)';
+            gysflTree = JSON.parse(selectListGYSFLJsonStr);
+            treeData = {
+                el: '#tree-id_gysfl', title: '供应商分类', name: 'id_gysfl', data: gysflTree, width: 340, callback: function (cur, el) {
+                    el.find('button').removeClass('error');
+                }, class: '{required:true,messages:{required:&#39;请选择供应商分类&#39;}} valid', more: false, has_title: false
+            };
+            treeData.value = '@item_edit.id_gysfl';
+            $.DHB.tree(treeData);
+
+            $(_ + "#tree-id_gysfl").find('button').attr("disabled", "disabled");
+
+        }, 200);
+    });
+
+
+
+
+    app.gys.checkbarcode = function (obj) {
+
+        //如果是上下左右Tab按键 回车 不处理
+        var event = arguments.callee.caller.arguments[0] || window.event;//消除浏览器差异
+        if (typeof (event) != 'undefined') {
+            var keyCode = event.keyCode;
+
+            if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40 || keyCode == 9 || keyCode == 13 || keyCode == 8) {
+                return false;
+            }
+        }
+
+        var value = new String($(obj).val().replace(/\s+/g, ""));
+        $(obj).val(value);
+        if (isNaN(value) || value.indexOf(".") != -1) {
+            $.DHB.message({ 'content': '仅允许输入数字', 'time': 4000, 'type': 'i' });
+            
+            var old_data = $(obj).attr('old-data');
+            if (typeof (old_data) == 'undefined') { old_data = ''; }
+            value = old_data;
+            $(obj).val(value);
+        }
+        value = value + "";
+        $(obj).attr('old-data', value);
+    }
+
+
+</script>

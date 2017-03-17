@@ -1,0 +1,305 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+
+
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Tb_Kh_Query>;
+    string sort = ViewData["sort"].ToString();
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+    string callback = ViewData["kh_callback"] == null ? "" : ViewData["kh_callback"].ToString();
+    string kh_type=ViewData["kh_type"] == null ? "" : ViewData["kh_type"].ToString();
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="kh/search"]').attr({ controller: 'kh', action: 'search' });
+        app.c.public_data['kh/search'] = app.c.public_data['kh/search'] || {};
+        app.c.public_data['kh/search']['once'] = false;
+        app.kh = app.kh || {};
+    });
+</script>
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+
+<div class="modal fade in" role="dialog">
+    <div class="modal-dialog popshop" style="width:900px;">
+        <div class="modal-content" style="top:0px;">
+            <div class="modal-header poptitle">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <p class="name">选择客户</p>
+            </div>
+
+            <div class="modal-body tab-content popcontent">
+                <div class="row wrapper1 ">
+                    <form class="filter-form-client-dialog" action="/kh/search">
+                        <input type="hidden" name="client_type" value="" />
+                        <div class="col-xs-12 padder-md">
+                            <div class="search-box-container">
+                                <div class="clearfix">
+                                    <button type="button" class="btn btn-info w-xs f-r m-t-6" onclick="app.public.alert_add_kh()">新增客户</button>
+                                    <div class="pull-left m-r-sm" style="margin-top:7px">
+                                        <div class="1" style="position:relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                            <input type="text" value=""
+                                                   onkeypress="app.search.trigger_search_kh_list(event);"
+                                                   class="form-control input-sm search-h inline v-middle search-result search" name="keyword" id="keyword" style="width:220px;border-right:none;border-radius: 2px 0 0 2px;" placeholder="编码/名称/拼音码/电话/联系人/备注"
+                                                   ondblclick="app.search.search_client_clear_kh_s_list(this);"
+                                                   onblur="app.search.do_search_kh_serch_list(this);" />
+                                            <span><button type="button" onclick="app.search.do_search_kh_serch_list(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span>
+                                            <span onclick="app.search.search_client_clear_kh_s_list(this);" style="display:none;position:absolute;right:27px;top:4px;padding:2px 2px 2px 4px;cursor:pointer;color:#d5d3d5;width:19px;height:25px;background:#fff;">
+                                                <i class="fa fa-times-circle"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="pull-left m-r-sm" style="margin-top:7px;display:none;">
+
+                                        <select id="flag_state" name="flag_state" class="form-control input-sm box-shawn user-input search-result select2" style="width:95px;" onmouseenter="app.search.search_kh_s_enter(this);" onmouseleave="app.search.search_kh_leave(this);" onchange="app.search.do_search_kh_serch_list(this);">
+                                            <option value="">客户状态</option>
+                                            @foreach (var item in selectListState.OrderBy(d => d.listsort))
+                                            {
+                                                <option value="@item.listdata">@item.listdisplay</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                app.c.public_data['kh/search'] = app.c.public_data['kh/search'] || {};
+                                app.c.public_data['kh/search']['search_all'] = false;
+                                var currentSearch = 'app.c.public_data[\'kh/search\'][\'search\']';
+                                eval(currentSearch + ' = false;');
+                                $.DHB._search = function () {
+                                    eval('if(' + currentSearch + '===false){app.search.search_kh_s_list();' + currentSearch + '=true;}');
+                                }
+
+                                app.search = app.search || {};
+
+                                app.search.search_kh_s_list = function () {
+                                    app.c.public_data['kh/search'] = app.c.public_data['kh/search'] || {};
+                                    app.c.public_data['kh/search']['_row_total_'] = '@pageList.ItemCount';
+                                    app.c.public_data['kh/search']['_page_size_'] = '@pageList.PageSize';
+                                    app.c.public_data['kh/search']['_current_page_'] = '@(pageList.PageIndex)';
+                                    app.search.do_search_pagination_kh_s_list();
+                                }
+
+                                app.search.trigger_search_kh_list = function (event) {
+                                    //绑定回车键
+                                    event = event || window.event
+                                    if (event.keyCode == 13) {
+                                        app.search.do_search_kh_serch_list();
+                                        event.preventDefault();
+                                    }
+                                }
+
+                                //查询
+                                app.search.do_search_kh_serch_list = function (el, isExport) {
+                                    isExport = isExport || 0;
+                                    var v = $(_ + ".filter-form-client-dialog").serialize();
+                                    var url = '/kh/search?_search_=1&' + v;
+                                    if (isExport == 1) {
+                                        url += '&export=1';
+                                        url = $.DHB.U(url);
+                                        window.location.href = url;
+                                    }
+                                    else {
+                                        var options = {
+                                            url: $.DHB.U(url),
+                                            datatype: 'html',
+                                            beforeSend: function () {
+                                                $.DHB.showButterbar();
+                                            },
+                                            callback: function (data, textStatus, jqXHR) {
+                                                if ($('#kh-search-list-fresh-box', _).length > 0) {
+                                                    $('#kh-search-list-fresh-box', _).html(data);
+                                                }
+                                                var curSearchcallback = 'app.kh.list_search_callback';
+                                                var curListcallback = 'app.kh.list_listready';
+                                                eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                                                eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                app.search.do_search_pagination_kh_s_list();
+                                            },
+                                            complete: function (XHR, TS) {
+                                                $.DHB.closeButterbar();
+                                            }
+                                        };
+                                        cy.http.Get(options);
+                                    }
+                                    return false;
+                                };
+
+                                //分页
+                                app.search.do_search_pagination_kh_s_list = function () {
+                                    $.DHB.func.pagination({
+                                        module_name: 'Manager',
+                                        controller_name: 'kh',
+                                        action_name: 'search',
+                                        ready_once: false,
+                                        filter_form: ".filter-form-client-dialog",
+                                        page_box: "#Pagination-client-dialog",
+                                        dialog_pagesize: true
+                                    });
+                                }
+
+                                app.search.search_kh_s_enter = function (el) {
+                                    if (app.c.public_data['kh/search']['search_all'] === false) {
+                                        $(el)
+                                            .parents('.search-box-container')
+                                            .find(".bootstrap-select ul.dropdown-menu")
+                                            .each(function () {
+                                                var ts = $(this).find('li:first() span:first()');
+                                                ts.text('全部');
+                                            });
+                                        app.c.public_data['kh/search']['search_all'] = true;
+                                    }
+                                }
+
+                                app.search.search_kh_leave = function (el) {
+                                }
+
+                                app.search.search_client_clear_kh_s_list = function (el) {
+                                    $(_ + "#keyword").val('');
+                                    app.search.do_search_kh_serch_list();
+                                }
+
+                            </script>
+
+                        </div>
+
+                        <input id="hid_sort" type="hidden" name="sort" value="@sort" />
+
+                        <input id="kh_type" type="hidden" name="kh_type" value="@kh_type" />
+                        
+                    </form>
+                </div>
+
+
+                <div id="kh-search-list-fresh-box" style="max-height: 450px;overflow: auto;" class="table_list">
+                    <table class="table m-b-none row1 selectAll-table b-b">
+                        <thead>
+                            <tr>
+                                <th style="width:55px;">
+                                    序号
+                                </th>
+                                <th width="15%">
+                                    编码
+                                </th>
+                                <th>
+                                    名称
+                                </th>
+                                <th width="15%">
+                                    联系人
+                                </th>
+                                <th width="13%">
+                                    联系电话
+                                </th>
+                                <th width="13%">
+                                    公司电话
+                                </th>
+                                <th width="13%">地址</th>
+                                <th width="100">
+                                    操作
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                if (pageList == null || pageList.Count == 0)
+                                {
+                                    @*<tr>
+                                        <td colspan="8" align="center">
+                                            <img src="~/static/images/nodata.png" class="table_nodata">
+                                        </td>
+                                    </tr>*@
+                                }
+                                else
+                                {
+
+                                    var list = pageList.Items;
+                                    if (list != null && list.Any())
+                                    {
+                                        int index = 1;
+                                        foreach (var item in list)
+                                        {
+                                            <tr onclick="app.public.select_kh_client(this);" data-value="@item.id|@item.mc" style="cursor:pointer">
+                                                <td>
+                                                    @(index++)
+                                                </td>
+                                                <td>
+                                                    @item.bm
+                                                </td>
+                                                <td>
+                                                    @item.mc
+                                                </td>
+                                                <td>
+                                                    @item.lxr
+                                                </td>
+                                                <td>
+                                                    @item.tel
+                                                </td>
+                                                <td>
+                                                    @item.companytel
+                                                </td>
+                                                <td>
+                                                    @item.address
+                                                </td>
+                                                <td class="look-out1">
+                                                    <a class="bg-state bg-state-info color-b fa fa-exchange blockbtn" title="选择" href="###"></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="m-t-12 m-b-12 m-r-md">
+                    <ul id="Pagination-client-dialog" class="pagination pagination-sm pull-right m-b-none m-t-none"></ul>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+
+
+            <div class="modal-footer popfooter align_center">
+                
+                <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $(_ + "#dialog-kh-search .modal-body").removeClass('modal-body');
+    });
+
+    app.public = app.public || {};
+
+    app.public.select_kh_client = function (el) {
+        debugger;
+        var selectVal = $(el).data('value');
+        var selectValTem = selectVal.split('|');
+        $('#report_id_gys', _).attr("selectVal", selectVal);
+        eval('try {if( @callback  && typeof(@callback)=="function"){@string.Format("{0}(selectVal)", callback); }}catch(e){}');
+        $.DHB.dialog({ 'id': 'dialog-kh-search', 'action': 'destroy' });
+    }
+    app.public.alert_add_kh = function () {
+        $.fn.menuTab.load({ url: '/kh/add', 'title': '新增客户', id: 'kh/edit', nocache: '1' });
+    }
+    
+
+
+
+
+
+</script>
+
+
+

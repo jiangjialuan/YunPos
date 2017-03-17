@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<object id="BaseDAL"  type="CySoft.DAL.Base.BaseDAL,CySoft.DAL" />
+	<object id="Tb_SpDAL"  type="CySoft.DAL.Tb_SpDAL,CySoft.DAL" />
+  <object id="Td_Sale_Out_BodyDAL"  type="CySoft.DAL.Td_Sale_Out_BodyDAL,CySoft.DAL" />
+	<object id="Tb_Sp_SkuDAL"  type="CySoft.DAL.Tb_Sp_SkuDAL,CySoft.DAL" />
+	<object id="Tb_Sp_DjDAL"  type="CySoft.DAL.Tb_Sp_DjDAL,CySoft.DAL" />
+	<!--<object id="Tb_Gys_CgsDAL"  type="CySoft.DAL.Tb_Gys_CgsDAL,CySoft.DAL" />-->
+  <!--<object id="Tb_Gys_Cgs_CheckDAL"  type="CySoft.DAL.Tb_Gys_Cgs_CheckDAL,CySoft.DAL" />-->
+  <object id="Td_sale_payDAL"  type="CySoft.DAL.Td_sale_payDAL,CySoft.DAL" />
+  <object id="Td_Sale_Order_HeadDAL"  type="CySoft.DAL.Td_Sale_Order_HeadDAL,CySoft.DAL" />
+  <object id="Td_Sale_Order_BodyDAL"  type="CySoft.DAL.Td_Sale_Order_BodyDAL,CySoft.DAL" />
+  <object id="Info_UserDAL"  type="CySoft.DAL.Info_UserDAL,CySoft.DAL" />
+  <object id="Ts_param_businessDAL"  type="CySoft.DAL.Ts_param_businessDAL,CySoft.DAL" />
+  <object id="FaqDAL"  type="CySoft.DAL.FaqDAL,CySoft.DAL" />
+  <object id="Tb_UserDAL"  type="CySoft.DAL.Tb_UserDAL,CySoft.DAL" />
+  <!--<object id="Tb_Gys_DAL"  type="CySoft.DAL.Tb_Gys_DAL,CySoft.DAL" />-->
+  <object id="Tb_SpflDAL"  type="CySoft.DAL.Tb_SpflDAL,CySoft.DAL" />
+  <object id="Tb_ShopspDAL"  type="CySoft.DAL.Tb.Tb_ShopspDAL,CySoft.DAL" />
+  <object id="Tb_ShopDAL"  type="CySoft.DAL.Tb_ShopDAL,CySoft.DAL" />
+  <object id="Tb_GysflDAL"  type="CySoft.DAL.Tb_GysflDAL,CySoft.DAL" />
+  <object id="Td_Ls_1DAL"  type="CySoft.DAL.Td_Ls_1DAL,CySoft.DAL" />
+  <object id="Tz_Hy_Je_FlowDAL"  type="CySoft.DAL.Tz_Hy_Je_FlowDAL,CySoft.DAL" />
+  <object id="Tz_Hy_JeDAL"  type="CySoft.DAL.Tz_Hy_JeDAL,CySoft.DAL" />
+  <object id="Td_Promote_2DAL"  type="CySoft.DAL.Td_Promote_2DAL,CySoft.DAL" />
+  <object id="Td_Hy_Cz_1DAL"  type="CySoft.DAL.Td_Hy_Cz_1DAL,CySoft.DAL" />
+  <object id="Tz_Hy_Jf_FlowDAL"  type="CySoft.DAL.Tz_Hy_Jf_FlowDAL,CySoft.DAL" />
+  <object id="Tb_Hy_JfruleDAL"  type="CySoft.DAL.Tb.Tb_Hy_JfruleDAL,CySoft.DAL" />
+  <object id="Td_Hy_Czrule_1DAL"  type="CySoft.DAL.Td.Td_Hy_Czrule_1DAL,CySoft.DAL" />
+  <object id="Td_Kc_Kspd_2DAL"  type="CySoft.DAL.Td.Td_Kc_Kspd_2DAL,CySoft.DAL" />
+
+  <object id="Tb_KhflDAL"  type="CySoft.DAL.Tb.Tb_KhflDAL,CySoft.DAL" />
+  
+</objects>

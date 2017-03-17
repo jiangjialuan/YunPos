@@ -1,0 +1,85 @@
+﻿@using CySoft.Model.Tb;
+
+
+
+<style>
+    #dialog-czyzm .czyzm_css {
+        padding-left: 77px;
+        line-height: 22px;
+        color: #999;
+        margin: 0px;
+    }
+</style>
+<div class="modal fade in" id="dialog-czyzm" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header poptitle">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <p class="name">修改门店验证码</p>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="czyzm_form">
+                <div class="modal-body tab-content  popcontent" style="padding:20px;">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 86px">
+                                <span>门店验证码</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:10}" placeholder="" type="text" name="new_yzm" id="new_yzm" v-model="new_yzm">
+                            </label>
+
+                        </div>
+                        <p class="czyzm_css">(1) 此验证码用于门店POS第一次登录时验证</p>
+                        <p class="czyzm_css">(2) 门店验证码不允许重复</p>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer  popfooter align_center">
+                    <input type="hidden" id="id" name="id" value="@(ViewData["id"]==null?"":ViewData["id"].ToString())" />
+                    <button type="button" id="submit-button-czyzm"  data-loading-text="提交中..." class="btn btn-info w-xs" onclick="app.czyzm.save_yzm(this);">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/static/js/vue/vue.js"></script>
+<script>
+
+    app.czyzm = app.czyzm || {};
+    app.czyzm.vue = new Vue({
+        el: '#czyzm_form',
+        data: {
+            new_yzm: ''
+        }
+    });
+
+    app.czyzm.save_yzm = function () {
+        var btn = $(_ + '#submit-button-czyzm').button('loading');
+        var new_yzm = $(_ + "#new_yzm").val();
+        if (new_yzm == '') {
+            $.DHB.message({ 'content': '请输入门店验证码', 'time': 0, 'type': 'e' });
+            btn.button('reset');
+        }
+        else {
+            app.request($.DHB.U('Shop/CZYzm'), { new_yzm: app.czyzm.vue.new_yzm, id: $(_ + "#id").val() }, function (data) {
+                if (data.status == 'error') {
+                    $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'i' });
+                    btn.button('reset');
+                } else {
+                    $.DHB.message({ 'content': data.message, 'time': 2000, 'type': 's' });
+                    $.DHB.dialog({ id: 'dialog_czyzm', action: 'destroy' });
+                }
+            }, function () {
+                btn.button('reset');
+            });
+        }
+    }
+
+</script>
+
+
+
+
+

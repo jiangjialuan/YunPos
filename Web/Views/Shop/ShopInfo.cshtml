@@ -1,0 +1,312 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+@{
+    Layout = null;
+    Tb_Shop entity = ViewData["entity"] as Tb_Shop;
+    entity = entity ?? new Tb_Shop();
+    var flag_industry= string.Format("{0}", ViewData["flag_industry"]);
+    var industryList= ViewData["industryList"] as List<Ts_Flag>;
+    industryList = industryList ?? new List<Ts_Flag>();
+    SelectList industry_selectList = new SelectList(industryList, "listdata", "listdisplay",flag_industry);
+    var can_change= string.Format("{0}", ViewData["can_change"]);
+    
+}
+
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="shop/shopinfo"]').attr({ controller: 'shop', action: 'detail' });
+        app.c.public_data['shop/shopinfo'] = app.c.public_data['shop/shopinfo'] || {};
+        app.c.public_data['shop/shopinfo']['once'] = false;
+    });
+
+</script>
+<input pagesize="" value="" type="hidden">
+<input page="" value="" type="hidden">
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/shop/shopInfo', 'title': '企业资料管理', id: 'shop/shopinfo', nocache: '0' }); ">企业资料</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">企业资料编辑</a>
+</div>
+
+<div class="col">
+    <div class="panel panel-default comform pad-l15 pad-t10">
+        <div class="main-content">
+            <form novalidate="novalidate" action="/shop/saveShopInfo" class="client-box" id="update_shopinfo_form">
+                <div class="row">
+                    <div class="col-xs-12">
+                    </div>
+                </div>
+                <!--登录信息-->
+                <div class="fixed-input-group">
+                    <h2 class="form_title"><span>企业信息</span></h2>
+                    <div class="col-sm-12 form_content">
+
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <em class="tag">* </em><span>企业名称：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    <input class="form-control user-input {required:true}" name="mc" value="@entity.mc" placeholder="请输入名称" type="text">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <em class="tag">* </em><span>企业号：</span>
+                                </label>
+                                <label class="m-l-xs1" style="width: 500px;">
+                                    <input disabled="disabled" class="form-control user-input {required:true}" name="companyno" value="@string.Format("{0}", ViewData["companyno"])" placeholder="请输入企业号" type="text" style="display: inline-block;">
+                                    @if (can_change.ToLower() == "true")
+                                    {
+                                        <button type="button" class="btn w-xs btn-info" onclick="
+change_company_no(this)" id="btn_change_companyno">
+                                            修改
+                                        </button>
+                                    }
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <span>状态：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @(entity.flag_state == 1 ? "正常" : "关闭")
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                    <span>行业：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @Html.DropDownList("flag_industry", industry_selectList, new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control user-input"}
+                                    })
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                 </div>
+
+                <!--联系人-->
+                <div class="fixed-input-group dis-table">
+                    <h2 class="form_title"><span>联系人</span></h2>
+                    <div class="col-sm-12 form_content">
+                    
+                    <div class="input-item-2 clearfix add-client">
+                        <div class="pad-b15">
+                            <label class="item-2-label">
+                                <span>联系人姓名：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input" name="lxr" value="@entity.lxr" placeholder="请输入联系人" type="text">
+                            </label>
+                        </div>
+
+                        <div class="pad-b15">
+                            <label class="item-2-label add-client">
+                                <span>手机号码：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input {isPhone:true}" name="phone" value="@entity.phone" placeholder="请输入联系人手机号码" type="text">
+                            </label>
+                        </div>
+
+                        <div class="pad-b15">
+                            <label class="item-2-label add-client">
+                                <span>电话号码：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input" name="tel" value="@entity.tel" placeholder="请输入联系人电话号码" type="text">
+                            </label>
+                        </div>
+
+                        <div class="pad-b15">
+                            <label class="item-2-label add-client">
+                                <span>QQ：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input" name="qq" value="@entity.qq" placeholder="请输入QQ" type="text">
+                            </label>
+                        </div>
+
+                        <div class="pad-b15">
+                            <label class="item-2-label add-client">
+                                <span>电子邮箱：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input {check_email:6}" name="email" value="@entity.email" placeholder="请输入电子邮箱" type="text">
+                            </label>
+                        </div>
+                        <div class="pad-b15">
+                            <label class="item-2-label add-client">
+                                <span>传真：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input" name="fax" value="@entity.fax" placeholder="请输入传真" type="text">
+                            </label>
+                        </div>
+                        <div class="pad-b15">
+                            <label class="item-2-label add-client">
+                                <span>邮编：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input {check_maxlength:6}" name="zipcode" value="@entity.zipcode" placeholder="请输入邮编" type="text">
+                            </label>
+                        </div>
+                   
+                    <div class="input-item-2 clearfix add-client pad-b15">
+                        <div>
+                            <label class="item-2-label">
+                                <span>详细地址：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input" name="address" value="@entity.address" placeholder="详细地址，如：广东省广州市天河区五山路10号" type="text">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-item-2 clearfix add-client pad-b15">
+                        <div>
+                            <label class="item-2-label">
+                                <span>开店日期：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                @entity.rq_start
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-item-2 clearfix add-client pad-b15">
+                        <div>
+                            <label class="item-2-label">
+                                <span>备注：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input" name="bz" value="@entity.bz"   type="text" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                 </div>
+                <input name="id" id="id" value="@entity.id" type="hidden">
+
+
+                <footer class="panel-footer lter need-footer-fixed need-footer-fixed-box text-l">
+                    <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                    <button type="submit" class="btn w-xs btn-info" id="btn_update_shopinfo" data-loading-text="正在提交...">保存</button>&nbsp;&nbsp;
+
+                    <button class="btn w-xs btn-default" type="button" onclick="$.fn.menuTab.load({ url: '/shop/shopinfo', 'title': '企业资料管理', id: 'shop/shopinfo', nocache: '0' }); $.fn.menuTab.deleteMenu('shop/shopinfo');">
+                        取消
+                    </button>
+                </footer>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    $(function () {
+        var $fm = $("#update_shopinfo_form");
+        var $btn = $("#btn_update_shopinfo");
+        var $tab = $(_);
+
+        $tab.find('#btn_update_shopinfo').unbind('click');
+
+        $tab.find('#btn_update_shopinfo').off().on('click', function (event) {
+            $.DHB.checkForm('update_shopinfo_form', function () {
+                $btn.button("loading");
+                submitForm($fm, $btn);
+            });
+        })
+
+        //排除浏览器缓存
+        function submitForm($fm, $btn) {
+
+            //$.post($.DHB.U('shop/ShopInfo'), $fm.serialize(), function (data) {
+            //    $btn.button("reset");
+            //    if (data.status == "success") {
+            //        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+            //        //$.fn.menuTab.load({ url: '/account/list', 'title': '员工管理', id: 'account/list', nocache: '0' });
+            //    }
+            //    else {
+            //        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+            //        btn.button('reset');
+            //    }
+            //}, 'json');
+        
+            var options = {
+                data: $fm.serialize(),
+                url: $.DHB.U('shop/ShopInfo'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    $btn.button("reset");
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                        //$.fn.menuTab.load({ url: '/account/list', 'title': '员工管理', id: 'account/list', nocache: '0' });
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                        $btn.button('reset');
+                    }
+                },
+                complete: function (XHR, TS) { $btn.button('reset'); }
+            };
+            app.httpAjax.post(options);
+
+
+
+
+        }
+    });
+
+    function change_company_no(obj) {
+        $(obj).trigger('blur');
+        $.DHB.dialog({
+            'title': '编辑单位',
+            'url': $.DHB.U('account/ChangeCompanyno'),
+            'id': 'dialog-ChangeCompanyno',
+            //'confirm': function (array) {
+            //}
+        });
+    }
+
+
+    jQuery.validator.addMethod("check_maxlength",
+            function (value, element) {
+                if (value) {
+                    if (value.length !== 6) {
+                        return false;
+                    }
+                }
+                return true;
+            }, "字符长度只能为6位！"
+        );
+    jQuery.validator.addMethod("check_email",
+            function (value, element) {
+                var filter = /^([a-zA-Z0-9_\.\-])+@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if (value) {
+                    if (filter.test(value)) return true;
+                    return false;
+                }
+                return true;
+            }, "邮箱格式不正确！"
+        );
+</script>
+
+
+

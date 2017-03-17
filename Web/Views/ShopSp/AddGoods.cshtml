@@ -1,0 +1,50 @@
+﻿
+
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="shopsp/add"]').attr({ controller: 'shopsp', action: 'add' });
+        app.c.public_data['shopsp/add'] = app.c.public_data['shopsp/add'] || {};
+        app.c.public_data['shopsp/add']['once'] = false;
+        app.shopsp = app.shopsp || {};
+    });
+</script>
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品管理', id: 'shopsp/list', nocache: '0' }); ">商品管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">新增商品</a>
+</div>
+<div class="col">
+    <div class="panel panel-default comform" style="overflow:hidden;">
+        <div class="main-content comform" style="overflow:hidden;">
+            <div id="kk">
+                {{ message }}
+                <input v-model="message">
+
+            </div>
+        </div>
+
+        </div>
+</div>
+<script>
+    app.shopsp = app.shopsp || {};
+    app.shopsp.add = app.shopsp.add || {};
+    app.shopsp.add_ready = function () {
+        debugger;
+        $.DHB.loadJs([
+               { id: 'vuejs', url: '/static/js/vue/vue.js' }
+        ], function () {
+
+            var kk = new Vue({
+                el: '#kk',
+                data: {
+                        message: 'Hello Vue!'
+                    }
+                
+            })
+        });
+        
+    }
+            
+</script>

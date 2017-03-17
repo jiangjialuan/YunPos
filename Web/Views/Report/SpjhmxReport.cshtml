@@ -1,0 +1,157 @@
+﻿@{ 
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var report_idshop = ViewData["loginInfo.id_shop"];
+}
+<input type="hidden" pagesize value="10" />
+<input type="hidden" page value="1" />
+
+<div class="col" id="spjhmxreport">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-12 pull-right m-t">
+                            <div class="row">
+                                
+                                <form class="filter-form" action="/report/spjhmxreport">
+                                    <div class="@*col-xs-10*@ pull-right  @*search_box*@">
+                                        <div class="search-box-container">
+
+                                            <div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                
+                                                <div class="clear-padding f-l">
+                                                    <div class="btn-group">
+                                                        <input type="text" name="rq_begin" id="rq_begin" value="" class="btn btn-default btn-sm m-l-none text-left w-85"  readonly>
+                                                        <button type="button" class="btn btn-default disabled btn-sm"><i class="glyphicon glyphicon-calendar" style="min-width: 7%;"></i></button>         
+                                                        <input type="text" name="rq_end" id="rq_end" value="" class="btn btn-default btn-sm m-l-none text-left w-85" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                
+                                                <div class="clear-padding f-l" id="spjhmxreportapi_idshop" style="width:115px;">
+                                                    
+                                                        <select id="id_shop" name="id_shop" class="form-control input-sm box-shawn user-input search-result" style="width: 115px;" v-model="selected">
+                                                            <option value="">全部</option>
+                                                            <option v-for="option in getshop"  v-bind:value="option.id_shop">
+                                                                {{ option.mc }}
+                                                            </option>
+                                                        </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="pull-left m-r-sm" style="margin-top: 7px">
+                                                
+                                                <div class="clear-padding f-l" id="spjhmxreportapi_getuser" style="width:115px;">  
+                                                    <select id="id_gys" name="id_gys" class="form-control input-sm box-shawn user-input search-result" style="width: 115px;">
+                                                        <option value="">全部</option>
+                                                        <option v-for="option in getuser" v-bind:value="option.id">{{option.mc}}</option>
+                                                    </select>  
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                
+                                                <div class="clear-padding f-l">
+                                                    <input class="form-control user-input valid" style="width :150px;" maxlength="80" id="barcode" name="barcode" placeholder="商品条码" type="text" value="">
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                
+                                                <div class="clear-padding f-l">
+                                                    <input class="form-control user-input valid"  style="width :150px;" maxlength="80" id="mc_sp" name="mc_sp" placeholder="商品名称" type="text" value="">
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                <div class="clear-padding f-l">
+                                                    <input class="form-control user-input valid" style="width :150px;" maxlength="80" id="dh" name="dh" placeholder="单号" type="text" value="">
+                                                </div>
+                                            </div>
+                                            <div class="pull-left m-r-sm m-b" style="margin-top: 7px">
+                                                <span>
+                                                    <button type="button"  id="btn-search" class="btn btn-info">
+                                                        <i class="fa fa-search">查询</i>
+                                                    </button>
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                        @*<div class="m-b">&nbsp;</div>*@
+
+                                    </div>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clear"></div>
+                    <div class="shopsp_cont">
+                    
+                        <div class="right_table col-xs-12 table_list datatable_basic">
+                            
+                                <table class="table m-b-none row1 selectAll-table status-box one-line" style="table-layout: fixed" id="report-spjhmxreport-lis">
+                                    <thead>
+                                        <tr>
+                                            <th width="50" class="table-p-l-sm table-p-r-xsm-fixed">序</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">门店</th>
+                                            <th width="70" class="table-p-l-sm table-p-r-xsm-fixed">供应商</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">日期</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">单号</th>
+                                            <th width="200" class="table-p-l-sm table-p-r-xsm-fixed">商品名称</th>
+                                            <th width="70" class="table-p-l-sm table-p-r-xsm-fixed">单位</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">进货数量</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">进货价</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">进货金额</th>
+                                            <th width="80" class="table-p-l-sm table-p-r-xsm-fixed">商品条码</th>
+                                            <th width="120" class="table-p-l-sm table-p-r-xsm-fixed">商品分类</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="font-bold">合计：</td>                                            
+                                            <td></td>
+                                            <td class="sl font-bold"></td>
+                                            <td></td>
+                                            <td class="je font-bold"></td>
+                                            <td></td>
+                                            <td></td>
+                                            
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                
+                            <div class="datatables_footer">&nbsp;</div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    app.report = app.report || {};
+    app.report.spjhmxreport = app.report.spjhmxreport || {};
+    if ('@digit["sl_digit"]' == null || '@digit["sl_digit"]' == '' || '@digit["sl_digit"]' == undefined) {
+        app.report.spjhmxreport.digit = 2;
+    } else {
+        app.report.spjhmxreport.digit = "@digit["sl_digit"]"
+    }
+    app.report.spjhmxreport.report_idshop = "@report_idshop";
+</script>
+@*<script src="~/static/js/vue/vue.js"></script>
+<script src="~/static/js/report/jquery.dataTables.js"></script>*@
+<script src="~/static/js/report/SpjhmxReport.js"></script>
+

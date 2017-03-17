@@ -1,0 +1,59 @@
+﻿@using CySoft.Model.Tb
+<table class="table m-b-none row1 selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            @*<th width="20" class="table-p-l-sm table-p-r-xsm-fixed">
+            </th>*@
+            <th width="">名称</th>
+            <th width="80">编号</th>
+            <th width="90">所属系统</th>
+            <th width="60" class="text-center">启用</th>
+            <th width="80" class="text-center">操作类型</th>
+            <th width="">描述</th>
+            <th width="110" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="template">
+        @{
+            var selectListItems = ViewData["SelectListItems"] as List<SelectListItem>;
+            selectListItems = selectListItems ?? new List<SelectListItem>();
+            var pageList = ViewData["List"] as PageList<Tb_Pos_Function>;
+            if (pageList != null)
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    //int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-dw-id-@item.id" class="tr-status-finished">
+                            @*<td class="table-p-l-sm table-p-r-xsm-fixed">@(index++)
+                            </td>*@
+                            <td><a class="list-link">@item.mc</a></td>
+                            <td>@item.bm</td>
+                            <td>@(selectListItems.FirstOrDefault(a => a.Value == item.flag_system.ToString()).Text)</td>
+                            <td class="text-center">@(item.flag_stop == 1 ? "否" : "是")</td>
+                            <td class="text-center">@(item.flag_type == 1 ? "是否" : "录入")</td>
+                            <td>@item.functiondescribe</td>
+                            <td class="list-operate">
+                                <div class="look-out1">
+                                    <div class="second-height-operate">
+                                        <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.posfunction.edit(this,'@item.id')"  title="编辑"></a>
+                                        <a class="bg-state bg-state-info  fa fa-trash" href="javascript:;" onclick="app.posfunction.del(this,'@item.id')" title="删除"></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    app.c.public_data['posfunction/list'] = app.c.public_data['posfunction/list'] || {};
+    app.c.public_data['posfunction/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['posfunction/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['posfunction/list']['_current_page_'] = '@pageList.PageIndex';
+</script>

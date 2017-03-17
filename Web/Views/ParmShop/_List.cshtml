@@ -1,0 +1,63 @@
+﻿@using CySoft.Model.Ts
+@{
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+            </th>
+            <th width="">参数名称</th>
+            <th width="150">设定值</th>
+            <th width="">所属门店</th>
+            <th width="60" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="template">
+        @{
+            var pageList = ViewData["List"] as PageList<Ts_Parm_ShopWithShopMc>;
+            if (pageList != null)
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-parm-id-@item.id" class="tr-status-finished">
+                            <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                <i>
+                                </i>@(index++)
+                            </td>
+                            <td><a class="list-link">@item.parmname</a></td>
+                            <td class="table-p-r-xsm">@item.parmvalue</td>
+                            <td class="table-p-r-xsm">@item.mc</td>
+                            <td class="list-operate">
+                                @*<p class="cut-out">
+                                        --
+                                    </p>*@
+                                <div class="look-out1">
+                                    <div class="second-height-operate">
+                                        @if (isEdit)
+                                        {
+                                            <a class="bg-state bg-state-info" href="javascript:;" onclick="app.parmshop.edit('@item.id','@item.parmcode')">编辑</a>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    app.c.public_data['parmshop/list'] = app.c.public_data['parmshop/list'] || {};
+    app.c.public_data['parmshop/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['parmshop/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['parmshop/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

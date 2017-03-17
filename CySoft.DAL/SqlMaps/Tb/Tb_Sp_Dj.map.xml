@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_Sp_Dj"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tb_Sp_Dj" type="CySoft.Model.Tb.Tb_Sp_Dj,CySoft.Model" />
+	  <typeAlias alias="Tb_Sp_Dj_Query" type="CySoft.Model.Tb.Tb_Sp_Dj_Query,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="id_gysList">
+          db.[id_gys] in <iterate property="id_gysList" conjunction="," open="(" close=")">#id_gysList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>
+        <isNotNull prepend="and" property="not_id_gys">db.[id_gys] <![CDATA[ <> ]]> #not_id_gys#</isNotNull>
+        <isNotNull prepend="and" property="id_skuList">
+          db.[id_sku] in <iterate property="id_skuList" conjunction="," open="(" close=")">#id_skuList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id_sku">db.[id_sku]=#id_sku#</isNotNull>
+        <isNotNull prepend="and" property="not_id_sku">db.[id_sku] <![CDATA[ <> ]]> #not_id_sku#</isNotNull>
+        <isNotNull prepend="and" property="id_cgs_levelList">
+          db.[id_cgs_level] in <iterate property="id_cgs_levelList" conjunction="," open="(" close=")">#id_cgs_levelList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id_cgs_level">db.[id_cgs_level]=#id_cgs_level#</isNotNull>
+        <isNotNull prepend="and" property="not_id_cgs_level">db.[id_cgs_level] <![CDATA[ <> ]]> #not_id_cgs_level#</isNotNull>
+        <isNotNull prepend="and" property="id_sp">db.[id_sp]=#id_sp#</isNotNull>
+        <isNotNull prepend="and" property="sl_dh_min">db.[sl_dh_min]=#sl_dh_min#</isNotNull>
+        <isNotNull prepend="and" property="dj_dh">db.[dj_dh]=#dj_dh#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_spList">
+          db.[id_sp] in <iterate property="id_spList" conjunction="," open="(" close=")">#id_spList[]#</iterate>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id_gys] asc,db.[id_sku] asc,db.[id_cgs_level] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_sp">db.[id_sp]=#new_id_sp#</isNotNull>
+        <isNotNull prepend="," property="new_sl_dh_min">db.[sl_dh_min]=#new_sl_dh_min#</isNotNull>
+        <isNotNull prepend="," property="new_dj_dh">db.[dj_dh]=#new_dj_dh#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Tb_sp_dj]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Dj">
+      set nocount on
+      <include refid="NoLock" />
+		select db.[id_gys],db.[id_sku],db.[id_cgs_level],db.[id_sp],db.[sl_dh_min],db.[dj_dh],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],cgslevel.name as name_cgs_level,cgslevel.agio from <include refid="Table"/> as db
+		left join Tb_cgs_level as cgslevel on cgslevel.id = db.[id_cgs_level]
+		<include refid="Where"/>
+		<include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Dj">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Dj">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_gys],db.[id_sku],db.[id_cgs_level],db.[id_sp],db.[sl_dh_min],db.[dj_dh],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+	  <select id="QueryList1" parameterClass="System.Collections.IDictionary" resultClass="Tb_Sp_Dj_Query">
+		  set nocount on
+		  <include refid="NoLock" />
+      select db.[id_sku],db.dj_dh,db.[sl_dh_min],cgslevel.name as name_cgs_level,db.[id_cgs_level],cgslevel.agio from <include refid="Table"/> as db
+		  left join Tb_cgs_level as cgslevel on cgslevel.id = db.[id_cgs_level]
+		  <include refid="Where"/>
+		  <include refid="Order"/>
+	  </select>
+
+  </statements>
+</sqlMap>
+

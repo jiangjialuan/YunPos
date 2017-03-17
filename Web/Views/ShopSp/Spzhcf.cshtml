@@ -1,0 +1,517 @@
+﻿@{
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+}
+<script type="text/javascript">
+    $(function() {
+        $('div[contentID="shopsp/spzhcf"]').attr({ controller: 'shopsp', action: 'spzhcf' });
+        app.c.public_data['shopsp/spzhcf'] = app.c.public_data['shopsp/spzhcf'] || {};
+        app.c.public_data['shopsp/spzhcf']['once'] = false;
+        app.shopsp = app.shopsp || {};
+    });
+</script>
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/shopsp/spzhcf', 'title': '商品加工(组合)', id: 'shopsp/spzhcf', nocache: '0' }); ">商品加工(组合)</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">商品加工(组合)</a>
+</div>
+<div class="col" ng-app="myApp">
+    <div class="panel panel-default m-b-none">
+        <div class="main-content">
+            <div class="m-b-md">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="nestable-menu" style="padding: 0; margin: 12px 0 0 15px;"> 
+                        </div>
+                        <div class="shopsp_cont" style="margin-top: 20px;"> 
+                            <div class="p-l-r-none tree_left col-xs-2">
+                                <div class="l-tree_head">
+                                    <ul>
+                                        <li>成品商品</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div id="cpsp_list" class="p-l-r-none table_list table_max_h" style="height: 600px;">
+                                        <table class="table m-b-none row1 selectAll-table table_layout sptable">
+                                            <thead>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <button onclick="app.spzhcf.newAddCpsp()" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;"> 添加</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right_table col-xs-10">
+                                <input type="hidden" xh="" value="" id="clicktree"/>
+                                <div id="spzhcf_yl_list" class="p-l-r-none table_list table_max_h" style="height: 600px;">
+                                    <table class="table m-b-none row1 selectAll-table table_layout sptable">
+                                        <thead>
+                                        <tr>
+                                            <th width="50">序号</th>
+                                            <th width="100">商品条码</th>
+                                            <th width="150">商品名称</th>
+                                            <th width="100">单位</th>
+                                            <th width="100">数量</th>
+                                            <th width="100">状态</th>
+                                            <th width="100">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <button onclick="app.spzhcf.addYlspRow();" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;"> 添加</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    app.spzhcf = app.spzhcf || {};
+    //停用操作
+    app.spzhcf.stop = function(obj) {
+        var tr = $(obj).parents("tr");
+        var id = tr.attr("data_id");
+        var is_stop = $.trim(tr.attr("is_stop")) == "0" ? "1" : "0";
+        app.httpAjax.post({
+            url: $.DHB.U("shopsp/stopzhcfsp"),
+            data: { id: id, op_type: "zh", is_stop: is_stop },
+            dataType: 'json',
+            type: "post",
+            success: function(res) { 
+                if (res.Success == true) {
+                    tr.attr("is_stop", is_stop);
+                    if (is_stop == "1") {
+                        tr.find("td[td_stop=stop]").html('<i class="fa fa-times"></i>(已停用)');
+                        $(obj).attr("title", "启用");
+                        $(obj).removeClass("fa-times");
+                        $(obj).addClass("fa-check");
+                    } else {
+                        tr.find("td[td_stop=stop]").html('<i class="fa fa-check"></i>(使用中)');
+                        $(obj).attr("title", "停用");
+                        $(obj).removeClass("fa-check");
+                        $(obj).addClass("fa-times");
+                    }
+                    $.DHB.message({ 'content': "操作成功!", 'time': 1000, 'type': 's' });
+                } else {
+                    $.DHB.message({ 'content': res.Message[0], 'time': 1000, 'type': 'e' });
+                }
+            }
+        });
+    }
+    //日结设置
+    app.spzhcf.setrj = function(obj) {
+        var tr = $(obj).parents("tr");
+        if (obj.checked) {
+            $(tr).attr("is_rj", "1");
+            $.DHB.message({ 'content': "日结设置已修改，保存后生效!", 'time': 2000, 'type': 'i' });
+        } else {
+            $(tr).attr("is_rj", "0");
+            $.DHB.message({ 'content': "日结设置已取消，保存后生效!", 'time': 2000, 'type': 'i' });
+        } 
+    }
+    ///获取要保存的数据
+    app.spzhcf.getSaveData = function (tr) {
+
+        var data = {};
+        data.id_sp_cp = $(tr).attr("id_sp");
+        data.flag_rjauto = $(tr).attr("is_rj");
+        data.jsonData = JSON.stringify(app.spzhcf.getAllYlspData());
+        data.op_type = "zh";
+        //获取所有原料商品数据
+        return data;
+    }
+
+    ///保存操作
+    app.spzhcf.SaveData = function (obj) {
+        var tr = $(obj).parents("tr");
+        var data = app.spzhcf.getSaveData(tr);
+        app.httpAjax.post({
+            url: $.DHB.U("shopsp/savespzhcf"),
+            data: data,
+            dataType: 'json',
+            type: "post",
+            success: function(res) {
+                if (res.Success == true) {
+                    $.DHB.message({ 'content': "操作成功!", 'time': 1000, 'type': 's' });
+                } else {
+                    $.DHB.message({ 'content': res.Message[0], 'time': 1000, 'type': 'e' });
+                }
+            }
+        });
+    }
+
+    app.shopsp.spzhcf_ready = function() {
+        app.spzhcf.GetCpList(); 
+    }
+    app.shopsp.setDefaultSelect=function() {
+        var item= $("#cpsp_list>table>tbody>tr", _)[0];
+        if (item) {
+            $(item).click();
+        }
+    }
+    ///获取成品商品列表
+    app.spzhcf.GetCpList = function() {
+        app.httpAjax.post({
+            url: $.DHB.U("shopsp/getspzhcflist"),
+            data: {},
+            dataType: 'json',
+            type: "post",
+            success: function(res) {
+                if (res.Success == true) {
+                    app.spzhcf.CreateCpList(res.Data);
+                    app.shopsp.setDefaultSelect();
+                } else {
+
+                }
+            }
+        });
+    }
+    ///添加成品商品
+    app.spzhcf.CreateCpList = function(data) {
+        if (data && data.length > 0) {
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                var cphtml = "";
+                cphtml = '<tr onclick="app.spzhcf.getsublist(this)"  id_sp="' +
+                    item.id_sp +
+                    '" is_rj="' +
+                    item.flag_rjauto +
+                    '"><td>';
+                cphtml += '<div div-op="cp_sp" style="text-align: center;line-height: 28px;height: auto;">' +
+                    item.mc +
+                    '  ' +
+                    item.barcode +
+                    '</div>'; 
+                cphtml += '<div div-op="cp_op" style="text-align: center;line-height: 28px;height: auto;"></div>';
+                cphtml += "</td></tr>";
+                $("#cpsp_list>table>tbody", _).append(cphtml);
+            }
+        }
+    } 
+    app.spzhcf.setOpBtn = function(tr) {
+        $("#cpsp_list table tbody div[div-op=cp_op]", _).html("");
+        if ($(tr).attr("is_rj") == "1") {
+            $(tr).find("div[div-op=cp_op]")
+            .html('<a class="bg-state bg-state-info blockbtn fa fa-floppy-o" href="javascript:;" onclick="app.spzhcf.SaveData(this)" title="保存"></a><a onclick="app.spzhcf.del_cpsp(this)"  class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a> <label class="i-checks ">自动日结:<input onclick="app.spzhcf.setrj(this)"  name="rj" value="" type="checkbox" checked="checked" > <i></i></label>');
+        } else {
+            $(tr).find("div[div-op=cp_op]")
+            .html('<a class="bg-state bg-state-info blockbtn fa fa-floppy-o" href="javascript:;" onclick="app.spzhcf.SaveData(this)" title="保存"></a><a onclick="app.spzhcf.del_cpsp(this)"  class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a> <label class="i-checks ">自动日结:<input onclick="app.spzhcf.setrj(this)" name="rj" value="" type="checkbox" > <i></i></label>');
+        }
+        
+        $("#cpsp_list table tbody tr", _).attr("onclick", "app.spzhcf.getsublist(this)");
+        $(tr).attr("onclick", "");
+    }
+    app.spzhcf.setCurrentCpTr = function (tr) {
+        if ($(tr).attr("id_sp")=="") {
+            return;
+        }
+        $("#cpsp_list>table>tbody>tr", _)
+            .each(function (i, item) {
+                $(item).removeClass("curentselectedtr");
+            }); 
+        $(tr).addClass("curentselectedtr");
+    }
+    ///查询原料商品
+    app.spzhcf.getsublist = function(obj) {
+        var nodeId = $(obj).attr("id_sp");
+        //app.spzhcf.setCurrentCpTr($(obj));
+        app.spzhcf.currentCpTr = $(obj);
+        if (nodeId != "") {
+            app.spzhcf.setOpBtn(obj);
+            var url = $.DHB.U("shopsp/GetSubSpzhcfList");
+            app.httpAjax.post({
+                url: url,
+                data: { id_sp_cp: nodeId },
+                dataType: 'json',
+                type: "post",
+                success: function(res) {
+                    if (res.Success == true) {
+                        if (res.Data.length > 0) {
+                            app.spzhcf.showYlsp(res.Data, nodeId);
+                        } else {
+                            $('#spzhcf_yl_list>table>tbody', _).html("");
+                            app.spzhcf.addYlspRow();
+                        }
+                    }
+                }
+            });
+        }
+    }
+    ///添加成品商品行
+    app.spzhcf.newAddCpsp = function() {
+        var cphtml = "";
+        var cphtml = "";
+        cphtml = '<tr id_sp="" is_rj="0"><td>';
+        cphtml +=
+            '<div div-op="cp_sp" style="text-align: center;line-height: 28px;height: auto;"><a href="javascript:void(0)" onclick="app.spzhcf.showshopspforcpsp(this);" class="btn btn-info f-r">  选择</a></div>';
+        cphtml += '<div div-op="cp_op" style="text-align: center;line-height: 28px;height: auto;"></div>';
+        cphtml += "</td></tr>";
+        $("#cpsp_list>table>tbody", _).append(cphtml);
+
+    }
+    ///删除空的成品商品
+    app.spzhcf.del_cpsp_empty_row = function() {
+        $("#cpsp_list>table>tbody>tr", _)
+            .each(function(i, item) {
+                if ($(item).attr("id_sp") == "") {
+                    $(item).remove();
+                }
+            });
+    }
+    app.spzhcf.currentCpTr = null;
+    app.spzhcf.showCpspTr = null;
+    ///弹出成品商品选择框
+    app.spzhcf.showshopspforcpsp = function(obj) {
+        app.spzhcf.showCpspTr = $(obj).parents("tr");
+        $.DHB.dialog({
+            'title': '选择成品商品',
+            'url': $.DHB.U('shopsp/search?zhcf_type=zh&query_not_cpsp=1&query_not_ylsp=1&id_shop=' + '@ViewData["id_shop"]'),
+            'id': 'dialog-shopsp-search',
+            'confirm': app.spzhcf.dialogCallBackForCpsp
+            });
+        }
+    ///成品商品选择回调
+    app.spzhcf.dialogCallBackForCpsp = function(array) {
+        var jsonStr = "";
+        $.each(array,
+            function(index, item) {
+                if (item.name == "shopsp_table_json") {
+                    jsonStr = item.value;
+                }
+            });
+        app.spzhcf.showDialogCallDataForCpsp(jsonStr);
+        $.DHB.dialog({ 'id': 'dialog-shopsp-search', 'action': 'destroy' });
+        }
+    ///成品商品选择回调
+    app.spzhcf.showDialogCallDataForCpsp = function (jsonStr) {
+        var objList = jQuery.parseJSON(jsonStr);
+        var tr = app.spzhcf.showCpspTr;
+        $(objList)
+            .each(function(i, obj) {
+                $(tr).find("div[div-op=cp_sp]").html(obj.mc + '  ' + obj.barcode);
+                $(tr).attr("id_sp", obj.id_sp);
+                $(tr).attr("is_rj", 0);
+                $(tr).attr("onclick", "app.spzhcf.getsublist(this)");
+                if (obj.id_sp!="") {
+                    app.spzhcf.currentCpTr = app.spzhcf.showCpspTr;
+                }
+            });
+        app.spzhcf.setOpBtn(tr);
+        app.spzhcf.del_cpsp_empty_row();
+        var subitems = [];
+        var subitem = {};
+        subitem.mc = "请选择商品";
+        subitem.barcode = "";
+        subitem.sl = 0;
+        subitem.dw = "";
+        subitem.id_sp = "";
+        subitem.flag_rjauto = 0;
+        subitem.flag_stop = 0;
+        subitems.push(subitem);
+        app.spzhcf.showYlsp(subitems, "");
+    }
+    ///删除成品商品
+    app.spzhcf.del_cpsp = function(obj) {
+        var tr = $(obj).parents("tr");
+        var id_sp_yl = tr.attr("id_sp");
+        if (id_sp_yl == "") {
+            app.spzhcf.clearYlsp();
+            tr.remove();
+            return;
+        }
+        $.messager.confirm("提示",
+            "确定删除吗?",
+            function() {
+                var id_sp_cp = "0";
+                app.httpAjax.post({
+                        url: $.DHB.U("shopsp/delzhcfsp"),
+                        data: { id_sp_cp: id_sp_cp, id_sp_yl: id_sp_yl, op_type: "zh" },
+                        dataType: 'json',
+                        type: "post",
+                        success: function(res) {
+                            if (res.Success == true) {
+                                tr.remove();
+                                app.spzhcf.clearYlsp();
+                                $.DHB.message({ 'content': "操作成功!", 'time': 1000, 'type': 's' });
+                            } else {
+                                $.DHB.message({ 'content': res.Message[0], 'time': 1000, 'type': 'e' });
+                            }
+                        }
+                    });
+            });
+        }
+
+
+</script>
+@* 原料商品操作 *@
+<script type="text/javascript"> 
+    ///获取当前页面所有的原料商品数据
+    app.spzhcf.getAllYlspData = function () {
+        var ylsps = [];
+        $('#spzhcf_yl_list>table>tbody>tr', _).each(function (i, item) {
+            if ($(item).attr("id_sp") != "") {
+                var ylsp = {};
+                ylsp.id_sp_yl = $(item).attr("id_sp");
+                ylsp.id = $(item).attr("data_id");
+                ylsp.sl = $(item).find("input[name=sl]").val();
+                ylsps.push(ylsp);
+            }
+        });
+        return ylsps;
+    }
+    ///清空所有原料商品
+    app.spzhcf.clearYlsp=function() {
+        $('#spzhcf_yl_list>table>tbody', _).html("");
+    }
+    ///删除的原料商品行
+    app.spzhcf.delYlspEmpty = function () {
+        $('#spzhcf_yl_list>table>tbody>tr', _).each(function(i,item) {
+            if ($(item).attr("id_sp") == "") {
+                $(item).remove();
+            }
+        });
+        app.spzhcf.resetYlxh();
+    }
+    ///重新设置行号
+    app.spzhcf.resetYlxh=function() {
+        $('#spzhcf_yl_list>table>tbody>tr', _).each(function (i, item) {
+            $(item).find("td[td-yl-xh=xh]").text(i+1);
+        });
+    }
+    ///删除选择中的原料商品行
+    app.spzhcf.delSelectYlspRow=function(obj) {
+        var tr = $(obj).parents("tr"); 
+        if (tr) {
+            if (tr.attr("data_id") != "") {
+                var id_sp_yl = tr.attr("id_sp");
+                var id_sp_cp = tr.attr("id_father");
+                $.messager.confirm("提示",
+                    "确定删除吗?",
+                    function () {
+                        app.httpAjax.post({
+                            url: $.DHB.U("shopsp/DelZhcfsp"),
+                            data: { id_sp_cp: id_sp_cp, id_sp_yl: id_sp_yl,op_type:"zh" },
+                            dataType: 'json',
+                            type: "post",
+                            success: function (res) {
+                                if (res.Success == true) {
+                                    tr.remove();
+                                    $.DHB.message({ 'content': "操作成功!", 'time': 1000, 'type': 's' });
+                                } else {
+                                    $.DHB.message({ 'content': res.Message[0], 'time': 1000, 'type': 'e' });
+                                }
+                            }
+                        });
+                        
+                    });
+            } else {
+                tr.remove();
+            } 
+        } 
+    }
+    ///显示原料商品
+    app.spzhcf.showYlsp = function (data, id_sp_cp) {
+        $('#spzhcf_yl_list>table>tbody', _).html("");
+        for (var i = 0; i < data.length; i++) {
+            var item = data[i];
+            var trhtml = app.spzhcf.createYlspRow(item, id_sp_cp);
+            $('#spzhcf_yl_list>table>tbody', _).append(trhtml);
+        }
+        app.spzhcf.resetYlxh();
+    }
+    ///添加原料商品行
+    app.spzhcf.addYlspRow=function() {
+        var item = {};
+        item.flag_rjauto = 0;
+        item.flag_stop = 0;
+        item.id = "";
+        item.id_sp = "";
+        item.mc = "";
+        item.barcode = "";
+        item.dw = "";
+        item.sl = 0;
+        var yltr = app.spzhcf.createYlspRow(item, "");
+        $('#spzhcf_yl_list>table>tbody', _).append(yltr);
+        app.spzhcf.resetYlxh();
+    }
+    ///创建原料商品行
+    app.spzhcf.createYlspRow = function (item, id_sp_cp) { 
+        var trhtml = '<tr  data-flag_rjauto="' +
+                    item.flag_rjauto + '" is_stop="' + item.flag_stop + '" data_id="' +
+                    item.id + '" id_sp="' + item.id_sp + '" id_father="' + id_sp_cp + '">';
+        trhtml += '<td td-yl-xh="xh">1</td>';
+        trhtml += '<td>' + item.barcode + '</td>';
+        if (item.id_sp == "") {
+            trhtml += '<td><a href="javascript:void(0)" onclick="app.spzhcf.showshopspforylsp(this);" class="btn btn-info f-r">  选择</a></td>';
+        } else {
+            trhtml += '<td>' + item.mc + '</td>';
+        }  
+        trhtml += '<td><input value="' + item.dw + '" type="text" name="dw" class="w-89 form-control user-input"/></td>';
+        trhtml += '<td><input value="' + item.sl + '" type="text" name="sl" class="w-89 form-control user-input"/></td>';
+        if (item.flag_stop == "1") {
+            trhtml += '<td td_stop="stop"><i class="fa fa-times"></i>(已停用)</td>';
+            trhtml += '<td>' +
+                '<a onclick="app.spzhcf.delSelectYlspRow(this);"  class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a>  <a class="bg-state bg-state-info blockbtn fa fa-check" href="javascript:;" onclick="app.spzhcf.stop(this)" title="启用"></a>' +
+                '</td>';
+        } else {
+            trhtml += '<td td_stop="stop"><i class="fa fa-check"></i>(使用中)</td>';
+            trhtml += '<td>' +
+                '<a onclick="app.spzhcf.delSelectYlspRow(this);"  class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a>  <a class="bg-state bg-state-info blockbtn fa fa-times" href="javascript:;" onclick="app.spzhcf.stop(this)" title="停用"></a>' +
+                '</td>';
+        } 
+        trhtml += '</tr>';
+        return trhtml;
+    }
+    app.spzhcf.currentYlTr = null;
+    ///弹出原料商品选择框
+    app.spzhcf.showshopspforylsp = function (obj) { 
+        if (app.spzhcf.currentCpTr == null || $(app.spzhcf.currentCpTr).attr("id_sp")=="") {
+            $.DHB.message({ 'content': "请先选择中成品商品!", 'time': 1000, 'type': 'i' });
+            return;
+        }
+        var id_sp_cp = $(app.spzhcf.currentCpTr).attr("id_sp");
+        app.spzhcf.currentYlTr = $(obj).parents("tr");
+        $.DHB.dialog({
+            'title': '选择原料商品',
+            'url': $.DHB.U('shopsp/search?zhcf_type=zh&not_id_sp=' + id_sp_cp + '&id_sp_cp=' + id_sp_cp + '&query_not_cpsp=1&id_shop=' + '@ViewData["id_shop"]'),
+            'id': 'dialog-shopsp-search',
+            'confirm': app.spzhcf.dialogCallBackForYlsp
+        });
+    }
+    ///原料商品选择回调
+    app.spzhcf.dialogCallBackForYlsp = function (array) {
+        var jsonStr = "";
+        $.each(array,
+            function (index, item) {
+                if (item.name == "shopsp_table_json") {
+                    jsonStr = item.value;
+                }
+            });
+        app.spzhcf.showDialogCallDataForYlsp(jsonStr);
+        $.DHB.dialog({ 'id': 'dialog-shopsp-search', 'action': 'destroy' });
+    }
+    //显示原料商品回调数据app.spzhcf.currentCpTr
+    app.spzhcf.showDialogCallDataForYlsp = function (jsonStr) {
+        var objList = jQuery.parseJSON(jsonStr);
+        var id_sp_cp= $(app.spzhcf.currentCpTr).attr("id_sp");
+        $(objList).each(function (i, obj) {
+            obj.id = "";
+            var id_sp = obj.id_sp;
+            var hasSame = false;
+            $('#spzhcf_yl_list>table>tbody>tr', _)
+                .each(function(i,item) {
+                    if ($(item).attr("id_sp") == id_sp && $(item).attr("id_sp")!="") {
+                        hasSame = true;
+                    }
+                });
+            if (!hasSame) {
+                var trhtml = app.spzhcf.createYlspRow(obj, id_sp_cp);
+                $('#spzhcf_yl_list>table>tbody', _).append(trhtml);
+            } 
+        });
+        app.spzhcf.delYlspEmpty();
+    }
+
+</script>

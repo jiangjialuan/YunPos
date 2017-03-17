@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Tb_Hy_Jfrule"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Tb_Hy_Jfrule" type="CySoft.Model.Tb.Tb_Hy_Jfrule,CySoft.Model" />
+    <typeAlias alias="Tb_Hy_Jfrule_Query" type="CySoft.Model.Tb.Tb_Hy_Jfrule_Query,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="idList">
+          db.[id] in <iterate property="idList" conjunction="," open="(" close=")">#idList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="id">db.[id]=#id#</isNotNull>
+        <isNotNull prepend="and" property="not_id">db.[id] <![CDATA[ <> ]]> #not_id#</isNotNull>
+        <isNotNull prepend="and" property="id_masteruser">db.[id_masteruser]=#id_masteruser#</isNotNull>
+        <isNotNull prepend="and" property="id_shop">db.[id_shop]=#id_shop#</isNotNull>
+        <isNotNull prepend="and" property="sort_id">db.[sort_id]=#sort_id#</isNotNull>
+        <isNotNull prepend="and" property="day_b">db.[day_b]=#day_b#</isNotNull>
+        <isNotNull prepend="and" property="start_day_b">Datediff(day,#start_day_b#,db.[day_b]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_day_b">Datediff(day,db.[day_b],Convert(date,#end_day_b#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="day_e">db.[day_e]=#day_e#</isNotNull>
+        <isNotNull prepend="and" property="start_day_e">Datediff(day,#start_day_e#,db.[day_e]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_day_e">Datediff(day,db.[day_e],Convert(date,#end_day_e#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_object">db.[id_object]=#id_object#</isNotNull>
+        <isNotNull prepend="and" property="style">db.[style]=#style#</isNotNull>
+        <isNotNull prepend="and" property="id_hyfl">db.[id_hyfl]=#id_hyfl#</isNotNull>
+        <isNotNull prepend="and" property="weeks">db.[weeks]=#weeks#</isNotNull>
+        <isNotNull prepend="and" property="je_min">db.[je_min]=#je_min#</isNotNull>
+        <isNotNull prepend="and" property="je">db.[je]=#je#</isNotNull>
+        <isNotNull prepend="and" property="jf">db.[jf]=#jf#</isNotNull>
+        <isNotNull prepend="and" property="flag_digitlx">db.[flag_digitlx]=#flag_digitlx#</isNotNull>
+        <isNotNull prepend="and" property="flag_jf">db.[flag_jf]=#flag_jf#</isNotNull>
+        <isNotNull prepend="and" property="flag_cxjf">db.[flag_cxjf]=#flag_cxjf#</isNotNull>
+        <isNotNull prepend="and" property="flag_hyjjf">db.[flag_hyjjf]=#flag_hyjjf#</isNotNull>
+        <isNotNull prepend="and" property="flag_delete">db.[flag_delete]=#flag_delete#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="nlast">db.[nlast]=#nlast#</isNotNull>
+
+        <isNotNull prepend="and" property="keep_hasone">
+           (select count(id) from Tb_Hy_Jfrule where style=db.style and id_masteruser=db.id_masteruser and id!=db.id and flag_delete=0)>0
+        </isNotNull>
+        
+
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_masteruser">db.[id_masteruser]=#new_id_masteruser#</isNotNull>
+        <isNotNull prepend="," property="new_id_shop">db.[id_shop]=#new_id_shop#</isNotNull>
+        <isNotNull prepend="," property="new_sort_id">db.[sort_id]=#new_sort_id#</isNotNull>
+        <isNotNull prepend="," property="new_day_b">db.[day_b]=#new_day_b#</isNotNull>
+        <isNotNull prepend="," property="new_day_e">db.[day_e]=#new_day_e#</isNotNull>
+        <isNotNull prepend="," property="new_id_object">db.[id_object]=#new_id_object#</isNotNull>
+        <isNotNull prepend="," property="new_style">db.[style]=#new_style#</isNotNull>
+        <isNotNull prepend="," property="new_id_hyfl">db.[id_hyfl]=#new_id_hyfl#</isNotNull>
+        <isNotNull prepend="," property="new_weeks">db.[weeks]=#new_weeks#</isNotNull>
+        <isNotNull prepend="," property="new_je_min">db.[je_min]=#new_je_min#</isNotNull>
+        <isNotNull prepend="," property="new_je">db.[je]=#new_je#</isNotNull>
+        <isNotNull prepend="," property="new_jf">db.[jf]=#new_jf#</isNotNull>
+        <isNotNull prepend="," property="new_flag_digitlx">db.[flag_digitlx]=#new_flag_digitlx#</isNotNull>
+        <isNotNull prepend="," property="new_flag_jf">db.[flag_jf]=#new_flag_jf#</isNotNull>
+        <isNotNull prepend="," property="new_flag_cxjf">db.[flag_cxjf]=#new_flag_cxjf#</isNotNull>
+        <isNotNull prepend="," property="new_flag_hyjjf">db.[flag_hyjjf]=#new_flag_hyjjf#</isNotNull>
+        <isNotNull prepend="," property="new_flag_delete">db.[flag_delete]=#new_flag_delete#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_nlast">db.[nlast]=#new_nlast#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[tb_hy_jfrule]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Tb_Hy_Jfrule_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_masteruser],db.[id],db.[id_shop],db.[sort_id],db.[day_b],db.[day_e],db.[id_object],db.[style],db.[id_hyfl],db.[weeks],db.[je_min],db.[je],db.[jf],db.[flag_digitlx],db.[flag_jf],db.[flag_cxjf],db.[flag_hyjjf],db.[flag_delete],db.[id_create],db.[rq_create],db.[nlast]
+      ,isnull((select top 1 mc from tb_shopsp where id_masteruser= db.id_masteruser and id_sp=db.id_object and flag_delete=0 ),'') spmc
+      ,isnull(spfl.mc,'') spflmc
+      from <include refid="Table"/> as db
+      left join tb_spfl spfl on spfl.id=db.id_object
+      
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Tb_Hy_Jfrule">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Tb_Hy_Jfrule">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[id_masteruser],db.[id],db.[id_shop],db.[sort_id],db.[day_b],db.[day_e],db.[id_object],db.[style],db.[id_hyfl],db.[weeks],db.[je_min],db.[je],db.[jf],db.[flag_digitlx],db.[flag_jf],db.[flag_cxjf],db.[flag_hyjjf],db.[flag_delete],db.[id_create],db.[rq_create],db.[nlast] from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+  </statements>
+</sqlMap>

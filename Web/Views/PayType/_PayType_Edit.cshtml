@@ -1,0 +1,123 @@
+﻿@using CySoft.Model.Tb;
+@{
+    Tb_Pay item_edit = ViewData["item_edit"] as Tb_Pay;
+    item_edit = item_edit ?? new Tb_Pay();
+    string option = ViewData["option"].ToString();
+    SelectList selectListType = ViewData["selectListType"] as SelectList;
+    SelectList selectListStop = ViewData["selectListStop"] as SelectList;
+}
+<style>
+    .dropdown-menu { max-height: 510px; }
+</style>
+
+<div class="modal fade in" id="dialog-paytype" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">编辑支付方式</h4>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="">
+                <div class="modal-body tab-content ">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>名称</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:30}" placeholder="请输入名称" type="text" name="mc" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.mc)" id="txt_mc">
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>支付类型</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @Html.DropDownList("flag_type", selectListType, new Dictionary<string, object>()
+                                {
+                                    {"class", "form-control {required:true,maxlength:30,check_categoryname_spfl:true}"}
+                                })
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>禁用/启用</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @Html.DropDownList("flag_stop", selectListStop, new Dictionary<string, object>()
+                                {
+                                    {"class", "form-control"}
+                                })
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="id" name="id" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.id)" />
+                    <input type="hidden" id="hid_option" value="@option">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button').button('loading');
+
+            //$.post(
+            //    $.DHB.U('paytype/' + (Tnum > 0 ? 'Edit' : 'Add')),
+            //    $(_ + ".validate").serialize(),
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+            //            $(_ + '#submit-button').text("提交成功！");
+            //            $.DHB.url('paytype/list', 'cache','支付方式');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //            btn.button('reset');
+            //        }
+            //    }, 'json'
+            //);
+            app.httpAjax.post({
+                data: $(_ + ".validate").serialize(),
+                headers: {},
+                url: $.DHB.U('paytype/' + (Tnum > 0 ? 'Edit' : 'Add')),
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $(_ + '#submit-button').text("提交成功！");
+                        $.DHB.url('paytype/list', 'cache', '支付方式');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        btn.button('reset');
+                    }
+                },
+                error: null,
+                complete: null
+            });
+            return false;
+        });
+    };
+
+    app.spfl = app.spfl || {};
+
+
+
+
+</script>

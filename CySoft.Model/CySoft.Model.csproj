@@ -1,0 +1,432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{48225337-7E00-43F0-A2AB-E19DB332F6C9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CySoft.Model</RootNamespace>
+    <AssemblyName>CySoft.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Web\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\BaseTree.cs" />
+    <Compile Include="Base\Column.cs" />
+    <Compile Include="Base\Table.cs" />
+    <Compile Include="Config\CacheNames.cs" />
+    <Compile Include="CxModel\BaseCx.cs" />
+    <Compile Include="CxModel\BillHGModel.cs" />
+    <Compile Include="CxModel\BillMSModel.cs" />
+    <Compile Include="CxModel\BillZKModel.cs" />
+    <Compile Include="CxModel\DPMSModel.cs" />
+    <Compile Include="CxModel\DZHGModel.cs" />
+    <Compile Include="CxModel\DZMSModel.cs" />
+    <Compile Include="CxModel\DZZKModel.cs" />
+    <Compile Include="CxModel\SDZKModel.cs" />
+    <Compile Include="CxModel\SPFLMSModel.cs" />
+    <Compile Include="CxModel\SPFLZKModel.cs" />
+    <Compile Include="CxModel\TJModel.cs" />
+    <Compile Include="CxModel\ZHModel.cs" />
+    <Compile Include="Enums\Enum.cs" />
+    <Compile Include="Flags\GoodsRecommendFlag.cs" />
+    <Compile Include="Flags\InvoiceFlag.cs" />
+    <Compile Include="Flags\LogFlag.cs" />
+    <Compile Include="Flags\ChargeFlag.cs" />
+    <Compile Include="Flags\OrderFlag.cs" />
+    <Compile Include="Flags\OrderSourceFlag.cs" />
+    <Compile Include="Flags\PayFlag.cs" />
+    <Compile Include="Flags\RoleFlag.cs" />
+    <Compile Include="Mapping\ColumnAttribute.cs" />
+    <Compile Include="Mapping\EnumExtension.cs" />
+    <Compile Include="Mapping\EnumTextAttribute.cs" />
+    <Compile Include="Mapping\TableAttribute.cs" />
+    <Compile Include="Flags\AccountFlag.cs" />
+    <Compile Include="Flags\FromFlag.cs" />
+    <Compile Include="Other\BasePsModel.cs" />
+    <Compile Include="Other\ChangePosFunctionFlagUseModel.cs" />
+    <Compile Include="Other\ChangeRoleName.cs" />
+    <Compile Include="Other\CheckGood.cs" />
+    <Compile Include="Other\CiteGoodsData.cs" />
+    <Compile Include="Other\ControllerModel.cs" />
+    <Compile Include="Other\CyUserModel.cs" />
+    <Compile Include="Other\DbckModel.cs" />
+    <Compile Include="Other\DbrkModel.cs" />
+    <Compile Include="Other\DigitConfig.cs" />
+    <Compile Include="Other\FpsqModel.cs" />
+    <Compile Include="Other\FptzdModel.cs" />
+    <Compile Include="Other\GoodsData.cs" />
+    <Compile Include="Other\GoodsSave.cs" />
+    <Compile Include="Other\HomePageCxspModel.cs" />
+    <Compile Include="Other\HomePagePay.cs" />
+    <Compile Include="Other\HomePageShowData.cs" />
+    <Compile Include="Other\JqGrid.cs" />
+    <Compile Include="Other\JqGrid_Body.cs" />
+    <Compile Include="Other\KcsltzdQueryModel.cs" />
+    <Compile Include="Other\KcsltzModel.cs" />
+    <Compile Include="Other\KspdModel.cs" />
+    <Compile Include="Other\KspdQueryModel.cs" />
+    <Compile Include="Other\KspdShopsp_Import.cs" />
+    <Compile Include="Other\OpenPayConfigModel.cs" />
+    <Compile Include="Other\OrderQuery.cs" />
+    <Compile Include="Other\PhoneVaild.cs" />
+    <Compile Include="Other\PosShopInfoModel.cs" />
+    <Compile Include="Other\PromoteViewModel.cs" />
+    <Compile Include="Other\PsckModel.cs" />
+    <Compile Include="Other\PscktzdModel.cs" />
+    <Compile Include="Other\PsrkModel.cs" />
+    <Compile Include="Other\PssqModel.cs" />
+    <Compile Include="Other\Ps_Shopsp_Import.cs" />
+    <Compile Include="Other\Query_Pay.cs" />
+    <Compile Include="Other\Query_Pay_Total.cs" />
+    <Compile Include="Other\RoleFuncID.cs" />
+    <Compile Include="Other\RqModel.cs" />
+    <Compile Include="Other\SelectFunctionType.cs" />
+    <Compile Include="Other\SelectSpModel.cs" />
+    <Compile Include="Other\SetPosFuncModel.cs" />
+    <Compile Include="Other\ShoppingInfo.cs" />
+    <Compile Include="Other\ShopSelectModel.cs" />
+    <Compile Include="Other\SkuData.cs" />
+    <Compile Include="Other\SkuList.cs" />
+    <Compile Include="Other\SpecMul.cs" />
+    <Compile Include="Other\SpflUpdateTreeModel.cs" />
+    <Compile Include="Other\SpkcReportModel.cs" />
+    <Compile Include="Other\SpSkuPushData.cs" />
+    <Compile Include="Other\SpzhcfModel.cs" />
+    <Compile Include="Other\Syszt_Db.cs" />
+    <Compile Include="Other\Syszt_Pos.cs" />
+    <Compile Include="Other\Tb_Gysfl_Import.cs" />
+    <Compile Include="Other\Tb_Spfl_Import.cs" />
+    <Compile Include="Other\TicketModel.cs" />
+    <Compile Include="Other\Tp_Pos_Machine.cs" />
+    <Compile Include="Other\UpdatePromoteViewModel.cs" />
+    <Compile Include="Other\UpgradeToPlatform.cs" />
+    <Compile Include="Other\UserChangePWD.cs" />
+    <Compile Include="Other\UserLogin.cs" />
+    <Compile Include="Flags\YesNoFlag.cs" />
+    <Compile Include="Other\UserReset.cs" />
+    <Compile Include="Other\UserRegister.cs" />
+    <Compile Include="Pay\CertifiedFile.cs" />
+    <Compile Include="Pay\RegisterPay.cs" />
+    <Compile Include="Pay\RegisterPayLog.cs" />
+    <Compile Include="Pay\WeChatAccount.cs" />
+    <Compile Include="Pay\YeePay_Banks.cs" />
+    <Compile Include="Pay\YeePay_City.cs" />
+    <Compile Include="Pay\YeePay_Trade.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Schedule_UserService.cs" />
+    <Compile Include="ServiceFailCode.cs" />
+    <Compile Include="ServiceResult.cs" />
+    <Compile Include="ServiceState.cs" />
+    <Compile Include="Tb\SetPayConfigModel.cs" />
+    <Compile Include="Tb\Tb_Advertis.cs" />
+    <Compile Include="Tb\Tb_Advertis_Log.cs" />
+    <Compile Include="Tb\Tb_Advertis_Log_Query.cs" />
+    <Compile Include="Tb\Tb_Barcode_Pic.cs" />
+    <Compile Include="Tb\Tb_Dw.cs" />
+    <Compile Include="Tb\Tb_Function_Tree.cs" />
+    <Compile Include="Tb\Tb_Gys.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tb\Tb_Gysfl.cs" />
+    <Compile Include="Tb\Tb_Gys_Sp_Query.cs" />
+    <Compile Include="Tb\Faq.cs" />
+    <Compile Include="Tb\Faq_Tree.cs" />
+    <Compile Include="Tb\Gys_Cgs_Status.cs" />
+    <Compile Include="Tb\Info.cs" />
+    <Compile Include="Tb\Info_Query.cs" />
+    <Compile Include="Tb\Info_Type.cs" />
+    <Compile Include="Tb\Info_User.cs" />
+    <Compile Include="Tb\Tb_Cgs_Attention.cs" />
+    <Compile Include="Tb\Tb_Districts.cs" />
+    <Compile Include="Tb\Tb_Districts_Tree.cs" />
+    <Compile Include="Tb\Tb_Gys_Cgs_Log.cs" />
+    <Compile Include="Tb\Tb_Gys_Sp_Tag.cs" />
+    <Compile Include="Tb\Tb_Gys_Sp_Tag_Query.cs" />
+    <Compile Include="Tb\Tb_Gys_Tag.cs" />
+    <Compile Include="Tb\Tb_Hyfl.cs" />
+    <Compile Include="Tb\Tb_Hy_Czrule.cs" />
+    <Compile Include="Tb\Tb_Hy_Jfrule.cs" />
+    <Compile Include="Tb\Tb_Hy_Czrule_Zssp.cs" />
+    <Compile Include="Tb\Tb_Hy_Jfconvertsp.cs" />
+    <Compile Include="Tb\Tb_Hy_Shop.cs" />
+    <Compile Include="Tb\Tb_Kh.cs" />
+    <Compile Include="Tb\Tb_Khfl.cs" />
+    <Compile Include="Tb\Tb_Khfl_Import.cs" />
+    <Compile Include="Tb\Tb_Khfl_Tree.cs" />
+    <Compile Include="Tb\Tb_Menu.cs" />
+    <Compile Include="Tb\Tb_Menu_Item.cs" />
+    <Compile Include="Tb\Tb_Pay.cs" />
+    <Compile Include="Tb\Tb_Pay_Config.cs" />
+    <Compile Include="Tb\Tb_pay_log.cs" />
+    <Compile Include="Tb\Tb_Pay_Order.cs" />
+    <Compile Include="Tb\Tb_Pay_Seller.cs" />
+    <Compile Include="Tb\Tb_Pos_Function_Tree.cs" />
+    <Compile Include="Tb\Tb_Pos_Role_Module_Tree.cs" />
+    <Compile Include="Tb\Tb_Pos_Function.cs" />
+    <Compile Include="Tb\Tb_Pos_Role_Module.cs" />
+    <Compile Include="Tb\Tb_Promote.cs" />
+    <Compile Include="Tb\Tb_Promote_Largess.cs" />
+    <Compile Include="Tb\Tb_Promote_Sort.cs" />
+    <Compile Include="Tb\Tb_Role_Module.cs" />
+    <Compile Include="Tb\Tb_Role_Module_Tree.cs" />
+    <Compile Include="Tb\Tb_Role_Pos_Function.cs" />
+    <Compile Include="Tb\Tb_Role_Query.cs" />
+    <Compile Include="Tb\Tb_Shop.cs" />
+    <Compile Include="Tb\Tb_Shopsp.cs" />
+    <Compile Include="Tb\Tb_Shopsp_DBZ.cs" />
+    <Compile Include="Tb\Tb_Shopsp_Exportdata.cs" />
+    <Compile Include="Tb\Tb_Shopsp_Query.cs" />
+    <Compile Include="Tb\Tb_Shopsp_Get.cs" />
+    <Compile Include="Tb\Tb_Shopsp_Import.cs" />
+    <Compile Include="Tb\Tb_Shopsp_QC.cs" />
+    <Compile Include="Tb\Tb_Shopsp_Qc_Md.cs" />
+    <Compile Include="Tb\Tb_Gysfl_Tree.cs" />
+    <Compile Include="Tb\Tb_Shop_Shop.cs" />
+    <Compile Include="Tb\Tb_Spfl_Tree.cs" />
+    <Compile Include="Tb\Tb_Sp_Cgs.cs" />
+    <Compile Include="Tb\Tb_Sp_Cgs_Query.cs" />
+    <Compile Include="Tb\Tb_Sp_Favorites.cs" />
+    <Compile Include="Tb\Faq_Query.cs" />
+    <Compile Include="Tb\Tb_Sp_Fgcf.cs" />
+    <Compile Include="Tb\Tb_Sp_Jgzh.cs" />
+    <Compile Include="Tb\Tb_sp_sku_fd.cs" />
+    <Compile Include="Tb\Tb_Sp_Sku_Push.cs" />
+    <Compile Include="Tb\Tb_Ticket.cs" />
+    <Compile Include="Tb\Tb_User_Accredit.cs" />
+    <Compile Include="Tb\Tb_user_checkin.cs" />
+    <Compile Include="Tb\Tb_User_Master.cs" />
+    <Compile Include="Tb\Tb_User_Openid.cs" />
+    <Compile Include="Tb\Tb_User_Openid_Query.cs" />
+    <Compile Include="Tb\Tb_user_pic.cs" />
+    <Compile Include="Tb\Tb_User_ReqOrderQuery.cs" />
+    <Compile Include="Tb\Tb_User_Shop.cs" />
+    <Compile Include="Td\ProcedureQueryModel.cs" />
+    <Compile Include="Td\Td_Fk_2.cs" />
+    <Compile Include="Td\Td_Fk_1.cs" />
+    <Compile Include="Td\Td_Hy_Czrule_2.cs" />
+    <Compile Include="Td\Td_Hy_Cz_1.cs" />
+    <Compile Include="Td\Td_Hy_Cz_2.cs" />
+    <Compile Include="Td\Td_Jh_1.cs" />
+    <Compile Include="Td\Td_Jh_2.cs" />
+    <Compile Include="Td\Td_Jh_Dd_1.cs" />
+    <Compile Include="Td\Td_Jh_Dd_2.cs" />
+    <Compile Include="Td\Td_Jh_Th_1.cs" />
+    <Compile Include="Td\Td_Jh_Th_2.cs" />
+    <Compile Include="Td\Td_Kc_Kspd_1.cs" />
+    <Compile Include="Td\Td_Kc_Kspd_2.cs" />
+    <Compile Include="Td\Td_Kc_Sltz_1.cs" />
+    <Compile Include="Td\Td_Kc_Sltz_2.cs" />
+    <Compile Include="Td\Td_Ls_1.cs" />
+    <Compile Include="Td\Td_Ls_1_Sk_OrderPayReq.cs" />
+    <Compile Include="Td\Td_Ls_2.cs" />
+    <Compile Include="Td\Td_Ls_Jb_1.cs" />
+    <Compile Include="Td\Td_Ls_Jb_2.cs" />
+    <Compile Include="Td\Td_Ls_Sk.cs" />
+    <Compile Include="Td\Td_Promote_1.cs" />
+    <Compile Include="Td\Td_Promote_2.cs" />
+    <Compile Include="Td\Td_Promote_Shop.cs" />
+    <Compile Include="Td\Td_Ps_Cktzd_1.cs" />
+    <Compile Include="Td\Td_Ps_Cktzd_2.cs" />
+    <Compile Include="Td\Td_Ps_Ck_1.cs" />
+    <Compile Include="Td\Td_Ps_Ck_2.cs" />
+    <Compile Include="Td\Td_Ps_Dbck_1.cs" />
+    <Compile Include="Td\Td_Ps_Dbck_2.cs" />
+    <Compile Include="Td\Td_Ps_Dbrk_1.cs" />
+    <Compile Include="Td\Td_Ps_Dbrk_2.cs" />
+    <Compile Include="Td\Td_Ps_Fpck_1.cs" />
+    <Compile Include="Td\Td_Ps_Fpck_2.cs" />
+    <Compile Include="Td\Td_Ps_Fprk_1.cs" />
+    <Compile Include="Td\Td_Ps_Fprk_2.cs" />
+    <Compile Include="Td\Td_Ps_Fpsq_1.cs" />
+    <Compile Include="Td\Td_Ps_Fpsq_2.cs" />
+    <Compile Include="Td\Td_Ps_Fptzd_1.cs" />
+    <Compile Include="Td\Td_Ps_Fptzd_2.cs" />
+    <Compile Include="Td\Td_Ps_Rk_1.cs" />
+    <Compile Include="Td\Td_Ps_Rk_2.cs" />
+    <Compile Include="Td\Td_Ps_Sq_1.cs" />
+    <Compile Include="Td\Td_Ps_Sq_2.cs" />
+    <Compile Include="Td\Td_Report.cs" />
+    <Compile Include="Tb\Tb_Account.cs" />
+    <Compile Include="Tb\Tb_Cgs-Edit.cs" />
+    <Compile Include="Tb\Tb_Cgs.cs" />
+    <Compile Include="Tb\Tb_Cgs_Level.cs" />
+    <Compile Include="Tb\Tb_Cgs_Shdz.cs" />
+    <Compile Include="Tb\Tb_Cgs_Shdz_Query.cs" />
+    <Compile Include="Tb\Tb_City.cs" />
+    <Compile Include="Tb\Tb_County.cs" />
+    <Compile Include="Tb\Tb_Function.cs" />
+    <Compile Include="Tb\Tb_Gys_Account.cs" />
+    <Compile Include="Tb\Tb_Gys_Cgs.cs" />
+    <Compile Include="Tb\Tb_Hy-Tree.cs" />
+    <Compile Include="Tb\Tb_Province.cs" />
+    <Compile Include="Tb\Tb_Role.cs" />
+    <Compile Include="Tb\Tb_Role_Function.cs" />
+    <Compile Include="Tb\Tb_Sp_Dj.cs" />
+    <Compile Include="Tb\Tb_Sp_Dj_Query.cs" />
+    <Compile Include="Tb\Tb_Sp_Get.cs" />
+    <Compile Include="Tb\Tb_Sp_Sku_Query.cs" />
+    <Compile Include="Tb\Tb_Sp_Expand_Query.cs" />
+    <Compile Include="Tb\Tb_sp_info.cs" />
+    <Compile Include="Tb\Tb_sp_pic.cs" />
+    <Compile Include="Tb\Tb_Sp_Query.cs" />
+    <Compile Include="Tb\Tb_Sp_Sku.cs" />
+    <Compile Include="Tb\Tb_Unit.cs" />
+    <Compile Include="Tb\Tb_User-Edit.cs" />
+    <Compile Include="Tb\Tb_User.cs" />
+    <Compile Include="Tb\Tb_User_Query.cs" />
+    <Compile Include="Tb\Tb_User_Role.cs" />
+    <Compile Include="Tb\Tb_Sp.cs" />
+    <Compile Include="Tb\Tb_Spfl.cs" />
+    <Compile Include="Tb\Tb_Hy.cs" />
+    <Compile Include="Tb\Tb_Gys_Sp.cs" />
+    <Compile Include="Tb\Tb_Spfl_Query.cs" />
+    <Compile Include="Tb\Tb_Sp_Expand_Template.cs" />
+    <Compile Include="Tb\Tb_Sp_Expand.cs" />
+    <Compile Include="Tb\Tb_Gys_Cgs-Query.cs" />
+    <Compile Include="Tb\Tb_gys_cgs_check_Query.cs" />
+    <Compile Include="Tb\Tb_User_Role-Query.cs" />
+    <Compile Include="Tb\Tb_User_Function.cs" />
+    <Compile Include="Td\Td_Saler_Out_Relation.cs" />
+    <Compile Include="Td\Td_Sale_Order_Fd.cs" />
+    <Compile Include="Td\Td_sale_pay.cs" />
+    <Compile Include="Td\Td_sale_pay_Query.cs" />
+    <Compile Include="Td\Td_sale_order_head.cs" />
+    <Compile Include="Td\Td_sale_out_body.cs" />
+    <Compile Include="Td\Td_sale_out_head.cs" />
+    <Compile Include="Td\Td_sale_cart.cs" />
+    <Compile Include="Td\Td_sale_cart_Query.cs" />
+    <Compile Include="Td\Td_sale_order_body.cs" />
+    <Compile Include="Td\Td_sale_out_head_Query.cs" />
+    <Compile Include="Td\Td_sale_order_head_Query.cs" />
+    <Compile Include="Td\Td_sale_order_body_Query.cs" />
+    <Compile Include="Td\Td_sale_out_body_Query.cs" />
+    <Compile Include="Tb\Tb_gys_cgs_check.cs" />
+    <Compile Include="Td\ResetDataPerson.cs" />
+    <Compile Include="Td\Td_Sk_1.cs" />
+    <Compile Include="Td\Td_Sk_2.cs" />
+    <Compile Include="Td\Td_Sp_Qc.cs" />
+    <Compile Include="Td\Td_Xs_1.cs" />
+    <Compile Include="Td\Td_Xs_2.cs" />
+    <Compile Include="Td\Td_Xs_Dd_1.cs" />
+    <Compile Include="Td\Td_Xs_Dd_2.cs" />
+    <Compile Include="Td\Td_Xs_Th_1.cs" />
+    <Compile Include="Td\Td_Xs_Th_2.cs" />
+    <Compile Include="Ts\Ts_Codingrule.cs" />
+    <Compile Include="Ts\Ts_Flag.cs" />
+    <Compile Include="Ts\Ts_Log.cs" />
+    <Compile Include="Ts\Ts_Log_Query.cs" />
+    <Compile Include="Ts\Ts_Lszd.cs" />
+    <Compile Include="Ts\Ts_Max_Billcode.cs" />
+    <Compile Include="Ts\Ts_Notice.cs" />
+    <Compile Include="Ts\Ts_Number_Max.cs" />
+    <Compile Include="Ts\Ts_Param.cs" />
+    <Compile Include="Ts\Ts_Parm.cs" />
+    <Compile Include="Ts\Ts_Parm_Digit.cs" />
+    <Compile Include="Ts\Ts_Parm_Gsjg.cs" />
+    <Compile Include="Ts\Ts_Parm_Shop.cs" />
+    <Compile Include="Ts\Ts_Parm_Terrace.cs" />
+    <Compile Include="Ts\Ts_Sale_Order_Log.cs" />
+    <Compile Include="Ts\Ts_Sale_Order_Log_Query.cs" />
+    <Compile Include="Ts\Ts_Param_Business.cs" />
+    <Compile Include="Td\Td_Hy_Czrule_1.cs" />
+    <Compile Include="Tz\Tz_Hy_Je.cs" />
+    <Compile Include="Tz\Tz_Hy_Je_Flow.cs" />
+    <Compile Include="Tz\Tz_Hy_Jf.cs" />
+    <Compile Include="Tz\Tz_Hy_Jf_Flow.cs" />
+    <Compile Include="Tz\Tz_Jxc_Flow.cs" />
+    <Compile Include="Tz\Tz_Sp_Kc.cs" />
+    <Compile Include="Tz\Tz_Yf_Jsc_Gx.cs" />
+    <Compile Include="Tz\Tz_Ys.cs" />
+    <Compile Include="Tz\Tz_Ys_Flow.cs" />
+    <Compile Include="Tz\Tz_Ys_Jsc.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CySoft.Utility\CySoft.Utility.csproj">
+      <Project>{26c05cd0-58ee-4721-a3e0-dd0f66f9fdc0}</Project>
+      <Name>CySoft.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

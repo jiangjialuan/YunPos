@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="CertifiedFile"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="CertifiedFile" type="CySoft.Model.Pay.CertifiedFile,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="ledgerno">db.[ledgerno]=#ledgerno#</isNotNull>
+        <isNotNull prepend="and" property="id_user_master">db.[id_user_master]= #id_user_master#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_card_front">db.[id_card_front]=#new_id_card_front#</isNotNull>
+        <isNotNull prepend="," property="new_id_card_back">db.[id_card_back]=#new_id_card_back#</isNotNull>
+        <isNotNull prepend="," property="new_bank_card_front">db.[bank_card_front]=#new_bank_card_front#</isNotNull>
+        <isNotNull prepend="," property="new_bank_card_back">db.[bank_card_back]=#new_bank_card_back#</isNotNull>
+        <isNotNull prepend="," property="new_person_photo">db.[person_photo]=#new_person_photo#</isNotNull>
+        <isNotNull prepend="," property="new_bussiness_license">db.[bussiness_license]=#new_bussiness_license#</isNotNull>
+        <isNotNull prepend="," property="new_bussiness_certificates">db.[bussiness_certificates]=#new_bussiness_certificates#</isNotNull>
+        <isNotNull prepend="," property="new_organization_code">db.[organization_code]=#new_organization_code#</isNotNull>
+        <isNotNull prepend="," property="new_tax_registration">db.[tax_registration]=#new_tax_registration#</isNotNull>
+        <isNotNull prepend="," property="new_bank_account_licence">db.[bank_account_licence]=#new_bank_account_licence#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[CertifiedFile]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="CertifiedFile">
+      set nocount on
+      <include refid="NoLock" />
+      select db.*  from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+  </statements>
+</sqlMap>

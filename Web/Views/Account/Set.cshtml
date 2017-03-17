@@ -1,0 +1,159 @@
+﻿@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@{
+    Layout = null;
+    var url = ViewData["url"] == null ? "" : ViewData["url"].ToString();
+    var shopList = ViewData["shopList"] as IList<Tb_User_ShopWithShopMc>;
+    shopList = shopList ?? new List<Tb_User_ShopWithShopMc>();
+    var id_shop_master = ViewData["id_shop_master"] == null ? "" : ViewData["id_shop_master"].ToString();
+    var id_shop = ViewData["id_shop"] == null ? "" : ViewData["id_shop"].ToString();
+    var id_user_master = ViewData["id_user_master"] == null ? "" : ViewData["id_user_master"].ToString();
+    var userShopList = ViewData["userShopList"] as IList<Tb_User_ShopWithShopMc>;
+    userShopList = userShopList ?? new List<Tb_User_ShopWithShopMc>();
+    var is_sysmanager = ViewData["is_sysmanager"] == null ? "0" : ViewData["is_sysmanager"].ToString();
+    var buyCount = ViewData["buyCount"] == null ? "0" : ViewData["buyCount"].ToString();
+}
+
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <!--[if lte IE 9]><script>window.location.replace("http://yun.pos.cn/download.html");</script><![endif]-->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>云Pos</title>
+    <meta name="description" content="云Pos" />
+    @Styles.Render(
+
+    "~/static/bootstrap/bootstrap.min.css", "~/static/css/register/register.css")
+    <link href="~/static/css/global/font_awesome.min.css" rel="stylesheet" />
+</head>
+<body style="background:url('../../manager/img/login/login_bg.jpg') repeat-x top center;">
+    <div class="header login_logo"><img src="~/manager/img/login/login_login.png" /></div>
+    <div class="con-row">
+        <div class="login_content_bg">
+            <div class="content">
+                <div class="banner"></div>
+
+                <div class="">
+                    <h1 class="name" style="font-size:24px;">选择门店（已购买 @buyCount 个 ）</h1>
+                </div>
+
+
+                <form class="form-horizontal validate" method="post" id="">
+                    @if (is_sysmanager == "1")
+                    {
+                        <div class="modal-body tab-content popcontent">
+
+                            <div class="fixed-input-group">
+                                <div class="form_content">
+                                    <div>
+                                        <div class="m-b">
+                                            <div class="sub-label m-l-xs col-sm-12" style="float:none; overflow:hidden;">
+                                                @foreach (var item in shopList.ToList().Where(d => d.id_shop == id_shop_master))
+                                                {
+                                                    <label class="i-checks showIcon item_blank1 pad-10" >
+                                                        <input data-group="id_shops" value="@item.id_shop" type="checkbox" checked="checked" disabled="disabled"><i></i><span>@item.mc</span>
+                                                    </label>
+                                                }
+                                                @foreach (var item in shopList.ToList().Where(d => d.id_shop != id_shop_master))
+                                                {
+                                                    <label class="i-checks showIcon item_blank1 pad-10" >
+                                                        <input data-group="id_shops" value="@item.id_shop" type="checkbox"><i></i><span>@item.mc</span>
+                                                    </label>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="modal-body tab-content popcontent" style="padding:20px;">
+                            <p class="font-bold" style="padding:20px 20px;">你不是系统管理员无权操作！请登录管理员角色设置开通的门店</p>
+                        </div>
+                    }
+
+
+                    <div class="dialog_content clearfix">
+                        <h2 id="MsgLogin"></h2>
+                        
+                            <p class="page_login2_footer">
+                                @if (!string.IsNullOrEmpty(url))
+                                {
+
+                                    <a id="a_go_login" href="@url" target="_Blank" class="bluer" >购买服务</a>
+
+                                }
+                                <a type="button" class="blue" href="/Account/Logout">重新登录</a>
+                                <a id="a_buy_service" href="#" onclick="shopmanager_sub();"  style="width:100px;">确定</a>
+                            </p>
+                            
+                        
+                        
+                    </div>
+
+                    
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="footer clearfix" style="background:none;">
+        <p>
+            Copyright © 2016 <a href="http://www.pos.cn/" target="_blank" style="text-decoration:none;" tabindex="-1">pos.cn</a>
+        </p>
+    </div>
+
+    <script src="@Scripts.Url("~/static/js/jquery/jquery.min.js")"></script>
+    <script type="text/javascript">
+    </script>
+</body>
+</html>
+
+
+
+
+<script>
+
+
+    function shopmanager_sub() {
+        
+
+        var id_shops = '';
+        $("input[data-group=id_shops]").each(function (index, item) {
+            if (item.checked === true) {
+                id_shops += $(item).val() + ",";
+            }
+        });
+
+        $.post(
+            '/Account/Set',
+            { ids: id_shops },
+            function (data) {
+                
+                if (data.status == "success") {
+                    alert("设置成功！");
+                    window.location.href = '/Account/Login';
+                }
+                else {
+                    alert(data.message);
+                }
+            }, 'json'
+        );
+
+    }
+</script>
+
+

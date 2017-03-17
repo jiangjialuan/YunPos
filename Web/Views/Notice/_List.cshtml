@@ -1,0 +1,82 @@
+﻿@using CySoft.Model.Ts
+
+@{
+    ViewBag.Title = "系统公告";
+    var pageList = ViewData["List"] as PageList<Ts_Notice_View>;
+    var func = ViewData["GetTypeName"] as Func<string, string>;
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+}
+
+
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+            <th>标题</th>
+            <th>时间</th>
+            <th>类型</th>
+            <th width="110" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="qclist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="5" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = pageList.PageIndex * pageList.PageSize + 1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-dw-id-@item.id" class="tr-status-finished">
+                            <td class="text-center">
+                                @(index++)
+                            </td>
+                            <td><a onclick="app.notice.detail('@item.id', this)">@item.title</a></td>
+                            <td>@( string.Format(((DateTime)item.rq_create).ToString("yyyy-MM-dd HH:mm")))</td>
+                            <td>
+                                @func(item.flag_type.ToString()).ToLower()
+                            </td>
+
+                            <td class="list-operate">
+                                <div class="look-out1 supernatant">
+                                    <div class="second-height-operate">
+                                        <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="app.notice.detail('@item.id',this)" title="查看"></a>
+                                        @if (IsPermissionShow("edit", actionlist))
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.notice.edit('@item.id',this)" title="编辑"></a>
+                                        }
+                                        @if (IsPermissionShow("delete", actionlist))
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.notice.del('@item.id',this)" title="删除"></a>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+<script>
+    app.c.public_data['notice/list'] = app.c.public_data['notice/list'] || {};
+    app.c.public_data['notice/list']['_row_total_'] = '@pageList.ItemCount';
+    app.c.public_data['notice/list']['_page_size_'] = '@pageList.PageSize';
+    app.c.public_data['notice/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

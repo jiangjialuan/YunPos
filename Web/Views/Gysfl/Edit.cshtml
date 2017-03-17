@@ -1,0 +1,241 @@
+﻿@using CySoft.Model;
+@using CySoft.Model.Tb;
+@using System.Text;
+@{
+    string category_id = ViewData["category_id"].ToString();
+    string option_gysfl = ViewData["option"].ToString();
+    string other_add = ViewData["other_add"].ToString();
+    List<Tb_Gysfl_Tree> list_tree = ViewData["list_tree"] as List<Tb_Gysfl_Tree>;
+    Tb_Gysfl item_edit = ViewData["item_edit"] as Tb_Gysfl;
+}
+<style>
+    .dropdown-menu {
+        max-height: 510px;
+    }
+</style>
+
+<div class="modal fade in" id="dialog-category" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">编辑分类</h4>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="gysfl_add">
+                <div class="modal-body tab-content ">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>上级分类</span>
+                            </label>
+
+                            <label class="sub-label w-340 m-l-xs">
+                                <select class="form-control input-sm select2_ {required:true,check_parent_basecategory:true}" name="parent_id" id="parent_id" @string.Format("{0}", item_edit == null ? string.Empty : "disabled")>
+                                    <option value="0" @string.Format("{0}", (string.IsNullOrWhiteSpace(category_id) || category_id.Equals("0", StringComparison.OrdinalIgnoreCase) || item_edit != null) ? "selected" : string.Empty)>- 请选择上级分类（不选则为顶级分类） -</option>
+                                    <!-- 分类树 -->
+                                    @helper NodeHelper(string category_id, Tb_Gysfl item_edit, int index, bool parent_is_last, List<Tb_Gysfl_Tree> _list_tree)
+                                    {
+    if (_list_tree.Count > 0)
+    {
+        index = 0;
+        foreach (Tb_Gysfl_Tree _gysfl in _list_tree)
+        {
+            index++;
+            int count_level = _gysfl.path.Count(c => c.Equals('/'));
+            StringBuilder str_current_symbol = new StringBuilder();
+            if (count_level > 2)        //根节点count_level == 2
+            {
+                //每级4空格
+                for (int i = 0; i < count_level - 3; i++)
+                {
+                    if (_gysfl.children.Count >= 0)
+                    {
+                        str_current_symbol.Append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                    }
+                }
+                if (index == _list_tree.Count)
+                {
+                    parent_is_last = true;
+                    str_current_symbol.Append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                }
+                else
+                {
+                    str_current_symbol.Append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+                }
+            }
+
+            if (item_edit != null && !item_edit.id_farther.Equals("0", StringComparison.OrdinalIgnoreCase))
+            {
+                //编辑时选中父ID
+                <option value='@_gysfl.id' @string.Format("{0}", (item_edit.id_farther.Equals(_gysfl.id, StringComparison.OrdinalIgnoreCase)) ? "selected" : string.Empty)>@Html.Raw(str_current_symbol)@_gysfl.text</option>
+        }
+        else
+        {
+            //添加子节点时选中当前ID
+            <option value='@_gysfl.id' @string.Format("{0}", (!string.IsNullOrWhiteSpace(category_id) && category_id.Equals(_gysfl.id, StringComparison.OrdinalIgnoreCase)) ? "selected" : string.Empty)>@Html.Raw(str_current_symbol)@_gysfl.text</option>
+        }
+
+        if (_gysfl.children.Count > 0)
+        {
+                @NodeHelper(category_id, item_edit, index, parent_is_last, _gysfl.children)
+        }
+    }
+}
+}
+                                    @NodeHelper(category_id, item_edit, 0, false, list_tree)
+                                    <!-- 分类树 -->
+                                </select>
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>分类名称</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:30,check_categoryname_spfl:true}" placeholder="请输入分类名称" type="text" name="mc" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.mc)" id="txt_mc">
+                            </label>
+                        </div>
+                        <div class="m-b-none">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>分类编码</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs m-b-none">
+                                <input class="form-control {maxlength:30,stringCheckTwo:true}" placeholder="请输入分类编码" type="text" name="bm" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.bm)" id="txt_bm">
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" name="order_num" id="order_num" value="">
+                    <input type="hidden" name="other_add" id="other_add" value="@other_add">
+                    <input type="hidden" id="hid_option_gysfl" value="@option_gysfl">
+                    <input type="hidden" id="category_id" name="category_id" value="@category_id" />
+                </div>
+                <div class="modal-footer align_center">
+                    <button type="button" id="submit-button_add" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        //$.DHB.checkForm(function () {
+        //
+
+        //});
+    };
+
+    app.gysfl = app.gysfl || {};
+    $('#submit-button_add', _).click(function () {
+
+        if ($('#txt_mc', _).val() == "" || $('#txt_mc', _).val() == null) {
+            $('#txt_mc', _).focus();
+            $.DHB.message({ 'content': '不能为空', 'type': 'i' })
+        } else {
+            //
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option_gysfl').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button_add').button('loading');
+
+            var options = {
+                data: $(_ + "#gysfl_add").serialize(),
+                url: $.DHB.U('gysfl/' + (Tnum > 0 ? 'Edit' : 'Add')),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (ret, textStatus, jqXHR) {
+                    if (ret.status == "success") {
+                        $.DHB.message({ 'content': ret.message, 'time': 1000, 'type': 's' });
+                        $(_ + '#submit-button_add').text("提交成功！");
+
+                        @{
+                            StringBuilder sb = new StringBuilder();
+                            if (other_add.Equals("1",StringComparison.Ordinal))
+                            {
+                                sb.AppendLine("                        gysflTree.push({id:ret.gysfl.id, pid:ret.gysfl.pid, name:ret.gysfl.name, is_default:ret.gysfl.is_default});");
+                                sb.AppendLine("                        treeData.value = ret.gysfl.id;");
+                                sb.AppendLine("                        $.DHB.tree(treeData);");
+                                sb.AppendLine("                        $.DHB.dialog({id:'dialog-category', action:'destroy'});");
+
+                                sb.AppendLine("                        $(_ + \"#tree-id_gysfl .dropdown-menu\").append('<div class=\"list-group dhb-more\"><a class=\"media list-group-item list-group-item-more\">+ 新增更多</a></div>');");
+                                sb.AppendLine("                        $(_ + \"#tree-id_gysfl .dhb-more\").bind('click', function () { ");
+                                sb.AppendLine("                               $.DHB.dialog({ 'url': $.DHB.U('/gysfl/add?other_add=1'), 'id': 'dialog-category' });  ");
+                                sb.AppendLine("                        }); ");
+                            }
+                            else
+                            {
+                                sb.AppendLine("                        $.DHB.url('gysfl/list', 'cache');");
+                            }
+                                                    @Html.Raw(sb);
+                            }
+
+
+                    }
+                    else {
+                        $.DHB.message({ 'content': ret.message, 'time': 0, 'type': 'e' });
+                        btn.button('reset');
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options)
+
+            return false;
+
+        }
+
+    });
+    jQuery.validator.addMethod("check_categorynum_spfl",
+        function (value, element) {
+            if (!$(_ + '#category_num').val()) {
+                return true;
+            }
+            else {
+                if ($(_ + '#category_id').val()) {
+                    strCheckUrl = $.DHB.U('gysfl/saveEdit?ajax=checkCategorynum&category_id=' + $(_ + '#category_id').val() + '&category_num=' + encodeURIComponent($(_ + '#category_num').val()));
+                } else {
+                    strCheckUrl = $.DHB.U('gysfl/saveAdd?ajax=checkCategorynum&category_num=' + encodeURIComponent($(_ + '#category_num').val()));
+                }
+                var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                return $.trim(xhr.responseText) == 'true' ? true : false;
+            }
+        }, "商品分类编号不能够重复！"
+    );
+
+    jQuery.validator.addMethod("check_categoryname_spfl",
+            function (value, element) {
+                if (!$(_ + '#category_name').val()) {
+                    return true;
+                } else {
+                    if ($(_ + '#category_id').val()) {
+                        strCheckUrl = $.DHB.U('gysfl/saveEdit?ajax=checkCategoryname&parent_id=' + $(_ + '#parent_id').val() + '&category_id=' + $(_ + '#category_id').val() + '&category_name=' + encodeURIComponent($(_ + '#category_name').val()));
+                    } else {
+                        strCheckUrl = $.DHB.U('gysfl/saveAdd?ajax=checkCategoryname&parent_id=' + $(_ + '#parent_id').val() + '&category_name=' + encodeURIComponent($(_ + '#category_name').val()));
+                    }
+                    var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                    return $.trim(xhr.responseText) == 'true' ? true : false;
+                }
+            }, "商品分类名称不能重复！"
+        );
+
+    jQuery.validator.addMethod("check_parent_spfl",
+        function (value, element) {
+            if (!$(_ + '#category_id').val()) {
+                strCheckUrl = $.DHB.U('gysfl/saveAdd?ajax=checkCategoryparent&category_id=' + $(_ + '#category_id').val() + '&parent_id=' + $(_ + '#parent_id').val());
+                var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                return $.trim(xhr.responseText) == 'true' ? true : false;
+            } else {
+                strCheckUrl = $.DHB.U('gysfl/saveEdit?ajax=checkCategoryparent&category_id=' + $(_ + '#category_id').val() + '&parent_id=' + $(_ + '#parent_id').val());
+                var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                return $.trim(xhr.responseText) == 'true' ? true : false;
+            }
+        }, "商品父级分类不能为自己或者自己的子类，而且商品分类最大支持5级！"
+    );
+</script>

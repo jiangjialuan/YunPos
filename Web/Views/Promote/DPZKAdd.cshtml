@@ -1,0 +1,1211 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    UpdatePromoteViewModel entity = ViewData["item_edit"] as UpdatePromoteViewModel;
+    entity = entity ?? new UpdatePromoteViewModel();
+    entity.Promote1 = entity.Promote1 ?? new Td_Promote_1();
+    entity.Promote2S = entity.Promote2S ?? new List<Td_Promote_2_Query>();
+    entity.Shops = entity.Shops ?? new List<Td_Promote_Shop>();
+    var shopList = ViewData["shopList"] as List<Tb_User_ShopWithShopMc>;
+    var digit = ViewData["DigitHashtable"] as Hashtable;//小数点控制
+    digit = digit ?? new Hashtable();
+    shopList = shopList ?? new List<Tb_User_ShopWithShopMc>();
+    var id_shop = ViewData["id_shop"] ?? "";
+    //var selectShops= ViewData["selectShop"] as List<Td_Promote_Shop>;
+    //selectShops = selectShops ?? new List<Td_Promote_Shop>();
+    var version = string.Format("{0}", ViewData["version"]);
+    var hyfls = ViewData["hyfls"] as List<Tb_Hyfl>;
+    hyfls = hyfls ?? new List<Tb_Hyfl>();
+    var option = string.Format("{0}", ViewData["option"]);
+    var form = string.Format("{0}", ViewData["form"]);//"currentlist";
+    var shopString = JSON.Serialize(entity.Shops);
+}
+
+<script type="text/javascript">
+    
+    $(function () {
+        $('div[contentID="promote/dpzkadd"]').attr({ controller: 'promote', action: 'dpzkadd' });
+        app.c.public_data['promote/dpzkadd'] = app.c.public_data['promote/dpzkadd'] || {};
+        app.c.public_data['promote/dpzkadd']['once'] = false;
+
+    });
+
+
+</script>
+<input pagesize="" value="" type="hidden">
+<input page="" value="" type="hidden">
+<input type="hidden" id="selectedShops" value="@shopString" />
+<input type="hidden" id="mgrShops" value="@ViewData["stringShopList"]" />
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/promote/dpzkadd', 'title': '单品折扣促销', id: 'promote/dpzkadd', nocache: '0' }); ">折扣促销</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">折扣促销编辑</a>
+</div>
+
+<div class="col promote">
+    <div class="panel panel-default">
+        <div class="main-content comform" style="overflow:hidden;">
+            <form novalidate="novalidate" class="client-box" id="update_promote_form" onkeyup="if(event.keyCode==13){return false;}" onkeydown="if(event.keyCode==13){return false;}">
+                <div class="row">
+                    <div class="col-xs-12">
+                    </div>
+                </div>
+
+                <!--登录信息-->
+                <div class="fixed-input-group">
+                    <div class="promote_title">单品折扣促销</div>
+                    <div class="input-item-2 clearfix add-client form_line">
+                        <div>
+                            <label class="item-2-label">
+                                <em class="tag">* </em><span>促销主题：</span>
+                            </label>
+                            <label class="m-l-xs1">
+                                <input class="form-control user-input {required:true}" name="cxzt" value="@entity.Promote1.rule_name" placeholder="请输入促销主题" type="text">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-item-2 clearfix add-client form_line">
+                        <div>
+                            <label class="item-2-label">
+                                <em class="tag">* </em><span>促销日期：</span>
+                            </label>
+                            <label class="m-l-xs1 com_font">
+                                <input class="form-control {required:true}" name="day_b" type="text" readonly value="@entity.Promote1.day_b.Value.ToString("yyyy-MM-dd")">
+                                <label>到</label>
+                                <input class="form-control {required:true}" name="day_e" type="text" readonly value="@entity.Promote1.day_e.Value.ToString("yyyy-MM-dd")">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-item-2 clearfix add-client form_line">
+                        <div>
+                            <label class="item-2-label">
+                                <em class="tag">* </em><span>促销时间：</span>
+                            </label>
+                            <label class="m-l-xs1 com_font">
+                                <input class="form-control {required:true}" name="time_b" type="text" value="@(string.IsNullOrEmpty(entity.Promote1.time_b) ? "00:00" : entity.Promote1.time_b.Insert(2, ":"))">
+                                <label>到</label>
+                                <input class="form-control {required:true}" name="time_e" type="text" value="@(string.IsNullOrEmpty(entity.Promote1.time_e) ? "23:59" : entity.Promote1.time_e.Insert(2, ":"))">
+                            </label>
+                        </div>
+                    </div>
+                <div class="input-item-2 clearfix add-client form_line">
+                    <div>
+                        <label class="item-2-label f-l">
+                            <em class="tag">&nbsp;</em><span>&nbsp;</span>
+                        </label>
+                        <div class="selct_data cx_radios f-l">
+                            <label class="i-checks showIcon">
+                                <input name="flag_rqfw" value="1" @(entity.Promote1.flag_rqfw == 1 ? "checked='checked'" : "") type="radio" data-qz="rq" onclick="app.promote.dpzkadd.setDiaplay(this)" checked><i>指定日期</i>
+                            </label>
+                            <label class="i-checks showIcon">
+                                <input name="flag_rqfw" value="2" @(entity.Promote1.flag_rqfw == 2 ? "checked='checked'" : "") type="radio" data-qz="xq" onclick="app.promote.dpzkadd.setDiaplay(this)"><i>指定星期</i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                    
+                    @helper outdate(int begin, int end, string divgroup, string divshow, string selectdate, string display, string op)
+                        {
+                            var sdate = selectdate.Split(',').ToList();
+                        <div data-group="@divgroup" data-show="@divshow" class="input-item-2 clearfix add-client" style="display:@display" data-radio="flag_rqfw" data-value="1">
+                            <div>
+                                <div class="selct_data">
+                                    @for (int i = begin; i <= end; i++)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            <label>
+                            <input type="checkbox" data-type="rq" onclick="app.promote.dpzkadd.setSelectAll(this)" @(sdate.Count >= 33 || sdate.Count < 3 ? "checked='checked'" : "")><i>全选</i>
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <label>
+                            <input name="days" value="@i" data-type="rq" type="checkbox" @((sdate.Any(a => a == i.ToString()) || string.IsNullOrEmpty(op)) ? "checked='checked'" : "")><i>@(i + "号")</i>
+                                            </label>
+                                        }
+
+                                    }
+                                </div>
+
+                                </div>
+                        </div>
+}
+                    @outdate(0, 31, "zdrq", "rq", entity.Promote1.days, entity.Promote1.flag_rqfw != 2 ? "block" : "none", option)
+                        <script type="text/javascript">
+                            function setSelectAll(input) {
+                                var _input = $(input);
+                                var t = _input.attr("data-type");
+                                $("input[data-type=" + t + "]").each(function (index, item) {
+                                    item.checked = input.checked;
+                                });
+                            }
+
+                            function setDiaplay(input) {
+                                
+                                var qz = $(input).attr("value");
+                                $('div[data-radio]').each(function () {
+                                    
+                                    if ($(this).attr('data-value') == qz) {
+                                        $(this).show();
+                                    } else {
+                                        $(this).hide();
+                                    };
+                                })
+                            }
+                        </script>
+                        <div data-group="zdrq" data-show="xq" class="input-item-2 clearfix add-client" style="display: @(entity.Promote1.flag_rqfw == 2 ? "block" : "none");" data-radio="flag_rqfw" data-value="2">
+                        <div class="week_data">
+                                <div class="selct_data">
+                                    @{
+                                    List<string> weeks = new List<string>();
+                                        if (!string.IsNullOrEmpty(entity.Promote1.weeks))
+                                        {
+                                            weeks = entity.Promote1.weeks.Split(',').ToList();
+                                        }
+                                     }
+                                    <label>
+                                        <input name="weeks" value="2" type="checkbox" @(weeks.Any(a => a == "2") ? "checked='checked'" : "")><i>星期一</i>
+                                    </label>
+                                    <label>
+                                        <input name="weeks" value="3" type="checkbox" @(weeks.Any(a => a == "3") ? "checked='checked'" : "")><i>星期二</i>
+                                    </label>
+                                    <label>
+                                        <input name="weeks" value="4" type="checkbox" @(weeks.Any(a => a == "4") ? "checked='checked'" : "")><i>星期三</i>
+                                    </label>
+                                    <label>
+                                        <input name="weeks" value="5" type="checkbox" @(weeks.Any(a => a == "5") ? "checked='checked'" : "")><i>星期四</i>
+                                    </label>
+                                    <label>
+                                        <input name="weeks" value="6" type="checkbox" @(weeks.Any(a => a == "6") ? "checked='checked'" : "")><i>星期五</i>
+                                    </label>
+                                    <label>
+                                        <input name="weeks" value="7" type="checkbox" @(weeks.Any(a => a == "7") ? "checked='checked'" : "")><i>星期六</i>
+                                    </label>
+                                    <label>
+                                        <input name="weeks" value="1" type="checkbox" @(weeks.Any(a => a == "1") ? "checked='checked'" : "")><i>星期日</i>
+                                    </label>
+
+                                </div>
+                            </div>
+                        </div>
+                      
+                        <div class="input-item-2 clearfix add-client">
+                        <div class="form_line">
+                                <label class="item-2-label f-l">
+                                    <em class="tag">&nbsp;</em><span>&nbsp;</span>
+                                </label>
+                                <div class="selct_data cx_radios f-l">
+                                    <label class="i-checks showIcon">
+                                        <input name="jsfs" value="sl" type="radio" @((entity.Promote1.examine == "sl" || string.IsNullOrEmpty(entity.Promote1.examine)) ? "checked='checked'" : "") data-qz="sl"><i>按数量</i>
+                                    </label>
+                                    <label class="i-checks showIcon">
+                                        <input name="jsfs" value="je" type="radio" @(entity.Promote1.examine == "je" ? "checked='checked'" : "") data-qz="je"><i>按金额</i>
+                                    </label>
+                                </div>
+                            </div>
+                        <div class="form_line">
+                                <label class="item-2-label f-l">
+                                    <em class="tag">&nbsp;</em><span>&nbsp;</span>
+                                </label>
+                                <div class="selct_data cx_radios f-l">
+                                    <label class="i-checks showIcon">
+                                        <input name="jsgz" data-val="每" value="mei" @(entity.Promote1.strategy == "mei" ? "checked='checked'" : "") onclick="app.promote.setSelectJSGZ(this)" type="radio" checked="checked"><i>每</i>
+                                    </label>
+                                    <label class="i-checks showIcon">
+                                        <input name="jsgz" data-val="满" value="man" @(entity.Promote1.strategy == "man" ? "checked='checked'" : "") onclick="app.promote.setSelectJSGZ(this)" type="radio"><i>满</i>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <script type="text/javascript">
+                            app.promote = app.promote || {};
+                            app.promote.setSelectJSGZ = function (input) {
+                                var _input = $(input);
+                                var _val = _input.attr("data-val");
+                                var datagroup = _input.attr("name");
+                                $("span[data-group=span_jsgz]").html(_val);
+                                if (_val == '每') {
+                                    $("span[data-group=span_ldw]").html('件');
+                                } else {
+                                    $("span[data-group=span_ldw]").html('元');
+                                }
+                                
+                                //$("span[data-group=" + datagroup + "]").text(_val);
+                            }
+                        </script>
+                        <script type="text/javascript">
+                            function changeSelectTab(input) {
+                                var _input = $(input);
+                                var divgroup = _input.attr("data-group");
+                                var divname = _input.attr("data-group-name");
+                                app.promote.currentSelectSpTab = divname;
+                                $("div[data-group=" + divgroup + "]")
+                                    .each(function (index, item) {
+                                        if ($(item).attr("data-name") === divname) {
+                                            $(item).css("display", "inherit");
+                                        } else {
+                                            $(item).css("display", "none");
+                                        }
+                                    });
+                            }
+                            function addTr(a, tempName) {
+                                var parent = $(a).parent().parent();
+                                var parentPrev = parent.prev();
+                                var index = parseInt(parentPrev.children('td').eq(0).text()) + 1;
+                                var tr = $(getTempTr(tempName));
+                                $(tr).children('td').eq(0).text(index);
+                                $(tr).insertBefore(parent);
+                            }
+                            function getTempTr(tempName) {
+                                switch (tempName) {
+                                case "sp":
+                                    return trTemp.sp;
+                                case "lwsp":
+                                    return trTemp.lwsp;
+                                default:
+                                    return "<tr></tr>";
+                                }
+                            }
+                            var trHandle = {
+                                qbsp_sp: function (tr) {
+                                    var _tr = $(tr);
+                                },
+                            }
+                            var trTemp = {
+                                sp:
+                                    "<tr><td></td><td><a data-name='_a_' href='javascript:void(0)'>选择商品</a>&nbsp;<a href='javascript:void(0)' onclick='$(this).parent().parent().remove()' class='bg-state bg-state-info blockbtn fa fa-trash' title='删除'></a></td><td><input type='text' style='width: 25px;' /></td><td><input type='text' style='width: 25px;' /></td><td><input type='text' style='width: 25px;' /></td><td><input type='text' style='width: 25px;' /></td><td><input type='text' style='width: 25px;' /></td><td><input type='text' style='width: 25px;' /></td></tr>",
+                                lwsp: "<tr><td><span data-group='sh'>${num}</span></td><td><a onclick='app.promote.xzsp_btn()' href='javascript:void(0)'>选择商品</a>&nbsp;<a href='javascript:void(0)' onclick='$(this).parent().parent().remove()' class='bg-state bg-state-info blockbtn fa fa-trash' title='删除'></a></td><td>${bm}</td><td>${mc}</td><td>${tm}</td><td>${dw}</td><td>${jj}</td><td>${lsj}</td></tr>"
+                            }
+
+                            function dialogCallBack(array) {
+                                var datas = [];
+                                for (var i = 0; i < array.length; i++) {
+                                    var item = array[i];
+                                    if (item.name === "hid_back_val") {
+                                        ////console.log(item.value);
+                                        datas = JSON.parse(item.value);
+                                        break;
+                                    }
+                                }
+                                if (app.promote.currentSelectSpTab === "lwsp") {
+                                    $.each(datas, function (index, item) {
+                                        var lwsptemp = getTempTr(app.promote.currentSelectSpTab);
+                                        lwsptemp = lwsptemp.replace("${bm}", item.bm).replace("${mc}", item.mc).replace("${tm}", item.tm).replace("${dw}", item.dw).replace("${jj}", item.jj).replace("${lsj}", item.lsj);
+                                        var lasttr = $("#prommote_edit_lwsp_tab tr:last");
+                                        lwsptemp = lwsptemp.replace("${num}", lasttr.index());
+                                        var tr = $(lwsptemp);
+                                        tr.insertBefore(lasttr);
+                                    });
+                                }
+                                if (app.promote.currentSelectSpTab === "sp") {
+
+                                }
+                                $.DHB.dialog({ 'id': 'dialog-promote-searchsp', 'action': 'destroy' });
+                            }
+
+                            app.promote.currentSelectSpTab = "";
+                            app.promote.xzsp_btn = function () {
+                                $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('Promote/SearchSp'), 'id': 'dialog-promote-searchsp', 'confirm': dialogCallBack });
+                            }
+                        </script>
+                        
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                </label>
+                                <label class="m-l-xs1">
+                                    <a class="xzsp_a form_title" href="javascript:void(0)" data-group="_xzsp" data-group-name="sp" onclick="changeSelectTab(this)"><span>商品</span></a>
+                                    @*<a class="xzsp_a" href="javascript:void(0)" data-group="_xzsp" data-group-name="lwsp" data-divid="show_lwsp" onclick="changeSelectTab(this)"><span>例外商品</span></a>*@
+                                </label>
+                            </div>
+                            <div class="cx_block">
+                            <input id="shopspnum" value="1" type="hidden">
+                                <div data-group="_xzsp" data-name="sp" style="display: inherit;" class="xzsp_div table_list">
+                                    <table class="table table_input" id="shopsp_table">
+                                        <thead>
+                                            <tr>
+                                            <th width="40">序号</th>
+                                            <th width="170">商品条码</th>
+                                            <th width="200">商品名称</th>
+                                            <th width="70">单位</th>
+                                            <th width="200">规则1</th>
+                                            <th width="200">规则2</th>
+                                            <th width="200">规则3</th>
+                                            <th width="55">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @{ int rowNum = 1;}
+                                        @foreach (var item in entity.Promote2S)
+                                        {
+                                            <tr data-item="@item.id_object">
+                                                <td class="align_center">
+                                                    <div name="xh">@(rowNum++)</div><input class="form-control user-input" placeholder="商品ID" name="shopsp_obj" type="hidden" value="@item.id_object" data-id_kcsp="@item.id_object">
+                                                </td>
+                                                <td class="align_left"><input type="text" class="w-120" name="bm" value="@item.barcode"></td>
+                                                <td class="align_left">
+                                                    <span class="inline lineheight-30" name="mc">@item.mc</span>
+                                                    <a class="btn btn-info f-r" onclick="app.promote.showshopsp()">选择商品</a>
+                                                </td>
+                                                <td name="dw">
+                                                    <div id="dw_select" name="dw_select" class="common_select" style="display: block;">
+                                                        <div onclick="app.promote.dw_select_onclick(this)">
+                                                            <span class="inline">@item.dw</span>
+                                                            <i class="fa fa-caret-down"></i>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="align_center">
+                                                    <span data-group="span_jsgz">@(entity.Promote1.strategy == "mei" ? "每" : "满")</span>
+                                                    <input type="text" value="@(item.condition_1 > 0 ? string.Format("{0}", item.condition_1.Digit(2)) : "")" name="condition_1" onkeyup="
+check_digit(this, 2)">
+                                                    <span data-group="span_ldw">@(entity.Promote1.strategy == "mei" ? "件" : "元")</span>
+                                                    打折
+                                                    <input type="text" value="@(item.result_1 > 0 ? string.Format("{0}", item.result_1.Digit(2)) : "")" name="result_1" onkeyup="check_digit(this, 2)" onafterpaste="check_digit(this,2)">
+                                                </td>
+
+                                                <td class="align_center">
+                                                    <span data-group="span_jsgz">@(entity.Promote1.strategy == "mei" ? "每" : "满")</span><input type="text" value="@(item.condition_2 > 0 ? string.Format("{0}", item.condition_2.Digit(2)) : "")" name="condition_2" onkeyup="check_digit(this, 2)"><span data-group="span_ldw">@(entity.Promote1.strategy == "mei" ? "件" : "元")</span> 打折 <input type="text" value="@(item.result_2 > 0 ? string.Format("{0}", item.result_2.Digit(2)) : "")" name="result_2" onkeyup="check_digit(this, 2)" onafterpaste="check_digit(this,2)">
+                                                </td>
+
+                                                <td class="align_center">
+                                                    <span data-group="span_jsgz">@(entity.Promote1.strategy == "mei" ? "每" : "满")</span><input type="text" value="@(item.condition_3 > 0 ? string.Format("{0}", item.condition_3.Digit(2)) : "")" name="condition_3" onkeyup="check_digit(this, 2)"><span data-group="span_ldw">@(entity.Promote1.strategy == "mei" ? "件" : "元")</span> 打折 <input type="text" value="@(item.result_3 > 0 ? string.Format("{0}", item.result_3.Digit(2)) : "")" name="result_3" onkeyup="
+check_digit(this, 2)" onafterpaste="check_digit(this,2)">
+                                                </td>
+                                                <td class="align_center"><a onclick="app.promote.choice_spec_del(this);" class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a></td>
+                                            </tr>
+                                        }
+                                        </tbody>
+                                    </table>
+
+                                    </div>
+                                
+                            <div data-group="_xzsp" data-name="lwsp" class="xzsp_div table_list hidden">
+                                    <table id="prommote_edit_lwsp_tab" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th style="width: 100px;">操作</th>
+                                                <th>商品条码</th>
+                                                <th style="width: 100px;">商品名称</th>
+                                                <th>条码</th>
+                                                <th>单位</th>
+                                                <th>进价</th>
+                                                <th>零售价</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><span data-group='sh'>1</span></td>
+                                                <td>
+                                                    <a href="javascript:void(0)" onclick="app.promote.xzsp_btn()">选择商品</a>
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr style="display:none">
+                                                <td colspan="8">
+                                                    <a href="javascript:void(0)" onclick="addTr(this, 'lwsp')"><i class="fa fa-plus fa-fw add-button"></i></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        <div style="padding-left:100px;">
+                            <button class="btn btn-info w-xs" type="button" onclick="app.promote.addshopsp_row(this)">增加行</button>
+                        </div>
+                    </div>
+
+                        <div class="input-item-2 clearfix add-client">
+                            <div>
+                                <label class="item-2-label">
+                                   <span>会员类型：</span>
+                                </label>
+                                <label class="m-l-xs1">
+                                    @{
+                                        List<string> hylxIds = new List<string>();
+                                        if (!string.IsNullOrEmpty(entity.Promote1.id_hyfl_list))
+                                        {
+                                            hylxIds = entity.Promote1.id_hyfl_list.Split(',').ToList();
+                                        }
+                                    }
+                                    @foreach (var item in hyfls)
+                                    {
+                                        <label class="i-checks showIcon">
+                                            <input name="hylx" value="@item.id" type="checkbox" @(hylxIds.Contains(item.id) ? "checked='checked'" : "")><i></i>@item.mc
+                                        </label>
+                                    }
+                                </label>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+               
+                <div class="fixed-input-group" style="display: @((!string.IsNullOrEmpty(version) && version != "10") ? "inherit" : "none")">
+                    <div class="input-item-2 clearfix add-client">
+                        <div>
+                            <label class="item-2-label">
+                                <em class="tag">* </em><span>选择门店：</span>
+                            </label>
+                            <div class="selct_shop">
+                                <div class="selct_shop_head">
+                                    <label class="i-checks showIcon"><input name="id_shops_all" type="checkbox" checked="checked"><i></i>全选</label>
+                                </div>
+                                <div class="selct_shop_item">
+                                    @foreach (var item in shopList)
+                                    {
+                                        <label class="i-checks showIcon item_blank">
+                                            <input name="id_shops" value="@item.id_shop" type="checkbox" @((entity.Shops.Any(s => s.id_shop == item.id_shop) || string.IsNullOrEmpty(option)) ? "checked='checked'" : "")><i></i>@item.mc
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <input id="promote1_id" value="@entity.Promote1.id" type="hidden">
+                <input id="promote1_bm_djlx" value="@ViewData["bm_djlx"]" type="hidden">
+                <input id="id" value="@entity.Promote1.id" type="hidden">
+                <footer class="panel-footer lter need-footer-fixed need-footer-fixed-box text-left">
+                    <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                    @if (option == "detial" && entity.Promote1.flag_sh == 0)
+                    {
+                        <button type="button" onclick="app.promote.dpzkadd.goEdit('@entity.Promote1.id', '@entity.Promote1.bm_djlx', '', this)" class="btn w-xs btn-info" data-loading-text="正在提交...">
+                            编辑
+                        </button>
+                        <button type="button" onclick="app.promote.dpzkadd.goCopy('@entity.Promote1.id','@entity.Promote1.bm_djlx','',this)" class="btn w-xs btn-info" id="btn_update_promote" data-loading-text="正在提交...">
+                            复制并新增
+                        </button>
+                    }
+                    else
+                    {
+                        if (option == "detial")
+                        {
+                            <button type="button" onclick="app.promote.dpzkadd.goCopy('@entity.Promote1.id','@entity.Promote1.bm_djlx','',this)" class="btn w-xs btn-info" id="btn_update_promote" data-loading-text="正在提交...">
+                                复制并新增
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn w-xs btn-info" id="btn_update_promote" data-loading-text="正在提交...">
+                                保存并新增
+                            </button>
+                        }
+                    }
+                    &nbsp; &nbsp;
+                    <!--<button class="btn w-xs btn-default" type="button" onclick="app.promote.cacal()">
+                        取消
+                    </button>-->
+                    @*<button class="btn w-xs btn-default" type="button" onclick="$.fn.menuTab.load({ url: '/promote/list', 'title': '促销查询', id: 'promote/list', nocache: '1' }); $.fn.menuTab.deleteMenu('promote/dpzkadd');">
+                        取消
+                    </button>*@
+                    @if (form == "currentlist")
+                    {
+                        <button class="btn w-xs btn-default" type="button" onclick="$.fn.menuTab.deleteMenu('promote/dpzkadd'); $.fn.menuTab.load({ url: '/promote/currentlist', 'title': '当前促销', id: 'promote/currentlist', nocache: '1' }); ">
+                            取消
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn w-xs btn-default" type="button" onclick="$.fn.menuTab.deleteMenu('promote/dpzkadd'); $.fn.menuTab.load({ url: '/promote/list', 'title': '促销查询', id: 'promote/list', nocache: '1' }); ">
+                            取消
+                        </button>
+                    }
+                    
+                </footer>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+    app.promote.dpzkadd = app.promote.dpzkadd || {};
+    app.promote.dpzkadd.option = '@option';
+    app.promote.dpzkadd.goEdit = function (id, bm_djlx, method, obj) {
+        //
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ title: '促销单编辑', url: $.DHB.U('promote/edit?id=' + id + '&bm_djlx=' + bm_djlx), id: 'promote/dpzkadd', nocache: '0' });
+    };
+    app.promote.dpzkadd.goCopy = function (id, bm_djlx, method, obj) {
+        //
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ title: '促销单编辑', url: $.DHB.U('promote/copy?id=' + id + '&bm_djlx=' + bm_djlx), id: 'promote/dpzkadd', nocache: '0' });
+    };
+
+    app.promote.dpzkadd_ready = function () {
+        //日期插件初始化
+        $.DHB.loadJs([{ id: 'WdatePicker', url: '/static/js/My97DatePicker/WdatePicker.js' }], function () {
+            $('input[name=day_b],input[name=day_e]', _).click(function () {
+                WdatePicker({ dateFmt: 'yyyy-MM-dd' });
+            });
+
+        });
+        //日期与星期天的切换
+        app.promote.dpzkadd.setDiaplay = function (input) {
+
+            var qz = $(input).attr("value");
+            $('div[data-radio]', _).each(function () {
+
+                if ($(this).attr('data-value') == qz) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                };
+            })
+        }
+        //门店全选
+        $('.selct_shop_head input', _).click(function () {
+
+            if ($(this).is(":checked")) {
+                $('.selct_shop_item .item_blank input', _).not("input:checked").click();
+            } else {
+                $('.selct_shop_item .item_blank input:checked', _).click();
+            }
+        });
+        $('input[name=id_shops]').click(function () {
+            if (!$(this).is(':checked')) {
+                $('.selct_shop_head input', _).removeAttr('checked');
+            } else {
+                if ($('input[name=id_shops]:checked').length == $('input[name=id_shops]').length) {
+                    if (!$('.selct_shop_head input', _).is(':checked')) {
+                        $('.selct_shop_head input', _).click();
+                    }
+                }
+            }
+        });
+        //日期全选
+        app.promote.dpzkadd.setSelectAll = function (input) {
+
+            var t = $(input).attr("data-type");
+            if ($(input).is(':checked')) {
+                $("input[data-type=" + t + "]", _).not("input:checked").click();
+            } else {
+                $("input[data-type=" + t + "]:checked", _).click();
+            }
+        }
+        $(_ + 'input[data-type=rq]:not(:first)').click(function () {
+
+            if (!$(this).is(':checked')) {
+                $('input[data-type=rq]', _).eq(0).removeAttr('checked');
+            } else {
+
+                if ($('input[data-type=rq]:checked', _).length == 31) {
+                    if (!$('input[data-type=rq]', _).eq(0).is(':checked')) {
+                        $('input[data-type=rq]', _).eq(0).click();
+                    }
+                    
+                }
+
+            }
+        });
+
+
+
+        //促销时间验证
+        $('input[name=time_b],input[name=time_e]', _).blur(function () {
+
+            var time_reg = /^(([0-1]{0,1}[0-9]|2[0-3])[:|：][0-5]){1}[0-9]{1}$/;
+            if (!time_reg.test($(this).val())) {
+                $.DHB.message({ 'content': '请输入格式为00:00-23:59之间的时间' });
+                $(this).val('');
+            };
+        });
+
+
+        //选择商品回调
+        app.promote.dialogCallBackWork = function (jsonStr) {
+
+            var data_item_last = '';
+            var objList = jQuery.parseJSON(jsonStr);
+
+            ////console.log(objList);
+            $(objList).each(function (index, obj) {
+                var guid = parseInt($(_ + "#shopspnum").val()) + 1;
+                //var option = '';
+                var resultHtml = '';
+                var meiman,ldw;
+                $('input[name=jsgz]').each(function (i, obj) {
+                    if ($(this).is(':checked')) {
+                        meiman = $(this).attr('data-val');
+                        if (meiman == '每') {
+                            ldw = '件';
+                        }
+                        else if (meiman == '满') {
+                            ldw = '元';
+                        }
+                    };
+                });
+
+                var guid = parseInt($(_ + "#shopspnum").val()) + 1;
+                resultHtml += '<tr data-item="' + obj.id_sp + '">';
+                resultHtml += ' <td class="align_center"><div name="xh">' + guid + '</div><input class="form-control user-input" placeholder="商品ID" name="shopsp_obj" type="hidden" value="' + obj.id_sp + '"  data-id_kcsp="' + obj.id_kcsp + '" ></td>';
+                resultHtml += '<td class="align_left"><input type="text" class="w-120" name="bm" value="' + obj.bm + '"/></td>';
+                resultHtml += '<td class="align_left"><span class="inline lineheight-30" name="mc">' + obj.mc + '</span><a class="btn btn-info f-r" onclick="app.promote.showshopsp()">选择商品</a></td>';
+                if (typeof (obj.dw) != 'undefined' && obj.dw != 'undefined' && obj.dw != '') {
+                    resultHtml += '<td name="dw">    <div id="dw_select" name="dw_select"  class="common_select" style="display:block;"><div onclick="app.promote.dw_select_onclick(this)"><span class="inline">' + obj.dw + '</span> <i class="fa fa-caret-down"></i></div><ul class="common_select_list"><li value="' + limit_num(obj.dj_jh.toString(), "@digit["dj_digit"]") + '"  data-zhl="' + limit_num(obj.zhl.toString(), "@digit["sl_digit"]") + '"    data-id_shopsp="' + obj.id_sp + '"   data-id_kcsp="' + obj.id_kcsp + '"  data-dw="' + obj.dw + '"  >' + obj.dw + '</li></ul></div></td>';
+                } else {
+                    resultHtml += '<td name="dw">    <div id="dw_select" name="dw_select"   class="common_select"><div onclick="app.promote.dw_select_onclick(this)"><span class="inline"></span> <i class="fa fa-caret-down"></i></div><ul value="" class="common_select_list"></ul></div></td>';
+                }
+                resultHtml += '<td class="align_center"><span data-group="span_jsgz">' + meiman + '</span><input type="text" value="" name="condition_1" onkeyup="check_digit(this,2)"/><span data-group="span_ldw">' + ldw + '</span> 打折 <input type="text" value="" name="result_1"  onkeyup="check_digit(this,2)" onafterpaste="check_digit(this,2)"></td>';
+                resultHtml += '<td class="align_center"><span data-group="span_jsgz">' + meiman + ' </span><input type="text" value="" name="condition_2" onkeyup="check_digit(this,2)"/><span data-group="span_ldw">' + ldw + '</span> 打折 <input type="text" value="" name="result_2" onkeyup="check_digit(this,2)" onafterpaste="check_digit(this,2)"></td>';
+                resultHtml += '<td class="align_center"><span data-group="span_jsgz">' + meiman + ' </span><input type="text" value="" name="condition_3"onkeyup="check_digit(this,2)" /><span data-group="span_ldw">' + ldw + '</span> 打折 <input type="text" value="" name="result_3" onkeyup="check_digit(this,2)" onafterpaste="check_digit(this,2)"></td>';
+                resultHtml += '<td class="align_center"><a onclick="app.promote.choice_spec_del(this);" class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a></td>';
+                resultHtml += ' </tr>';
+                $(_ + "#shopspnum").val(guid);
+                if (obj.id_sp == "" || obj.id_sp == undefined) {
+                    $(_ + "#shopsp_table>tbody").append(resultHtml);
+                } else {
+                    $(_ + "#shopsp_table>tbody").prepend(resultHtml);
+                }
+
+                data_item_last = obj.id_sp;
+            });
+
+        }
+
+        //下拉选项
+
+        app.promote.dw_select = function (n_select) {
+            //cy.http.Post({
+            //    url: '/shopsp/GetShopspDwList',
+            //    data: { select_id_sp: n_select },
+            //    beforeSend: function () {
+            //    },
+            //    callback: function (ret) {
+            //        if (ret.Success) {
+            //            var aa = [];
+            //            $(ret.dw_list).each(function (i, e) {
+            //                aa.push(ret.dw_list.dw)
+            //            });
+            //            return aa;
+
+            //        }
+            //    },
+            //    complete: function () { }
+            //});
+            app.httpAjax.post({
+                data: { select_id_sp: n_select },
+                headers: {},
+                url: '/shopsp/GetShopspDwList',
+                type: "POST",
+                datatype: 'json',
+                beforeSend: null,
+                success: function (ret) {
+                    if (ret.Success) {
+                        var aa = [];
+                        $(ret.dw_list).each(function (i, e) {
+                            aa.push(ret.dw_list.dw);
+                        });
+                        return aa;
+                    }
+                },
+                error: null,
+                complete: null
+            });
+        }
+        //添加商品至table
+        app.promote.addshopsp = function (obj) {
+
+            var shopsp = [];
+            var shopsp_e = {};
+            shopsp_e.id_shopsp = "";
+            shopsp_e.id_sp = "";
+            shopsp_e.id_kcsp = "";
+            shopsp_e.bm = "";
+            shopsp_e.mc = "";
+            shopsp_e.dw = "";
+            shopsp.push(shopsp_e);
+            var jsonStr = JSON.stringify(shopsp);
+            app.promote.dialogCallBackWork(jsonStr);
+        }
+        //增加行
+        app.promote.addshopsp_row = function (obj) {
+            app.promote.addshopsp();
+            app.promote.reset_xh();
+        };
+
+        //删除商品的行
+        app.promote.choice_spec_del = function (el) {
+            $(el).parents('tr').remove();
+            app.promote.setresult(false);
+            app.promote.reset_xh();
+        }
+
+
+        //改动后重新计算和赋值
+        app.promote.setresult = function (ifRemove) {
+            var e = [];
+            var shopsp = [];
+            var totleMoney = 0;
+            var xh = 1;
+            if (ifRemove) {
+                $('#shopsp_table>tbody', _).find('tr[data-item=""]').each(function () {
+                    $(this).remove();
+                });
+            }
+
+            if (ifRemove) {
+                app.promote.addshopsp();
+                app.promote.addshopsp();
+                app.promote.addshopsp();
+                app.promote.addshopsp();
+                app.promote.addshopsp();
+                app.promote.reset_xh();
+            }
+        }
+
+        //重置table序号
+        app.promote.reset_xh = function (e) {
+            var xh = 1;
+            $('#shopsp_table>tbody', _).find('tr').each(function () {
+                $(this).find('div[name="xh"]').text(xh);
+                xh++;
+            });
+        }
+
+        //按金额时不能选每
+        if ($('input[value=je]', _).is(":checked")) {
+            $('input[value=mei]+i', _).addClass('disabled');
+            $('input[value=mei]', _).removeAttr('checked').attr('disabled', 'disabled');
+            $('input[value=man]', _).click();
+        }
+        $('input[value=je]', _).click(function () {
+            if ($(this).is(':checked')) {
+                $('input[value=mei]+i', _).addClass('disabled');
+                $('input[value=mei]', _).removeAttr('checked').attr('disabled', 'disabled');
+                $('input[value=man]', _).click();
+            }
+        });
+        $('input[value=sl]', _).click(function () {
+            if ($(this).is(':checked')) {
+                $('input[value=mei]+i', _).removeClass('disabled');
+                $('input[value=mei]', _).removeAttr('disabled', 'disabled');
+  
+            }
+        });
+        //按数量时不能选满
+        if ($('input[value=sl]', _).is(":checked")) {
+            $('input[value=man]+i', _).addClass('disabled');
+            $('input[value=man]', _).removeAttr('checked').attr('disabled', 'disabled');
+            $('input[value=mei]', _).click();
+        }
+        $('input[value=sl]', _).click(function () {
+            if ($(this).is(':checked')) {
+                $('input[value=man]+i', _).addClass('disabled');
+                $('input[value=man]', _).removeAttr('checked').attr('disabled', 'disabled');
+                $('input[value=mei]', _).click();
+            }
+        });
+        $('input[value=je]', _).click(function () {
+            if ($(this).is(':checked')) {
+                $('input[value=man]+i', _).removeClass('disabled');
+                $('input[value=man]', _).removeAttr('disabled', 'disabled');
+
+            }
+        });
+
+
+
+        //点击单位下拉事件
+        app.promote.dw_select_onclick = function (e) {
+            //
+            var $select = $(e);
+            var tr = $(e).parents("tr");
+            var data_item = tr.attr('data-item');
+            if (typeof (data_item) != 'undefined' && data_item != 'undefined' && data_item != '') {
+                var dw_select = tr.find('td[name="dw"] div[name="dw_select"] ul');
+                var data_item_select = dw_select.attr('data-item');
+                if (typeof (data_item_select) == 'undefined' || data_item_select == 'undefined' || data_item_select == '' || data_item_select == '0') {
+                    //Post读取数据赋值
+                    @*cy.http.Post({
+                        url: '/shopsp/GetShopspDwList',
+                        data: { select_id_sp: data_item, ps_id_shop: "@id_shop" },
+                        beforeSend: function () {
+                        },
+                        callback: function (ret) {
+                            if (ret.Success) {
+                                var str_li = "";
+                                if (ret.Data.length > 0) {                                    
+                                    for (var item in ret.Data) {
+
+                                        if (ret.Data[item].id != data_item) {
+                                            var zhl = ret.Data[item].zhl.toString();
+                                            zhl = limit_num(zhl, "@digit["sl_digit"]")
+                                            var dj_jh = ret.Data[item].dj_jh.toString();
+                                            dj_jh = limit_num(dj_jh, "@digit["dj_digit"]")
+                                            str_li += '<li  value=' + dj_jh + '  data-zhl=' + zhl + ' data-id_shopsp=' + ret.Data[item].id + ' data-id_kcsp=' + ret.Data[item].id_kcsp + '   > ' + ret.Data[item].dw + '</li> ';
+                                        }
+                                    }
+                                    dw_select.append(str_li);
+                                    dw_select.attr('data-item', '1');
+                                    $select.siblings('ul').show();
+                                }
+                            }
+                        },
+                        complete: function () { }
+                    });*@
+                    app.httpAjax.post({
+                        data: { select_id_sp: data_item, ps_id_shop: "@id_shop" },
+                        headers: {},
+                        url: '/shopsp/GetShopspDwList',
+                        type: "POST",
+                        datatype: 'json',
+                        beforeSend: null,
+                        success: function (ret) {
+                            if (ret.Success) {
+                                var str_li = "";
+                                if (ret.Data.length > 0) {
+                                    for (var item in ret.Data) {
+                                        if (ret.Data[item].id != data_item) {
+                                            var zhl = ret.Data[item].zhl.toString();
+                                            zhl = limit_num(zhl, "@digit["sl_digit"]");
+                                            var dj_jh = ret.Data[item].dj_jh.toString();
+                                            dj_jh = limit_num(dj_jh, "@digit["dj_digit"]");
+                                            str_li += '<li  value=' + dj_jh + '  data-zhl=' + zhl + ' data-id_shopsp=' + ret.Data[item].id + ' data-id_kcsp=' + ret.Data[item].id_kcsp + '   > ' + ret.Data[item].dw + '</li> ';
+                                        }
+                                    }
+                                    dw_select.append(str_li);
+                                    dw_select.attr('data-item', '1');
+                                    $select.siblings('ul').show();
+                                }
+                            }
+                        },
+                        error: null,
+                        complete: null
+                    });
+                } else {
+                    $select.siblings('ul').show();
+                }
+
+            } else {
+                $select.siblings('ul').show();
+            }
+        };
+        $('.main-content', _).on('mouseleave', '.common_select', function () {
+            $('.common_select_list', _).hide();
+        });
+        $('.main-content', _).on('click', '.common_select_list li', function () {
+            var li_txt = $(this).html();
+            $(this).parents('.common_select_list').hide();
+            $(this).parents('.common_select').find('span').html(li_txt);
+        });
+
+        //检测相同商品
+        app.promote.dpzkadd.delrepeat = function (a, arr) {
+            var b = [], flag = false;
+            //
+            if (a == undefined) {
+                b.push(flag);
+                return b;
+            } else {
+                for (var i = 0; i < arr.length; i++) {
+
+                    if (a == arr[i].id_object) {
+                        flag = true;
+                        b.push(i + 1);
+
+                    }
+                }
+                b.push(flag);
+                return b;
+            }
+            
+        }
+        //商品数据
+        app.promote.dpzkadd.table_data = function () {
+            var tableobj = []; var alldata = [], flag = true;
+            $('#shopsp_table>tbody>tr', _).each(function (i, obj) {
+                if ($(this).find('input[name=bm]').val() != '') {
+                    var sp = {}; var rezj = [];
+                    rezj = app.promote.dpzkadd.delrepeat($(this).find('input[name=shopsp_obj]').val(), tableobj);
+                    if (rezj[rezj.length - 1]) {
+                        $.DHB.message({ 'content': '第' + $(this).find('div[name=xh]').html() + '行和第' + rezj[0] + '行重复，请删除其中一项！' });
+                        flag = false;
+                        return false;
+                    } else {
+                        if ($(this).find('input[name=shopsp_obj]').val() != undefined) {
+                            sp.id_object = $(this).find('input[name=shopsp_obj]').val();
+                            sp.bm = $(this).find('input[name=bm]').val();
+                            sp.mc = $(this).find('span[name=mc]').html();
+                            sp.dw = $(this).find('div[name="dw_select"]>div>span').html();
+                            sp.condition_1 = $(this).find('input[name=condition_1]').val();
+                            sp.condition_2 = $(this).find('input[name=condition_2]').val();
+                            sp.condition_3 = $(this).find('input[name=condition_3]').val();
+                            sp.result_1 = $(this).find('input[name=result_1]').val();
+                            sp.result_2 = $(this).find('input[name=result_2]').val();
+                            sp.result_3 = $(this).find('input[name=result_3]').val();
+                            tableobj.push(sp);
+                        }
+                    }
+
+                }
+            });
+            alldata.push(tableobj);
+            alldata.push(flag);
+            return alldata;
+        }
+
+
+        //表单提交
+        $('#update_promote_form', _).validate({
+            submitHandler: function (form) {
+                var tableobj = [];
+                var tableobj = app.promote.dpzkadd.table_data();
+                if (tableobj[1]) {
+                    var smtData = $('#update_promote_form', _).serializeJson();
+                    smtData.sp = JSON.stringify(tableobj[0]);
+                    if (smtData.days) {
+                        smtData.days = ',' + smtData.days.toString() + ',';
+                    }
+                    if (smtData.weeks) {
+                        smtData.weeks = ',' + smtData.weeks.toString() + ',';
+                    }
+                    smtData.id = $("#promote1_id").val();
+                    smtData.bm_djlx = $("#promote1_bm_djlx").val();
+                    if (smtData.hylx == undefined) {
+                        smtData.hylx = "all";
+                    }
+                    smtData.hylx = ',' + smtData.hylx.toString() + ',';
+                    smtData.id_shops = smtData.id_shops.toString();
+                    delete smtData.bm;
+                    delete smtData.condition_1;
+                    delete smtData.condition_2;
+                    delete smtData.condition_3;
+                    delete smtData.result_1;
+                    delete smtData.result_2;
+                    delete smtData.result_3;
+                    delete smtData.shopsp_obj;
+
+                    var url = $.DHB.U((app.promote.dpzkadd.option === "@option" && app.promote.dpzkadd.option != "") ? 'promote/@option' : 'promote/dpzkadd');//$.DHB.U('promote/dpzkadd');
+                    if (smtData.flag_rqfw == '1') {
+                        delete smtData.weeks;
+                    }
+                    if (smtData.flag_rqfw == '2') {
+                        delete smtData.days;
+                    }
+                    smtData.id = $('#id').val();
+                    //app.request(url, smtData, function (data) {
+                    //    if (data.status == 'success') {
+                    //        $.DHB.message({ 'content': '保存成功！' });
+                    //        $.fn.menuTab.load({ url: '/promote/dpzkadd', 'title': '单品折扣促销', id: 'promote/dpzkadd', nocache: '1' });
+
+                    //    } else if (data.status == 'error') {
+                    //        $.DHB.message({ 'content': data.message });
+                    //    }
+
+                    //}, function () {
+                    //});
+                    app.httpAjax.post({
+                        data: smtData,
+                        headers: {},
+                        url: url,
+                        type: "POST",
+                        datatype: 'json',
+                        beforeSend: null,
+                        success: function (data) {
+                        if (data.status == 'success') {
+                            $.DHB.message({ 'content': '保存成功！' });
+                            $.fn.menuTab.load({ url: '/promote/dpzkadd', 'title': '单品折扣促销', id: 'promote/dpzkadd', nocache: '1' });
+                        } else if (data.status == 'error') {
+                            $.DHB.message({ 'content': data.message });
+                        }
+                        },
+                        error: null,
+                        complete: null
+                    });
+                }
+            }
+        });
+
+        //当前日期初始化
+        app.promote.cs_data = function () {
+            var kk = [];
+            var myDate = new Date();
+            var now_year = myDate.getFullYear(), next_year;
+            var now_month = myDate.getMonth() + 1, next_month;
+            var now_day = myDate.getDate(), next_day;
+            var now_hours = myDate.getHours();
+            var now_minutes = myDate.getMinutes();
+            var now_getseconds = myDate.getSeconds();
+            var now_full_data = now_year + '-' + now_month + '-' + now_day;
+            if (now_month == 12) {
+                if (now_day == 1) {
+                    next_year = now_year + 1;
+                    next_month = 12;
+                    next_day = 31;
+                } else {
+                    next_year = now_year + 1;
+                    next_month = 1;
+                    next_day = now_day - 1;
+                }
+            } else if (now_month == 1) {
+                if (now_day == 1) {
+                    next_year = now_year;
+                    next_month = 1;
+                    next_day = 31;
+                } else {
+                    next_year = now_year;
+                    next_month = now_month + 1;
+                    if (parseInt(now_year) % 400 == 0) {
+                        if (now_day > 29) {
+                            next_day = 29;
+                        } else {
+                            next_day = now_day - 1;
+                        }
+                    } else {
+                        if (now_day > 28) {
+                            next_day = 28;
+                        } else {
+                            next_day = now_day - 1;
+                        }
+                    }
+                }
+            } else {
+                if (now_day == 1) {
+                    next_year = now_year;
+                    next_month = now_month;
+                    if (now_month == 2) {
+                        if (parseInt(now_year) % 400 == 0) {
+                            next_day = 29;
+                        } else {
+                            next_day = 28;
+                        }
+                    } else if (now_month == 2 || now_month == 4 || now_month == 6 || now_month == 9 || now_month == 11) {
+                        next_day = 30;
+                    } else {
+                        next_day = 31;
+                    }
+                } else {
+                    next_year = now_year;
+                    next_month = now_month + 1;
+                    next_day = now_day - 1;
+                }
+            }
+            var next_full_data = next_year + '-' + next_month + '-' + next_day;
+            kk.push(now_full_data);
+            kk.push(next_full_data);
+            return kk;
+        }
+        if ('@option' == '' || '@option' == undefined) {
+            var data_sz = app.promote.cs_data();
+            $('input[name=day_b]', _).val(data_sz[0]);
+            $('input[name=day_e]', _).val(data_sz[1]);
+        }
+        
+
+        //编码查询
+        $('.cx_block', _).on('keydown', 'input[name=bm]', function (e) {
+            if (e.keyCode == 13) {
+                var bmstr = $(this).val();
+                var mdid = "@id_shop";
+                var $input = $(this);
+
+                //app.request('/shopsp/GetShopspList', { keyword: bmstr }, function (data) {
+                //    if (data.Success) {
+                //        $input.parent('td').siblings('td').find('span[name=mc]').html(data.Data.mc);
+                //        $input.parents('tr').attr('data-item', data.Data.id_sp);//
+                //        $input.parents('tr').find('input[name=shopsp_obj]').attr("data-id_kcsp", data.Data.id_kcsp);
+                //        $input.parents('tr').find('input[name=shopsp_obj]').val(data.Data.id_sp);
+                //        $input.parent('td').siblings('td').find('div[name=dw_select]>div>span').html(data.Data.dw);
+                //        $input.parent('td').siblings('td').find('div[name=dw_select]').css('display', 'block');
+                //        $input.parent('td').siblings('td').find('ul').append('<li>' + data.Data.dw + '</li>');
+                //    } else {
+                //        $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?keyword=' + bmstr + '&id_shop=' + mdid), 'id': 'dialog-shopsp-search', 'confirm': app.promote.dialogCallBack });
+                //    }
+                //}, function () {
+                //});
+                app.httpAjax.post({
+                    data: { keyword: bmstr },
+                    headers: {},
+                    url: '/shopsp/GetShopspList',
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: null,
+                    success: function (data) {
+                    if (data.Success) {
+                        $input.parent('td').siblings('td').find('span[name=mc]').html(data.Data.mc);
+                            $input.parents('tr').attr('data-item', data.Data.id_sp);
+                        $input.parents('tr').find('input[name=shopsp_obj]').attr("data-id_kcsp", data.Data.id_kcsp);
+                        $input.parents('tr').find('input[name=shopsp_obj]').val(data.Data.id_sp);
+                        $input.parent('td').siblings('td').find('div[name=dw_select]>div>span').html(data.Data.dw);
+                        $input.parent('td').siblings('td').find('div[name=dw_select]').css('display', 'block');
+                        $input.parent('td').siblings('td').find('ul').append('<li>' + data.Data.dw + '</li>');
+                    } else {
+                        $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?keyword=' + bmstr + '&id_shop=' + mdid), 'id': 'dialog-shopsp-search', 'confirm': app.promote.dialogCallBack });
+                    }
+                    },
+                    error: null,
+                    complete: null
+                });
+            }
+        });
+        app.promote.cacal = function () {
+            $('span[tabid=index]').click();
+            $('span[tabid="promote/dpzkadd"]').show().click();
+        }
+        if ('@option' == "detial") {
+            $('input', _).attr('disabled', 'disabled');
+            $('#update_promote_form button:not(.panel-footer button)', _).attr('disabled', 'disabled');
+            $(_ + 'a').not('.xzsp_a').attr('disabled', 'disabled');
+            $('div[name=dw_select]>div,a:not(".xzsp_a")', _).removeAttr("onclick");
+            $('.tab-table', _).off('click', '.fa-trash');
+            //表格初始化
+            app.promote.setresult(false);
+        } else if ('@option' == "edit") {
+            app.promote.setresult(false);
+        } else {
+            //表格初始化
+            app.promote.setresult(true);
+        }
+
+
+
+    }//ready结束括号
+
+
+
+
+
+    app.promote.showshopsp = function () {
+        $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?id_shop=@id_shop'), 'id': 'dialog-shopsp-search', 'confirm': app.promote.dialogCallBack });
+    };
+
+    app.promote.dialogCallBack = function (array) {
+        var jsonStr = "";
+        $.each(array, function (index, item) {
+            if (item.name == "shopsp_table_json") {
+                jsonStr = item.value;
+            }
+        });
+        app.promote.dialogCallBackWork(jsonStr);
+        //关闭dialog
+        $.DHB.dialog({ 'id': 'dialog-shopsp-search', 'action': 'destroy' });
+        app.promote.setresult(false);
+        app.promote.reset_xh();
+    }
+</script>
+
+
+

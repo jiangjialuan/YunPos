@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="DataTools"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Column" type="CySoft.Model.Base.Column,CySoft.Model" />
+    <typeAlias alias="Table" type="CySoft.Model.Base.Table,CySoft.Model" />
+  </alias>
+
+  <statements>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <insert id="Insert" parameterClass="System.Collections.IDictionary">
+      insert into <isNotNull property="database">[$database$]..</isNotNull>$tableName$($columns$) <iterate property="valueList" conjunction="," open="values(" close=")">#valueList[]#</iterate>
+    </insert>
+
+    <update id="Update" parameterClass="System.Collections.IDictionary">
+      update <isNotNull property="database">[$database$]..</isNotNull>$tableName$
+      <iterate property="setList" conjunction="," open="set" close="">$setList[]$</iterate>
+      <iterate property="queryList" conjunction="and" open="where" close="">$queryList[]$</iterate>
+    </update>
+
+    <insert id="ExecuteSql" parameterClass="string">
+      $value$
+    </insert>
+
+    <select id="ExecuteSqlWithBack" parameterClass="System.Collections.IDictionary" resultClass="decimal">
+      <include refid="NoLock" />
+      select dbo.f_get_shop_limit(#id_masteruser#,#id_shop#,#id_shop_sk#,#notClacId#,#bm_djlx#,#id_bill_origin#,#bm_djlx_origin#) [money]
+    </select>
+
+    <select id="ExecuteFunctionWithName" parameterClass="System.Collections.IDictionary" resultClass="decimal">
+      <include refid="NoLock" />
+      select $function_name$(#id_masteruser#,#id_kh#,#id_shop#,#notClacId#,#bm_djlx#,#id_bill_origin#,#bm_djlx_origin#) [money]
+    </select>
+
+
+
+    <select id="GetColumns" parameterClass="System.Collections.IDictionary" resultClass="Column">
+      <include refid="NoLock" />
+      select
+      cols.[column_id] as id
+      ,cols.[name]
+      ,(case cols.[user_type_id]
+      when 127 then 0
+      when 104 then 2
+      when 175 then 3
+      when 61 then 4
+      when 106 then 5
+      when 62 then 6
+      when 56 then 8
+      when 60 then 9
+      when 239 then 10
+      when 99 then 11
+      when 231 then 12
+      when 36 then 14
+      when 58 then 15
+      when 52 then 16
+      when 122 then 17
+      when 35 then 18
+      when 189 then 19
+      when 48 then 20
+      when 167 then 22
+      when 241 then 25
+      when 40 then 31
+      when 41 then 32
+      when 42 then 33
+      when 43 then 34
+      else 12 end) as [dbType]
+      ,cols.[max_length]
+      ,cols.[precision]
+      ,cols.[scale]
+      ,(case when isnull(p.name,'')='' then 0 else 1 end) as [is_primary_key]
+      ,cols.[is_nullable]
+      ,cols.[is_computed]
+      ,cols.[is_identity]
+      from <isNotNull property="database">[$database$].</isNotNull>sys.columns as cols
+      LEFT JOIN (select c.name,o.id
+      from sysindexes i
+      join sysindexkeys k on i.id = k.id and i.indid = k.indid
+      join sysobjects o on i.id = o.id
+      join syscolumns c on i.id=c.id and k.colid = c.colid
+      where o.xtype = 'U'
+      and exists(select 1 from sysobjects where xtype = 'PK' and name =  i.name)
+      )p ON p.name=cols.name  AND cols.object_id=p.id
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="table_id">cols.[object_id] = #table_id#</isNotNull>
+        <isNotNull prepend="and" property="is_nullable">cols.[is_nullable] = #is_nullable#</isNotNull>
+        <isNotNull prepend="and" property="is_computed">cols.[is_computed] = #is_computed#</isNotNull>
+        <isNotNull prepend="and" property="is_identity">cols.[is_identity] = #is_identity#</isNotNull>
+        <isNotNull prepend="and" property="columnList">
+          cols.[name] in <iterate property="columnList" conjunction="," open="(" close=")">#columnList[]#</iterate>
+        </isNotNull>
+      </dynamic>
+      order by cols.[column_id]
+    </select>
+
+    <select id="GetTable" parameterClass="System.Collections.IDictionary" resultClass="Table">
+      <include refid="NoLock" />
+      select [object_id] as id,[name],[create_date],[modify_date] from <isNotNull property="database">[$database$].</isNotNull>sys.tables
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="name">[name] = #name#</isNotNull>
+      </dynamic>
+    </select>
+
+    <select id="GetBlockedCount" parameterClass="string" resultClass="int">
+      select count(1) as value from master..sysprocesses as a
+      join (select blocked  from master..sysprocesses group by blocked) as b on b.blocked = a.spid
+      where a.blocked = 0 and a.dbid = db_id(#value#)
+    </select>
+
+    <select id="GetDbDateTime" resultClass="datetime">
+      <include refid="NoLock" />
+      select Getdate() as value
+    </select>
+
+
+    <procedure id="RunProcedure" parameterClass="System.Collections.IDictionary" parameterMap="procedure-params"  resultClass="System.Collections.Hashtable" remapResults="true" >
+      $proname$
+    </procedure>
+
+    <procedure id="RunProcedure2" parameterClass="System.Collections.IDictionary" parameterMap="procedure-params-2"  resultClass="System.Collections.Hashtable" remapResults="true" >
+      $proname$
+    </procedure>
+    
+  </statements>
+
+  <parameterMaps>
+    <parameterMap id="procedure-params" class="System.Collections.Hashtable">
+      <parameter property="errorid" column="errorid" direction="Output" />
+      <parameter property="errormessage" column="errormessage" direction="Output" />
+      <parameter property="id_bill" column="id_bill"  />
+      <parameter property="id_user" column="id_user"  />
+    </parameterMap>
+  </parameterMaps>
+
+
+  <parameterMaps>
+    <parameterMap id="procedure-params-2" class="System.Collections.Hashtable">
+      <parameter property="errorid" column="errorid" direction="Output" />
+      <parameter property="errormessage" column="errormessage" direction="Output" />
+      <parameter property="id_masteruser" column="id_masteruser"  />
+      <parameter property="id_shop" column="id_shop"  />
+    </parameterMap>
+  </parameterMaps>
+  
+  
+
+  <parameterMaps>
+    <parameterMap id="procedure-params-out" class="System.Collections.Hashtable">
+      <parameter property="str" column="str"  />
+      <parameter property="outstr" column="outstr" direction="Output" />
+    </parameterMap>
+  </parameterMaps>
+
+
+  <select id="ProcedureQuery" parameterClass="System.Collections.IDictionary" resultClass="System.Collections.Hashtable" remapResults="true" >
+    EXEC  #proname#  <isNotNull property="proparam">#proparam#</isNotNull>
+  </select>
+
+
+  <procedure id="RunProcedureOutQuery" parameterClass="System.Collections.IDictionary" parameterMap="procedure-params-out"  resultClass="System.Collections.Hashtable" >
+    $proname$
+  </procedure>
+  
+
+</sqlMap>

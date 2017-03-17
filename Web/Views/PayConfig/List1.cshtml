@@ -1,0 +1,728 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as List<Tb_Pay_Config>;
+    pageList = pageList ?? new List<Tb_Pay_Config>();
+    var shoplist = ViewData["shoplist"] as List<Tb_User_ShopWithShopMc>;
+    var CurrentShopIds= ViewData["CurrentShopIds"] as List<string>;
+    CurrentShopIds=CurrentShopIds??new List<string>();
+    shoplist = shoplist.Where(a => CurrentShopIds.Any(i=>i==a.id_shop)).ToList();
+    var payTypeList = ViewData["payTypeList"] as List<Ts_Flag>;
+    payTypeList = payTypeList ?? new List<Ts_Flag>();
+    shoplist = shoplist ?? new List<Tb_User_ShopWithShopMc>();
+    var id_shop= ViewData["id_shop"] + "";
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var flag_type= ViewData["flag_type"] + "";
+    var limit= 10;
+    int.TryParse(ViewData["_page_size_"] + "", out limit);
+    var pageIndex=0;
+    int.TryParse(ViewData["_current_page_"] + "", out pageIndex);
+    var isYanshi = string.Format("{0}", ViewData["yanshi"]) == "true";
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="payconfig/list"]').attr({ controller: 'payconfig', action: 'list' });
+        app.c.public_data['payconfig/list'] = app.c.public_data['payconfig/list'] || {};
+        app.c.public_data['payconfig/list']['once'] = false;
+        app.payconfig = app.payconfig || {};
+    });
+</script>
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        支付配置
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        @*<p>1、查找你所的商品单位信息</p>
+                            <p>2、添加商品单位信息</p>*@
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['payconfig/list'] = app.c.public_data['payconfig/list'] || {};
+    app.c.public_data['payconfig/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['payconfig/list']['threemenu'] === false) {
+            app.c.public_data['payconfig/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10">
+                            <div class="row">
+                            <form class="filter-form" action="/payconfig/list">
+                            @if (ViewData["flag_type"] != null)
+                            {
+                                <input type="hidden" name="flag_type" value="@ViewData["flag_type"]" />
+                            }
+                            <div class="col-xs-10">
+                            <div class="search-box-container">
+                                <div class="clearfix">
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                app.c.public_data['payconfig/list'] = app.c.public_data['payconfig/list'] || {};
+                                app.c.public_data['payconfig/list']['search_all'] = false;
+                                var currentSearch = 'app.c.public_data[\'payconfig/list\'][\'search\']';
+                                eval(currentSearch + ' = false;');
+                                $.DHB._search = function() {
+                                    eval('if(' +
+                                        currentSearch +
+                                        '===false){app.search.search_client_client();' +
+                                        currentSearch +
+                                        '=true;}');
+                                }
+
+                                app.search = app.search || {};
+
+                                //TODO：分页参数
+                                app.search.search_client_client = function() {
+                                    app.c.public_data['payconfig/list'] = app.c.public_data['payconfig/list'] || {};
+                                    app.c.public_data['payconfig/list']['_row_total_'] = '@ViewData["_row_total_"]';
+                                    app.c.public_data['payconfig/list']['_page_size_'] = '@ViewData["_page_size_"]';
+                                    app.c.public_data['payconfig/list']['_current_page_'] = '@ViewData["_current_page_"]';
+                                    app.search.do_search_pagination_client_client();
+                                }
+
+
+                                app.search.trigger_search_client_client = function(event) {
+                                    //绑定回车键
+                                    event = event || window.event
+                                    if (event.keyCode == 13) {
+                                        app.search.do_search_client_client();
+                                        event.preventDefault();
+                                    }
+                                }
+
+
+                                app.search.do_search_client_client = function(el, isExport) {
+                                    isExport = isExport || 0;
+                                    var v = $(_ + ".filter-form").serialize();
+                                    var url = 'Manager/payconfig/list?_search_=1&' + v;
+                                    if (isExport == 1) {
+                                        url += '&export=1';
+                                        url = $.DHB.U(url);
+                                        window.location.href = url;
+                                    } else {
+                                        $.DHB.showButterbar();
+
+                                        //$.get($.DHB.U(url),
+                                        //    function(data, textStatus) {
+                                        //        $.DHB.closeButterbar();
+                                        //        if ($('#payconfig-list-list-fresh-box', _).length > 0) {
+                                        //            $('#payconfig-list-list-fresh-box', _).html(data);
+                                        //        }
+                                        //        var curSearchcallback = 'app.payconfig.client_search_callback';
+                                        //        var curListcallback = 'app.payconfig.client_listready';
+                                        //        eval('try {if(' +
+                                        //            curListcallback +
+                                        //            ' && typeof(' +
+                                        //            curListcallback +
+                                        //            ')=="function"){' +
+                                        //            curListcallback +
+                                        //            '(); }}catch(e){}');
+                                        //        eval('try {if(' +
+                                        //            curSearchcallback +
+                                        //            ' && typeof(' +
+                                        //            curSearchcallback +
+                                        //            ')=="function"){' +
+                                        //            curSearchcallback +
+                                        //            '(data, textStatus); }}catch(e){}');
+
+                                        //        app.search.do_search_pagination_client_client();
+                                        //    },
+                                        //    'html');
+                                        app.httpAjax.post({
+                                            data: {},
+                                            headers: {},
+                                            url: $.DHB.U(url),
+                                            type: "GET",
+                                            dataType: 'html',
+                                            beforeSend: null,
+                                            success: function (data, textStatus) {
+                                                $.DHB.closeButterbar();
+                                                if ($('#payconfig-list-list-fresh-box', _).length > 0) {
+                                                    $('#payconfig-list-list-fresh-box', _).html(data);
+                                                }
+                                                var curSearchcallback = 'app.payconfig.client_search_callback';
+                                                var curListcallback = 'app.payconfig.client_listready';
+                                                eval('try {if(' +
+                                                    curListcallback +
+                                                    ' && typeof(' +
+                                                    curListcallback +
+                                                    ')=="function"){' +
+                                                    curListcallback +
+                                                    '(); }}catch(e){}');
+                                                eval('try {if(' +
+                                                    curSearchcallback +
+                                                    ' && typeof(' +
+                                                    curSearchcallback +
+                                                    ')=="function"){' +
+                                                    curSearchcallback +
+                                                    '(data, textStatus); }}catch(e){}');
+
+                                                app.search.do_search_pagination_client_client();
+                                            },
+                                            error: null,
+                                            complete: null
+                                        });
+                                    }
+                                    return false;
+                                }
+
+                                //分页
+                                app.search.do_search_pagination_client_client = function() {
+                                    $.DHB.func
+                                        .pagination({
+                                            module_name: 'Manager',
+                                            controller_name: 'payconfig',
+                                            action_name: 'list',
+                                            ready_once: false
+                                        });
+                                }
+
+
+                                app.search.do_search_option_client_client = function(el) {
+                                    if ($(el).attr('class') != '') {
+                                        $(el)
+                                            .find('span')
+                                            .each(function() {
+                                                if ($(this).attr('class') == '') {
+                                                    $(this).attr('class', 'order-active');
+                                                } else {
+                                                    $(this).attr('class', '');
+                                                }
+                                            });
+
+                                        if ($(el).find('span:eq(0)').attr('class') == '') {
+                                            $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                        } else {
+                                            $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                        }
+                                    }
+
+                                    if ($(el).attr('class') == '') {
+                                        $(el).parent().find('.active').removeClass('active');
+                                        $(el).addClass('active');
+                                        $(el)
+                                            .parents('.btn-group')
+                                            .find('input:eq(0)')
+                                            .val($(el).attr('value'));
+                                    }
+
+                                    $(el).parents('.btn-group').removeClass('open');
+                                    var selectA = $(el).find('a').clone();
+                                    selectA.find('span[class=""]').remove();
+                                    $(el)
+                                        .parents('.btn-group')
+                                        .find('button span:eq(0)')
+                                        .html(selectA.html());
+
+                                    app.search.do_search_client_client();
+                                }
+
+
+                                app.search.search_enter = function(el) {
+                                    if (app.c.public_data['payconfig/list']['search_all'] === false) {
+                                        $(el)
+                                            .parents('.search-box-container')
+                                            .find(".bootstrap-select ul.dropdown-menu")
+                                            .each(function() {
+                                                //var ts = $(this).find('li:first() span:first()');
+                                                //ts.text('全部');
+                                            });
+                                        /*$(el).parents('.search-box-container').find(".treeview .list-group>li:first()").each(function(){
+                                            $(this).text('全部');
+                                        });*/
+                                        app.c.public_data['payconfig/list']['search_all'] = true;
+                                    }
+                                }
+
+
+                                app.search.search_leave = function(el) {
+                                }
+
+
+                                app.search.search_client_client_client = function(el) {
+                                    $.DHB
+                                        .dialog({
+                                            'title': '选择客户',
+                                            'url': $.DHB
+                                                .U('Quote/Public/clientDialog',
+                                                {
+                                                    pageSize: publicSettings.minPageSize,
+                                                    edit_client_name: $(el).data('id') + '_name',
+                                                    edit_client_id: $(el).data('id'),
+                                                    'client_callback': 'app.search.do_search_client_client'
+                                                }),
+                                            'id': 'client_dialog'
+                                        });
+                                }
+
+
+                                app.search.search_client_clear_client_client = function(el) {
+                                    $(el).parents('.input-group').find('input').val('');
+                                    app.search.do_search_client_client();
+                                }
+
+
+                                app.search.wdatepicker_client_client = function(el) {
+                                    var booStart = $(el).data('type') == 'start';
+                                    var option = {};
+                                    option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                    option['onpicked'] = function() {
+                                        $(el)
+                                            .text($dp.cal.getP('y') +
+                                                '-' +
+                                                $dp.cal.getP('M') +
+                                                '-' +
+                                                $dp.cal.getP('d'));
+                                        if (booStart) {
+                                            setTimeout(function() {
+                                                    $(el)
+                                                        .parent()
+                                                        .find('[data-type="end"]')
+                                                        .data('position', '1')
+                                                        .click();
+                                                },
+                                                5000);
+                                        }
+                                        app.search.do_search_client_client();
+                                    };
+
+                                    if (booStart) {
+                                        option['maxDate'] =
+                                            '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                    } else {
+                                        option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                        if ($(el).data('position') == '1') {
+                                            //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                                            //$(el).data('position','');
+                                        }
+                                    }
+                                    option['oncleared'] = function() {
+                                        $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                        app.search.do_search_client_client();
+                                    };
+
+                                    WdatePicker(option);
+                                }
+
+
+                                app.search.search_item_clear_client_client = function(el) {
+                                    var par = $(el).parents('form');
+                                    par.get(0).reset();
+                                    par.find("select.select2_")
+                                        .selectpicker({ liveSearch: true })
+                                        .selectpicker('refresh');
+                                    par.find("select.select2").selectpicker('refresh');
+                                    app.search.do_search_client_client();
+                                }
+                            </script>
+                            </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dw-list-list-fresh-box">
+                    <form id="update_payconfig_form">
+                        @if (ViewData["flag_type"] != null)
+                        {
+                            <input type="hidden" name="flag_type" value="@ViewData["flag_type"]" />
+                        }
+                        <!--数据表格-->
+                        @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                        <div id="payconfig-list-list-fresh-box" class="fixed-input-group table_list table_max_h col-xs-12 main-tt">
+                           
+                            @if (flag_type == "5")
+                            {
+                                <h2>微信支付配置</h2>
+                                <a target="_Blank" class="btn btn-primary blue-bgb mar-b15" href="http://form.mikecrm.com/ZeGnEU">申请开通微信支付</a>
+
+                                <table class="table">
+                                	<thead>
+                                    <tr>
+                                    	<th table-p-l-sm table-p-r-xsm-fixed>序号</th>
+                                        <th>门店编号</th>
+                                        <th>门店名称</th>
+                                        <th>子商户号</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                   
+                                    <tbody id="goodslist-main-tbody">
+                                        @{ int index = limit*pageIndex+1;}
+
+                                    @foreach (var sp in shoplist.OrderBy(a=>a.bm))
+                                    {
+                                       
+                                        
+                                        <tr>
+                                        	<td class="text-c">@(index++)</td>
+                                            <td>@sp.bm</td>
+                                            <td>@sp.mc</td>
+                                            <td data-type="pay_wx_mch_id_child">@(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_mch_id_child").parmvalue)</td>
+                                            <td data-type="pay_wx_is_use" class="text-cc">
+                                                @if (pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_is_use").parmvalue == "0")
+                                                {
+                                                    <div class="bookmark no"><p>未启用</p></div>
+                                                    @*<i class="fa fa-times "></i>*@
+                                                }
+                                                else
+                                                {
+                                                    <div class="bookmark"><p>已启用</p></div>
+                                                    @*<i class="fa fa-check"></i>*@
+                                                }
+                                            </td>
+                                            <td class="list-operate">
+                                            	<div class="">
+                                                            <div class="second-height-operate">
+                                                @if (pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_is_use").parmvalue == "0")
+                                                {
+                                                    <a class="btn btn-primary blue-bgb" href="javascript:;" data-val="1" data-parmcode="pay_wx_is_use" onclick="app.payconfig.stop('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_is_use").id',this)" @(isYanshi?"disabled":"") >启用</a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-primary blue-bgb" data-parmcode="pay_wx_is_use" data-val="0" href="javascript:;" onclick="app.payconfig.stop('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_is_use").id',this)" @(isYanshi?"disabled":"")>停用</a>
+                                                }
+                                                <a class="btn btn-primary blue-bgb" data-toggle="button" data-parmcode="pay_wx_mch_id_child" href="javascript:;" onclick="app.payconfig.edit('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_mch_id_child").id',this)" @(isYanshi?"disabled":"")>编辑</a>
+@if (isYanshi)
+{
+    <label>演示帐号不允许操作</label>
+}
+                                                </div>
+                                                  </div>
+                                                
+                                            </td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                                               
+                                            }
+                            @if (flag_type == "4")
+                            {   
+                            	
+                                <h2 class="form_title"><span>支付宝支付配置</span></h2>
+                                <a target="_Blank" class="btn btn-primary blue-bgb mar-b15" href="http://form.mikecrm.com/ZeGnEU">申请开通支付宝支付</a>
+                            	
+                                <table class="table bor-c2">
+                                	<thead>
+                                    <tr>
+                                    	<th table-p-l-sm table-p-r-xsm-fixed>序号</th>
+                                        <th>门店编号</th>
+                                        <th>门店名称</th>
+                                        <th>商户号</th>
+                                        <th>支付宝门店号</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+
+                                    @{ int index = limit * pageIndex + 1;}
+
+                                    @foreach (var sp in shoplist.OrderBy(a => a.bm))
+                                    {
+                                        
+                                        <tr>
+                                        	<td class="text-c">@(index++)</td>
+                                            <td>@sp.bm</td>
+                                            <td>@sp.mc</td>
+                                            <td data-type="pay_alipay_partner" data-id="@(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_partner").id)"><label>@(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_partner").parmvalue)</label>
+                                            </td>
+                                            <td data-type="pay_alipay_store_id" data-id="@(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_store_id").id)">
+                                                <label>@(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_store_id").parmvalue)</label>
+                                            </td>
+                                            <td data-type="pay_alipay_is_use" class="text-cc">
+                                                @if (pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_is_use").parmvalue == "0")
+                                                {
+                                                    @*<i class="fa fa-times"></i>*@
+                                                    <div class="bookmark no"><p>未启用</p></div>
+                                                }
+                                                else
+                                                {
+                                                    @*<i class="fa fa-check"></i>*@
+                                                    <div class="bookmark"><p>已启用</p></div>
+                                                    
+                                                }
+                                            </td>
+                                            <td class="list-operate">
+                                            	<div class="">
+                                                            <div class="second-height-operate">
+                                                @if (pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_is_use").parmvalue == "0")
+                                                {
+                                                    <a class="btn btn-primary blue-bgb"  data-toggle="button" href="javascript:;" data-val="1" data-parmcode="pay_alipay_is_use" onclick="app.payconfig.stop('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_is_use").id',this)" @(isYanshi?"disabled":"")>启用</a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-primary blue-bgb"  data-toggle="button" data-parmcode="pay_alipay_is_use" data-val="0" href="javascript:;" onclick="app.payconfig.stop('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_is_use").id',this)" @(isYanshi?"disabled":"")>停用</a>
+                                                }
+
+                                                <a class="btn btn-primary blue-bgb"  data-toggle="button" data-parmcode="pay_alipay_partner,pay_alipay_store_id" href="javascript:;" onclick="app.payconfig.edit('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_partner").id',this,'@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_store_id").id')" @(isYanshi?"disabled":"")>编辑</a>
+                                                @if (isYanshi)
+                                                {
+                                                    <label style="">演示帐号不允许操作</label>
+                                                } 
+                                               
+                                                    </div>
+                                                 </div>
+                                            </td>
+                                        </tr>
+
+                                    }
+                                </table>
+                            }
+                        </div>
+                        <footer class="panel-footer col-lg-12">
+                            <div class="col-jz">
+                                <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none fl"></ul>
+                                <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                                @*<button type="submit" class="btn w-xs btn-info" id="btn_update_payconfig" data-loading-text="正在提交...">确定</button>&nbsp;&nbsp;*@
+                                <input class="btn w-xs btn-default fl" type="button" value="取消" onclick="$.fn.menuTab.load({
+    url: '/paytype/list', 'title': '支付方式', id: 'paytype/list', nocache: '0'
+}); $.DHB.close('payconfig/list');">
+                            </div>
+                        </footer>
+
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var $tab = $(_);
+        $tab.find('#status').on('change', function () {
+            if ($tab.find('#status').val()) {
+                $tab.find('.hide-area').hide();
+            } else {
+                $tab.find('.hide-area').show();
+            }
+        })
+
+        $tab.find('.hide-btn').on('click', function () {
+            var flag = this.checked;
+            app.search.do_search_client_client(this);
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    app.payconfig = app.payconfig || {};
+    app.payconfig.flag_type = "@flag_type";
+    //编辑
+    app.payconfig.edit = function (id, obj,id1) {
+        var _obj = $(obj);
+        var data_parmcode = _obj.attr("data-parmcode");
+        if (app.payconfig.flag_type==="5") {
+            var td = _obj.parents("tr").find("td[data-type=" + data_parmcode + "]");
+            var tdval = td.text();
+            var _input = $("<input type='text'/>");
+            _input.val(tdval.trim());
+            td.html("");
+            _input.appendTo(td);
+        } else if (app.payconfig.flag_type === "4") {
+            var arr = data_parmcode.split(",");
+            var tr = _obj.parents("tr");
+            for (var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                var td = tr.find("td[data-type=" + item + "]");
+                var tdval = td.text();
+                var _input = $("<input type='text'/>");
+                _input.val(tdval.trim());
+                td.html("");
+                _input.appendTo(td);
+            }
+        }
+        _obj.text("保存");
+        _obj.attr("onclick", "app.payconfig.save('" + id + "',this,'edit')");
+    }
+    //开通操作
+    app.payconfig.open = function (id, obj) {
+        var _obj = $(obj);
+        var data_parmcode = _obj.attr("data-parmcode");
+        var td = _obj.parents("tr").find("td[data-type=" + data_parmcode + "]");
+        var tdval = td.text();
+        var _input = $("<input type='text'/>");
+        _input.val(tdval);
+        td.html("");
+        _input.appendTo(td);
+        _obj.text("保存");
+        _obj.attr("onclick", "app.payconfig.save('" + id + "',this,'open')");
+    }
+    //保存操作
+    app.payconfig.save = function (id, obj, op,id1) {
+        var _obj = $(obj); 
+        var options = {
+            beforeSend: function (XHR) {
+            },
+            success: function (ret) { 
+                if (ret.status === "success") {
+                    $.DHB.message({ 'content': "保存成功", 'time': 1000, 'type': 's' });
+                    app.payconfig.save_success(id, obj);
+                } else {
+                    $.DHB.message({ 'content': ret.Message, 'time': 1000, 'type': 's' });
+                }
+            }
+        };
+        if (app.payconfig.flag_type==="5") {
+            var val = _obj.parents("tr").find("input").val();
+            if (val != null && val.length > 0) {
+                options.url = '/payconfig/edit';
+                options.data = { id: id, parmvalue: val };
+            } else {
+                $.DHB.message({ 'content': "请输入内容", 'time': 1000, 'type': 'i' });
+                _obj.parents("tr").find("input").focus();
+            }
+        } else if (app.payconfig.flag_type === "4") {
+            var data_parmcode = _obj.attr("data-parmcode");
+            var arr = data_parmcode.split(",");
+            var data = [];
+            for (var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                var td = _obj.parents("tr").find("td[data-type=" + item + "]");
+                var id = td.attr("data-id");
+                var val = td.find("input").val();
+                data.push({ id: id, parmvalue: val.trim() });
+            }
+            options.url = '/payconfig/editlist';
+            options.data = { models: JSON.stringify(data) }
+        }
+        options.type = "POST";
+        options.dataType = 'json';
+        var _parthner = _obj.parents('tr').find('td[data-type=pay_alipay_partner] input').val();
+        var _stroeid = _obj.parents('tr').find('td[data-type=pay_alipay_store_id] input').val();
+        var val = _obj.siblings('a').attr("data-val");
+        if (val == "0" && _parthner != "" && _stroeid != "") {
+            //cy.http.Post(options);
+            app.httpAjax.post(options);
+        }else if(val=="1"){
+            //cy.http.Post(options);
+            app.httpAjax.post(options);
+        } else {
+            $.DHB.message({ 'content': '启用状态下商户号/支付宝门店号不能为空。', 'type': 'i' });
+        }
+        
+    }
+    //保存成功后的操作
+    app.payconfig.save_success = function (id, obj) {
+        var _obj = $(obj);
+        if (app.payconfig.flag_type==="5") {
+            var data_parmcode = _obj.attr("data-parmcode");
+            var td = _obj.parents("tr").find("td[data-type=" + data_parmcode + "]");
+            var val = td.find("input").val();
+            td.find("input").remove();
+            td.append("<label>" + val + "</label>");
+        }
+        else if (app.payconfig.flag_type === "4") {
+            var data_parmcode = _obj.attr("data-parmcode");
+            var arr = data_parmcode.split(",");
+            for (var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                var td = _obj.parents("tr").find("td[data-type=" + item + "]");
+                var val = td.find("input").val();
+                td.find("input").remove();
+                td.append("<label>" + val + "</label>");
+            }
+        }
+        _obj.text("编辑");
+        _obj.attr("onclick", "app.payconfig.edit('" + id + "',this)");
+    }
+    //停用操作
+    app.payconfig.stop = function (id, obj) {
+        
+        var _obj = $(obj);
+        var val = _obj.attr("data-val");
+        var _parthner = _obj.parents('tr').find('td[data-type=pay_alipay_partner] label').html();
+        var _stroeid = _obj.parents('tr').find('td[data-type=pay_alipay_store_id] label').html();
+        //console.log(_parthner);
+        var options = {
+            url: '/payconfig/edit',
+            data: {
+                id: id,
+                parmvalue: val
+            },
+            datatype: 'json',
+            type:'POST',
+            beforeSend: function (XHR) {
+            },
+            success: function (ret) {
+                if (ret.status === "success") {
+                    $.DHB.message({ 'content': "操作成功", 'time': 1000, 'type': 's' });
+                    app.payconfig.stop_success(id, obj);
+                } else {
+                    $.DHB.message({ 'content': ret.Message, 'time': 1000, 'type': 's' });
+                }
+            }
+        }; 
+        if (val == "1" && _parthner != "" && _stroeid !="") { 
+            //cy.http.Post(options);
+            app.httpAjax.post(options)
+        } else if (val == "0") { 
+            //cy.http.Post(options);
+            app.httpAjax.post(options)
+        } else {
+                $.DHB.message({ 'content':'启用状态下商户号/支付宝门店号不能为空。','type':'i'});
+        }
+       
+       
+    }
+    //停用成功后操作
+    app.payconfig.stop_success = function (id, obj) {
+        var _obj = $(obj);
+        var _nextTdHtml = "";
+        var val = _obj.attr("data-val");
+        var data_parmcode = _obj.attr("data-parmcode");
+        if (val === "0") {
+            //_nextTdHtml = "<i class='fa fa-times'></i>";
+            _nextTdHtml = '<div class="bookmark no"><p>未通过</p></div>';
+            _obj.attr("data-val", "1");
+            _obj.text("启用");
+        } else if (val === "1") {
+            //_nextTdHtml = "<i class='fa fa-check'></i>";
+            _nextTdHtml = '<div class="bookmark"><p>已通过</p></div>';
+            _obj.attr("data-val", "0");
+            _obj.text("停用");
+        }
+        var td = _obj.parents("tr").find("td[data-type=" + data_parmcode + "]");
+        td.html(_nextTdHtml);
+    }
+</script>  
+@*添加css*@
+<link href="../../static/css/amend.css" rel="stylesheet" />

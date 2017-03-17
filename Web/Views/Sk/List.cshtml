@@ -1,0 +1,636 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Td;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+
+
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Td_Sk_1_QueryModel>;
+
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isStop = actionlist.Any(l => l.ToLower() == "stop");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var isCopy = actionlist.Any(l => l.ToLower() == "copy");
+    var isDetail = actionlist.Any(l => l.ToLower() == "detail");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isSh = actionlist.Any(l => l.ToLower() == "sh");
+    string sort = ViewData["sort"].ToString();
+    var selectListShop = (ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>) ?? new List<Tb_User_ShopWithShopMc>();
+    var userKhList = (ViewData["userKhList"] as List<Tb_Kh>) ?? new List<Tb_Kh>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+    string show_shop_version = ViewData["show_shop_version"] == null ? "" : ViewData["show_shop_version"].ToString();
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="sk/list"]').attr({ controller: 'sk', action: 'list' });
+        app.c.public_data['sk/list'] = app.c.public_data['sk/list'] || {};
+        app.c.public_data['sk/list']['once'] = false;
+        app.sk = app.sk || {};
+    });
+</script>
+
+<link href="~/static/js/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" />
+
+
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        收款管理
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['sk/list'] = app.c.public_data['sk/list'] || {};
+    app.c.public_data['sk/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['sk/list']['threemenu'] === false) {
+            app.c.public_data['sk/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/sk/list">
+                                    <div class="col-xs-10 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <!-- 内容搜索 -->
+
+                                                @if (show_shop_version == "1")
+                                                {
+                                                    <div class="pull-right m-r-sm" style="margin-top:7px">
+
+
+
+                                                        <select id="id_shop" name="id_shop" class="form-control input-sm box-shawn user-input search-result select2" style="width:115px;" onmouseenter="app.search.search_sk_enter(this);" onmouseleave=" app.search.search_sk_leave(this);" onchange=" app.search.do_search_sk_list(this);">
+                                                            <option value="">全部收款门店</option>
+                                                            @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                            {
+                                                                <option value="@item.id_shop">@item.mc</option>
+                                                            }
+                                                        </select>
+
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="pull-right m-r-sm dis-no" style="margin-top:7px">
+                                                        <select id="id_shop" name="id_shop" class="form-control input-sm box-shawn user-input search-result select2" style="width:115px;" onmouseenter="app.search.search_sk_enter(this);" onmouseleave=" app.search.search_sk_leave(this);" onchange=" app.search.do_search_sk_list(this);">
+                                             
+                                                            @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                            {
+                                                                <option value="@item.id_shop">@item.mc</option>
+                                                            }
+                                                        </select>
+
+                                                    </div>
+                                                }
+
+
+
+                                                <div class="pull-right m-r-sm" style="margin-top:7px">
+                                                    <select id="id_kh" name="id_kh" class="form-control input-sm box-shawn user-input search-result select2" style="width:95px;" onmouseenter="app.search.search_sk_enter(this);" onmouseleave="app.search.search_sk_leave(this);" onchange="app.search.do_search_sk_list(this);">
+                                                        <option value="">全部客户</option>
+                                                        @foreach (var item in userKhList.OrderBy(d => d.rq_create))
+                                                        {
+                                                            <option value="@item.id">@item.mc</option>
+                                                        }
+                                                    </select>
+                                                </div>
+
+                                                <div class="pull-right m-r-sm" style="margin-top:7px">
+                                                    <div class="btn-group">
+                                                        <input type="hidden" name="start_time" id="start_time" value="">
+                                                        <button type="button" class="btn btn-default btn-sm m-l-none text-left" onclick="app.search.wdatepicker_sk_list(this);" title="开始时间" data-title="开始时间" data-field="start_time" data-type="start" style="width:80px;">开始时间</button>
+                                                        <button type="button" class="btn btn-default disabled btn-sm"><i class="glyphicon glyphicon-calendar" style="min-width: 7%;"></i></button>
+                                                        <button type="button" class="btn btn-default btn-sm text-left" onclick="app.search.wdatepicker_sk_list(this);" data-field="start_time" data-type="end" data-position="" style="width:80px;" title="结束时间">结束时间</button>
+                                                        <input type="hidden" name="start_time_end" id="start_time_end" value="">
+                                                    </div>
+                                                </div>
+
+                                                <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                    <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="text" value="" onkeypress="app.search.trigger_search_sk_list(event);" class="form-control input-sm search-h inline v-middle search-result search" name="keyword" id="keyword" style="width: 250px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="单号/经办人/备注" ondblclick="app.search.search_item_clear_sk_list(this);" /><span><button type="button" onclick="app.search.do_search_sk_list(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span>
+                                                        <span onclick="app.search.search_item_clear_sk_list(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;">
+                                                            <i class="fa fa-times-circle"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            app.c.public_data['sk/list'] = app.c.public_data['sk/list'] || {};
+                                            app.c.public_data['sk/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'sk/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' + currentSearch + '===false){app.search.search_sk_list();' + currentSearch + '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            app.search.search_sk_list = function () {
+                                                app.c.public_data['sk/list'] = app.c.public_data['sk/list'] || {};
+                                                app.c.public_data['sk/list']['_row_total_'] = '@pageList.ItemCount';
+                                                app.c.public_data['sk/list']['_page_size_'] = '@pageList.PageSize';
+                                                app.c.public_data['sk/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                app.search.do_search_pagination_sk_list();
+                                            }
+
+
+                                            app.search.trigger_search_sk_list = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_sk_list();
+                                                    event.preventDefault();
+                                                }
+                                            }
+
+                                            //查询
+                                            app.search.do_search_sk_list = function (el, isExport) {
+                                                isExport = isExport || 0;
+                                                var v = $(_ + ".filter-form").serialize();
+                                                var url = '/sk/list?_search_=1&' + v;
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    url = $.DHB.U(url);
+                                                    window.location.href = url;
+                                                }
+                                                else {
+                                                    var options = {
+                                                        url: $.DHB.U(url),
+                                                        datatype: 'html',
+                                                        beforeSend: function () {
+                                                            $.DHB.showButterbar();
+                                                        },
+                                                        callback: function (data, textStatus, jqXHR) {
+                                                            if ($('#sk-list-list-fresh-box', _).length > 0) {
+                                                                $('#sk-list-list-fresh-box', _).html(data);
+                                                            }
+                                                            var curSearchcallback = 'app.sk.list_search_sk_callback';
+                                                            var curListcallback = 'app.sk.list_listready';
+                                                            eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                                                            eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                            app.search.do_search_pagination_sk_list();
+                                                        },
+                                                        complete: function (XHR, TS) {
+                                                            $.DHB.closeButterbar();
+                                                        }
+                                                    };
+                                                    cy.http.Get(options);
+                                                }
+                                                return false;
+                                            };
+
+                                            //分页
+                                            app.search.do_search_pagination_sk_list = function () {
+                                                $.DHB.func.pagination({
+                                                    module_name: 'Manager',
+                                                    controller_name: 'sk',
+                                                    action_name: 'list',
+                                                    ready_once: false
+                                                });
+                                            }
+
+
+                                            app.search.do_search_option_sk_list = function (el) {
+                                                if ($(el).attr('class') != '') {
+                                                    $(el)
+                                                        .find('span')
+                                                        .each(function () {
+                                                            if ($(this).attr('class') == '') {
+                                                                $(this).attr('class', 'order-active');
+                                                            } else {
+                                                                $(this).attr('class', '');
+                                                            }
+                                                        });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el)
+                                                        .parents('.btn-group')
+                                                        .find('input:eq(0)')
+                                                        .val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el)
+                                                    .parents('.btn-group')
+                                                    .find('button span:eq(0)')
+                                                    .html(selectA.html());
+
+                                                app.search.do_search_sk_list();
+                                            }
+
+
+                                            app.search.search_sk_enter = function (el) {
+                                                if (app.c.public_data['sk/list']['search_all'] === false) {
+                                                    $(el).parents('.search-box-container').find("div").css({ "right": "0px", "left": "auto" });
+                                                    $(el)
+                                                        .parents('.search-box-container')
+                                                        .find(".bootstrap-select ul.dropdown-menu")
+                                                        .each(function () {
+                                                            var ts = $(this).find('li:first() span:first()');
+                                                            ts.text('全部');
+                                                        });
+                                                    app.c.public_data['sk/list']['search_all'] = true;
+                                                }
+                                            }
+
+
+                                            app.search.search_sk_leave = function (el) {
+                                            }
+
+                                            app.search.search_client_clear_sk_list = function (el) {
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_sk_list();
+                                            }
+
+
+                                            app.search.wdatepicker_sk_list = function (el) {
+                                                var booStart = $(el).data('type') == 'start';
+                                                var option = {};
+                                                option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                                option['onpicked'] = function () {
+                                                    $(el)
+                                                        .text($dp.cal.getP('y') +
+                                                            '-' +
+                                                            $dp.cal.getP('M') +
+                                                            '-' +
+                                                            $dp.cal.getP('d'));
+                                                    if (booStart) {
+                                                        setTimeout(function () {
+                                                            $(el)
+                                                                .parent()
+                                                                .find('[data-type="end"]')
+                                                                .data('position', '1')
+                                                                .click();
+                                                        },
+                                                            5000);
+                                                    }
+                                                    app.search.do_search_sk_list();
+                                                };
+
+                                                if (booStart) {
+                                                    option['maxDate'] =
+                                                        '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                                } else {
+                                                    option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                    if ($(el).data('position') == '1') {
+                                                    }
+                                                }
+                                                option['oncleared'] = function () {
+                                                    $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                    app.search.do_search_sk_list();
+                                                };
+
+                                                WdatePicker(option);
+                                            }
+
+
+                                            app.search.search_item_clear_sk_list = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                app.search.do_search_sk_list();
+                                            }
+                                        </script>
+                                    </div>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="@sort" />
+                                </form>
+                            </div>
+                        </div>
+                        @if (isAdd)
+                        {
+                            <div class="col-xs-2 pull-left">
+                                <button class="btn m-t-12 m-b-sm btn-sm btn-info btn-addon w-xs" style="float:left" onclick="app.sk.add(this)" title="新增收款" href="javascript:void(0);"> <span class="fa fa-plus btn_icon"></span>新增收款 </button>
+                            </div>
+                        }
+                    </div>
+                    <!--数据表格-->
+                    @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                    <div id="sk-list-list-fresh-box" class="table_list table_max_h">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                                        序号
+                                    </th>
+                                    <th width="110" class="text-center">业务日期</th>
+                                    <th width="130">单据编号</th>
+                                    @if (show_shop_version == "1")
+                                    {
+                                        <th width="200">门店</th>
+                                    }
+                                    <th width="100">客户名称</th>
+                                    <th width="110">经办人</th>
+                                    <th width="110">总金额</th>
+                                    <th width="110">优惠金额</th>
+                                    <th width="110">收款金额</th>
+                                    <th width="110">预收款</th>
+                                    <th width="110">备注</th>
+                                    <th class="text-center width200">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dwlist-main-tbody">
+                                @{
+                                    if (pageList == null || pageList.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="@string.Format(show_shop_version == "1"?"12":"11")" align="center">
+                                                <img src="~/static/images/nodata.png" class="table_nodata">
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        var list = pageList.Items;
+                                        if (list != null && list.Any())
+                                        {
+                                            int index = 1;
+                                            foreach (var item in list)
+                                            {
+                                                <tr id="row-sk-id-@item.id" class="tr-status-finished">
+                                                    <td class="text-center">
+                                                        @(index++)
+                                                    </td>
+                                                    <td class="text-center">@string.Format("{0:yyyy-MM:dd HH:mm:ss}", item.rq_create)</td>
+
+                                                    <td>@item.dh</td>
+                                                    @if (show_shop_version == "1")
+                                                    {
+                                                        <td>@item.shop_name</td>
+                                                    }
+                                                    <td>@item.kh_name</td>
+                                                    <td class="text-center">@item.jbr_name</td>
+                                                    <td class="align_right">@item.je_total.Digit((int)digit["je_digit"])</td>
+                                                    <td class="align_right">@item.je_yh_mxtotal.Digit((int)digit["je_digit"])</td>
+                                                    <td class="align_right">@item.je_sk_mxtotal.Digit((int)digit["je_digit"])</td>
+                                                    <td class="align_right">@item.je_pre.Digit((int)digit["je_digit"])</td>
+                                                   
+
+                                                    <td>@item.bz</td>
+
+                                                    <td class="list-operate">
+                                                        <div class="look-out1">
+                                                            <div class="second-height-operate width200">
+
+                                                                @if (isEdit && item.flag_sh == 0)
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.sk.edit('@item.id',this)" title="编辑"></a>
+                                                                }
+
+                                                                @*@if (isCopy)
+                                                                    {
+                                                                        <a class="bg-state bg-state-info fa fa-copy" href="javascript:;" onclick="app.sk.copy('@item.id',this)" title="复制"></a>
+                                                                    }*@
+
+
+                                                                @if (isStop)
+                                                                {
+                                                                    if (item.flag_cancel == 0 && item.flag_sh == 1)
+                                                                    {
+                                                                        @*<a class="bg-state bg-state-info fa fa-ban" href="javascript:;" onclick="app.sk.stop('@item.id',this)" title="作废"></a>*@
+                                                                    }
+                                                                    else if (item.flag_cancel == 1 && item.flag_sh == 1)
+                                                                    {
+                                                                        @*<a class="bg-state bg-state-info fa fa-ban" onclick="javascript: void (0);" title="已作废"></a>*@
+                                                                    }
+                                                                }
+
+
+                                                                @if (isDel)
+                                                                {
+                                                                    if (item.flag_sh == 0)
+                                                                    {
+                                                                        <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.sk.del('@item.id',this)" title="删除"></a>
+                                                                    }
+                                                                }
+
+                                                                @if (isSh)
+                                                                {
+                                                                    if (item.flag_sh == 0)
+                                                                    {
+                                                                        <a class="bg-state bg-state-info fa fa-user" href="javascript:;" onclick="app.sk.sh('@item.id',this)" title="审核"></a>
+                                                                    }
+                                                                }
+
+
+
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--页脚-->
+                    <footer class="panel-footer">
+                        <div class="dropup d-i-b" style="position: relative">
+                        </div>&nbsp;
+                        <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //var catenestable = null;
+    app.sk = app.sk || {};
+
+    //内页加载完成
+    app.sk.list_ready = function () {
+        //Init Sort
+        app.sk.list_search_sk_callback(null, null);
+    };
+
+    //分页回调
+    app.sk.list_pagination_callback = function (data, textStatus, idx, jq) {
+        app.sk.list_search_sk_callback(data, textStatus);
+      
+    };
+
+    //查询回调
+    app.sk.list_search_sk_callback = function (data, textStatus) {
+        var sort_array = $('.table a[data-sort]', _);
+        var $current_sort = ($('#hid_sort', _).val().toLowerCase()).split(' ', 2);       //这是当前排序
+
+        //绑定UI
+        sort_array.each(function (index, obj) {
+            var $current = $(obj);
+            if ($current.attr('data-sort') === $current_sort[0]) {
+                $current.attr('data-dir', $current_sort[1]);
+                if ($current_sort[1] === 'asc')
+                    $current.append(app.sort_icon.asc);      //升序
+                else
+                    $current.append(app.sort_icon.desc);     //降序
+            }
+            else {
+                $current.append(app.sort_icon.sort);
+            }
+        });
+
+        //绑定事件
+        sort_array.off('click').on('click', function (e) {
+            var e = e || event;
+            var $current = $(e.target);        //获取当前点击派序列
+            var _dir = 'desc';
+            if ($.trim($current.attr('data-dir')).length == 0 || $.trim($current.attr('data-dir')) === 'asc') {
+                $current.attr('data-dir', _dir);
+            }
+            else {
+                _dir = 'asc';
+                $current.attr('data-dir', _dir);
+            }
+            $('#hid_sort', _).val($current.attr('data-sort') + ' ' + _dir);
+            app.search.do_search_sk_list();
+        });
+    };
+
+
+    //编辑收款
+    app.sk.edit = function (id, obj) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/sk/add?type=edit&id=' + id, 'title': '编辑收款', id: 'sk/add', nocache: '0' });
+    };
+
+
+    //新增收款
+    app.sk.add = function (obj) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/sk/add', 'title': '新增收款', id: 'sk/add', nocache: '0' });
+    };
+
+    //复制
+    app.sk.copy = function (id, obj) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/sk/add?id=' + id, 'title': '复制收款', id: 'sk/add', nocache: '0' });
+    };
+
+    //详细
+    app.sk.detail = function (id, obj) {
+        $.fn.menuTab.load({ url: '/sk/detail?id=' + id, 'title': '收款管理', id: 'sk/list', nocache: '0' });
+    };
+
+    //作废
+    app.sk.stop = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定作废吗?", function () {
+            $.post($.DHB.U('sk/stop'),
+            {
+                id: id
+            },
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('sk/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                }, 'json');
+        });
+    };
+
+    //删除
+    app.sk.del = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定删除吗?", function () {
+            $.post($.DHB.U('sk/delete'),
+            {
+                id: id
+            },
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('sk/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                }, 'json');
+        });
+    };
+
+
+    //审核
+    app.sk.sh = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定审核吗?", function () {
+            $.post($.DHB.U('sk/sh'),
+            {
+                id: id
+            },
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('sk/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                }, 'json');
+        });
+    };
+
+
+    
+
+
+
+
+
+
+
+
+</script>  

@@ -1,0 +1,157 @@
+﻿@{
+    Layout = null;
+}
+<div class="wrap-tab-contentbox" contentid="manager/profileinfo" controller="manager" action="profileinfo" style="display:block; min-height: 842px;">
+    <div class="contentbox-header">
+        <a class="" title="我的账号" onclick="$.DHB.refresh();">我的账号</a>
+    </div>
+    <div class="col">
+        <div class="panel panel-default">
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form method="post" action="/index.php?module=Manager&amp;controller=Accounts&amp;action=saveSummary" id="update_summary_form">
+                            <div class="fixed-input-group w-full">
+                                <h2>账号信息</h2>
+                                <div class="input-item-2 clearfix">
+                                    <div style="width: 100%">
+                                        <label class="item-2-label">
+                                            <span>登录账号</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            p1040                                        <span class="state state-warn">系统管理员</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix">
+                                    <div style="width: 100%">
+                                        <label class="item-2-label">
+                                            <span>身份</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            老板
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix">
+                                    <div style="width: 100%">
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>姓名</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input type="text" name="staff_name" class="form-control user-input f-l {required:true,messages:{required:'请输入姓名'}}" value="True_p1040">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix">
+                                    <div style="width: 100%">
+                                        <label class="item-2-label">
+                                            <span>职位</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input type="text" name="title" class="form-control user-input f-l" value="">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix">
+                                    <div style="width: 100%">
+                                        <label class="item-2-label">
+                                            <span>部门</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            技术部
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix">
+                                    <div class="w-full">
+                                        <label class="item-2-label" style="margin-top: -65px;">
+                                            <span>备注</span>
+                                        </label>
+                                        <label class="m-l-xs1 h-auto">
+                                            <textarea class="form-control user-input f-l w-400" name="about" cols="30" rows="4" style="padding-top: 5px"></textarea>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix">
+                                    <div class="w-full">
+                                        <label class="item-2-label ">
+                                            <em class="tag">* </em><span>手机号</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input type="text" name="mobile" class="form-control user-input f-l {required:true, isMobile:true, messages:{required:'请输入手机号'}}" placeholder="该手机号码将用于找回密码" value="13366668888">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix">
+                                    <div class="w-full">
+                                        <label class="item-2-label">
+                                            <span>邮箱</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input type="text" name="email" class="form-control user-input f-l {email:true}" value="Dummy 211@dhb.hk">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix">
+                                    <div class="w-full">
+                                        <label class="item-2-label">
+                                            <span>QQ</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input type="text" name="qq" class="form-control user-input f-l {isQQ:true}" value="11223344">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="input-item-2 clearfix ">
+                                    <div class="showIcon w-full">
+                                        <label class="item-2-label">
+                                            <span>邀请码</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            M1MH9X
+                                        </label>
+
+                                        <label class="copy d-i-b  m-l-none" id="copy" style="position: relative;"><i class="icon-question tool iconImg" style="position: relative;"></i><div class="popover fade bottom in tool-box"><div class="arrow"></div><div class="popover-content"><p>每个公司管理端的员工都有一个专属的邀请码，客户在订货平台注册时，如果填写您的专属邀请码，则在后台可以查看到是</p><p>由你带来的客户，进而统计你的推广带客效果。</p></div></div></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box" style="width: 979px;">
+                                <button type="submit" class="btn w-xs btn-info m-l-none" data-loading-text="保存中..." id="btn_update_summary">确定</button>
+                                <button type="button" class="btn w-xs btn-default" onclick="$.DHB.close()">取消</button>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(function () {
+            var $fm = $("#update_summary_form", _);
+            var $btn = $("#btn_update_summary", _);
+
+            var $tab = $(_);
+
+            $tab.find('#btn_update_summary').unbind('click');
+
+            $tab.find('#btn_update_summary').off().on('click', function (event) {
+                // event.preventDefault();
+                $.DHB.checkForm('update_summary_form', function () {
+                    $btn.button("loading");
+                    submitForm($fm, $btn);
+                });
+            })
+
+            //排除浏览器缓存
+            function submitForm($fm, $btn) {
+                $.post($fm.attr('action'), $fm.serialize(), function (json) {
+                    $btn.button("reset");
+                    $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                }, 'json');
+            }
+        });
+    </script>
+</div>

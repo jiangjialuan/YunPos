@@ -1,0 +1,155 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as List<Tb_Pay_Config>;
+    pageList = pageList ?? new List<Tb_Pay_Config>();
+    var shoplist = ViewData["shoplist"] as List<Tb_User_ShopWithShopMc>;
+    var CurrentShopIds = ViewData["CurrentShopIds"] as List<string>;
+    CurrentShopIds = CurrentShopIds ?? new List<string>();
+    shoplist = shoplist.Where(a => CurrentShopIds.Any(i => i == a.id_shop)).ToList();
+    var payTypeList = ViewData["payTypeList"] as List<Ts_Flag>;
+    payTypeList = payTypeList ?? new List<Ts_Flag>();
+    shoplist = shoplist ?? new List<Tb_User_ShopWithShopMc>();
+    var id_shop = ViewData["id_shop"] + "";
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var flag_type = ViewData["flag_type"] + "";
+    var limit = 10;
+    int.TryParse(ViewData["_page_size_"] + "", out limit);
+    var pageIndex = 0;
+    int.TryParse(ViewData["_current_page_"] + "", out pageIndex);
+}
+<div id="payconfig-list-list-fresh-box" class="fixed-input-group table_list table_max_h col-xs-12">
+    @if (flag_type == "5")
+    {
+        <h2>微信支付配置</h2>
+        <a target="_Blank" class="btn btn-primary blue-bgb mar-b15" href="http://form.mikecrm.com/ZeGnEU">申请开通微信支付</a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th table-p-l-sm table-p-r-xsm-fixed>序号</th>
+                    <th>门店编号</th>
+                    <th>门店名称</th>
+                    <th>子商户号</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+
+            <tbody id="goodslist-main-tbody">
+                @{ int index = limit * pageIndex + 1;}
+
+                @foreach (var sp in shoplist)
+                {
+
+
+                    <tr>
+                        <td class="text-c">@(index++)</td>
+                        <td>@sp.bm</td>
+                        <td>@sp.mc</td>
+                        <td data-type="pay_wx_mch_id_child">@(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_mch_id_child").parmvalue)</td>
+                        <td data-type="pay_wx_is_use" class="text-cc">
+                            @if (pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_is_use").parmvalue == "0")
+                            {
+                                @*<i class="fa fa-times "></i>*@
+                                <div class="bookmark no"><p>未启用</p></div>
+                            }
+                            else
+                            {
+                                @*<i class="fa fa-check"></i>*@
+                                <div class="bookmark"><p>已启用</p></div>
+                            }
+                        </td>
+                        <td class="list-operate">
+                            <div class="">
+                                <div class="second-height-operate">
+                                    @if (pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_is_use").parmvalue == "0")
+                                    {
+                                        <a class="btn btn-primary blue-bgb" href="javascript:;" data-val="1" data-parmcode="pay_wx_is_use" onclick="app.payconfig.stop('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_is_use").id',this)">启用</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-primary blue-bgb" data-parmcode="pay_wx_is_use" data-val="0" href="javascript:;" onclick="app.payconfig.stop('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_is_use").id',this)">停用</a>
+                                    }
+                                    <a class="btn btn-primary blue-bgb" data-toggle="button" data-parmcode="pay_wx_mch_id_child" href="javascript:;" onclick="app.payconfig.edit('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_wx_mch_id_child").id',this)">编辑</a>
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+    @if (flag_type == "4")
+    {
+
+        <h2 class="form_title"><span>支付宝支付配置</span></h2>
+        <a target="_Blank" class="btn btn-primary blue-bgb mar-b15" href="http://form.mikecrm.com/ZeGnEU">申请开通支付宝支付</a>
+
+        <table class="table bor-c2">
+            <thead>
+                <tr>
+                    <th table-p-l-sm table-p-r-xsm-fixed>序号</th>
+                    <th>门店编号</th>
+                    <th>门店名称</th>
+                    <th>商户号</th>
+                    <th>支付宝门店号</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+
+            @{ int index = limit * pageIndex + 1;}
+
+            @foreach (var sp in shoplist)
+            {
+
+                <tr>
+                    <td class="text-c">@(index++)</td>
+                    <td>@sp.bm</td>
+                    <td>@sp.mc</td>
+                    <td data-type="pay_alipay_partner" data-id="@(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_partner").id)">
+                        @(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_partner").parmvalue)
+                </td>
+                <td data-type="pay_alipay_store_id" data-id="@(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_store_id").id)">
+                    @(pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_store_id").parmvalue)
+                </td>
+                <td data-type="pay_alipay_is_use" class="text-cc">
+                    @if (pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_is_use").parmvalue == "0")
+                    {
+                        <div class="bookmark no"><p>未启用</p></div>
+                        @*<i class="fa fa-times"></i>*@
+                    }
+                    else
+                    {
+                        <div class="bookmark"><p>已启用</p></div>
+                        @*<i class="fa fa-check"></i>*@
+                    }
+                </td>
+                <td class="list-operate">
+                    <div class="">
+                        <div class="second-height-operate">
+                            @if (pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_is_use").parmvalue == "0")
+                            {
+                                <a class="btn btn-primary blue-bgb" data-toggle="button" href="javascript:;" data-val="1" data-parmcode="pay_alipay_is_use" onclick="app.payconfig.stop('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_is_use").id',this)">启用</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-primary blue-bgb" data-toggle="button" data-parmcode="pay_alipay_is_use" data-val="0" href="javascript:;" onclick="app.payconfig.stop('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_is_use").id',this)">停用</a>
+                            }
+
+                            <a class="btn btn-primary blue-bgb" data-toggle="button" data-parmcode="pay_alipay_partner,pay_alipay_store_id" href="javascript:;" onclick="app.payconfig.edit('@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_partner").id',this,'@pageList.FirstOrDefault(p => p.id_shop == sp.id_shop && p.parmcode == "pay_alipay_store_id").id')">编辑</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            }
+        </table>
+    }
+</div>

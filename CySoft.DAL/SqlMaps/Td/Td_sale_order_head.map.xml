@@ -1,0 +1,687 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Td_Sale_Order_Head"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Td_Sale_Order_Head" type="CySoft.Model.Td.Td_Sale_Order_Head,CySoft.Model" />
+    <typeAlias alias="Td_Sale_Order_Head_Query" type="CySoft.Model.Td.Td_Sale_Order_Head_Query,CySoft.Model" />
+    <typeAlias alias="Query_Pay_Total" type="CySoft.Model.Other.Query_Pay_Total,CySoft.Model" />
+    <typeAlias alias="Td_Report" type="CySoft.Model.Td.Td_Report,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="dhList">
+          db.[dh] in <iterate property="dhList" conjunction="," open="(" close=")">#dhList[]#</iterate>
+        </isNotNull>
+
+        <isNotNull prepend="and" property="flag_state_List">
+          db.[flag_state] in <iterate property="flag_state_List" conjunction="," open="(" close=")">#flag_state_List[]#</iterate>
+        </isNotNull>
+
+        <isNotNull prepend="and" property="dh">db.[dh]=#dh#</isNotNull>
+        <isNotNull prepend="and" property="not_dh">db.[dh] <![CDATA[ <> ]]> #not_dh#</isNotNull>
+        <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>
+        <isNotNull prepend="and" property="id_cgs">db.[id_cgs]=#id_cgs#</isNotNull>
+        <isNotNull prepend="and" property="flag_state">db.[flag_state]=#flag_state#</isNotNull>
+        <isNotNull prepend="and" property="not_flag_state">db.[flag_state]<![CDATA[ <> ]]> #not_flag_state#</isNotNull>
+        <isNotNull prepend="and" property="not_flag_state_Sale">head.[flag_state]<![CDATA[ <> ]]> #not_flag_state_Sale#</isNotNull>
+        <isNotNull prepend="and" property="flag_out">db.[flag_out]=#flag_out#</isNotNull>
+        <isNotNull prepend="and" property="flag_fh">db.[flag_fh]=#flag_fh#</isNotNull>
+        <isNotNull prepend="and" property="flag_delete">db.[flag_delete]=#flag_delete#</isNotNull>
+        <isNotNull prepend="and" property="not_flag_delete">db.[flag_delete]<![CDATA[ <> ]]>#not_flag_delete#</isNotNull>
+        <isNotNull prepend="and" property="id_user_bill">db.[id_user_bill]=#id_user_bill#</isNotNull>
+        <isNotNull prepend="and" property="rq_jh">db.[rq_jh]=#rq_jh#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_jh">Datediff(day,#start_rq_jh#,db.[rq_jh]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_jh">Datediff(day,db.[rq_jh],Convert(date,#end_rq_jh#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="je_hs">db.[je_hs]=#je_hs#</isNotNull>
+        <isNotNull prepend="and" property="je_pay">db.[je_pay]=#je_pay#</isNotNull>
+        <isNotNull prepend="and" property="je_payed">db.[je_payed]=#je_payed#</isNotNull>
+        <isNotNull prepend="and" property="flag_tj">db.[flag_tj]=#flag_tj#</isNotNull>
+        <isNotNull prepend="and" property="flag_invoice">db.[flag_invoice]=#flag_invoice#</isNotNull>
+        <isNotNull prepend="and" property="title_invoice">db.[title_invoice]=#title_invoice#</isNotNull>
+        <isNotNull prepend="and" property="content_invoice">db.[content_invoice]=#content_invoice#</isNotNull>
+        <isNotNull prepend="and" property="name_bank">db.[name_bank]=#name_bank#</isNotNull>
+        <isNotNull prepend="and" property="account_bank">db.[account_bank]=#account_bank#</isNotNull>
+        <isNotNull prepend="and" property="no_tax">db.[no_tax]=#no_tax#</isNotNull>
+        <isNotNull prepend="and" property="shr">db.[shr]=#shr#</isNotNull>
+        <isNotNull prepend="and" property="slv">db.[slv]=#slv#</isNotNull>
+        <isNotNull prepend="and" property="id_province">db.[id_province]=#id_province#</isNotNull>
+        <isNotNull prepend="and" property="id_city">db.[id_city]=#id_city#</isNotNull>
+        <isNotNull prepend="and" property="id_county">db.[id_county]=#id_county#</isNotNull>
+        <isNotNull prepend="and" property="zipcode">db.[zipcode]=#zipcode#</isNotNull>
+        <isNotNull prepend="and" property="address">db.[address]=#address#</isNotNull>
+        <isNotNull prepend="and" property="phone">db.[phone]=#phone#</isNotNull>
+        <isNotNull prepend="and" property="remark">db.[remark]=#remark#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create_ss">db.[rq_create]<![CDATA[ >= ]]>#start_rq_create_ss#</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create_ss">db.[rq_create]<![CDATA[ <= ]]>#end_rq_create_ss#</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_spfl">spfl.id=#id_spfl#</isNotNull>
+        <isNotNull prepend="and" property="cgs_level">cgs_level.id=#cgs_level#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create_forstatic">Datediff(day,#start_rq_create_forstatic#,head.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create_forstatic">Datediff(day,head.[rq_create],Convert(date,#end_rq_create_forstatic#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_gys_body">head.[id_gys]=#id_gys_body#</isNotNull>
+        <isNotNull prepend="and" property="id_spfl_father">(spfl.id=#id_spfl_father# or spfl.fatherId=#id_spfl_father#)</isNotNull>
+        <isNotNull prepend="and" property="year">year(db.[rq_create])=#year#</isNotNull>
+        <isNotNull prepend="and" property="month">month(db.[rq_create])=#month#</isNotNull>
+        <isNotNull prepend="and" property="day">day(db.[rq_create])=#day#</isNotNull>
+        <isNotNull prepend="and" property="start_flag_state">db.[flag_state]<![CDATA[ >= ]]>#start_flag_state#</isNotNull>
+        <isNotNull prepend="and" property="end_flag_state">db.[flag_state]<![CDATA[ <= ]]>#end_flag_state#</isNotNull>
+        <isNotNull prepend="and" property="id_cgs_sh">db.[id_cgs_sh]=#id_cgs_sh#</isNotNull>
+        <isNotNull prepend="and" property="flag_fd">db.[flag_fd]=#flag_fd#</isNotNull>
+        <!--分单表父级id-->
+        <isNotNull prepend="and" property="tsof_dh_father">tsof.[dh_father]=#tsof_dh_father#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[dh] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_id_gys">db.[id_gys]=#new_id_gys#</isNotNull>
+        <isNotNull prepend="," property="new_id_cgs">db.[id_cgs]=#new_id_cgs#</isNotNull>
+        <isNotNull prepend="," property="new_flag_state">db.[flag_state]=#new_flag_state#</isNotNull>
+        <isNotNull prepend="," property="new_flag_out">db.[flag_out]=#new_flag_out#</isNotNull>
+        <isNotNull prepend="," property="new_flag_fh">db.[flag_fh]=#new_flag_fh#</isNotNull>
+        <isNotNull prepend="," property="new_flag_delete">db.[flag_delete]=#new_flag_delete#</isNotNull>
+        <isNotNull prepend="," property="new_id_user_bill">db.[id_user_bill]=#new_id_user_bill#</isNotNull>
+        <isNotNull prepend="," property="new_rq_jh">db.[rq_jh]=#new_rq_jh#</isNotNull>
+        <isNotNull prepend="," property="new_je_hs">db.[je_hs]=#new_je_hs#</isNotNull>
+        <isNotNull prepend="," property="new_je_pay">db.[je_pay]=#new_je_pay#</isNotNull>
+        <isNotNull prepend="," property="new_je_payed">db.[je_payed]=#new_je_payed#</isNotNull>
+        <isNotNull prepend="," property="new_flag_tj">db.[flag_tj]=#new_flag_tj#</isNotNull>
+        <isNotNull prepend="," property="new_flag_invoice">db.[flag_invoice]=#new_flag_invoice#</isNotNull>
+        <isNotNull prepend="," property="new_title_invoice">db.[title_invoice]=#new_title_invoice#</isNotNull>
+        <isNotNull prepend="," property="new_content_invoice">db.[content_invoice]=#new_content_invoice#</isNotNull>
+        <isNotNull prepend="," property="new_name_bank">db.[name_bank]=#new_name_bank#</isNotNull>
+        <isNotNull prepend="," property="new_account_bank">db.[account_bank]=#new_account_bank#</isNotNull>
+        <isNotNull prepend="," property="new_no_tax">db.[no_tax]=#new_no_tax#</isNotNull>
+        <isNotNull prepend="," property="new_shr">db.[shr]=#new_shr#</isNotNull>
+        <isNotNull prepend="," property="new_slv">db.[slv]=#new_slv#</isNotNull>
+        <isNotNull prepend="," property="new_id_province">db.[id_province]=#new_id_province#</isNotNull>
+        <isNotNull prepend="," property="new_id_city">db.[id_city]=#new_id_city#</isNotNull>
+        <isNotNull prepend="," property="new_id_county">db.[id_county]=#new_id_county#</isNotNull>
+        <isNotNull prepend="," property="new_zipcode">db.[zipcode]=#new_zipcode#</isNotNull>
+        <isNotNull prepend="," property="new_address">db.[address]=#new_address#</isNotNull>
+        <isNotNull prepend="," property="new_phone">db.[phone]=#new_phone#</isNotNull>
+        <isNotNull prepend="," property="new_remark">db.[remark]=#new_remark#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+        <isNotNull prepend="," property="new_id_cgs_sh">db.[id_cgs_sh]=#new_id_cgs_sh#</isNotNull>
+        <isNotNull prepend="," property="new_flag_fd">db.[flag_fd]=#new_flag_fd#</isNotNull>
+		<isNotNull prepend="," property="searchValuebygys">and (isnull(gc.[alias_gys],'')like#searchValuebygys# or isnull(db.[dh],'')like#searchValuebygys# or isnull(gc.[alias_cgs],'')like#searchValuebygys#)</isNotNull>
+	  </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Td_sale_order_head]
+    </sql>
+
+    <sql id="Table_0">
+      <isNotNull property="Tb_province">Tb_Districts prov on db.id_province=prov.id</isNotNull>
+      <isNotNull property="Tb_city">Tb_Districts prov on db.id_city=prov.id</isNotNull>
+      <isNotNull property="Tb_county">Tb_Districts prov on db.id_county=prov.id</isNotNull>
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Order_Head">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[dh],db.[id_gys],db.[id_cgs],db.[flag_state],db.[flag_out],db.[flag_fh],db.[flag_delete],db.[id_user_bill],db.[rq_jh],db.[je_hs],db.[je_pay],db.[je_payed],db.[flag_tj],db.[flag_invoice],db.[title_invoice],db.[content_invoice],db.[name_bank],db.[account_bank],db.[no_tax],db.[shr],db.[slv],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[phone],db.[remark],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit]
+      from <include refid="Table"/> as db
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QuerycgsTotal" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) from(
+      select id_cgs from Td_sale_order_head db
+      <include refid="Where"/>
+      group by db.id_cgs) as t
+    </select>
+
+    <select id="QueryTotal" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as ordercount,sum(db.je_pay) as money from Td_sale_order_head db
+      <include refid="Where"/>
+    </select>
+
+    <select id="QueryReportbyDateCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      SELECT datediff(dd, #start_rq_create# , #end_rq_create# )+1 as val
+    </select>
+
+    <select id="QueryReportbyWeekCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1)
+      from (select row_number() over(order by Dateadd(wk,datediff(wk,0,weeks.times),6) desc) as rownumber,count(db.dh) as ordercount,count(distinct db.id_cgs) as customercount,isnull(sum(db.je_pay),0) as  money,
+      case when Datediff(day, #start_rq_create# ,Dateadd(wk,datediff(wk,0,weeks.times),0)) > -1  then Dateadd(wk,datediff(wk,0,weeks.times),0) else cast(convert(varchar(8),#start_rq_create#,23)+'01' as datetime) end
+      as Monday,
+      case when Datediff(day,Dateadd(wk,datediff(wk,0,weeks.times),6),Convert(date, #end_rq_create# )) > -1 then Dateadd(wk,datediff(wk,0,weeks.times),6)
+      else convert(varchar(10),GETDATE(),120) end as Sunday from
+      (select * from Td_sale_order_head db<include refid="Where"/>)
+      as db
+      right join
+      (select times=convert(varchar(10),dateadd(dd,number,#start_rq_create#),120)
+      from master..spt_values
+      where type='p'  and number <![CDATA[<= ]]> datediff(dd,#start_rq_create#,#end_rq_create#) and (datename(dw,convert(varchar(10),dateadd(dd,number,#start_rq_create#),120))
+      in ('星期一','星期日') or convert(varchar(10),dateadd(dd,number,#start_rq_create#),120)=convert(varchar(10),#start_rq_create#,120)
+      or convert(varchar(10),dateadd(dd,number,#start_rq_create#),120)=convert(varchar(10),GETDATE(),120))) as weeks on weeks.times=Dateadd(wk,datediff(wk,0,rq_create),6)
+      group by Dateadd(wk,datediff(wk,0,weeks.times),0),Dateadd(wk,datediff(wk,0,weeks.times),6)
+      ) as t
+    </select>
+
+    <select id="QueryReportbyMonthCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      SELECT count(1)val FROM master..spt_values where type = 'p' AND number <![CDATA[<=]]>datediff(m, #start_rq_create#,#end_rq_create#)
+    </select>
+    
+    <select id="QueryReportbyAreaCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1)
+      from (select row_number() over(order by prov.name asc) as rownumber,count(db.dh) as ordercount,count(db.id_cgs) as customercount,sum(db.je_hs) as  money,
+      prov.name as Area from
+      Td_sale_order_head db left join Tb_Districts prov on db.id_province=prov.id
+      <include refid="Where"/>
+    group by prov.name) as t
+  </select>
+    
+    <select id="QueryReportbySaleCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1)
+      from (select row_number() over(order by db.id_sku asc) as rownumber,count(db.dh) as ordercount,count(head.id_cgs) as customercount,sum(db.je_hs) as  money,
+      sp.mc+'【'+stuff(( select  ','+td.mc+':'+td.val  from (select expt.*,temp.mc from [dbo].[Tb_sp_expand] expt left join [dbo].[Tb_sp_expand_template] temp on temp.id=expt.id_sp_expand_template)as td
+      where td.id_sku=db.id_sku
+      for xml path('')),1,1,'')+'】' as Area,sum(db.sl) as sale_count from
+      Td_sale_order_body db left join Tb_sp sp on sp.id=db.id_sp
+      left join Tb_sp_sku spsku on spsku.id=db.id_sku
+      left join Td_sale_order_head head on head.dh=db.dh
+      left join Tb_gys_sp gyssp on gyssp.id_gys=head.id_gys and gyssp.id_sku=db.id_sku
+      left join Tb_spfl spfl on spfl.id=gyssp.id_spfl
+      <include refid="Where"/>
+      group by db.id_sku,sp.mc) as t
+    </select>
+    
+    <select id="QueryReportbySaleTypeCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1)
+      from (select row_number() over(order by spfl.name desc) as rownumber,count(db.dh) as ordercount,count(head.id_cgs) as customercount,sum(db.je_hs) as  money,
+      spfl.name as Area,sum(db.sl) as sale_count from
+      Td_sale_order_body db left join Tb_sp sp on sp.id=db.id_sp
+      left join Tb_sp_sku spsku on spsku.id=db.id_sku
+      left join Td_sale_order_head head on head.dh=db.dh
+      left join Tb_gys_sp gyssp on gyssp.id_gys=head.id_gys and gyssp.id_sku=db.id_sku
+      left join Tb_spfl spfl on spfl.id=gyssp.id_spfl
+      <include refid="Where"/>
+      group by spfl.name) as t
+    </select>
+
+    <select id="QueryReportbyCustomeCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select  count(1)
+      from (select row_number() over(order by gc.alias_cgs asc) as rownumber,count(db.dh) as ordercount,count(db.id_cgs) as customercount,sum(db.je_hs) as  money,
+      gc.alias_cgs as Area from
+      Td_sale_order_head db  left join Tb_gys_cgs gc on gc.id_cgs=db.id_cgs and gc.id_gys=db.id_gys
+      left join Tb_cgs_level cgs_level on gc.id_cgs_level=cgs_level.id
+      <include refid="Where"/>
+      group by gc.alias_cgs) as t
+    </select>
+
+    <select id="QueryReportbyCustomeTypeCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select  count(1)
+      from (select row_number() over(order by cgs_level.name asc) as rownumber,count(db.dh) as ordercount,count(db.id_cgs) as customercount,sum(db.je_hs) as  money,
+      cgs_level.name as Area from
+      Td_sale_order_head db left join Tb_gys_cgs gc on gc.id_cgs=db.id_cgs and gc.id_gys=db.id_gys
+      left join Tb_cgs_level cgs_level on gc.id_cgs_level=cgs_level.id
+      <include refid="Where"/>
+      group by cgs_level.name) as t
+    </select>
+    
+    <select id="QueryReportbyMonthPage" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select isnull(t.ordercount,0) as ordercount,isnull(t.customercount,0) as customercount,isnull(t.money,0) as money,t.Sunday as time
+      from (
+      select row_number() over(order by months.times desc) as rownumber,db.ordercount,db.customercount,db.money,
+      months.times as Sunday from
+      (
+      select count(db.dh) as ordercount,count(distinct db.id_cgs) as customercount,sum(db.je_pay) as  money,convert(varchar(7),db.rq_create,120)times from Td_sale_order_head db
+       <include refid="Where"/>
+        group by convert(varchar(7),db.rq_create,120)
+        ) db
+        right join
+        (
+        SELECT convert(char(7),dateadd(m,number, #start_rq_create# ),120)times FROM master..spt_values where type = 'p' AND number  <![CDATA[<=]]>  datediff(m, #start_rq_create# , #end_rq_create# )
+      )
+      as
+      months
+      on months.times=db.times
+      ) as t
+      <include refid="RowBetween" />
+      order by t.rownumber asc
+    </select>
+
+    <select id="QueryReportbyMonthImg" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select isnull(t.ordercount,0) as ordercount,isnull(t.customercount,0) as customercount,Isnull(t.money,0) as money,months.times as time
+      from (select row_number() over(order by convert(varchar(7),rq_create,120) desc) as rownumber,count(db.dh) as ordercount,count(db.id_cgs) as customercount,sum(db.je_pay) as  money,
+      convert(varchar(7),rq_create,120) as Sunday from
+      Td_sale_order_head db
+      where <isNotNull property="id_gys">db.[id_gys]=#id_gys# and </isNotNull> <isNotNull property="id_cgs">db.[id_cgs]=#id_cgs# and </isNotNull> Datediff(day, #rq_create# ,db.[rq_create]) > -1 and Datediff(day,db.[rq_create],Convert(date, #end_create# )) > -1 and db.flag_state !=0
+      group by convert(varchar(7),rq_create,120)) as t
+      right join
+      (
+      SELECT convert(char(7),dateadd(m,number,#rq_create#),120)times FROM master..spt_values where type = 'p' AND number<![CDATA[<=]]>datediff(m,#rq_create#,#end_create#)
+      )months
+      on months.times=t.Sunday
+    </select>
+
+    <select id="QueryReportbyWeekPage" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select t.ordercount,t.customercount,t.money,case when
+      Datediff(day,  #start_rq_create#  ,t.Monday) > -1 then t.Monday else #start_rq_create# end
+      +'--'+t.Sunday as time
+      from (select row_number() over(order by weeks.times desc) as rownumber,db.ordercount,db.customercount,isnull(db.money,0) as  money,
+      weeks.times
+      as Sunday,
+      convert(varchar(10),Dateadd(d,-6,weeks.times),120) as Monday from
+      (select count(db.dh) as ordercount,count(distinct db.id_cgs) as customercount,isnull(sum(db.je_pay),0) as  money,
+      case when Datediff(day,Dateadd(wk,datediff(wk,0,db.rq_create),6),Convert(date,#end_rq_create#  )) > -1 then
+      convert(varchar(10),Dateadd(wk,datediff(wk,0,db.rq_create),6),120)  else convert(varchar(10),#end_rq_create#,120) end
+      sunday from Td_sale_order_head db <include refid="Where"/>
+      group by Dateadd(wk,datediff(wk,0,db.rq_create),6)
+      )
+      as db
+      right join
+      (select times=convert(varchar(10),dateadd(dd,number,#start_rq_create# ),120)
+      from master..spt_values
+      where type='p'  and number <![CDATA[<= ]]> datediff(dd, #start_rq_create# , #end_rq_create# ) and (datename(dw,convert(varchar(10),dateadd(dd,number,#start_rq_create#),120))
+      in ('星期日')
+      or convert(varchar(10),dateadd(dd,number,#start_rq_create# ),120)=convert(varchar(10),#end_rq_create#,120)
+      )) as weeks on weeks.times=db.sunday
+      ) as t
+      <include refid="RowBetween" />
+      order by rownumber
+    </select>
+
+    <select id="QueryReportbyWeekImg" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select isnull(t.ordercount,0) as ordercount,isnull(t.customercount,0) as customercount,isnull(t.money,0) as money,weeks.times as time
+      from (select row_number() over(order by Dateadd(wk,datediff(wk,0,rq_create),0) desc) as rownumber,count(db.dh) as ordercount,count(distinct db.id_cgs) as customercount,sum(db.je_pay) as  money,
+      case when Datediff(day, cast(convert(varchar(8),getdate(),23)+'01' as datetime),Dateadd(wk,datediff(wk,0,rq_create),0)) > -1  then Dateadd(wk,datediff(wk,0,rq_create),0) else
+      cast(convert(varchar(8),getdate(),23)+'01' as datetime) end
+      as Monday,case when Datediff(day,Dateadd(wk,datediff(wk,0,rq_create),6),Convert(date, #end_create# )) > -1 then Dateadd(wk,datediff(wk,0,rq_create),6)
+      else convert(varchar(10),GETDATE(),120) end as Sunday from
+      Td_sale_order_head db
+      where <isNotNull property="id_gys">db.[id_gys]=#id_gys# and </isNotNull> <isNotNull property="id_cgs">db.[id_cgs]=#id_cgs# and </isNotNull> Datediff(day,#rq_create#,db.[rq_create]) > -1 and Datediff(day,db.[rq_create],Convert(date,#end_create#)) > -1 and db.flag_state !=0
+      group by Dateadd(wk,datediff(wk,0,rq_create),6),Dateadd(wk,datediff(wk,0,rq_create),0)) as t
+      right join (select times=convert(varchar(10),dateadd(dd,number,#rq_create#),120)
+      from master..spt_values
+      where type='p'  and number <![CDATA[<= ]]> datediff(dd,#rq_create#,#end_create#) and (datename(dw,convert(varchar(10),dateadd(dd,number,#rq_create#),120)) in ('星期日')
+      or
+      convert(varchar(10),dateadd(dd,number,#rq_create#),120)=convert(varchar(10),GETDATE(),120) or convert(varchar(10),dateadd(dd,number,#rq_create#),120)=convert(varchar(10),#rq_create#,120)
+      )
+      ) as weeks on weeks.times=t.Sunday
+    </select>
+    
+    <select id="QueryReportbyDatePage" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select isnull(t.ordercount,0) ordercount,isnull(t.customercount,0) customercount,isnull(t.money,0) money,t.time time,rownumber
+      from (select row_number() over(order by days.times desc) as rownumber,count(db.dh) as ordercount,count(distinct db.id_cgs) as customercount,sum(db.je_pay) as
+      money,days.times as time from
+      ( select * from Td_sale_order_head db
+      where  db.[id_gys]= #id_gys#  and db.[flag_state]  <![CDATA[<> ]]>   0  and Datediff(day,  #start_rq_create# ,db.[rq_create]) > -1 and Datediff(day,db.[rq_create],Convert(date, #end_rq_create# )) > -1
+      ) db
+      right join (select times=convert(varchar(10),dateadd(dd,number,#start_rq_create#),120)
+      from master..spt_values
+      where type='p'  and number <![CDATA[ <= ]]> datediff(dd,#start_rq_create#,#end_rq_create#)) as days on convert(char(10),db.rq_create,120)=days.times
+      group by days.times) as t
+      <include refid="RowBetween" />
+      order by rownumber asc
+    </select>
+
+    <select id="QueryReportbyDateImg" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select IsNull(t.ordercount,0) as ordercount,isnull(t.customercount,0) as customercount,isnull(t.money,0) as money,days.times as time
+      from (select row_number() over(order by convert(char(10),db.rq_create,120) desc) as rownumber,count(db.dh) as ordercount,count(distinct db.id_cgs) as customercount,sum(db.je_pay) as  money,
+      convert(char(10),db.rq_create,120) as time from
+      Td_sale_order_head db
+      where <isNotNull property="id_gys">db.[id_gys]=#id_gys# and </isNotNull> <isNotNull property="id_cgs">db.[id_cgs]=#id_cgs# and </isNotNull>Datediff(day, #rq_create# ,db.[rq_create]) > -1 and Datediff(day,db.[rq_create],Convert(date, #end_create# )) > -1 and db.flag_state !=0
+      group by convert(char(10),db.rq_create,120)) as t
+      right join (select times=convert(varchar(10),dateadd(dd,number,#rq_create#),120)
+      from master..spt_values
+      where type='p'  and number <![CDATA[ <= ]]> datediff(dd,#rq_create#,#end_create#)) as days on t.time=days.times
+      </select>
+
+    <select id="QueryReportbyAreaPage" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select t.ordercount,t.customercount,t.money,t.Area as time
+      from (select row_number() over(order by sum(db.je_pay) desc) as rownumber,count(db.dh) as ordercount,count(db.id_cgs) as customercount,sum(db.je_pay) as  money,
+      prov.name as Area from
+      Td_sale_order_head db left join <include refid="Table_0" />  <include refid="Where"/> group by prov.name) as t  <include refid="RowBetween" />
+      order by rownumber
+    </select>
+
+    <select id="QueryReportbySalePage" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select t.ordercount,t.customercount,t.money,t.Area as time,t.sale_count as sale_count
+      from (select row_number() over(order by sum(db.je_pay) desc) as rownumber,count(db.dh) as ordercount,count(head.id_cgs) as customercount,sum(db.je_pay) as  money,
+      sp.mc+isnull('【'+stuff(( select  ','+td.mc+':'+td.val  from (select expt.*,temp.mc from [dbo].[Tb_sp_expand] expt left join [dbo].[Tb_sp_expand_template] temp on temp.id=expt.id_sp_expand_template)as td
+      where td.id_sku=db.id_sku
+      for xml path('')),1,1,'')+'】','') as Area,sum(db.sl) as sale_count from
+      Td_sale_order_body db left join Tb_sp sp on sp.id=db.id_sp
+      left join Tb_sp_sku spsku on spsku.id=db.id_sku
+      left join Td_sale_order_head head on head.dh=db.dh
+      left join Tb_gys_sp gyssp on gyssp.id_gys=head.id_gys and gyssp.id_sku=db.id_sku
+      left join Tb_spfl spfl on spfl.id=gyssp.id_spfl
+      <include refid="Where"/>
+      group by db.id_sku,sp.mc) as t <include refid="RowBetween" />
+      order by rownumber
+    </select>
+
+    <select id="QueryReportbyOrderCount" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select distinct head.dh as time  from Td_sale_order_head head
+      left join Td_sale_order_body body on body.dh=head.dh
+      left join Tb_gys_sp gyssp on gyssp.id_gys=head.id_gys and gyssp.id_sku=body.id_sku
+      left join Tb_spfl spfl on spfl.id=gyssp.id_spfl
+      <include refid="Where"/>
+    </select>
+
+    <select id="QueryReportbySaleTypePage" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select t.ordercount,t.customercount,t.money,t.Area as time,t.sale_count as sale_count
+      from (select row_number() over(order by spfl.name desc) as rownumber,count(db.dh) as ordercount,count(head.id_cgs) as customercount,sum(db.je_pay) as  money,
+      spfl.name as Area,sum(db.sl) as sale_count from
+      Td_sale_order_body db left join Tb_sp sp on sp.id=db.id_sp
+      left join Tb_sp_sku spsku on spsku.id=db.id_sku
+      left join Td_sale_order_head head on head.dh=db.dh
+      left join Tb_gys_sp gyssp on gyssp.id_gys=head.id_gys and gyssp.id_sku=db.id_sku
+      left join Tb_spfl spfl on spfl.id=gyssp.id_spfl
+      <include refid="Where"/>
+      group by spfl.name) as t <include refid="RowBetween" />
+      order by rownumber
+    </select>
+
+    <select id="QueryReportbyCustomePage" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select  t.ordercount,t.customercount,t.money,t.Area as time
+      from (select row_number() over(order by sum(db.je_pay) desc) as rownumber,count(db.dh) as ordercount,count(db.id_cgs) as customercount,sum(db.je_pay) as  money,
+      gc.alias_cgs as Area from
+      Td_sale_order_head db  left join Tb_gys_cgs gc on gc.id_cgs=db.id_cgs and gc.id_gys=db.id_gys
+      left join Tb_cgs_level cgs_level on gc.id_cgs_level=cgs_level.id
+      <include refid="Where"/>
+      group by gc.alias_cgs) as t <include refid="RowBetween" />
+      order by rownumber
+    </select>
+    
+    <select id="QueryReportbyCustomeTypePage" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select  t.ordercount,t.customercount,t.money,t.Area as time
+      from (select row_number() over(order by sum(db.je_pay) desc) as rownumber,count(db.dh) as ordercount,count(db.id_cgs) as customercount,sum(db.je_pay) as  money,
+      cgs_level.name as Area from
+      Td_sale_order_head db left join Tb_gys_cgs gc on gc.id_cgs=db.id_cgs and gc.id_gys=db.id_gys
+      left join Tb_cgs_level cgs_level on gc.id_cgs_level=cgs_level.id
+      <include refid="Where"/>
+      group by cgs_level.name) as t 
+      <include refid="RowBetween" />
+      order by rownumber
+    </select>
+
+    <select id="QueryOrderStatistics" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select t.times as time,isnull(db.je_pay,0) as money,isnull(db.dh,0) as ordercount from
+      (
+      select convert(char(7),db.rq_create,120) as times,sum(db.je_pay) as je_pay,count(db.dh) as dh from Td_sale_order_head db
+      <include refid="Where"/>
+      group by convert(char(7),db.rq_create,120)
+      ) db
+      right join (
+      SELECT convert(char(7),dateadd(m,number, #start_rq_create#),120)times FROM master..spt_values where type = 'p' AND number <![CDATA[<=]]>datediff(m, #start_rq_create#,#end_rq_create#)
+      ) as t on db.times=t.times
+      </select>
+
+    <select id="QueryOrderStatisticsInfo" parameterClass="System.Collections.IDictionary" resultClass="Td_Report">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as ordercount,sum(je_pay) as money from Td_sale_order_head as db
+      <include refid="Where"/>
+    </select>
+    
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Order_Head_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.*,
+      pr.name as province_name,
+      ci.name as city_name,
+      co.name as county_name,
+      gc.alias_cgs as alias_cgs,
+      gc.alias_gys as alias_gys,
+      f.mc as flag_out_mc,
+      f1.mc as flag_fh_mc,
+      T.count_nopay as count_nopay
+      from <include refid="Table"/> as db
+      left join Tb_Districts pr on pr.id =db.id_province
+      left join Tb_Districts ci on ci.id =db.id_city
+      left join Tb_Districts co on co.id =db.id_county
+      left join Tb_gys_cgs gc on gc.id_gys =db.id_gys and gc.id_cgs=db.id_cgs
+      left join Ts_flag f on f.bs_lx='stockstatus' and f.bm=db.flag_out
+      left join Ts_flag f1 on  f1.bs_lx='deliverystatus' and f1.bm=db.flag_fh
+      left join ( select dh_order ,count(1) as count_nopay from Td_sale_pay  where  flag_state = 1 group by dh_order) T on T.dh_order=db.dh
+      where 1=1
+      <isNotNull  property="id_gys">and db.[id_gys]=#id_gys#</isNotNull>
+      <isNotNull  property="id_cgs">and db.[id_cgs]=#id_cgs#</isNotNull>
+      <isNotNull  property="start_rq_create">and Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+      <isNotNull  property="end_rq_create">and Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+      <isNotNull  property="start_rq_create_ss">and db.[rq_create]<![CDATA[ >= ]]>#start_rq_create_ss#</isNotNull>
+      <isNotNull  property="end_rq_create_ss">and db.[rq_create]<![CDATA[ <= ]]>#end_rq_create_ss#</isNotNull>
+      <isNotNull  property="flag_delete">and db.[flag_delete]=#flag_delete#</isNotNull>
+	  <isNotNull  property="searchValuebygys">and (isnull(gc.[alias_gys],'')like#searchValuebygys# or isnull(db.[dh],'')like#searchValuebygys# or isnull(gc.[alias_cgs],'')like#searchValuebygys#)</isNotNull>
+      <isNotNull  property="flag_out">and db.[flag_out]=#flag_out#</isNotNull>
+      <isNotNull  property="flag_fh">and db.[flag_fh]=#flag_fh#</isNotNull>
+      <isNotNull  property="dh">and db.[dh]=#dh#</isNotNull>
+      <isNotNull  property="alias_cgs">and gc.[alias_cgs] like #alias_cgs#</isNotNull>
+      <isNotNull  property="alias_gys">and gc.[alias_gys] like #alias_gys#</isNotNull>
+      <isNotNull  property="flag_tj">and db.[flag_tj]=#flag_tj#</isNotNull>
+      <isNotNull  property="flag_state_List">
+        and db.[flag_state] in <iterate property="flag_state_List" conjunction="," open="(" close=")">#flag_state_List[]#</iterate>
+      </isNotNull>
+      <isNotNull  property="keyword">
+        and ( db.dh like #keyword# or gc.alias_cgs like #keyword# )
+      </isNotNull>
+      <isNotNull  property="not_flag_state">and db.[flag_state]<![CDATA[ <> ]]> #not_flag_state#</isNotNull>
+      <isNotNull property="dhList">
+        and db.dh in <iterate property="dhList" conjunction="," open="(" close=")">#dhList[]#</iterate>
+      </isNotNull>
+      ) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Order_Head_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[dh],db.[id_gys],db.[id_cgs],db.[flag_state],db.[flag_out],db.[flag_fh],db.[flag_delete],db.[id_user_bill],db.[rq_jh],db.[je_hs],db.[je_pay],db.[je_payed],db.[flag_tj],db.[flag_invoice],db.[title_invoice],db.[content_invoice],db.[name_bank],db.[account_bank],db.[no_tax],db.[shr],db.[slv],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[phone],db.[remark],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_fd],
+      um.name as CustomeName,b.id_sku,sp.mc as GoodsName,gyssp.bm_Interface as GoodsBm,b.sl as Sl,b.sl_ck as Sl_ck,
+      flag.mc as mc_flag_state,
+      pr.name as province_name,
+      ci.name as city_name,
+      co.name as county_name,
+      u.name as user_name,
+      gc.alias_cgs as alias_cgs,
+      gc.alias_gys as alias_gys,
+      gc.id_user_master_gys,
+      gc.id_user_master_cgs,
+      cl.name as level_name,
+      gc.bm_gys_Interface,
+      T.count_nopay as count_nopay
+      from <include refid="Table"/> as db
+      left join Td_sale_order_body b on b.dh=db.dh
+      left join Tb_sp sp on sp.id=b.id_sp
+      left join Tb_gys_sp gyssp on gyssp.id_sku=b.id_sku and gyssp.id_gys=db.id_gys
+      left join Tb_user um on um.id=db.id_user_bill
+      left join Ts_flag flag on flag.bs_lx='orderstatus' and flag.bm=db.flag_state
+      left join Tb_Districts pr on pr.id =db.id_province
+      left join Tb_Districts ci on ci.id =db.id_city
+      left join Tb_Districts co on co.id =db.id_county
+      left join Tb_gys_cgs gc on gc.id_gys =db.id_gys and gc.id_cgs=db.id_cgs
+      left join Tb_cgs_level cl on cl.id=gc.id_cgs_level
+      left join Tb_user u on u.id=db.id_user_bill
+      left join ( select dh_order ,count(1) as count_nopay from Td_sale_pay  where  flag_state = 1 group by dh_order) T on T.dh_order=db.dh
+      <include refid="Where"/>
+    </select>
+    
+    <select id="GetChildrenList" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Order_Head_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[dh],db.[id_gys],db.[id_cgs],db.[flag_state],db.[flag_out],db.[flag_fh],db.[flag_delete],db.[id_user_bill],db.[rq_jh],db.[je_hs],db.[je_pay],db.[je_payed],db.[flag_tj],db.[flag_invoice],db.[title_invoice],db.[content_invoice],db.[name_bank],db.[account_bank],db.[no_tax],db.[shr],db.[slv],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[phone],db.[remark],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_fd],
+      um.name as CustomeName,
+      flag.mc as mc_flag_state,
+      pr.name as province_name,
+      ci.name as city_name,
+      co.name as county_name,
+      u.name as user_name,
+      gc.alias_cgs as alias_cgs,
+      gc.alias_gys as alias_gys,
+      cl.name as level_name,
+      T.count_nopay as count_nopay,
+      ugys.companyname as supplier_name
+      from <include refid="Table"/> as db
+      left join Tb_user um on um.id=db.id_user_bill
+      left join Ts_flag flag on flag.bs_lx='orderstatus' and flag.bm=db.flag_state
+      left join Tb_Districts pr on pr.id =db.id_province
+      left join Tb_Districts ci on ci.id =db.id_city
+      left join Tb_Districts co on co.id =db.id_county
+      left join Tb_gys_cgs gc on gc.id_gys =db.id_gys and gc.id_cgs=db.id_cgs
+      left join Tb_cgs_level cl on cl.id=gc.id_cgs_level
+      left join Tb_user u on u.id=db.id_user_bill
+      left join ( select dh_order ,count(1) as count_nopay from Td_sale_pay  where  flag_state = 1 group by dh_order) T on T.dh_order=db.dh
+      left join td_sale_order_fd tsof on db.dh=tsof.dh
+      left join Tb_gys tg on tg.id=db.id_gys
+      left join Tb_user ugys on ugys.id=tg.id_user_master
+      <include refid="Where"/>
+    </select>
+
+    <select id="QueryPageforState" parameterClass="System.Collections.IDictionary" resultClass="Td_sale_pay_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select  t.alias_gys,t.rq_create,t.dh,t.je_pay,t.je_payed from (select row_number() over(<include refid="Order" />) as rownumber,db.*,gycg.alias_cgs,gycg.alias_gys
+      from <include refid="Table"/> as db
+      left join Tb_gys_cgs gycg on gycg.id_cgs=db.id_cgs and gycg.id_gys=db.id_gys <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GysHomeTotal" parameterClass="System.Collections.IDictionary" resultClass="Query_Pay_Total">
+      set nocount on
+      <include refid="NoLock"/>
+      SELECT sum_je_pay=a.je_order_today,count_je_pay=a.count_order_today,* FROM
+      (SELECT isnull(sum(db.je_pay),0)je_order_today,count(1) as count_order_today
+      from <include refid="Table"/> as db
+      WHERE db.flag_state<![CDATA[ <> ]]>'0' AND db.flag_delete='0' AND datediff(d,db.rq_create,getdate())=0 <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>)a,
+
+      (SELECT isnull(sum(db.je_pay),0)je_order_yesterday,count(1) as count_order_yesterday
+      from <include refid="Table"/> as db
+      WHERE db.flag_state<![CDATA[ <> ]]>'0' AND db.flag_delete='0' AND datediff(d,db.rq_create,getdate())=1 <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>)b,
+      (
+      SELECT isnull(sum(db.je_pay),0)je_order_month,count(1) as count_order_month
+      from <include refid="Table"/> as db
+      WHERE db.flag_state<![CDATA[ <> ]]>'0' AND db.flag_delete='0' AND datediff(m,db.rq_create,getdate())=0 <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>)c
+    </select>
+    
+    <!--旧的移动端统计供应商订单数据接口，已停用，改用GysHomeTotal-->
+    <select id="QueryPayTotal" parameterClass="System.Collections.IDictionary" resultClass="Query_Pay_Total">
+      set nocount on
+      <include refid="NoLock"/>
+      select sum(db.je_pay) as sum_je_pay,count(1) as count_je_pay
+      from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+    
+    <select id="QueryPageOfService" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Order_Head_Query">
+      set nocount on
+      <include refid="NoLock" />
+      
+    </select>
+
+    <select id="QueryCountOfService" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      
+    </select>
+    
+  </statements>
+</sqlMap>
+
+

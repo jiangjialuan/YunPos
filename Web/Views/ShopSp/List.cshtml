@@ -1,0 +1,1350 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    PageList<Tb_Shopsp_Query> list_shopsp = ViewData["list_shopsp"] as PageList<Tb_Shopsp_Query>;
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+    var selectListCZFS = ViewData["selectListCZFS"] as List<Ts_Flag>;
+    selectListCZFS = selectListCZFS ?? new List<Ts_Flag>();
+    var selectListSPFL = ViewData["selectListSPFL"] == null ? "" : ViewData["selectListSPFL"].ToString();
+    var selectListShop = ViewData["selectListShop"] as List<Tb_Shop>;
+    selectListShop = selectListShop ?? new List<Tb_Shop>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+
+
+
+}
+@Styles.Render("~/static/js/bootstrap-treeview/bootstrap-treeview.min.css")
+
+<script>
+    $(function () {
+        $('div[contentID="shopsp/list"]').attr({ controller: 'shopsp', action: 'list' });
+        app.c.public_data['shopsp/list'] = app.c.public_data['shopsp/list'] || {};
+        app.c.public_data['shopsp/list']['once'] = false;
+        app.shopsp = app.shopsp || {};
+    });
+
+
+</script>
+<input type="hidden" pagesize value="" />
+<input type="hidden" page value="" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        商品管理
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>1、全部商品支持随时编辑，调整价格、展示信息与规则、订货限制、库存预警等基础信息设置</p>
+                        <p>2、注意：如果已有订单包含商品，为了数据可查。不能删除，如果不需要，可以设置【下架】</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script>
+    app.c.public_data['shopsp/list'] = app.c.public_data['shopsp/list'] || {};
+    app.c.public_data['shopsp/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['shopsp/list']['threemenu'] === false) {
+            app.c.public_data['shopsp/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div id="myTabContent" class="main-content">
+                    <!--商品资料-->
+                    <div class="tab-pane active" id="spzl">
+                        <div class="row wrapper1">
+                            <div class="table_upblock">
+                                <div class=" p-l-none">
+                                    <div class="m-t-12 f-l">
+                                        @if (IsPermissionShow("add", actionlist))
+                                        {
+                                            <button type="button" class="btn btn-info _btn new_add" onclick="$.fn.menuTab.load({ url: '/shopsp/add?id_spfl='+window.localStorage.getItem('id_spfl'), 'title': '新增商品', id: 'shopsp/add', nocache: '0' }); "><span class="fa fa-plus btn_icon"></span>新增商品</button>
+                                        }
+                                        @if (IsPermissionShow("importin", actionlist))
+                                        {
+                                            <a title="批量导入" class="_btn" onclick="$.fn.menuTab
+    .load({ url: '/shopsp/importin', 'title': '商品导入', id: 'shopsp/importin', nocache: '0' }); "><span class="fa fa-cloud-upload"></span>批量导入</a>
+                                        }
+                                        @if (IsPermissionShow("export", actionlist))
+                                        {
+                                            <button class="btn m-l-xs btn-default box-shawn _btn" type="button" onclick="app.shopsp.goods_export_select(this);"><span class=" fa fa-cloud-download"></span>批量导出</button>
+                                        }
+                                        @if (IsPermissionShow("batchedit", actionlist))
+                                        {
+                                            <button type="button" class="btn m-l-xs btn-default box-shawn _btn" onclick="app.shopsp.modify_goods_info(this);"><span class=" fa fa-pencil"></span>&nbsp;批量修改</button>
+                                        }
+                                        @if (IsPermissionShow("delete", actionlist))
+                                        {
+                                            <button type="button" class="btn m-l-xs btn-default box-shawn _btn" onclick="app.shopsp.delete_goods_dialog(this);"><span class=" fa fa-trash"></span>&nbsp;批量删除</button>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="@*col-xs-10*@ p-r-none" style="float:right">
+                                    <div class="row">
+                                        <form class="filter-form" action="/shopsp/list?_search_=1">
+                                            <input name="operate" id="operate" type="hidden" value="" />
+                                            <div class="p-r-none">
+                                                <div class="search-box-container">
+                                                    <div class="clearfix">
+                                                        <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                            <div class="1" style="position:relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                                <input type="text" value="" onkeypress="app.shopsp.list.trigger_search_shopsp_list(event);" class="form-control input-sm search-h inline v-middle search-result search" name="keyword" id="keyword" style="width:250px;border-right:none;border-radius: 2px 0 0 2px;" placeholder="商品名称/拼音码/编码/条形码/关键字" ondblclick="app.shopsp.list.search_item_clear_shopsp_list(this);" onblur="app.shopsp.list.do_search_shopsp_list(this);" /><span><button type="button" onclick="app.shopsp.list.do_search_shopsp_list(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span>
+                                                                <span onclick="app.shopsp.list.search_item_clear_shopsp_list(this);" style="display:none;position:absolute;right:27px;top:4px;padding:2px 2px 2px 4px;cursor:pointer;color:#d5d3d5;width:19px;height:25px;background:#fff;"><i class="fa fa-times-circle"></i></span>
+                                                            </div>
+                                                        </div>
+
+                                                        <input id="id_spfl" name="id_spfl" value="" type="hidden" />
+
+                                                        <div class="pull-left m-r-sm hidden" style="margin-top:7px">
+                                                            <div class="select-order btn-group box-shawn" id="special_order" name="special_order">
+                                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle " data-toggle="dropdown" aria-expanded="true" style="width:95px;text-align:right;">
+                                                                    <span style="float:left;">新增时间 ↓</span>
+                                                                    <span class="caret"></span>
+                                                                </button>
+                                                                <ul class="dropdown-menu" role="menu" style="width:95px;min-width:95px;">
+                                                                    <li class="" value="id" onclick="app.shopsp.list.do_search_option_shopsp_list(this);"><a>排序值&nbsp;&nbsp;<span class="">↑</span>&nbsp;<span class="order-active">↓</span></a></li>
+                                                                    <li class="" value="bm" onclick="app.shopsp.list.do_search_option_shopsp_list(this);"><a>商品编号&nbsp;&nbsp;<span class="">↑</span>&nbsp;<span class="order-active">↓</span></a></li>
+                                                                    <li class="" value="dj_jh" onclick="app.shopsp.list.do_search_option_shopsp_list(this);"><a>进货价&nbsp;&nbsp;<span class="">↑</span>&nbsp;<span class="order-active">↓</span></a></li>
+                                                                    <li class="" value="dj_ls" onclick="app.shopsp.list.do_search_option_shopsp_list(this);"><a>零售价&nbsp;&nbsp;<span class="">↑</span>&nbsp;<span class="order-active">↓</span></a></li>
+                                                                    <li class="" value="rq_create" onclick="app.shopsp.list.do_search_option_shopsp_list(this);"><a>新增时间&nbsp;&nbsp;<span class="">↑</span>&nbsp;<span class="order-active">↓</span></a></li>
+                                                                    <li class="" value="rq_edit" onclick="app.shopsp.list.do_search_option_shopsp_list(this);"><a>修改时间&nbsp;&nbsp;<span class="">↑</span>&nbsp;<span class="order-active">↓</span></a></li>
+                                                                </ul><input id="special_order_field" name="special_order_field" value="rq_create" type="hidden" /><input id="special_order_descasc" name="special_order_descasc" value="desc" type="hidden" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <script>
+                                                    app.c.public_data['shopsp/list'] = app.c.public_data['shopsp/list'] || {};
+                                                    app.c.public_data['shopsp/list']['search_all'] = false;
+                                                    var currentSearch = 'app.c.public_data[\'shopsp/list\'][\'search\']';
+                                                    eval(currentSearch + ' = false;');
+                                                    $.DHB._search = function () {
+                                                        eval('if(' + currentSearch + '===false){app.shopsp.list.search_shopsp_list();' + currentSearch + '=true;}');
+                                                    }
+                                                    app.shopsp = app.shopsp || {};
+                                                    app.shopsp.list = app.shopsp.list || {};
+
+                                                    app.shopsp.list.search_shopsp_list = function () {
+                                                        app.c.public_data['shopsp/list'] = app.c.public_data['shopsp/list'] || {};
+                                                        app.c.public_data['shopsp/list']['_row_total_'] = '@list_shopsp.ItemCount',
+                                                        app.c.public_data['shopsp/list']['_page_size_'] = '@list_shopsp.PageSize',
+                                                        app.c.public_data['shopsp/list']['_current_page_'] = '@(list_shopsp.PageIndex)';
+                                                        app.shopsp.list.do_search_pagination_shopsp_list();
+                                                    }
+
+                                                    app.shopsp.list.trigger_search_shopsp_list = function (event) {
+                                                        //绑定回车键
+                                                        event = event || window.event
+                                                        if (event.keyCode == 13) {
+                                                            app.shopsp.list.do_search_shopsp_list();
+                                                            event.preventDefault();
+                                                        }
+                                                    }
+
+                                                    app.shopsp.list.do_search_shopsp_list = function (el, isExport) {
+                                                        
+                                                        isExport = isExport || 0;
+                                                        var url = '/shopsp/list?_search_=1&' + $(_ + ".filter-form").serialize();
+                                                        if (isExport == 1) {
+                                                            url += '&export=1';
+                                                            url = $.DHB.U(url);
+                                                            window.location.href = url;
+                                                        }
+                                                        else {
+                                                            
+                                                            $.DHB.showButterbar();
+                                                            var options = {
+                                                                url: $.DHB.U(url),
+                                                                datatype: 'html',
+                                                                beforeSend: function () {
+                                                                    $.DHB.showButterbar();
+                                                                },
+                                                                success: function (data, textStatus, jqXHR) {
+                                                                    
+                                                                            if ($('#shopsp-list-list-fresh-box', _).length > 0) {
+                                                                                $('#shopsp-list-list-fresh-box', _).html(data);
+                                                                            }
+
+                                                                            var curSearchcallback = 'app.shopsp.list_search_callback';
+                                                                            var curListcallback = 'app.shopsp.list_listready';
+                                                                            eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                                                                            eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                                            app.shopsp.list.do_search_pagination_shopsp_list();
+                                                                        },
+                                                                complete: function (XHR, TS) {
+                                                                    
+                                                                    $.DHB.closeButterbar();
+                                                                }
+                                                            };
+                                                            app.httpAjax.post(options)
+
+                                                        }
+                                                        return false;
+                                                    }
+
+
+                                                    app.shopsp.list.do_search_pagination_shopsp_list = function () {
+                                                        
+                                                        $.DHB.func.pagination({ module_name: 'Manager', controller_name: 'shopsp', action_name: 'list', ready_once: false });
+                                                    }
+
+
+                                                    app.shopsp.list.do_search_option_shopsp_list = function (el) {
+                                                        if ($(el).attr('class') != '') {
+                                                            $(el).find('span').each(function () {
+                                                                if ($(this).attr('class') == '') {
+                                                                    $(this).attr('class', 'order-active');
+                                                                } else {
+                                                                    $(this).attr('class', '');
+                                                                }
+                                                            });
+
+                                                            if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                                $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                            } else {
+                                                                $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                            }
+                                                        }
+
+                                                        if ($(el).attr('class') == '') {
+                                                            $(el).parent().find('.active').removeClass('active');
+                                                            $(el).addClass('active');
+                                                            $(el).parents('.btn-group').find('input:eq(0)').val($(el).attr('value'));
+                                                        }
+
+                                                        $(el).parents('.btn-group').removeClass('open');
+                                                        var selectA = $(el).find('a').clone();
+                                                        selectA.find('span[class=""]').remove();
+                                                        $(el).parents('.btn-group').find('button span:eq(0)').html(selectA.html());
+
+                                                        app.shopsp.list.do_search_shopsp_list();
+                                                    }
+
+
+                                                    app.shopsp.list.search_enter = function (el) {
+                                                        if (app.c.public_data['shopsp/list']['search_all'] === false) {
+                                                            $(el).parents('.search-box-container').find(".bootstrap-select ul.dropdown-menu").each(function () {
+                                                                var ts = $(this).find('li:first() span:first()');
+                                                                ts.text('全部');
+                                                            });
+                                                            app.c.public_data['shopsp/list']['search_all'] = true;
+                                                        }
+                                                    }
+
+
+                                                    app.shopsp.list.search_leave = function (el) {
+
+                                                    }
+
+                                                    app.shopsp.list.search_client_clear_shopsp_list = function (el) {
+                                                        $(el).parents('.input-group').find('input').val('');
+                                                        app.shopsp.list.do_search_shopsp_list();
+                                                    }
+
+
+                                                    app.shopsp.list.wdatepicker_shopsp_list = function (el) {
+                                                        var booStart = $(el).data('type') == 'start';
+                                                        var option = {};
+                                                        option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                                        option['onpicked'] = function () {
+                                                            $(el).text($dp.cal.getP('y') + '-' + $dp.cal.getP('M') + '-' + $dp.cal.getP('d'));
+                                                            if (booStart) {
+                                                                setTimeout(function () {
+                                                                    $(el).parent().find('[data-type="end"]').data('position', '1').click();
+                                                                }, 5000);
+                                                            }
+                                                            app.shopsp.list.do_search_shopsp_list();
+                                                        };
+
+                                                        if (booStart) {
+                                                            option['maxDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                                        } else {
+                                                            option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                            if ($(el).data('position') == '1') {
+                                                            }
+                                                        }
+                                                        option['oncleared'] = function () {
+                                                            $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                            app.shopsp.list.do_search_shopsp_list();
+                                                        };
+
+                                                        WdatePicker(option);
+                                                    }
+
+
+                                                    app.shopsp.list.search_item_clear_shopsp_list = function (el) {
+                                                        var par = $(el).parents('form');
+                                                        par.get(0).reset();
+                                                        app.shopsp.list.do_search_shopsp_list();
+                                                    }
+                                                </script>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="clear"></div>
+                            <div class="shopsp_cont">
+                                
+                                <!--树-->
+                                <div class="col-xs-2 p-l-r-none tree_left">
+
+                                    <div class="row" id="shopf">
+                                        <div class="col-xs-12" style="padding-right:0px">
+                                            <div class="l-tree_head">
+                                                <ul class="">
+                                                    <li style="display:inline-block">商品分类</li>
+                                                    <li style="display:inline-block; float:right;"><span class="color_blue pad-r10" style="color:#0094ff" onclick="$.fn.menuTab.load({ url: '/spfl/list', 'title': '商品分类', id: 'spfl/list', nocache: '0' });">编辑</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div id="tree_left" class="p-b-30" style="height:550px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="close_tree  fa fa-chevron-left"></div>
+                                <div class="right_table col-xs-10" >
+                                    @*<div class="right_up">所属分类：<span>商品分类</span></div>*@
+
+                                    <div id="shopsp-list-list-fresh-box" class="p-l-r-none table_list" style="overflow:auto; padding-bottom:70px;">
+                                        @*<table class="table m-b-none row1 selectAll-table" id="view-manager-goods" onmouseover="$.DHB.func.listOperate(this);">*@
+                                        <table class="table m-b-none row1 selectAll-table sptable" id="view-manager-goods" onmouseover="$.DHB.func.listOperate(this);" style="table-layout:fixed;">
+                                            <thead>
+                                                <tr>
+                                                    <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+                                                        <label class="i-checks m-b-none">
+                                                            <input type="checkbox" id="check-btn-header" onclick="$.DHB.func.selectAllThis(this);">
+                                                            <i></i>
+                                                        </label>
+                                                    </th>
+                                                    <th width="55">序号</th>
+                                                    <th width="170">
+                                                        商品条码
+                                                    </th>
+                                                    <th width="200">
+                                                        商品名称
+                                                    </th>
+                                                    <th width="100">
+                                                        商品分类
+                                                    </th>
+                                                    <th width="55">
+                                                        单位
+                                                    </th>
+                                                    <th width="120">
+                                                        零售价
+                                                    </th>
+                                                    <th width="120">
+                                                        进货价
+                                                    </th>
+
+                                                    <th width="120">
+                                                        会员价
+                                                    </th>
+                                                    <th width="120">
+                                                        配送价
+                                                    </th>
+                                                    <th width="120">
+                                                        批发价
+                                                    </th>
+                                                    <th width="77">
+                                                        状态
+                                                    </th>
+                                                    <th  class="text-center" style="width:140px;">
+                                                        操作
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="goodslist-main-tbody">
+                                                @{
+                                                    if (list_shopsp == null || list_shopsp.Count == 0)
+                                                    {
+                                                        <tr>
+                                                            <td colspan="13" align="center">
+                                                                <img src="~/static/images/nodata.png" class="table_nodata">
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    else
+                                                    {
+                                                        int index = 1;
+                                                        foreach (var item in list_shopsp)
+                                                        {
+                                                            <tr id="row-goods-id-@item.id">
+                                                                <td class="table-p-l-sm align_center">
+                                                                    <label class="i-checks m-b-none">
+                                                                        <input type="checkbox" name="goods_id[]" value="@item.id" id_sp="@item.id_sp" onclick="$.DHB.func.selectSingle(this)" />
+                                                                        <i></i>
+                                                                    </label>
+
+                                                                </td>
+                                                                <td class="align_center">@(index++)</td>
+                                                                <td class="align_center">
+                                                                    <p class="list-link niceTitle cut-out color_blue" title="@item.barcode" onclick="$.fn.menuTab.load({ url: '/shopsp/detail?id=@item.id', 'title': '商品详情', id: 'shopsp/add', nocache: '0' }); ">@item.barcode</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="list-link niceTitle cut-out color_blue" title="@item.mc" onclick="$.fn.menuTab.load({ url: '/shopsp/detail?id=@item.id', 'title': '商品详情', id: 'shopsp/add', nocache: '0' }); ">@item.mc</p>
+                                                                </td>
+                                                                <td>
+                                                                    @item.spfl_mc
+                                                                </td>
+                                                                <td class="align_center">
+                                                                    @item.dw
+                                                                </td>
+                                                                <td class="align_right">
+                                                                    @item.dj_ls.Digit((int)digit["dj_digit"])
+                                                                </td>
+                                                                <td class="align_right">
+                                                                    @item.dj_jh.Digit((int)digit["dj_digit"])
+                                                                </td>
+
+                                                                <td class="align_right">
+                                                                    @item.dj_hy.Digit((int)digit["dj_digit"])
+                                                                </td>
+
+                                                                <td class="align_right">
+                                                                    @item.dj_ps.Digit((int)digit["dj_digit"])
+                                                                </td>
+
+                                                                <td class="align_right">
+                                                                    @item.dj_pf.Digit((int)digit["dj_digit"])
+                                                                </td>
+
+                                                                <td class="align_center">
+                                                                    @Html.Raw(selectListState.Where(d=>d.listdata == (int)item.flag_state).FirstOrDefault()==null?"": selectListState.Where(d => d.listdata == (int)item.flag_state).FirstOrDefault().listdisplay)
+                                                                </td>
+                                                                <td class="list-operate">
+                                                                    <div class="look-out1 supernatant position_static" style="width:140px;">
+                                                                        <div class="second-height-operate position_static">
+                                                                            @if (IsPermissionShow("copy", actionlist))
+                                                                            {
+                                                                                <a class="bg-state bg-state-info fa fa-copy " onclick="app.shopsp.copy_goods(this, '@item.id');" title="复制"></a>
+                                                                            }
+                                                                            @if (IsPermissionShow("edit", actionlist))
+                                                                            {
+                                                                                <a class="bg-state bg-state-info fa fa-pencil" onclick="app.shopsp.edit_goods(this, '@item.id');" title="编辑"></a>
+                                                                            }
+                                                                            @if (IsPermissionShow("delete", actionlist))
+                                                                            {
+                                                                                <a class="bg-state bg-state-info fa fa-trash" onclick="app.shopsp.delete_goods(this, '@item.id');" title="删除"></a>
+                                                                            }
+                                                                            @if (IsPermissionShow("list", actionlist))
+                                                                            {
+                                                                                <a class="bg-state bg-state-info fa fa-eye" title="查看" onclick="$.fn.menuTab.load({ url: '/shopsp/detail?id=@item.id', 'title': '商品详情', id: 'shopsp/add', nocache: '0' }); " style="margin-top: 5px;"></a>
+                                                                            }
+                                                                            
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        }
+
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                                    <footer class="panel-footer align_center">
+                                        <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                                    </footer>
+                            <div class="clear"></div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--批量修改商品信息-->
+<div class="modal fade in" id="modify_goods_info" role="dialog">
+    <div class="modal-dialog popshop" style="width:720px; margin-left:-360px;">
+        @*<div class="modal-content">*@
+        <div class="modal-header poptitle">
+            <button data-dismiss="modal" class="close" type="button" onclick="app.shopsp.goods_info_reset_close()">×</button>
+            <p class="name">修改商品信息</p>
+        </div>
+
+        <div class="modal-body tab-content popcontent">
+            <div style="">
+                <!-- 左边菜单 -->
+                <div style="height:400px;float:left;">
+                    <div class="main-nav" style="min-height:400px;">
+                        <ul id="goods_info_set" class="clearfix">
+                            <li class="active" data-tab-index="0" onclick="app.shopsp.goods_info_set(this);"><a href="javascript:;">设置商品分类</a></li>
+                            <li data-tab-index="1" onclick="app.shopsp.goods_info_set(this);" class=""><a href="javascript:;">设置商品状态</a></li>
+                            <li data-tab-index="2" onclick="app.shopsp.goods_info_set(this);" class=""><a href="javascript:;">设置商品价格</a></li>
+                            <li data-tab-index="3" onclick="app.shopsp.goods_info_set(this);" class=""><a href="javascript:;">设置库存预警</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 邮编菜单 -->
+                <div id="set-view" class="nav-view comform">
+
+                    <div style="display: block;">
+                        <h2 class="form_title"><span>设置商品分类</span></h2>
+
+                        <div class="m-l-xs1 form_content" id="modify-tree-category" style="height:290px;">
+
+                        </div>
+
+                    </div>
+
+                    <div style="display: none;" id="div_flag_state">
+                        <h2 class="form_title"><span>设置商品状态</span></h2>
+
+                        <label class="sub-label form_content" style="width: 260px">
+                            <select name="flag_state" id="flag_state" style="width:80px;">
+                                <option value="">请选择</option>
+                                @foreach (var item in selectListState.OrderBy(d => d.listsort))
+                                {
+                                    <option value="@item.listdata">@item.listdisplay</option>
+                                }
+                            </select>
+                        </label>
+
+                    </div>
+
+                    <div style="display: none;">
+                        <h2 class="form_title"><span>设置商品价格</span></h2>
+                        <div class="form_content" style="padding:20px 0px;">
+                            <table class="debit-note-info">
+                                <tbody>
+                                    <tr>
+                                        <td width="90" class="text-right">
+                                            <label class="m-b">
+                                                <span>进货价</span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="sub-label w-370 m-b m-l-sm1">
+                                                <input class="form-control  w-370 {required:true,maxlength:30}" placeholder="不调整则不输入" type="text" id="dj_jh" name="dj_jh" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')">
+                                            </label>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td width="90" class="text-right">
+                                            <label class="m-b">
+                                                <span>零售价</span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="sub-label w-370 m-b m-l-sm1">
+                                                <input class="form-control w-200 {maxlength:30,stringCheckTwo:true,check_categorynum_basecategory:true}" placeholder="不调整则不输入" type="text" id="dj_ls" name="dj_ls" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')">
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="90" class="text-right">
+                                            <label class="m-b">
+                                                <span>会员价</span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="sub-label w-370 m-b m-l-sm1">
+                                                <input class="form-control  w-370 {required:true,maxlength:30}" placeholder="不调整则不输入" type="text" id="dj_hy" name="dj_hy" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')">
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td width="90" class="text-right">
+                                            <label class="m-b">
+                                                <span>配送价</span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="sub-label w-370 m-b m-l-sm1">
+                                                <input class="form-control  w-370 {required:true,maxlength:30}" placeholder="不调整则不输入" type="text" id="dj_ps" name="dj_ps" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')">
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td width="90" class="text-right">
+                                            <label class="m-b">
+                                                <span>批发价</span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="sub-label w-370 m-b m-l-sm1">
+                                                <input class="form-control  w-370 {required:true,maxlength:30}" placeholder="不调整则不输入" type="text" id="dj_pf" name="dj_pf" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')">
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="display: none;">
+                        <h2 class="form_title"><span>设置库存预警</span></h2>
+                        <div class="form_content" style="padding:20px 0px;">
+                            <table class="debit-note-info">
+                                <tbody>
+                                    <tr>
+                                        <td width="90" class="text-right">
+                                            <label class="m-b">
+                                                <span>最底库存</span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="sub-label w-370 m-b m-l-sm1">
+                                                <input class="form-control w-200 {maxlength:30,stringCheckTwo:true,check_categorynum_basecategory:true}" placeholder="不调整则不输入" type="text" id="sl_kc_min" name="sl_kc_min" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" onblur="app.shopsp.onblur(this, '@digit["sl_digit"]')">
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="90" class="text-right">
+                                            <label class="m-b">
+                                                <span>最高库存</span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="sub-label w-370 m-b m-l-sm1">
+                                                <input class="form-control  w-370 {required:true,maxlength:30}" placeholder="不调整则不输入" type="text" id="sl_kc_max" name="sl_kc_max" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" onblur="app.shopsp.onblur(this, '@digit["sl_digit"]')">
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+        <div class="modal-footer popfooter align_center">
+            <button type="button" id="submit-button" data-loading-text="提交中..." onclick="app.shopsp.goods_info_reset_save('1');" class="btn btn-info w-xs">确定</button>
+            <button type="button" class="btn btn-default w-xs" data-dismiss="modal" onclick="app.shopsp.goods_info_reset_close()">取消</button>
+        </div>
+
+        @*</div>*@
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+
+    $.DHB._ = function () {
+        app.c.public_data['shopsp/list'] = app.c.public_data['shopsp/list'] || {};
+        if (app.c.public_data['shopsp/list']['once'] === false) {
+            app.c.public_data['shopsp/list']['once'] = true;
+            jQuery(function ($) {
+                $(_ + '#batch-set-price #btn-brush-price').removeAttr('disabled');
+            });
+            $.DHB.checkForm('fm-brush-price', function () {
+                var btn = $(_ + '#batch-set-price #submit-button').button('loading');
+                $fm = $(_ + "#batch-set-price #fm-brush-price");
+                $.post($fm.attr('action'), $fm.serialize(), function (json) {
+                    if (json.status == 'success') {
+                        $.DHB.message({ 'content': json.message, 'time': 1000, 'type': 's' });
+                        $.DHB.refresh();
+                    } else {
+                        $.DHB.message({ 'content': json.message, 'time': 0, 'type': 'e' });
+                        btn.button("reset");
+                    }
+                }, 'json');
+                return false;
+            });
+        }
+    };
+
+
+
+    app.shopsp.list_ready = function () {
+        $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+            app.shopsp.bind_spfl_tree();
+            
+        });
+        
+        //关闭左侧菜单
+        $('#shopsp-list-list-fresh-box', _).height($('.tree_left', _).height());
+        //改掉他动态生成的高度让他对齐
+        $("#shopsp-list-list-fresh-box").css("height", "604px");
+        $('.close_tree', _).click(function () {
+            $(this).parent().toggleClass('close_t');
+        });
+        //点击排序按钮
+        app.shopsp.list_sort_ui = function (tt) {
+            $t = tt;
+            var $current_sort = $t.attr('slag');
+            if ($current_sort == 0) {
+                $t.attr('slag', '1');
+                $t.find('i').remove();
+                $t.append(app.sort_icon.asc);
+            } else if ($current_sort == 1) {
+                $t.attr('slag', '0');
+                $t.find('i').remove();
+                $t.append(app.sort_icon.desc);
+            }
+        }
+        $('.table_list a', _).click(function () {
+            var aa = $(this);
+            app.shopsp.list_sort_ui(aa);
+        })
+        $('.table_list th a[data-sort=shopsp]', _).append(app.sort_icon.sort);
+    };
+
+    //批量修改商品分类
+    app.shopsp.modify_goods_category = function (obj) {
+        $(obj).trigger('blur');
+        var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+        if (goods.length < 1) {
+            $.DHB.message({ content: '请至少选择一项！', type: 'i' });
+            return false;
+        } else {
+            var selectListSPFL = '@Html.Raw(selectListSPFL)';
+            var categoryTree = JSON.parse(selectListSPFL);
+            var treeData = {
+                el: '#modify-tree-category', title: '请选择分类', name: 'id_spfl', data: categoryTree, width: 400, callback: function (cur, el) {
+                    el.find('button').removeClass('error');
+                }, class: '{required:true}', has_title: false, open: true
+            };
+            $.DHB.tree(treeData);
+            $(_ + "#modify-goods-category").modal('show');
+        }
+    };
+
+    //批量设置预警值
+    app.shopsp.define_goods_inventory = function (obj) {
+        $(obj).trigger('blur');
+        var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+        if (goods.length < 1) {
+            $.DHB.message({ content: '请至少选择一项！', type: 'i' });
+            return false;
+        } else {
+            $(_ + "#define-goods-inventory").modal('show');
+        }
+    };
+
+    //设置生命周期
+    app.shopsp.define_goods_flag_state = function (obj) {
+        $(obj).trigger('blur');
+        var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+        if (goods.length < 1) {
+            $.DHB.message({ content: '请至少选择一项！', type: 'i' });
+            return false;
+        } else {
+            $(_ + "#define-goods-flag_state").modal('show');
+        }
+    };
+
+    //批量修改价格
+    app.shopsp.define_goods_dj = function (obj) {
+        $(obj).trigger('blur');
+        var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+        if (goods.length < 1) {
+            $.DHB.message({ content: '请至少选择一项！', type: 'i' });
+            return false;
+        } else {
+            $(_ + "#define-goods-dj").modal('show');
+        }
+    };
+
+    //删除商品-批量
+    app.shopsp.delete_goods_dialog = function (obj) {
+        $(obj).trigger('blur');
+        var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+        if (goods.length < 1) {
+            $.DHB.message({ content: '请至少选择一项！', type: 'i' });
+            return false;
+        } else {
+            $.messager.confirm("确认信息", "<p>没发生任何业务的商品才能删除。</p><p>您确认删除选中商品？</p>", function () {
+                ////删除
+                var options = {
+                    data: {
+                        spIDs: goods.join(',')
+                    },
+                    url: $.DHB.U('/shopsp/delete'),
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (json, textStatus, jqXHR) {
+                        $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e'), time: json.status != 'success' || typeof (json.type) != 'undefined' ? 3000 : 1000 });
+                            if (json.status == 'success') {
+                                $.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品资料', id: 'shopsp/list', nocache: '1' });
+                            }
+                    },
+                    complete: function (XHR, TS) { }
+                };
+                app.httpAjax.post(options)
+            });
+        }
+    };
+
+    //删除商品-单条
+    app.shopsp.delete_goods = function (obj, goods_id) {
+        $(obj).trigger('blur');
+        $.messager.confirm("确认信息", "<p>没发生任何业务的商品才能删除。</p><p>您确认删除选中商品？</p>", function () {
+
+            var options = {
+                data: {
+                    spIDs: goods_id
+                },
+                url: $.DHB.U('/shopsp/delete'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (json, textStatus, jqXHR) {
+                    if (json.status == 'success') {
+                        $.DHB.message({ content: json.message, 'time': 4000, type: (json.status == 'success' ? 's' : 'e') });
+                        $(_ + "#shopsp-list-list-fresh-box #row-goods-id-" + goods_id).remove();
+                    } else {
+                        $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e'), time: 0 });
+                    }
+                },
+                complete: function (XHR, TS) { }
+            };
+            app.httpAjax.post(options)
+
+        });
+    };
+
+    //Form 提交时的处理
+    app.shopsp.goods_apply = function (obj, apply) {
+        $(obj).trigger('blur');
+        var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+        var vals = [];
+        var val = '';
+        if (goods.length == 0) {
+            $.DHB.message({ content: '请至少选择一件商品！', type: 'i' });
+            return false;
+        }
+
+        if (apply == 'id_spfl') {
+            //修改商品分类
+            vals.push($(_ + "#modify-goods-category [name='id_spfl']").val());
+            val = vals.toString();
+            if (vals.length == 0) {
+                $.DHB.message({ content: '请至少选择一项操作！', type: 'i' });
+                return false;
+            }
+            $.post("/shopsp/batchsave", {
+                spIDs: goods.toString(),
+                id_spfl: val
+            }, function (json) {
+                if (json.status == 'success') {
+                    $.DHB.refresh();
+                }
+            }, 'json');
+
+        }
+        else if (apply == 'sl_kc_min_max') {
+            //批量定义库存预警的条件
+            var sl_kc_min = $(_ + '#sl_kc_min').val();
+            var sl_kc_max = $(_ + '#sl_kc_max').val();
+            if (sl_kc_min == '' && sl_kc_max == '') {
+                $.DHB.message({ content: '请至少选择一项操作！', type: 'i' });
+                return false;
+            }
+            //清空值
+            $(_ + '#sl_kc_min').val('');
+            $(_ + '#sl_kc_max').val('');
+
+            $.post("/shopsp/batchsave", {
+                spIDs: goods.toString(),
+                sl_kc_min: sl_kc_min,
+                sl_kc_max: sl_kc_max
+            }, function (json) {
+                if (json.status == 'success') {
+                    $.DHB.refresh();
+                }
+            }, 'json');
+
+        } else if (apply == 'flag_state') {
+            //批量定义生命周期
+            vals.push($(_ + '#define-goods-flag_state #flag_state').val());
+            val = vals.toString();
+            if (vals.length == 0) {
+                $.DHB.message({ content: '请至少选择一项操作！', type: 'i' });
+                return false;
+            }
+            if (!$(_ + '#define-goods-flag_state #flag_state').val()) {
+                $.DHB.message({ content: '请先选择商品状态！', type: 'i' });
+                return false;
+            }
+
+            $.post("/shopsp/batchsave", {
+                spIDs: goods.toString(),
+                flag_state: val
+            }, function (json) {
+                if (json.status == 'success') {
+                    $.DHB.refresh();
+                }
+            }, 'json');
+        }
+        else if (apply == 'dj') {
+            //批量定义库存预警的条件
+            var dj_ls = $(_ + '#dj_ls').val();
+            var dj_jh = $(_ + '#dj_jh').val();
+            if (dj_ls == '' && dj_jh == '') {
+                $.DHB.message({ content: '请至少选择一项操作！', type: 'i' });
+                return false;
+            }
+            //清空值
+            $(_ + '#dj_ls').val('');
+            $(_ + '#dj_jh').val('');
+
+            $.post("/shopsp/batchsave", {
+                spIDs: goods.toString(),
+                dj_ls: dj_ls,
+                dj_jh: dj_jh
+            }, function (json) {
+                if (json.status == 'success') {
+                    $.DHB.refresh();
+                    //setTimeout(function () { $.DHB.refresh('page'); }, 1500);
+                }
+            }, 'json');
+
+        }
+        return;
+
+    };
+
+    //批量导出
+    app.shopsp.goods_export_select = function (obj) {
+        //$(obj).trigger('blur');
+        //var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+        //if (goods.length == 0) {
+        //    $.DHB.message({ content: '请至少选择一件商品！', type: 'i' });
+        //    return false;
+        //}
+        //else {
+        //    window.location.href = $.DHB.U('/shopsp/export', { spIDs: goods.join(',') });
+        //}
+
+        // 改为全部导出 lz add 20161012
+        $(obj).trigger('blur');
+        var keyword = $(_ + "#keyword").val();
+        var id_spfl = $(_ + "#id_spfl").val();
+        window.location.href = $.DHB.U('/shopsp/export', { spIDs: '', keyword: keyword, id_spfl: id_spfl });
+
+    };
+
+    //复制商品
+    app.shopsp.copy_goods = function (obj, goods_id) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/shopsp/copy?id=' + goods_id, 'title': '商品复制', id: 'shopsp/add', nocache: '0' });
+    };
+
+    //修改商品
+    app.shopsp.edit_goods = function (obj, goods_id) {
+        var page = app.c.public_data['shopsp/list']['_current_page_'];
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/shopsp/edit?id=' + goods_id + '&page=' + page, 'title': '商品编辑', id: 'shopsp/add', nocache: '0' });
+    };
+
+
+    //绑定左侧商品分类树#modify_goods_info
+    app.shopsp.bind_spfl_tree = function () {
+        var tree_selector = '#tree_left';
+
+        $(_ + tree_selector)
+            .jstree("destroy")
+            .jstree({
+                'core': {
+                    'data': {
+                        'url': function (obj) {
+                            var type = $.trim($('#hid_type').val());
+                            return '/shopsp/get_left_tree?rd=' + new Date().getTime() + '&type=' + type;
+                        }
+                    },
+                    "themes": {
+                        "theme": "proton",
+                        "dots": true,
+                        "icons": true,
+                    },
+                }
+            })
+            .on('ready.jstree', function (e, obj) {
+                obj.instance.select_node({ "id": "0" }, true, false);
+                obj.instance.open_node({ "id": "0" });
+                window.localStorage.setItem('id_spfl', '0');
+                //$('#shopsp-list-list-fresh-box', _).height($('.tree_left').height());
+            })
+            .on("changed.jstree", function (e, data) {
+                
+                if (data.selected && data.selected.length) {
+                    var i, j, r = [];
+                    for (i = 0, j = data.selected.length; i < j; i++) {
+                        r.push(data.instance.get_node(data.selected[i]).id);
+                    }
+                    //TODO：赋值到hidden，触发查询事件等
+                    $(_ + "#id_spfl").val(r.join(''));
+                    window.localStorage.setItem('id_spfl', r.join(''));
+                    //
+                    app.shopsp.list.do_search_shopsp_list();
+
+                }
+            });
+
+
+    }
+
+
+
+
+    //批量修改商品-统一集成在此
+    app.shopsp.modify_goods_info = function (obj) {
+        $(obj).trigger('blur');
+        var goods = $.DHB.func.getSelectedAttr(".selectAll-table", "value");
+        if (goods.length < 1) {
+            $.DHB.message({ content: '请至少选择一项！', type: 'i' });
+            return false;
+        } else {
+            var selectListSPFL = '@Html.Raw(selectListSPFL)';
+            var categoryTree = JSON.parse(selectListSPFL);
+            //
+            var treeData = {
+                el: '#modify-tree-category', title: '请选择分类', name: 'id_spfl', data: categoryTree, width: 400, callback: function (cur, el) {
+                    el.find('button').removeClass('error');
+                }, class: '{required:true}', has_title: false, open: true
+            };
+            $.DHB.tree(treeData);
+            $(_ + "#modify_goods_info").modal('show');
+        }
+    };
+
+
+    /*
+    * 修改商品信息
+    */
+    app.shopsp.goods_info_set = function (el) {
+        app.shopsp.goods_info_reset_save('0');
+        app.shopsp.goods_info_reset_class(el);
+    };
+
+    app.shopsp.goods_info_reset_class = function (el) {
+
+        app.shopsp.goods_info_reset();
+
+        $(el).siblings('.active').removeClass('active');
+        $(el).addClass('active');
+
+        $(_ + '#set-view > div').hide();
+        $(_ + '#set-view > div').eq($(el).attr('data-tab-index')).show();
+    };
+
+    app.shopsp.goods_info_reset = function () {
+
+        var selectListSPFL = '@Html.Raw(selectListSPFL)';
+        var categoryTree = JSON.parse(selectListSPFL);
+        var treeData = {
+            el: '#modify-tree-category', title: '请选择分类', name: 'id_spfl', data: categoryTree, width: 400, callback: function (cur, el) {
+                el.find('button').removeClass('error');
+            }, class: '{required:true}', has_title: false, open: true
+        };
+        $.DHB.tree(treeData);
+
+        $(_ + '#div_flag_state #flag_state').val('');
+
+        $(_ + '#dj_ls').val('');
+        $(_ + '#dj_jh').val('');
+        $(_ + '#dj_hy').val('');
+        $(_ + '#dj_ps').val('');
+        $(_ + '#dj_pf').val('');
+
+        $(_ + '#sl_kc_min').val('');
+        $(_ + '#sl_kc_max').val('');
+
+    };
+
+
+    app.shopsp.goods_info_reset_save = function (ifSub) {
+        
+
+        var old_index = $(_ + "#goods_info_set").find('li[class="active"]').attr('data-tab-index');
+        var id_spfl = $(_ + "#set-view input[name='id_spfl']").val();
+        var flag_state = $(_ + '#div_flag_state #flag_state').val();
+        var dj_jh = $(_ + '#dj_jh').val();
+        var dj_ls = $(_ + '#dj_ls').val();
+        var dj_hy = $(_ + '#dj_hy').val();
+        var dj_ps = $(_ + '#dj_ps').val();
+        var dj_pf = $(_ + '#dj_pf').val();
+        
+        var sl_kc_min = $(_ + '#sl_kc_min').val();
+        var sl_kc_max = $(_ + '#sl_kc_max').val();
+
+        if (old_index == '0') {
+            if (id_spfl != '') {
+                $.messager.confirm("确认信息", "设置商品分类已经变动,是否要保存？", function () {
+                    //修改商品分类
+                    var goods = app.shopsp.get_select_id_sp();
+                    var vals = [];
+                    var val = '';
+                    if (goods.length == 0) {
+                        $.DHB.message({ content: '请至少选择一件商品！', 'time': 4000, type: 'i' });
+                        return false;
+                    }
+                    vals.push(id_spfl);
+                    val = vals.toString();
+                    if (vals.length == 0) {
+                        $.DHB.message({ content: '请至少选择一项操作！', 'time': 4000, type: 'i' });
+                        return false;
+                    }
+
+                    var options = {
+                        data: { spIDs: goods.toString(),id_spfl: val },
+                        url: $.DHB.U('/shopsp/BatchEdit'),
+                        type: "POST",
+                        datatype: 'json',
+                        beforeSend: function () {},
+                        success: function (json, textStatus, jqXHR) {
+                                if (json.status == 'success') {
+                                    $.DHB.message({ content: '操作成功！', 'time': 4000, type: 's' });
+                                    if (ifSub == '1') {
+                                        $.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品资料', id: 'shopsp/list', nocache: '1' });
+                                    }
+                                } else {
+                                    $.DHB.message({ 'content': json.message, 'time': 4000, 'type': 'e' });
+                                }
+                        },
+                        complete: function (XHR, TS) { }
+                    };
+                    app.httpAjax.post(options)
+
+                });
+            }
+            else {
+                if (ifSub == '1') {
+                    $.DHB.message({ content: '请选择商品分类！', 'time': 4000, type: 'i' });
+                }
+            }
+        }
+        else if (old_index == '1') {
+            if (flag_state == '1' || flag_state == '2' || flag_state == '9') {
+                $.messager.confirm("确认信息", "<p>设置商品状态已经变动,是否要保存？</p>", function () {
+                    //修改生命周期
+                    var goods = app.shopsp.get_select_id_sp();
+                    var vals = [];
+                    var val = '';
+                    if (goods.length == 0) {
+                        $.DHB.message({ content: '请至少选择一件商品！', 'time': 4000, type: 'i' });
+                        return false;
+                    }
+                    vals.push(flag_state);
+                    val = vals.toString();
+                    if (vals.length == 0) {
+                        $.DHB.message({ content: '请至少选择一项操作！', 'time': 4000, type: 'i' });
+                        return false;
+                    }
+                    var options = {
+                        data: { spIDs: goods.toString(), flag_state: val },
+                        url: $.DHB.U('/shopsp/BatchEdit'),
+                        type: "POST",
+                        datatype: 'json',
+                        beforeSend: function () { },
+                        success: function (json, textStatus, jqXHR) {
+                                if (json.status == 'success') {
+                                    $.DHB.message({ content: '操作成功！', 'time': 4000, type: 's' });
+                                    if (ifSub == '1') {
+                                        $.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品资料', id: 'shopsp/list', nocache: '1' });
+                                    }
+                                } else {
+                                    $.DHB.message({ 'content': json.message, 'time': 4000, 'type': 'e' });
+                                }
+                        },
+                        complete: function (XHR, TS) { }
+                    };
+                    app.httpAjax.post(options)
+
+                });
+            } else {
+                if (ifSub == '1') {
+                    $.DHB.message({ content: '请选择商品商品状态！', 'time': 4000, type: 'i' });
+                }
+            }
+        }
+        else if (old_index == '2') {
+            if (dj_jh != '' || dj_ls != '' || dj_hy != ''||dj_ps!=''||dj_pf!='') {
+                $.messager.confirm("确认信息", "<p>设置商品价格已经变动,是否要保存？</p>", function () {
+                    //修改商品价格
+                    var goods = app.shopsp.get_select_id_sp();
+                    var vals = [];
+                    var val = '';
+                    if (goods.length == 0) {
+                        $.DHB.message({ content: '请至少选择一件商品！', 'time': 4000, type: 'i' });
+                        return false;
+                    }
+                    var options = {
+                        data: {
+                            spIDs: goods.toString(),
+                            dj_ls: dj_ls,
+                            dj_jh: dj_jh,
+                            dj_hy: dj_hy,
+                            dj_ps: dj_ps,
+                            dj_pf: dj_pf
+                        },
+                        url: $.DHB.U('/shopsp/BatchEdit'),
+                        type: "POST",
+                        datatype: 'json',
+                        beforeSend: function () { },
+                        success: function (json, textStatus, jqXHR) {
+                            
+                            if (json.status == 'success') {
+                                $.DHB.message({ content: '操作成功！', 'time': 4000, type: 's' });
+                                if (ifSub == '1') {
+                                    $.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品资料', id: 'shopsp/list', nocache: '1' });
+                                }
+                            } else {
+                                $.DHB.message({ 'content': json.message, 'time': 4000, 'type': 'e' });
+                            }
+                        },
+                        complete: function (XHR, TS) { }
+                    };
+                    app.httpAjax.post(options)
+
+                });
+            } else {
+                if (ifSub == '1') {
+                    $.DHB.message({ content: '请至少填写一个商品价格！', 'time': 4000, type: 'i' });
+                }
+            }
+        }
+        else if (old_index == '3') {
+            if (sl_kc_min != '' || sl_kc_max != '') {
+                $.messager.confirm("确认信息", "<p>设置库存预警已经变动,是否要保存？</p>", function () {
+                    //批量定义库存预警的条件
+                    var goods = app.shopsp.get_select_id_sp();
+                    var vals = [];
+                    var val = '';
+                    if (goods.length == 0) {
+                        $.DHB.message({ content: '请至少选择一件商品！', 'time': 4000, type: 'i' });
+                        return false;
+                    }
+                    var options = {
+                        data: {
+                            spIDs: goods.toString(),
+                            sl_kc_min: sl_kc_min,
+                            sl_kc_max: sl_kc_max
+                        },
+                        url: $.DHB.U('/shopsp/BatchEdit'),
+                        type: "POST",
+                        datatype: 'json',
+                        beforeSend: function () { },
+                        success: function (json, textStatus, jqXHR) {
+                            if (json.status == 'success') {
+                                $.DHB.message({ 'content': '操作成功！', 'time': 4000, 'type': 's' });
+                                if (ifSub == '1') {
+                                    $.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品资料', id: 'shopsp/list', nocache: '1' });
+                                }
+                            } else {
+                                $.DHB.message({ 'content': json.message, 'time': 4000, 'type': 'e' });
+                            }
+                        },
+                        complete: function (XHR, TS) { }
+                    };
+                    app.httpAjax.post(options)
+
+                });
+            } else {
+                if (ifSub == '1') {
+                    $.DHB.message({ content: '请至少填写一个库存预警值！', 'time': 4000, type: 'i' });
+                }
+            }
+        }
+
+
+    };
+
+    app.shopsp.onblur = function (e, num) {
+        var data = $(e).val();
+
+        if (typeof (data) != 'undefined' && data != '') {
+            $(e).val(limit_num($.trim(data), num));
+        } else {
+            $(e).val('');
+        }
+    };
+
+    app.shopsp.goods_info_reset_close = function (ifSub) {
+        $(_ + "#modify_goods_info").modal('hide');
+    }
+
+
+    app.shopsp.get_select_id_sp = function () {
+        var info = '';
+        var ids = '';
+        var id_sps = '';
+
+        $('#goodslist-main-tbody>tr', _).each(function (i, item) {
+            var checkbox = $(this).find('input[type=checkbox]')[0];
+            
+            if (checkbox.checked)
+            {
+                if (ids == '') {
+                    ids = ids + $(checkbox).attr("value");
+                } else {
+                    ids = ids + ','+$(checkbox).attr("value");
+                }
+                if (id_sps == '') {
+                    id_sps = id_sps + $(checkbox).attr("id_sp");
+                } else {
+                    id_sps = id_sps + ',' + $(checkbox).attr("id_sp");
+                }
+            }
+        });
+
+        if (ids != '' || id_sp != '')
+        {
+            info = ids + '|' + id_sps;
+        }
+
+        return info;
+    }
+
+</script>
+

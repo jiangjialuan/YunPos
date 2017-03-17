@@ -1,0 +1,350 @@
+﻿@using CySoft.Model.Ts
+@{
+    Layout = null;
+    var versionList = ViewData["versionList"] as List<Ts_Flag>;
+    versionList = versionList ?? new List<Ts_Flag>();
+    SelectList selectList = new SelectList(versionList, "listdata", "listdisplay");
+    var industryList= ViewData["industryList"] as List<Ts_Flag>;
+    industryList = industryList ?? new List<Ts_Flag>();
+    SelectList industry_selectList = new SelectList(industryList, "listdata", "listdisplay");
+    var RegisterSource = string.Format("{0}", ViewData["RegisterSource"]);
+}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <!--[if lte IE 9]><script>window.location.replace("http://yun.pos.cn/download.html");</script><![endif]-->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>云POS注册</title>
+    <meta name="description" content="云POS注册" />
+    @Styles.Render(
+    "~/static/css/register/register.css",
+    "~/static/bootstrap/bootstrap.min.css")
+</head>
+<body style="background:url('../../manager/img/login/login_bg.jpg') repeat-x top center;">
+    @*<div class="header clearfix" style="background: url('../static/images/register/login-bg.jpg')">
+        <img src="/Manager/img/login/login-logo.png" alt="" class="logo">
+        <h4 class="company-name">欢迎使用云POS</h4>
+    </div>*@
+    <div class="header login_logo"><img src="~/manager/img/login/login_login.png" /></div>
+    <div class="con-row"  style="min-height:700px;">
+        <div class="login_content_bg">
+            <div class="content clearfix" id="pagelogin">
+                <form action="" class="form forget" id="register-first">
+                    <div>
+                        @*<p class="form-title" style="margin-bottom: 20px;">注册后，即可使用产品，并有客户经理提供咨询服务</p>*@
+                        @if (RegisterSource.ToLower() == "singleshopregister")
+                        {
+                            <input type="hidden" name="version" id="version" value="10" />
+                            <input type="hidden" name="RegisterSource" id="RegisterSource" value="SingleShopRegister" />
+                        }
+                        else
+                        {
+                            <div class="login-block cleafix">
+                                <div class="input-name">
+                                    版本
+                                </div>
+                                @Html.DropDownList("version", selectList, new Dictionary<string, object>()
+                            {
+                                {"class", "register-item"}
+                            })
+                            </div>
+                        }
+                        <div class="login-block cleafix">
+                            <div class="input-name">
+                                行业
+                            </div>
+                            @Html.DropDownList("industry", industry_selectList, new Dictionary<string, object>()
+                                {
+                                    {"class", "register-item"}
+                                })
+                        </div>
+                        <p class="warn-info  error" id="error"><i></i><label></label></p>
+                        <div class="login-block cleafix">
+                            <div class="input-name">
+                                推荐码
+                            </div>
+                            <input type="text" name="dealer" class="phone" maxlength="30" placeholder="请输入经销商推荐码，可不填">
+                        </div>
+                        <!--登录账号-->
+                        <p class="warn-info  error" id="error"><i></i><label></label></p>
+                        <div class="login-block cleafix">
+                            <div class="input-name">
+                                <em>*</em>帐号
+                            </div>
+                            <input type="text" id="phone" name="phone" class="phone" maxlength="12" placeholder="请输入手机号">
+                        </div>
+                        <p class="warn-info error" id="error1"><i></i><label></label></p>
+                        <div class="login-block cleafix">
+                            <div class="input-name">
+                                <em>*</em>密码
+                            </div>
+                            <input type="password" name="password" placeholder="密码长度不少于6位" class="register-item register-password" maxlength="20">
+                        </div>
+                        <p class="warn-info error" id="error2"><i></i><label></label></p>
+                        <div class="login-block cleafix">
+                            <div class="input-name">
+                                <em>*</em>确认密码
+                            </div>
+                            <input type="password" placeholder="必须与密码一致" class="register-item register-password-confirm " maxlength="20">
+                        </div>
+                        <p class="warn-info error" id="error3"><i></i><label></label></p>
+                        <div class="login-block cleafix m-b-sm">
+                            <div class="input-name">
+                                识别码
+                            </div>
+                            <input type="text" name="img_code" class="recognition-code" maxlength="4">
+                            <div class="code">
+                                <img class="btn_img_code left15" alt="图片识别码" src="/utility/vaildcode?t=@Guid.NewGuid().ToString("N").Substring(0, 6)" title="点击刷新" onclick="javascript: refreshCode(this);">
+                            </div>
+                        </div>
+                        <p class="warn-info error" id="error4"><i></i><label></label></p>
+                        <div class="login-block cleafix">
+                            <div class="input-name">
+                                短信验证码
+                            </div>
+                            <input type="text" name="phonevaildcode" class="verification-code" maxlength="4">
+                            <div class="verification-code-btn">
+                                获取短信验证码
+                            </div>
+                        </div>
+                        <!--错误提示-->
+                        <div class="warn" style="display:none;">
+                            <p class="warn-info" id="success" style="color:red">请阅读并同意《用户服务协议》</p>
+                        </div>
+                        <div class="login_checkbox">
+                            <label class="i-checks f-l">
+                                <input type="checkbox" class="login_checks" name="isAgree" id="rules" style="vertical-align:middle;" />
+                                <span style="font-weight:normal">我已阅读并同意</span><a class="" href="###" style="font-weight:normal; color:#0f7ef1;">《用户服务协议》</a>
+                            </label>
+                        </div>
+                        <div class="clearFix login-go next">
+                            <a class="next-step" href="javascript:;">立即注册</a>
+                        </div>
+                        @if (RegisterSource.ToLower() == "singleshopregister")
+                        {
+                        }
+                        else
+                        {
+                            <div class="login-block cleafix m-t-lg">
+                                <div class="f-l info">
+                                    已有账号，<a href="login" class="to-login">去登录</a>
+                                </div>
+                                @*<div class="f-r">
+                                    <a href="reset" class="to-find-pwd">找回密码</a>
+                                </div>*@
+                            </div>
+                        }
+
+                    </div>
+
+                </form>
+            </div>
+            
+            <div id="page_login2">
+                <div class="page_login2_main">
+                    <h1 class="align_center">云POS服务协议</h1>
+                    <p>云POS是由广州市超赢信息科技有限公司（以下简称超赢科技）在该公司云POS（pos.cn）网站上管理商家进、销、存、收银、会员等专业化管理服务的平台。若您注册申请云POS账户并使用相应服务，您必须首先同意此协议。</p>
+                    <p class="title">一、接受</p>
+                    <p>
+                        （1）当您使用本网站服务时，即表明您已知晓并且同意遵循《云POS服务协议》之所有约定，包括本网站对服务条款所作的任何修改。除另行明确声明外，本网站任何服务范围或功能的变化均受服务条款约束；<br />
+
+                        （2）此协议在必要时可修改服务条款，并在网站进行公告，无需另行单独通知您，一经公告，立即生效。如您继续使用服务，则视为您已接受修订的服务条款，如您不同意相关变更，必须停止使用服务;<br />
+
+                        （3）如果您拒绝接受新的协议，您必须放弃使用云POS提供的服务；若您继续使用云POS提供的服务，则表明您接受新的协议；<br />
+
+                        （4）除非特别声明，某些增强服务的新功能将适用此协议；<br />
+
+                        （5）此协议只有超赢科技的书面授权人员才可以修改。
+                    </p>
+                    <p class="title">二、服务内容</p>
+                    <p>
+                        （1）此协议所述服务仅在云POS网站内有效。云POS网站是指pos.cn及其所属网页；<br />
+
+                        （2）云POS为付费账户服务内容： 咨询服务及支持；培训帮助;<br />
+
+                        （3）云POS有权根据实际情况随时调整服务内容，并无需对任何人或第三方负责。<br />
+                    </p>
+                    <p class="title">三、账户</p>
+                    <p>
+                        (1) 云POS的账户是能够承担相应法律责任的公司或个人。若您不具备此资格，请不要使用云POS提供的服务；<br />
+
+                        (2) 云POS要求账户在使用服务时必须遵守相关法律法规，但对账户使用服务所产生的纠纷不负法律责任；<br />
+
+                        (3) 云POS有权依据自己的判断随时中断对某一账户的服务；<br />
+
+                        (4) 云POS的服务将不提供给那些被云POS临时或永久取消会员资格的公司或个人。
+                    </p>
+                    <p class="title">
+                        四、费用
+                    </p>
+                    <p>
+                        （1）云POS账户服务的具体收费标准详见云POS网站上公布的产品版本报价；<br />
+
+                        （2）所有开通付费功能的账户（以下简称付费账户）须提前向云POS支付相应服务的足额费用后，方可享受相应服务;<br />
+
+                        （3）服务届满时，云POS会提前20天通知付费账户，付费账户须在服务届满日前续费，届满后内仍未续费的付费账户，云POS有权暂停或终止本协议；<br />
+
+                        （5）云POS有权根据实际情况单方调整价格标准和支付条件。 可在云POS网站通知；<br />
+
+                        （6）付费账户在服务开通到期满续约之前，不受在此期间云POS服务价格的影响；<br />
+
+                        （7）付费账户如在服务期满前请求终止账户服务，剩余费用不予退还；<br />
+
+                        （8）在付费账户欠费的情况下，云POS有权暂停或终止本协议，并将终止该账户与服务的连接。在该账户拖欠缴费的情况下，云POS没有义务替账户保留客户数据，这些客户数据有可将被永久删除，对此超赢科技不承担任何责任。
+                    </p>
+                    <p class="title">
+                        五、服务期限
+                    </p>
+                    <p>
+                        （1）付费账户服务有效期分为一年，自付费账户服务生效之日起计算。期满服务终止，付费账户可按约定续约或者升级，否则自动停止服务；
+
+                        （2）云POS有权判定账户的行为是否符合《云POS服务协议》的要求，如果账户违背了该《云POS服务协议》的规定，云POS有权决定取消该云POS账户资格与服务或者采取其他云POS认为合适的措施。
+                    </p>
+                    <p class="title">
+                        六、续约
+                    </p>
+                    <p>付费账户在服务届满前，可按最新的云POS账户服务说明和账户服务协议的规定向云POS提出续签付费版账户服务申请。申请通过云POS的审核且按约定支付相关费用后，账户服务顺延。</p>
+                    <p class="title">七、服务终止</p>
+                    <p>云POS有权在告知或未经告知的情况时，在下列情形下随时终止、取消或拒绝账户服务。一旦您的账户服务被终止，您将不能在云POS发布信息，也不能让别人代为发布信息；同时您在云POS的注册资料及所有相关信息均会被删除或丢弃。对于账户的以下行为，云POS有权暂停或终止对其的服务：</p>
+                    <p>
+                        （1）账户违反了此协议或已在约定范围内的任一条款；<br />
+
+                        （2）根据此协议相关说明而终止服务；<br />
+
+                        （3） 利用云POS的公告发布功能滥发重复信息；<br />
+
+                        （4）未经请求或授权向云POS账户发送大量与业务不相关的信息；<br />
+
+                        （5）冒用其他企业的名义发布商业信息，进行商业活动；<br />
+
+                        （6）攻击云POS的数据、网络或服务；<br />
+
+                        （7）盗用他人在云POS上的账户名和/或密码。
+                    </p>
+                    <p>以下信息是严格禁止并绝对终止账户服务的：</p>
+                    <p>
+                        （1）有关宗教、种族或性别的贬损言辞；<br />
+
+                        （2）骚扰、滥用或威胁其他账户；<br />
+
+                        （3）侵犯任何第三方著作权、专利、商标、商业秘密或其它专有权利、发表权或隐私权的信息；<br />
+
+                        （4）其它任何违反互联网相关法律法规的信息。
+                    </p>
+                    <p class="title">八、安全策略</p>
+                    <p>
+                        （1）云POS采取安全策略。如果账户触发了云POS的安全机制，将被暂时或永久禁止再次访问云POS;<br />
+
+                        （2）登录名，密码和安全。
+                    </p>
+                    <p>在注册过程中，您可自主选择一个登录名和密码，并须对其保密性负责，同时对使用该登录名和密码的所有活动负责。您同意：</p>
+                    <p>
+                        1）对非授权使用您的登录名及密码以及其他破坏安全性的行为，账户有责任立即向云POS报知；<br />
+
+                        2）确保每次使用云POS后正确地离开该站点。云POS对您因没有遵守此协议而造成的损失不负任何法律责任。
+                    </p>
+                    <p class="title">九、账户的权利和义务</p>
+                    <p>
+                        （1）账户服务生效后，账户就可享受其购买的相应服务内容。<br />
+
+                        （2）账户在使用云POS网站提供的相应服务时必须保证遵守当地及中国有关法律法规的规定；不得利用该网站进行任何非法活动；遵守所有与使用该网站有关的协议、规定、程序和惯例；<br />
+
+                        （3）账户如需修改自己的账户信息资料，必须接受云POS的审核与批准。如果账户使用虚假的账户信息资料，云POS有权终止其服务；<br />
+
+                        （4）账户对输入数据的准确性、可靠性、合法性、适用性等负责；云POS尽最大限度为客户的所有数据保密、定期备份；<br />
+
+                        （5）对由于账户在使用云POS服务的过程中，违反本协议或通过提及而纳入本协议的条款和规则或账户违反任何法律或第三方的权利而产生或引起的每一种类和性质的任何索赔、要求、诉讼、损失和损害（实际、特别及后果性的）而言，无论是已知或未知的，包括合理的律师费，账户同意就此对超赢科技、云POS、员工、所有者及代理进行补偿并使其免受损害。<br />
+
+                        (6) 您承诺：<br />
+                        1、如果您使用云POS服务进行的经营活动需要获得国家有关部门的许可或批准的，应获得该有关的许可或批准。例如您从事新闻、出版、教育、医疗保健、药品和医疗器械等，同时您理解并认可，以上列举并不能穷尽您进行经营活动需要获得国家有关部门的许可或批准的全部类型，您应获得有关的许可或批准，并应符合国家及地方不时颁布相关法律法规之要求；<br />
+
+                        2、若超赢公司的服务涉及第三方软件之许可使用的，您同意遵守相关的许可协议的约束；<br />3、不利用云POS服务提供的资源和服务上传（Upload）、下载（download）、储存、发布如下信息或者内容，不为他人发布该等信息提供任何便利：<br />①违反国家规定的政治宣传和/或新闻信息；②涉及国家秘密和/或安全的信息；③封建迷信和/或淫秽、色情、下流的信息或教唆犯罪的信息；④博彩有奖、赌博游戏、“私服”、“外挂”等非法互联网出版活动；⑤违反国家民族和宗教政策的信息；⑥妨碍互联网运行安全的信息；⑦侵害他人合法权益的信息和/或其他有损于社会秩序、社会治安、公共道德的信息或内容；⑧其他违反法律法规、部门规章或国家政策的内容。<br />
+
+                        4、不进行任何破坏或试图破坏网络安全的行为（包括但不限于钓鱼，黑客，网络诈骗，网站或空间中含有或涉嫌散播：病毒、木马、恶意代码，及通过虚拟服务器对其他网站、服务器进行涉嫌攻击行为如扫描、嗅探、ARP欺骗、DOS等）；<br />
+
+                        5、不从事其他违法、违规或违反云POS服务条款的行为。<br />
+
+                        6、如超赢公司发现您违反上述条款的约定，有权根据情况采取相应的处理措施，包括但不限于立即终止服务、中止服务或删除相应信息等。如果第三方机构或个人对您提出质疑或投诉，超赢公司将通知您，您有责任在规定时间内进行说明并出具证明材料，如您未能提供相反证据或您逾期未能反馈的，超赢公司将采取包括但不限于立即终止服务、中止服务或删除相应信息等处理措施。因您未及时更新联系方式或联系方式不正确而致使未能联系到您的，亦视为您逾期未能反馈。<br />
+
+                        7、 您使用“云POS服务”进行商务活动所引起的一切法律纠纷均与超赢公司无关。<br />
+
+                        8、 您对自己使用云POS服务过程产生的数据以及进入和管理云POS服务上各类产品与服务的账号、密码的完整性和保密性负责。因您维护不当或保密不当致使上述数据、口令、密码等丢失或泄漏所引起的一切损失和后果均由您自行承担。超赢公司对用户数据安全性及泄漏尽最大能力来保护，但对数据泄漏与丢失造成的损失，超赢公司不负任何法律责任。<br />
+
+                        9、 如您违反本合同规定的任何条款，超赢公司有权拒绝向您提供云POS服务，并终止本合同。您已支付的“服务费”不予退还，同时超赢公司有进一步追究客户法律责任的权利。
+                    </p>
+                    <p class="title">十、权利和义务</p>
+                    <p>
+                        （1）为付费账户提供云POS承诺的一切服务；<br />
+
+                        （2）云POS保证账户的所有信息的网络安全性；<br />
+
+                        （3）云POS服务的所有权和经营权未经书面许可仅属于超赢科技；<br />
+
+                        （4）对于因不可抗力造成的服务中断、链接受阻或其他缺陷（包括但不限于自然灾害、社会事件以及因网站所具有的特殊性质而产生的包括黑客攻击、电信部门技术调整导致的影响、政府管制而造成的暂时性关闭在内的任何影响网络正常运营的因素），云POS不承担任何责任，但将尽力减少因此而给会员造成的损失和影响；<br />
+
+                        （5）云POS将尽最大努力来减少错误，但网站上提供的服务和信息仍可能包含错误内容，对账户因使用云POS网站而造成的损失不负法律责任。云POS对其服务和信息不作保证，不论什么情况下对账户因使用云POS而造成的直接、间接、偶尔的、特殊的、惩罚性的损害或其他一切损害不负法律责任，即便事先被告知损害存在的可能性也是如此。若您对云POS提供的部分或所有服务不满，您唯一的补救措施是停止使用这些服务；<br />
+
+                        （6）如云POS原因，造成付费账户服务的不正常中断，付费账户有权向云POS申请顺延账户服务；云POS在执行本服务条款过程中因其过错给账户带来损失，将向账户支付的补偿，总额不应超过账户已向云POS支付的服务费用； 云POS不承担由此致使会员蒙受的其它方面的连带损失；<br />
+
+                        （7）云POS有权决定删除账户张贴的任何违反中国法律、法规、《云POS服务协议》内容，或其他云POS认为不可接受的内容。情节严重者，云POS有权取消其账户资格。<br />
+
+                        （8）云POS服务由超赢科技为注册商户提供数据存储服务，数据归属超赢科技所有，商家注册使用本服务时即表明授权超赢科技使用所存储数据，超赢科技有权在此数据基础上进行大数据分析，提供增值服务。
+                    </p>
+                    <p class="title">十一、 链接</p>
+                    <p>云POS含有与其他网站的链接。云POS网站与链接的网站有合作关系，但并不能控制这些网站及其所提供的资源，所以云POS网站对链接网站上的内容、广告、服务、产品信息的真实有效性不负责任，并且对因链接网站上的内容、广告、服务、产品信息的失实而造成的损失不负任何法律责任。</p>
+                    <p class="title">十二、 对所收集信息的声明</p>
+                    <p>
+                        （1）如果您希望成为云POS的账户，您必须注册并提供相应的信息。当您在注册成为账户时，云POS需要收集您的公司名、姓名、Email、电话等信息。当您浏览云POS时，服务器会自动收集您的IP地址，此IP地址只被计算机用来向您发送相关的页面 , 帮助您监控非授权登陆。<br />
+
+                        （2）云POS有权审核发布或删除账户提交的信息。所有的账户对其发布信息的准确性、完整性、即时性、合法性都独立承担所有责任，云POS会尽可能检查账户提交的信息，但并不能完全保证信息的准确性和合法性，同时也不承担由此引至的任何法律责任。云POS在任何情况下均不就因本网站、本网站的服务或本协议而产生或与之有关的利润损失或任何特别、间接或后果性的损害（无论以何种方式产生，包括疏忽）承担任何责任。<br />
+
+                        （3）任何未经授权的复制或未经许可的基于云POS的商业行为，云POS将保留追究其法律责任的权利。
+                    </p>
+                    <p class="title">十三、最终解释权</p>
+                    <p>广州市超赢信息科技有限公司对云POS保有任何活动、限制等的最终解释权。</p>
+                    <p class="title">十四、 版权声明</p>
+                    <p>云POS的所有内容版权属广州市超赢信息科技有限公司所有，严禁未经广州市超赢信息科技有限公司书面许可的任何形式的部分或全部拷贝使用。版权所有翻版必究。</p>
+                    <p class="title">十五、责任免除</p>
+                    <p>
+                        （1）广州市超赢信息科技有限公司及其代理商对“服务”及其内容的有效性 、正确性 、质量 、稳定性 、可靠性、及时性、适用性、真实性、实用性、准确性或完整性 等均不作任何陈述、承诺或保证；<br />
+
+                        （2）账户理解并接受任何信息资料的传输取决于账户自己并由其承担系统受损或资料丢失的所有风险和责任；<br />
+
+                        （3）云POS对账户之间的商业进程不作任何明示或暗示的承诺与保证；<br />
+
+                        （4）云POS、员工、所有者及代理对账户使用云POS上公布的信息而造成的损失或伤害以及账户相信云POS上公布的信息内容而做出的决定或采取的行动不负责任；<br />
+
+                        （5）云POS、员工、所有者及代理对账户使用或无法使用云POS的服务而造成的直接的、间接的、偶尔的、特殊的或其他损害不负法律责任，即便事先被告知损害存在的可能性也是如此。
+                    </p>
+                    <p class="title">十六、争议的解决</p>
+                    <p>云POS与账户任何一方未履行协议所规定的责任均视为违约，按《合同法》规定处理；如双方在此协议范围内发生纠纷，应尽量友好协商解决。此协议适用中华人民共和国法律。如与此协议有关的某一特定事项缺乏明确法律规定，则应参照通用的国际商业惯例和行业惯例。</p>
+                    <p>广州市超赢信息科技有限公司</p>
+                    <p>2017年01月01日</p>
+                </div>
+                <p class="page_login2_footer">
+                    <a class="blue" id="ty">&nbsp;&nbsp;&nbsp;同意&nbsp;&nbsp;&nbsp;</a>
+                    <a id="bty">&nbsp;&nbsp;不同意&nbsp;&nbsp;</a>
+                </p>
+            </div>
+            </div>
+        </div>
+
+    <div class="footer clearfix">
+        <p>
+            Copyright © 2016 <a href="http://www.pos.cn" target="_blank" style="text-decoration:none;">pos.cn</a>
+        </p>
+    </div>
+
+    <script src="@Scripts.Url("~/static/js/jquery/jquery.min.js")"></script>
+    <script src="@Scripts.Url("~/static/js/util.js")"></script>
+    <script src="@Scripts.Url("~/manager/js/register/validate.js")"></script>
+    <script src="@Scripts.Url("~/static/js/app/register.js")"></script>
+</body>
+</html>

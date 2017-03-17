@@ -1,0 +1,417 @@
+﻿@using CySoft.Frame.Core
+@using CySoft.Model.Other
+@{
+    var splist = ViewData["pn"] as PageList<SelectSpModel>;
+}
+<script type="text/javascript">
+    $(function() {
+        $('div[contentID="promote/selectsplist"]').attr({ controller: 'promote', action: 'selectsplist' });
+        app.c.public_data['promote/selectsplist'] = app.c.public_data['promote/selectsplist'] || {};
+        app.c.public_data['promote/selectsplist']['once'] = false;
+        app.promote = app.promote || {};
+    });
+</script>
+<script>
+    app.c.public_data['promote/selectsplist'] = app.c.public_data['promote/selectsplist'] || {};
+    app.c.public_data['promote/selectsplist']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['promote/selectsplist']['threemenu'] === false) {
+            app.c.public_data['promote/selectsplist']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+<div id="client_dialog_simple">
+<div class="modal fade in" role="dialog" aria-hidden="false" style="display: block;">
+<div class="modal-backdrop fade in"></div>
+<div class="modal-dialog" style="width: 900px;">
+<div class="modal-content">
+<div class="modal-header">
+    <button data-dismiss="modal" class="close" type="button">×</button>
+    <h4 class="modal-title">选择客户</h4>
+</div>
+<div class="tab-content">
+<div class="row wrapper1">
+<div class="col-xs-12">
+<form class="filter-form-client-dialog" action="">
+<input type="hidden" name="select_id" value="">
+<div class="col-xs-12">
+<div class="search-box-container">
+    <div class="clearfix">
+        <div class="pull-left m-r-sm" style="margin-top: 7px">
+            <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                <input type="text" value="" onkeypress="app.search.trigger_search_public_clientdialogsimple(event);" class="form-control input-sm search-h inline v-middle search-result search" name="sp_name" id="sp_name" style="width: 220px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="商品名称" ondblclick="app.search
+    .search_item_clear_public_clientdialogsimple(this);" onblur="app.search.do_search_public_clientdialogsimple(this);"><span><button type="button" onclick="app.search
+    .do_search_public_clientdialogsimple(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span><span onclick="app.search.search_item_clear_public_clientdialogsimple(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;"><i class="fa fa-times-circle"></i></span>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        app.c.public_data['promote/selectsplist'] = app.c.public_data['promote/selectsplist'] || {};
+        app.c.public_data['promote/selectsplist']['search_all'] = false;
+        var currentSearch = 'app.c.public_data[\'promote/selectsplist\'][\'search\']';
+    eval(currentSearch + ' = false;');
+    $.DHB._search = function () {
+        eval('if(' + currentSearch + '===false){app.search.search_promote_selectsplist();' + currentSearch + '=true;}');
+    }
+
+    app.search = app.search || {};
+
+    app.search.search_promote_selectsplist = function () {
+        app.c.public_data['promote/selectsplist'] = app.c.public_data['promote/selectsplist'] || {};
+        app.c.public_data['promote/selectsplist']['_row_total_'] = '@splist.ItemCount';
+        app.c.public_data['promote/selectsplist']['_page_size_'] = '@splist.PageSize';
+        app.c.public_data['promote/selectsplist']['_current_page_'] = '@(splist.PageIndex)';
+        app.search.do_search_pagination_promote_selectsplist();
+    }
+
+
+        app.search.trigger_search_promote_selectsplist = function (event) {
+        //绑定回车键
+        event = event || window.event
+        if (event.keyCode == 13) {
+            app.search.do_search_dw_list();
+            event.preventDefault();
+        }
+    }
+
+    //查询
+        app.search.do_search_promote_selectsplist = function (el, isExport) {
+        isExport = isExport || 0;
+        var v = $(_ + ".filter-form").serialize();
+        var url = '/promote/selectsplist?_search_=1&' + v;
+        if (isExport == 1) {
+            url += '&export=1';
+            url = $.DHB.U(url);
+            window.location.href = url;
+        }
+        else {
+            var options = {
+                url: $.DHB.U(url),
+                datatype: 'html',
+                beforeSend: function () {
+                    $.DHB.showButterbar();
+                },
+                success: function (data, textStatus, jqXHR) {
+                    if ($('#promote-selectsplist-list-fresh-box', _).length > 0) {
+                        $('#promote-selectsplist-list-fresh-box', _).html(data);
+                    }
+                    var curSearchcallback = 'app.promote.selectsplist_search_callback';
+                    var curListcallback = 'app.promote.selectsplist_listready';
+                    eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                    eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                    app.search.do_search_pagination_dw_list();
+                },
+                complete: function (XHR, TS) {
+                    $.DHB.closeButterbar();
+                }
+            };
+            //cy.http.Get(options);
+            app.httpAjax.post(options)
+        }
+        return false;
+    };
+
+    //分页
+        app.search.do_search_pagination_promote_selectsplist = function () {
+        $.DHB.func.pagination({
+            module_name: 'Manager',
+            controller_name: 'promote',
+            action_name: 'selectsplist',
+            ready_once: false
+        });
+    }
+
+
+        app.search.do_search_option_promote_selectsplist = function (el) {
+        if ($(el).attr('class') != '') {
+            $(el)
+                .find('span')
+                .each(function () {
+                    if ($(this).attr('class') == '') {
+                        $(this).attr('class', 'order-active');
+                    } else {
+                        $(this).attr('class', '');
+                    }
+                });
+
+            if ($(el).find('span:eq(0)').attr('class') == '') {
+                $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+            } else {
+                $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+            }
+        }
+
+        if ($(el).attr('class') == '') {
+            $(el).parent().find('.active').removeClass('active');
+            $(el).addClass('active');
+            $(el)
+                .parents('.btn-group')
+                .find('input:eq(0)')
+                .val($(el).attr('value'));
+        }
+
+        $(el).parents('.btn-group').removeClass('open');
+        var selectA = $(el).find('a').clone();
+        selectA.find('span[class=""]').remove();
+        $(el)
+            .parents('.btn-group')
+            .find('button span:eq(0)')
+            .html(selectA.html());
+
+        app.search.do_search_promote_selectsplist();
+    }
+
+
+    app.search.search_enter = function (el) {
+        if (app.c.public_data['promote/selectsplist']['search_all'] === false) {
+            $(el)
+                .parents('.search-box-container')
+                .find(".bootstrap-select ul.dropdown-menu")
+                .each(function () {
+                    var ts = $(this).find('li:first() span:first()');
+                    ts.text('全部');
+                });
+            /*$(el).parents('.search-box-container').find(".treeview .list-group>li:first()").each(function(){
+                $(this).text('全部');
+            });*/
+            app.c.public_data['promote/selectsplist']['search_all'] = true;
+        }
+    }
+
+
+    app.search.search_leave = function (el) {
+    }
+
+    app.search.search_client_clear_promote_selectsplist = function (el) {
+        $(el).parents('.input-group').find('input').val('');
+        app.search.do_search_dw_list();
+    }
+
+
+    app.search.wdatepicker_promote_selectsplist = function (el) {
+        var booStart = $(el).data('type') == 'start';
+        var option = {};
+        option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+        option['onpicked'] = function () {
+            $(el)
+                .text($dp.cal.getP('y') +
+                    '-' +
+                    $dp.cal.getP('M') +
+                    '-' +
+                    $dp.cal.getP('d'));
+            if (booStart) {
+                setTimeout(function () {
+                    $(el)
+                        .parent()
+                        .find('[data-type="end"]')
+                        .data('position', '1')
+                        .click();
+                },
+                    5000);
+            }
+            app.search.do_search_promote_selectsplist();
+        };
+
+        if (booStart) {
+            option['maxDate'] =
+                '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+        } else {
+            option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+            if ($(el).data('position') == '1') {
+                //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                //$(el).data('position','');
+            }
+        }
+        option['oncleared'] = function () {
+            $(el).html(booStart ? $(el).data('title') : '截至日期');
+            app.search.do_search_promote_selectsplist();
+        };
+
+        WdatePicker(option);
+    }
+
+
+    app.search.search_item_clear_promote_selectsplist = function (el) {
+        var par = $(el).parents('form');
+        par.get(0).reset();
+        par.find("select.select2_")
+            .selectpicker({ liveSearch: true })
+            .selectpicker('refresh');
+        par.find("select.select2").selectpicker('refresh');
+        app.search.do_search_promote_selectsplist();
+    }
+    </script>
+
+</div>
+    <input id="hid_back_val" name="hid_back_val" type="hidden" value="" />
+</form>
+</div>
+</div>
+
+
+    <div id="promote-selectsplist-list-fresh-box" style="max-height: 450px; overflow: auto;">
+        <div class="col-xs-2 p-l-r-none">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div id="tree_left" class="p-b-30"></div>
+                </div>
+            </div>
+        </div>
+        <table class="table m-b-none row1 selectAll-table b-b">
+            <thead>
+                <tr>
+                    <th style="width: 75px;">
+                        <label class="i-checks m-b-none">
+                            <input type="checkbox" onclick="$.DHB.func.selectAllThis(this);">
+                            <i></i>
+                        </label>
+                    </th>
+                    <th>商品编码</th>
+                    <th>商品名称</th>
+                    <th>单位</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    if (splist.Any())
+                    {
+                        foreach (var item in splist)
+                        {
+                            <tr style="cursor: pointer">
+                                <td>
+                                    <label class="i-checks m-b-none">
+                                        <input onclick="app.promote.selectsp(this)" type="checkbox" name="_ck_sp" value="@item.id" data-bm="@item.bm"
+                                               data-mc="@item.mc" data-jj="@item.dj_jh" data-tm="@item.barcode" data-lsj="@item.dj_ls" data-dw="@item.dw" />
+                                        <i></i>1
+                                    </label>
+                                </td>
+                                <td>@item.bm</td>
+                                <td>@item.mc</td>
+                                <td>@item.dw</td>
+                            </tr>
+                        }
+                    }
+                } 
+            </tbody>
+        </table>
+
+
+        <script type="text/javascript">
+            app.c.public_data['Public/clientDialogSimple'] = app.c.public_data['Public/clientDialogSimple'] || {};
+            app.c.public_data['Public/clientDialogSimple']['_row_total_'] = '4',
+                app.c.public_data['Public/clientDialogSimple']['_page_size_'] = '10',
+                app.c.public_data['Public/clientDialogSimple']['_current_page_'] = '0';
+        </script>
+    </div>
+
+
+<div class="m-t-12 m-b-12 m-r-md">
+    <ul id="Pagination-client-dialog" class="pagination pagination-sm pull-right m-b-none m-t-none"><li><a>共 <strong>4 </strong>条</a></li><li class="activeactive prev"><a><i class="fa fa-chevron-left"></i></a></li><li class="active"><a>1</a></li><li class="activeactive next"><a><i class="fa fa-chevron-right"></i></a></li></ul>
+    <div style="clear: both;"></div>
+</div>
+</div>
+<div class="modal-footer">
+    <button type="button" id="_submit-button" data-loading-text="提交中..." onclick="app.promote.submit()" data-confirm="confirm" class="btn btn-info w-xs">确定</button>
+    <button type="button" class="btn btn-default w-xs" data-dismiss="modal" onclick="$.fn.menuTab.load({ url: '/promote/list', 'title': '促销查询', id: 'promote/list', nocache: '1' }); $.fn.menuTab.deleteMenu('promote/selectsplist');">取消</button>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+    app.promote = app.promote || {};
+    
+    app.promote.submit=function() {
+        app.promote.select_complate();
+    }
+    //集合对象
+    function Dictionary() {
+        this.data = new Array();
+        this.put = function (key, value) {
+            this.data[key] = value;
+        };
+        this.get = function (key) {
+            return this.data[key];
+        };
+        this.remove = function (key) {
+            this.data[key] = null;
+        };
+        this.isEmpty = function () {
+            return this.data.length == 0;
+        };
+        this.size = function () {
+            return this.data.length;
+        };
+    }
+    //商品对象
+    function sp_model() {
+        this.id = "";
+        this.bm = "";
+        this.mc = "";
+        this.dw = "";
+        this.tm = "";
+        this.jj = "";
+        this.lsj = "";
+    }
+    //选中商品集合
+    app.promote.dictionary = new Dictionary();
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#_submit-button').removeAttr('disabled');
+            $(_ + '#_submit-button').on('click', function (e) {
+                //console.log($("#hid_back_val").val());
+            });
+        });
+    };
+    //选择商品
+    app.promote.selectsp = function (input) {
+        var _key = $(input).val();
+        if (input.checked === true) {
+            var _value = new sp_model();
+            _value.id = _key;
+            _value.bm = $(input).attr("data-bm");
+            _value.mc = $(input).attr("data-mc");
+            _value.dw = $(input).attr("data-dw");
+            _value.tm = $(input).attr("data-tm");
+            _value.jj = $(input).attr("data-jj");
+            _value.lsj = $(input).attr("data-lsj");
+            app.promote.dictionary.put(_key, _value);
+        } else {
+            app.promote.dictionary.remove(_key);
+        }
+    }
+    //选择完成
+    app.promote.select_complate = function () {
+        var info = "[";
+        for (var v in app.promote.dictionary.data) {
+            var val = app.promote.dictionary.data[v];
+            var subitem = "{";
+            for (var pn in val) {
+                var str = val[pn] == undefined ? "" : val[pn];
+                subitem += "\"" + pn + "\":\"" + str + "\",";
+            }
+            subitem = subitem.substr(0, subitem.length - 1);
+            subitem += "},";
+            info += subitem;
+        }
+        info = info.substr(0, info.length - 1);
+        info += "]";
+        $("#hid_back_val").val(info);
+    }
+
+
+</script>

@@ -1,0 +1,652 @@
+﻿@using System.Collections
+@using CySoft.Model.Ts
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Ts_Parm>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var ts_param_shops= ViewData["ts_param_shops"] as IList<Ts_Parm_Shop>;
+    ts_param_shops = ts_param_shops ?? new List<Ts_Parm_Shop>();
+    IEnumerable<IGrouping<string, Ts_Parm_Shop>> v = ts_param_shops.ToList().GroupBy(m => m.parmcode, m => m);
+    var shop_master = "0";
+    foreach (IGrouping<string, Ts_Parm_Shop> petGroup in v)
+    {
+        if (petGroup.Count()>=2)
+        {
+            ts_param_shops.Remove(petGroup.FirstOrDefault(d => d.id_shop == shop_master));
+        }
+    }
+    var version = string.Format("{0}", ViewData["version"] ?? "-1");
+}
+<!--@Styles.Render("~/static/css/bootstrap/bootstrap.min.css")-->
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="parm/list"]').attr({ controller: 'parm', action: 'list' });
+        app.c.public_data['parm/list'] = app.c.public_data['parm/list'] || {};
+        app.c.public_data['parm/list']['once'] = false;
+        app.parm = app.parm || {};
+    });
+</script>
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        参数设置
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        @*<p>1、查找你所有的商品单位信息</p>
+                            <p>2、添加商品单位信息</p>*@
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['parm/list'] = app.c.public_data['parm/list'] || {};
+    app.c.public_data['parm/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['parm/list']['threemenu'] === false) {
+            app.c.public_data['parm/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/parm/list">
+                                    <div class="col-xs-10 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <!-- 内容搜索 --> 
+                                            </div>
+                                        </div>
+                                        <script type="text/javascript">
+                                            app.c.public_data['parm/list'] = app.c.public_data['parm/list'] || {};
+                                            app.c.public_data['parm/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'parm/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' +
+                                                    currentSearch +
+                                                    '===false){app.search.search_client_client();' +
+                                                    currentSearch +
+                                                    '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            //TODO：分页参数
+                                            app.search.search_client_client = function () {
+                                                app.c.public_data['parm/list'] = app.c.public_data['parm/list'] || {};
+                                                app.c.public_data['parm/list']['_row_total_'] = '@pageList.ItemCount';
+                                                app.c.public_data['parm/list']['_page_size_'] = '@pageList.PageSize';
+                                                app.c.public_data['parm/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                app.search.do_search_pagination_client_client();
+                                            }
+
+
+                                            app.search.trigger_search_client_client = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_client_client();
+                                                    event.preventDefault();
+                                                }
+                                            }
+
+
+                                            app.search.do_search_client_client = function (el, isExport) {
+                                                isExport = isExport || 0;
+                                                var v = $(_ + ".filter-form").serialize();
+                                                var url = 'Manager/parm/list?_search_=1&' + v;
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    url = $.DHB.U(url);
+                                                    window.location.href = url;
+                                                } else {
+                                                    $.DHB.showButterbar(); 
+                                                    //$.get($.DHB.U(url),
+                                                    //    function (data, textStatus) {
+                                                    //        $.DHB.closeButterbar();
+                                                    //        if ($('#parm-list-list-fresh-box', _).length > 0) {
+                                                    //            $('#parm-list-list-fresh-box', _).html(data);
+                                                    //        }
+                                                    //        var curSearchcallback = 'app.parm.client_search_callback';
+                                                    //        var curListcallback = 'app.parm.client_listready';
+                                                    //        eval('try {if(' +
+                                                    //            curListcallback +
+                                                    //            ' && typeof(' +
+                                                    //            curListcallback +
+                                                    //            ')=="function"){' +
+                                                    //            curListcallback +
+                                                    //            '(); }}catch(e){}');
+                                                    //        eval('try {if(' +
+                                                    //            curSearchcallback +
+                                                    //            ' && typeof(' +
+                                                    //            curSearchcallback +
+                                                    //            ')=="function"){' +
+                                                    //            curSearchcallback +
+                                                    //            '(data, textStatus); }}catch(e){}'); 
+                                                    //        app.search.do_search_pagination_client_client();
+                                                    //    },
+                                                    //    'html'
+                                                    //);
+                                                    app.httpAjax.post({
+                                                        data: {},
+                                                        headers: {},
+                                                        url: $.DHB.U(url),
+                                                        type: "GET",
+                                                        dataType: 'html',
+                                                        beforeSend: null,
+                                                        success: function (data, textStatus) {
+                                                            $.DHB.closeButterbar();
+                                                            if ($('#parm-list-list-fresh-box', _).length > 0) {
+                                                                $('#parm-list-list-fresh-box', _).html(data);
+                                                            }
+                                                            var curSearchcallback = 'app.parm.client_search_callback';
+                                                            var curListcallback = 'app.parm.client_listready';
+                                                            eval('try {if(' +
+                                                                curListcallback +
+                                                                ' && typeof(' +
+                                                                curListcallback +
+                                                                ')=="function"){' +
+                                                                curListcallback +
+                                                                '(); }}catch(e){}');
+                                                            eval('try {if(' +
+                                                                curSearchcallback +
+                                                                ' && typeof(' +
+                                                                curSearchcallback +
+                                                                ')=="function"){' +
+                                                                curSearchcallback +
+                                                                '(data, textStatus); }}catch(e){}');
+                                                            app.search.do_search_pagination_client_client();
+                                                        },
+                                                        error: null,
+                                                        complete: null
+                                                    });
+                                                }
+                                                return false;
+                                            }
+
+                                            //分页
+                                            app.search.do_search_pagination_client_client = function () {
+                                                $.DHB.func
+                                                    .pagination({
+                                                        module_name: 'Manager',
+                                                        controller_name: 'parm',
+                                                        action_name: 'list',
+                                                        ready_once: false
+                                                    });
+                                            }
+
+
+                                            app.search.do_search_option_client_client = function (el) {
+                                                if ($(el).attr('class') != '') {
+                                                    $(el)
+                                                        .find('span')
+                                                        .each(function () {
+                                                            if ($(this).attr('class') == '') {
+                                                                $(this).attr('class', 'order-active');
+                                                            } else {
+                                                                $(this).attr('class', '');
+                                                            }
+                                                        });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el)
+                                                        .parents('.btn-group')
+                                                        .find('input:eq(0)')
+                                                        .val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el)
+                                                    .parents('.btn-group')
+                                                    .find('button span:eq(0)')
+                                                    .html(selectA.html());
+
+                                                app.search.do_search_client_client();
+                                            }
+
+
+                                            app.search.search_enter = function (el) {
+                                                if (app.c.public_data['parm/list']['search_all'] === false) {
+                                                    $(el)
+                                                        .parents('.search-box-container')
+                                                        .find(".bootstrap-select ul.dropdown-menu")
+                                                        .each(function () {
+                                                            var ts = $(this).find('li:first() span:first()');
+                                                            ts.text('全部');
+                                                        });
+                                                    /*$(el).parents('.search-box-container').find(".treeview .list-group>li:first()").each(function(){
+                                                        $(this).text('全部');
+                                                    });*/
+                                                    app.c.public_data['parm/list']['search_all'] = true;
+                                                }
+                                            }
+
+
+                                            app.search.search_leave = function (el) {
+                                            }
+
+
+                                            app.search.search_client_client_client = function (el) {
+                                                $.DHB
+                                                    .dialog({
+                                                        'title': '选择客户',
+                                                        'url': $.DHB
+                                                            .U('Quote/Public/clientDialog',
+                                                            {
+                                                                pageSize: publicSettings.minPageSize,
+                                                                edit_client_name: $(el).data('id') + '_name',
+                                                                edit_client_id: $(el).data('id'),
+                                                                'client_callback': 'app.search.do_search_client_client'
+                                                            }),
+                                                        'id': 'client_dialog'
+                                                    });
+                                            }
+
+
+                                            app.search.search_client_clear_client_client = function (el) {
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_client_client();
+                                            }
+
+
+                                            app.search.wdatepicker_client_client = function (el) {
+                                                var booStart = $(el).data('type') == 'start';
+                                                var option = {};
+                                                option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                                option['onpicked'] = function () {
+                                                    $(el)
+                                                        .text($dp.cal.getP('y') +
+                                                            '-' +
+                                                            $dp.cal.getP('M') +
+                                                            '-' +
+                                                            $dp.cal.getP('d'));
+                                                    if (booStart) {
+                                                        setTimeout(function () {
+                                                            $(el)
+                                                                .parent()
+                                                                .find('[data-type="end"]')
+                                                                .data('position', '1')
+                                                                .click();
+                                                        },
+                                                            5000);
+                                                    }
+                                                    app.search.do_search_client_client();
+                                                };
+
+                                                if (booStart) {
+                                                    option['maxDate'] =
+                                                        '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                                } else {
+                                                    option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                    if ($(el).data('position') == '1') {
+                                                        //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                                                        //$(el).data('position','');
+                                                    }
+                                                }
+                                                option['oncleared'] = function () {
+                                                    $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                    app.search.do_search_client_client();
+                                                };
+
+                                                WdatePicker(option);
+                                            }
+
+
+                                            app.search.search_item_clear_client_client = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                par.find("select.select2_")
+                                                    .selectpicker({ liveSearch: true })
+                                                    .selectpicker('refresh');
+                                                par.find("select.select2").selectpicker('refresh');
+                                                app.search.do_search_client_client();
+                                            }
+                                        </script>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                  <!--选项卡：-->
+                  	<div class="w100">
+                  	
+                    <ul id="myTab" class="nav nav-tabs">
+                       <li class="active">
+                             <a href="#home" data-toggle="tab">
+                                    系统参数
+                              </a>
+                        </li>
+                        <li><a href="#ios" data-toggle="tab">门店参数</a></li>
+                       
+                   </ul>
+                       <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane fade in active" id="home"> 
+                    <div id="parm-list-list-fresh-box" class="table_list table_max_h">
+                        <table class="table m-b-none row1 table-bordered selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="55" class="table-p-l-sm table-p-r-xsm-fixed text-c">序号</th>
+                                    <th>参数名称</th>
+                                    <th class="col-md-2 col-lg-2 col-sm-2">参数值</th>
+                                    
+                                    <th class="text-center" width="110">操作</th>
+                                    <th>参数描述</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parmlist-main-tbody">
+                            @{
+                                if (pageList == null || pageList.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="5" align="center">
+                                            <img src="~/static/images/nodata.png" class="table_nodata">
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    var list = pageList.Items;
+                                    if (list != null && list.Any())
+                                    {
+                                        int index = 1;
+                                        foreach (var item in list)
+                                        {
+                                            if (!item.version.Contains(version)){continue;}
+                                            <tr id="row-parm-id-@item.id" class="tr-status-finished">
+                                                <td class="table-p-l-sm table-p-r-xsm-fixed text-c">
+                                                    <i>
+                                                    </i>@(index++)
+                                                </td>
+                                                <td><a class="list-link">@item.parmname</a></td>
+                                                <td class="table-p-r-xsm">
+                                                    @if (item.flag_editstyle == 1)
+                                                    {
+                                                        if (string.Format("{0}", ViewData["IsMasterShopUser"]) == "1")
+                                                        {
+                                                            <input type="checkbox" onclick="app.parm.change_cb(this)" class="checkbox w-h" value="@item.parmvalue" @(item.parmvalue == "1" ? "checked='checked'" : "") />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" disabled="disabled" class="checkbox w-h" value="@item.parmvalue" @(item.parmvalue == "1" ? "checked='checked'" : "") />
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (string.Format("{0}", ViewData["IsMasterShopUser"]) == "1")
+                                                        {
+                                                            <input class="form-control" style="width: 80px;" value="@item.parmvalue"/>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@item.parmvalue</span>
+                                                        }
+                                                    }
+                                                </td>
+                                                
+                                                <td class="list-operate table-p-r-sm">
+                                                    <div class="look-out1">
+                                                        <div class="second-height-operate  align_center">
+                                                            @if (string.Format("{0}", ViewData["IsMasterShopUser"]) == "1")
+                                                            {
+                                                                <a class="bg-state bg-state-info fa fa-floppy-o" title="保存" href="javascript:;" onclick="app.parm.save('@item.id', this)"></a>
+                                                            }
+                                                        </div>
+
+                                                    </div>
+                                                </td>
+                                                <td class="table-p-r-xsm">@item.parmdescribe</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                             </div>
+                            <div class="tab-pane fade table_list" id="ios">
+                                <div>
+                                    <table class="table m-b-none row1 table-bordered selectAll-table status-box one-line stockManager" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                                    <thead>
+                                        <tr>
+                                            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed text-c">序号</th>
+                                            <th class="col-md-2 col-lg-2 col-sm-2">参数名称</th>
+                                            <th>参数值</th> 
+                                            <th class="text-center" width="110">操作</th>
+                                            <th>参数描述</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="parmlist-main-tbody">
+                                        @{
+                                            if (ts_param_shops == null || ts_param_shops.Count == 0)
+                                            {
+                                                <tr>
+                                                    <td colspan="5" align="center">
+                                                        <img src="~/static/images/nodata.png" class="table_nodata">
+                                                    </td>
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                var list = ts_param_shops;
+                                                if (list != null && list.Any())
+                                                {
+                                                    int index = 1;
+                                                    foreach (var item in list)
+                                                    {
+                                                        if (!item.version.Contains(version)) { continue; }
+                                                        <tr id="row-parm-id-@item.id" class="tr-status-finished text-c">
+                                                            <td class="table-p-l-sm table-p-r-xsm-fixed">
+                                                                <i>
+                                                                </i>@(index++)
+                                                            </td>
+                                                            <td><a class="list-link">@item.parmname</a></td>
+                                                            <td class="table-p-r-xsm">
+                                                                @if (item.flag_editstyle == 1)
+                                                                {
+                                                                    <input type="checkbox" onclick="app.parm.change_cb(this)" class="checkbox w-h" value="@item.parmvalue" @(item.parmvalue == "1" ? "checked='checked'" : "") />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input class="form-control" style="width: 80px;" value="@item.parmvalue" />
+                                                                }
+                                                            </td>
+                                                           
+                                                            <td class="list-operate table-p-r-sm">
+                                                                <div class="look-out1">
+                                                                    <div class="second-height-operate align_center">
+                                                                        <a class="bg-state bg-state-info fa fa-floppy-o" title="保存" href="javascript:;" onclick="app.parm.save_shop('@item.id', this)"></a>
+                                                                    </div>
+
+                                                                </div>
+                                                            </td>
+                                                             <td class="table-p-r-xsm">@item.parmdescribe</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                   
+                        </div>
+
+                  	
+                  	
+                  	</div>
+                  
+
+
+
+                    
+                    <!--页脚-->
+                    <footer class="panel-footer dis-no">
+                        <div class="dropup d-i-b" style="position: relative">
+                        </div>&nbsp;
+                        <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var $tab = $(_);
+        $tab.find('#status').on('change', function () {
+            if ($tab.find('#status').val()) {
+                $tab.find('.hide-area').hide();
+            } else {
+                $tab.find('.hide-area').show();
+            }
+        })
+
+        $tab.find('.hide-btn').on('click', function () {
+            var flag = this.checked;
+            app.search.do_search_client_client(this);
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    app.parm = app.parm || {};
+
+
+
+    //编辑
+    app.parm.edit = function (id) {
+        $(event.target).trigger('blur');
+        $.DHB.dialog({ 'title': '编辑参数', 'url': $.DHB.U('parm/edit?id=' + id), 'id': 'dialog-parm' });
+    };
+
+    //新增
+    app.parm.add = function (id) {
+        $(event.target).trigger('blur');
+        $.DHB.dialog({ 'title': '新增参数', 'url': $.DHB.U('parm/add'), 'id': 'dialog-parm' });
+    };
+
+    //删除
+    app.parm.del = function (id) {
+        $(event.target).trigger('blur');
+        $.messager.confirm("提示", "确定删除吗?", function () {
+            $.post($.DHB.U('parm/delete'),
+                {
+                    id: id
+                },
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('parm/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                }, 'json');
+        });
+    };
+
+    app.parm.save=function(id,obj) {
+        var _obj = $(obj);
+        var _input = _obj.parents("tr").find("input");
+        var _val = _input.val();
+        var options = {
+            url: '/parm/edit',
+            data: { id: id, parmvalue: _val },
+            beforeSend: function (XHR) {
+            },
+            callback: function (ret) {
+                if (ret.status === "success") {
+                    $.DHB.message({ 'content': "保存成功", 'time': 1000, 'type': 's' });
+                    app.payconfig.save_success(id, obj);
+                } else {
+                    $.DHB.message({ 'content': ret.message, 'time': 0, 'type': 'e' });
+                }
+            }
+        };
+        cy.http.Post(options);
+    }
+
+    app.parm.save_shop = function (id, obj) {
+        var _obj = $(obj);
+        var _input = _obj.parents("tr").find("input");
+        
+        var _val = _input.val();
+        var options = {
+            url: '/parmshop/edit',
+            data: { id: id, parmvalue: _val },
+            beforeSend: function (XHR) {
+            },
+            callback: function (ret) {
+                if (ret.status === "success") {
+                    $.DHB.message({ 'content': "保存成功", 'time': 1000, 'type': 's' });
+                    app.payconfig.save_success(id, obj);
+                } else {
+                    $.DHB.message({ 'content': ret.message, 'time': 0, 'type': 'e' });
+                }
+            }
+        };
+        cy.http.Post(options);
+    }
+
+    app.parm.change_cb = function (obj) {
+        
+        if (obj.checked === true) {
+            $(obj).val("1");
+        } else {
+            $(obj).val("0");
+        }
+    }
+
+    app.parm.tdclick=function(td) {
+        
+    }
+    
+</script>  

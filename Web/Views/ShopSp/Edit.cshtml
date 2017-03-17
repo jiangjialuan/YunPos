@@ -1,0 +1,669 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    PageList<Tb_Shopsp_Query> list_shopsp = ViewData["list_shopsp"] as PageList<Tb_Shopsp_Query>;
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>; selectListState = selectListState ?? new List<Ts_Flag>();
+    var selectListCZFS = ViewData["selectListCZFS"] as List<Ts_Flag>; selectListCZFS = selectListCZFS ?? new List<Ts_Flag>();
+    var selectListSPFLJsonStr = ViewData["selectListSPFLJsonStr"] == null ? "" : ViewData["selectListSPFLJsonStr"].ToString();
+    var selectListSPFL = ViewData["selectListSPFL"] as List<CySoft.Model.Tb_Spfl>; selectListSPFL = selectListSPFL ?? new List<CySoft.Model.Tb_Spfl>();
+    var selectListDW = ViewData["selectListDW"] as List<Tb_Dw>; selectListDW = selectListDW ?? new List<Tb_Dw>();
+    var copySP = ViewData["Tb_Shopsp_Get"] as Tb_Shopsp_Get;
+    copySP = copySP ?? new Tb_Shopsp_Get() { Shop = new Tb_Shop(), ShopSP = new Tb_Shopsp(), Kc = new CySoft.Model.Tz.Tz_Sp_Kc(),ShopSP_DBZ= new List<Tb_Shopsp>()};
+
+    var optinList = "";
+    foreach (var item in selectListDW.OrderBy(d => d.dw))
+    { optinList += Html.Raw("<option value=\"" + item.dw + "\">" + item.dw + "</option>"); }
+
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var from = ViewData["from"] == null ? "" : ViewData["from"].ToString();
+    var page = ViewData["page"] == null ? "0" : ViewData["page"].ToString();
+    var viewType= ViewData["viewType"] == null ? "Edit" : ViewData["viewType"].ToString();//页面类型  Edit:编辑页  Detail:详细页
+}
+<script>
+
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="shopsp/addgoods"]').attr({ controller: 'shopsp', action: 'addgoods' });
+        app.c.public_data['shopsp/addgoods'] = app.c.public_data['shopsp/addgoods'] || {};
+        app.c.public_data['shopsp/addgoods']['once'] = false;
+        app.shopsp = app.shopsp || {};
+    });
+</script>
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品管理', id: 'shopsp/list', nocache: '0' }); ">商品管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">@(viewType== "Edit" ? "商品编辑" : "商品详细")</a>
+</div>
+
+
+<div class="col" style="min-width: 1110px;">
+    <div class="panel panel-default" id="add_shop">
+        <!-- 头部选项卡 -->
+        <div class="main-head hidden" style="position:relative;">
+            <!--基础-->
+            <ul id="goods-tab" class="clearfix menu-list" tab="goods-tab">
+                <li class="selected-tab" onclick="$.DHB.func.tab(this);" style="width: 32px;"><a href="javascript:;">基础</a></li>
+            </ul>
+            <!--帮助文案-->
+            <label class="copy d-i-b  m-l-none" style="position: relative;left: 305px; top: -43px; display: none;">
+                <a class="icon-question tool"></a>
+                <div style="display: none;" class="popover fade bottom in tool-box">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>库存下限：当此商品的库存低于库存下限时，会被醒目地展示出来。</p><p>库存上限：当此商品的库存高于安全库存时，会被醒目地展示出来。</p>
+                        <p>安全库存：当此商品的库存低于安全库存时，会被醒目地展示出来。</p><p>设置数值大小要求：库存下限《安全库存《库存上限</p>
+                        <p>
+                            注意：设置0或者不设置，即不启用此功能
+                            <a href="javascript:;" class="tool-link">查看更多帮助</a>
+                        </p>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <form novalidate="novalidate" action="/shopsp/edit" id="fm-goods-save" class="comform">
+            
+            <!-- start main-content -->
+            <div id="goods-main" class="main-content" tabcontent="goods-tab">
+                <!-- 基础 -->
+                <div class="m-b"  style="overflow:visible;">
+                    <div class="col-sm-12 padding_lr" id="basic_info">
+                        <!-- 基本信息 -->
+                        <div class="fixed-input-group col-sm-8">
+                            <h2 class="form_title"><span>基本信息</span></h2>
+                            <div class="col-sm-12">
+                                <!-- 商品条码 -->
+                                <div class="input-item-2 clearfix add-client form_line  col-sm-3">
+
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>商品条码：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {required:true,messages:{required:&#39;请输入商品条码如没有请点击按钮生成&#39;}} valid" maxlength="40" id="barcode" name="barcode" placeholder="请输入商品条码如没有请点击按钮生成" type="text" value="@copySP.ShopSP.barcode">
+                                        </label>
+
+                                        <button class="btn btn-info w-xs new_shengcheng" type="button" onclick="app.shopsp.createbarcode(this, 'barcode', 'bm');">生成</button>
+
+                                    </div>
+                                </div>
+                                <!-- 商品编码 -->
+                                <div class="input-item-2 clearfix add-client form_line  col-sm-3">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">* </em><span>商品编码：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control  cominput user-input {required:true,messages:{required:&#39;输入商品编码&#39;}} valid" maxlength="40" id="bm" name="bm" type="text" value="@copySP.ShopSP.bm" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" onkeyup="app.shopsp.checkbarcode(this)" onafterpaste="app.shopsp.checkbarcode(this)">
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <!-- 商品名称 -->
+                                <div class="input-item-2 clearfix add-client form_line  col-sm-6">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>商品名称：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {maxlength:80,required:true,messages:{required:&#39;请输入商品名称最多八十个字&#39;}} valid" maxlength="80" name="mc" id="mc" placeholder="最多八十个字" type="text" value="@copySP.ShopSP.mc">
+                                        </label>
+                                    </div>
+                                    
+                                </div>
+                                <!-- 计价方式 -->
+                                <div class="input-item-2 clearfix add-client form_line  col-sm-3">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em> <span>计价方式：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @{int firstczfs = 0;}
+                                            @foreach (var item in selectListCZFS.OrderBy(d => d.listsort))
+                                            {
+                                                if (copySP.ShopSP == null || copySP.ShopSP.flag_czfs == null)
+                                                {
+                                                    if (firstczfs == 0)
+                                                    {
+                                                        <label class="i-checks showIcon">
+                                                            <input name="flag_czfs" value="@item.listdata" checked="checked" type="radio"><i></i>@item.listdisplay
+                                                        </label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label class="i-checks showIcon">
+                                                            <input name="flag_czfs" value="@item.listdata" type="radio"><i></i>@item.listdisplay
+                                                        </label>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    var czfsChecked = copySP.ShopSP.flag_czfs == item.listdata ? "checked=\"checked\"" : "";
+                                                    <label class="i-checks showIcon">
+                                                        <input name="flag_czfs" value="@item.listdata" @czfsChecked type="radio"><i></i>@item.listdisplay
+                                                    </label>
+                                                }
+                                                firstczfs++;
+                                            }
+                                        </label>
+                                    </div>
+                                    
+                                </div>
+                                <!-- 商品分类 -->
+                                <div class="input-item-2 clearfix add-client form_line  col-sm-3"  style="overflow:visible;">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>商品分类：</span>
+                                        </label>
+                                        <label class="m-l-xs1" id="tree-id_spfl"></label>
+                                    </div>
+
+                                    
+                                </div>
+                                <!-- 默认供应商 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag"> </em><span>默认供应商：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+
+                                            @*<input type="text" readonly onclick="$.DHB.client.select_gys({ 'gys_name': 'gys_name', 'gys_id': 'gys_id', 'gys_callback': 'app.shopsp.add_gys_callback' });" name="id_gys" id="id_gys" /><span class="right_icon fa fa-user"></span>*@
+
+                                            <input type="hidden" name="id_gys" id="id_gys" value="@(string.IsNullOrEmpty(copySP.ShopSP.id_gys)?"":copySP.ShopSP.id_gys)" />
+                                            <input type="text" readonly onclick="$.DHB.client.select_gys({ 'gys_name': 'gys_name', 'gys_id': 'gys_id', 'gys_callback': 'app.shopsp.add_gys_callback' });" name="gys_name" id="gys_name" value="@(string.IsNullOrEmpty(copySP.ShopSP.name_gys)?"":copySP.ShopSP.name_gys)" /><span class="right_icon fa fa-user"></span>
+
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <!-- 商品单位 -->
+                                <div class="input-item-2 clearfix add-client form_line  col-sm-3"  style="overflow:visible;">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <em class="tag">* </em><span>商品单位：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <select id="dw" name="dw" class="btn-group bootstrap-select user-input  select2_ form-control input-sm {required:true,messages:{required:&#39;请选择商品单位&#39;}} valid">
+                                                @foreach (var item in selectListDW.OrderBy(d => d.dw))
+                                                {
+                                                    var dwChecked = copySP.ShopSP.dw == item.dw ? "selected=\"selected\"" : "";
+                                                    <option value="@item.dw" @dwChecked>@item.dw</option>
+                                                }
+                                            </select>
+                                        </label>
+                                    </div>
+                                    
+                                </div>
+                                <!-- 保持期 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-3">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">* </em><span>保质期：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            @*<input class="form-control user-input " name="cd" id="cd" placeholder="" maxlength="40" type="text" value="@copySP.ShopSP.cd" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">*@
+
+                                            <input class="form-control user-input { required:true,number:true,maxlength:11,messages:{required:&#39;请输入保质期&#39;} }" name="yxq" id="yxq" placeholder="" maxlength="40" type="text" value="@copySP.ShopSP.yxq" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                        </label><span class="right_icon">天</span>
+                                    </div>
+
+                                </div>
+                                <!-- 产地 -->
+                                <div class="input-item-2 clearfix add-client form_line  col-sm-3">
+                                    <div>
+                                        <label class="item-2-label">
+                                            <span>商品产地：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input " name="cd" id="cd" placeholder="产地" type="text" value="@copySP.ShopSP.cd">
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- 备注 -->
+                                <div class="input-item-2 clearfix add-client  form_line col-sm-6">
+                                    <div style="width: 100% !important">
+                                        <label class="item-2-label comlabel">
+                                            <em class="tag">&nbsp; </em><span>备注：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <textarea class="form-control user-input " name="bz" id="bz" placeholder="" value="@copySP.ShopSP.bz" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" style="width:524px; height:30px !important;"></textarea>
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- 商品图片 -->
+                        <div class="fixed-input-group col-sm-4">
+                            <h2 class="form_title"><span>商品图片</span></h2>
+                            <div class="form_content">
+                                <div class="input-item-1 clearfix">
+                                    <div class="add-img">
+                                        <ol id="img-list" class="clearfix m-l-xxl m-b-none">
+                                            <li style="opacity: 1; z-index: auto; top: 0px; left: 0px;" id="img-list-1"  class="cover">
+                                                <div class="wrap-img">
+                                                    <img id="img_pic_path" name="img_pic_path" src="@Html.Raw(string.IsNullOrEmpty(copySP.ShopSP.pic_path) ? "/static/images/default.jpg" : copySP.ShopSP.pic_path)" alt="">
+                                                </div>
+                                            </li>
+                                            <li id_="ignore-add-img" class="btn btn-info w-xs" onclick="app.shopsp.single_uploadimage();" style="background:#0c80e8;">
+                                                <i class="fa fa-cloud-upload"></i><span>添加图片</span>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <input name="pic_path" id="pic_path" type="hidden" autocomplete="off" value="@Html.Raw(string.IsNullOrEmpty(copySP.ShopSP.pic_path) ? "/static/images/default.jpg" : copySP.ShopSP.pic_path)">
+                                <div><em>（建议图片尺寸800*800px，大小≤6MB，支持JPG、PNG、JPEG）</em></div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- 价格信息 -->
+                    <div class="fixed-input-group col-sm-6">
+                        <h2 class="form_title"><span>价格信息</span></h2>
+                        <div class="form_content">
+                            <div class="input-item-2 clearfix add-client form_line">
+                                <!-- 进货价 -->
+                                <div>
+                                    <label class="item-2-label">
+                                        <span>进  货  价：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {required:true,number:true,maxlength:11,messages:{required:&#39;请输入进货价&#39;}} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" min="0" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" maxlength="11" name="dj_jh" id="dj_jh" placeholder="进货价" type="text" value="@copySP.ShopSP.dj_jh.Digit((int)digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- 零售价 -->
+                            <div class="input-item-2 clearfix add-client form_line">
+                                <div>
+                                    <label class="item-2-label">
+                                        <span>零  售  价：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {required:true,number:true,maxlength:11,messages:{required:&#39;请输入零售价&#39;}} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" min="0" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" maxlength="11" name="dj_ls" id="dj_ls" placeholder="零售价" type="text" value="@copySP.ShopSP.dj_ls.Digit((int)digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- 会员价 -->
+                            <div class="input-item-2 clearfix add-client  form_line">
+                                <div style="width: 100% !important">
+                                    <label class="item-2-label comlabel">
+                                        <span>会  员  价：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {required:true,number:true,maxlength:11,messages:{required:&#39;请输入会员价&#39;}} valid" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" min="0" onblur="app.shopsp.onblur(this, '@digit["dj_digit"]')" onkeyup="check_digit(this,'@digit["dj_digit"]')" onafterpaste="check_digit(this,'@digit["dj_digit"]')" maxlength="11" name="dj_hy" id="dj_hy" placeholder="会员价" type="text" value="@copySP.ShopSP.dj_hy.Digit((int)digit["dj_digit"])" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- 多包装 -->
+                    <div class="fixed-input-group col-sm-12">
+                        <h2 class="form_title"><span>多包装</span> <button class="btn btn-info w-xs f-r" type="button" onclick="app.shopsp.adddbz(this)" style=" margin-right:20px;"><i class=" fa fa-plus " style="margin-right:5px;font-size:14px;"></i>新增</button></h2>
+                        <div class="input-item-1 clearfix">
+                            <input name="dbznum" id="dbznum" value="0" type="hidden">
+
+                            <div style="display: block;" id="multi-price-box" class="table_list form_content">
+                                <table class="table table-bordered order-detail table-sm" id="dbz_table" name="dbz_table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:50px;" class="hidden"></th>
+                                            <th style="width:125px;">条形码</th>
+                                            <th width="100">编码</th>
+                                            <th style="width:40%" class="text-center">名称</th>
+                                            <th style="width:5%" class="text-center">单位</th>
+                                            <th style="width:5%" class="text-center">转换率</th>
+                                            <th toggle="" style="width:10%; display: table-cell;" class="text-center">进货价</th>
+                                            <th toggle="" style="width:10%; display: table-cell;" class="text-center">零售价</th>
+                                            <th toggle="" style="width:10%; display: table-cell;" class="text-center">会员价</th>
+                                            <th toggle="" style="width:10%; display: table-cell;" class="text-center">配送价</th>
+                                            @*<th toggle="" style="width:10%; display: table-cell;" class="text-center">批发价</th>*@
+                                            <th style="width:50px;text-align:center;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- 此处动态加载数据 -->
+                                        @foreach (var item in copySP.ShopSP_DBZ)
+                                        {
+                                            <tr data-options="guid">
+                                            <td style="text-align:center;" class="hidden">@item.id</td>
+                                            <td><div class="width200"><input style="width:130px;" class="form-control f-l {required:true,messages:{required:&#39;请输入商品条码&#39;}}" name="barcode" id="barcode_@item.id" value="@item.barcode" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"  onkeyup="    app.shopsp.checkbarcode(this)" onafterpaste="    app.shopsp.checkbarcode(this)" ><button class="btn btn-info new_shengcheng f-l" type="button"  onclick="app.shopsp.createbarcode(this,'barcode_@item.id','bm_@item.id')">生成</button></div></td>
+                                            <td><input class="form-control f-l width100" type="text" name="bm" id="bm_@item.id" value="@item.bm" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" /></td>
+                                            <td><input class="form-control  {maxlength:80,required:true,messages:{required:&#39;请输入商品名称&#39;}} valid" name="mc" value="@item.mc" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td>
+                                            <select id="dw_@item.id" name="dw" class="form-control input-sm box-shawn  search-result select" style="width:95px;margin:0px auto;"  >
+                                                @foreach (var item_dw in selectListDW.OrderBy(d => d.dw))
+                                                {
+                                                    var dwChecked = item.dw == item_dw.dw ? "selected=\"selected\"" : "";
+                                                    <option value="@item_dw.dw" @dwChecked >@item_dw.dw</option>;
+                                                }
+                                            </select>
+                                            </td>
+                                            <td><input class="form-control {required:true,number:true,maxlength:11,messages:{required:&#39;请输入转换率&#39;}} valid" name="zhl" value="@item.zhl" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入进货价&#39;}} valid" name="dj_jh" value="@item.dj_jh.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入零售价&#39;}} valid" name="dj_ls" value="@item.dj_ls.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入会员价&#39;}} valid" name="dj_hy" value="@item.dj_hy.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入配送价&#39;}} valid" name="dj_ps" value="@item.dj_ps.Digit(int.Parse(digit["dj_digit"].ToString()))" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>
+                                            <td style="text-align:center;">
+                                            <a onclick="app.shopsp.choice_spec_del(this);"  class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a>
+                                            </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 库存预警 -->
+                    <div class="fixed-input-group col-sm-6">
+                        <h2 class="form_title"><span>库存预警</span></h2>
+                        <div class="form_content">
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label">
+                                        <span>最低库存量：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {min:0}" id="sl_kc_min" name="sl_kc_min" placeholder="库存小于这个数会提醒" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" type="text" value="@copySP.ShopSP.sl_kc_min.Digit((int)digit["sl_digit"])" />
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label">
+                                        <span>最高库存量：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {min:0}" id="sl_kc_max" name="sl_kc_max" placeholder="库存超过这个数会提醒" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" type="text" value="@copySP.ShopSP.sl_kc_max.Digit((int)digit["sl_digit"])" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- 期初 -->
+                    <div class="fixed-input-group  col-sm-6">
+                        <h2 class="form_title"><span>期初信息</span></h2>
+                        <div class="form_content">
+                            <div class="input-item-2 clearfix add-client form_line">
+                                <div style="width: 100% !important">
+                                    <label class="item-2-label">
+                                        <span>期初数量：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {min:0}" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, '@digit["sl_digit"]')" id="sl_qc" name="sl_qc" onkeyup="check_digit(this,'@digit["sl_digit"]')" onafterpaste="check_digit(this,'@digit["sl_digit"]')" placeholder="" type="text" value="@(copySP.Qc==null?"":copySP.Qc.sl_qc.Digit((int)digit["sl_digit"]).ToString())" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-item-2 clearfix add-client form_line">
+                                <div style="width: 100% !important">
+                                    <label class="item-2-label">
+                                        <span>期初金额：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {min:0}" style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, '@digit["je_digit"]')" id="je_qc" name="je_qc" onkeyup="check_digit(this,'@digit["je_digit"]')" onafterpaste="check_digit(this,'@digit["je_digit"]')" placeholder="" type="text" value="@(copySP.Qc==null?"":copySP.Qc.je_qc.Digit((int)digit["je_digit"]).ToString())" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- end main-content -->
+            <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+                <input name="id" id="id" value="@copySP.ShopSP.id" autocomplete="off" type="hidden">
+                <input name="dbzList" id="dbzList" value="" autocomplete="off" type="hidden">
+                <input name="sp_qc" id="sp_qc" value="" autocomplete="off" type="hidden">
+
+                <button type="submit" class="btn w-138 btn-info" onclick="app.shopsp.check_goods_yes('btn-goods-save');" id="btn-goods-save" data-loading-text="保存中...">确定</button>&nbsp;&nbsp;
+                <button type="button" class="btn w-xs btn-default" title="全部商品" onclick="ShopspReturn(this);">返回</button>
+            </footer>
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<script type="text/javascript">
+
+    $.DHB._ = function () {
+        app.c.public_data['shopsp/addgoods'] = app.c.public_data['shopsp/addgoods'] || {};
+        if (app.c.public_data['shopsp/addgoods']['once'] === false) {
+            app.c.public_data['shopsp/addgoods']['once'] = true;
+        }
+    };
+
+    app.shopsp = app.shopsp || {};
+
+    $(function () {
+        setTimeout(function () {
+            //绑定商品分类
+              var selectListSPFLJsonStr = '@Html.Raw(selectListSPFLJsonStr)';
+            spflTree = JSON.parse(selectListSPFLJsonStr);
+            treeData = {
+                el: '#tree-id_spfl', title: '商品分类', name: 'id_spfl', data: spflTree, width:200, callback: function (cur, el) {
+                    el.find('button').removeClass('error');
+                }, class: '{required:true,messages:{required:&#39;请选择商品分类&#39;}} valid', more: true, has_title: false
+            };
+            treeData.value = '@copySP.ShopSP.id_spfl';
+            $.DHB.tree(treeData);
+            $(_ + "#tree-id_spfl .dhb-more").bind('click', function () {
+                $.DHB.dialog({ 'url': $.DHB.U('/spfl/add?goods=1'), 'id': 'dialog-category' });
+            });
+            // 绑定商品单位
+            var objDW = $(_ + 'select[name="dw"]').prev();
+            objDW.find('ul').css('padding-bottom', '30px');
+            objDW.append('<div class="list-group dhb-more"><a class="media list-group-item list-group-item-more">+ 新增更多</a></div>');
+            objDW.find('.dhb-more').bind('click', function (e) {
+                $.DHB.dialog({ 'url': $.DHB.U('/dw/add?other_add=1'), 'id': 'dialog-dw' });
+                objDW.parents('.btn-group').removeClass('open');
+                e.stopPropagation();
+                return false;
+            });
+        }, 200);
+    });
+
+    //生成条码
+    app.shopsp.createbarcode = function (obj, name, bm_name) {
+        debugger;
+        cy.http.Post({
+            url: '/shopsp/createbarcode',
+            beforeSend: function () {
+                $(obj).attr('disabled', 'disabled');
+            },
+            callback: function (ret) {
+                if (ret.Success) {
+                    $(_ + "#" + name).val(ret.Data);
+                    $(_ + "#" + name).attr('old-data', ret.Data);
+
+                    if (bm_name != '' && '@digit["spbm_copy_barcode"].ToString()' == '1') {
+                        $(_ + "#" + bm_name).val(ret.Data);
+                        $(_ + "#" + bm_name).attr('old-data', ret.Data);
+                    }
+                }
+            },
+            complete: function () {
+                $(obj).removeAttr('disabled');
+            }
+        });
+    }
+
+    //商品分类管理
+    app.shopsp.spfllist = function () {
+        $.fn.menuTab.load({ url: '/spfl/list', 'title': '商品分类管理', id: 'spfl/list', nocache: '0' });
+    }
+
+    //商品单位管理
+    app.shopsp.dwlist = function () {
+        $.fn.menuTab.load({ url: '/dw/list', 'title': '商品单位管理', id: 'dw/list', nocache: '0' });
+    }
+
+    //表单提交
+    app.shopsp.check_goods_yes = function (btn) {
+        $.DHB.checkForm("fm-goods-save", function () { });
+        setTimeout(function () {
+            if ($(_ + "form#fm-goods-save .error").length > 0) {
+                $.DHB.message({ content: "请完善您的商品信息！", type: 'i' });
+            } else {
+                $.messager.confirm("系统提示", "确定修改该信息吗?", function () {
+                    $("#" + btn, _).button("loading");
+                    submitForm($("#fm-goods-save", _), $("#" + btn, _));
+                });
+            }
+        }, 400);
+    }
+
+    //排除浏览器缓存 --表单提交
+    function submitForm($fm, $btn) {
+        var obj_list = [];
+        $('#dbz_table>tbody>tr', _).each(function (i, item) {
+            var obj = {};
+            obj.barcode = $(this).find('input[name=barcode]').val();
+            obj.bm = $(this).find('input[name=bm]').val();
+            obj.mc = $(this).find('input[name=mc]').val();
+            obj.dw = $(this).find('select[name="dw"] option:selected').val();
+            obj.zhl = $(this).find('input[name=zhl]').val();
+            obj.dj_jh = $(this).find('input[name=dj_jh]').val();
+            obj.dj_ls = $(this).find('input[name=dj_ls]').val();
+            obj.dj_hy = $(this).find('input[name=dj_hy]').val();
+            obj.dj_ps = $(this).find('input[name=dj_ps]').val();
+            obj.dj_pf = '0';
+            obj_list.push(obj);
+        });
+
+        $(_ + '#dbzList').val(JSON.stringify(obj_list))
+        $(_ + '#sp_qc').val('{"sl_qc":"' + $(_ + '#sl_qc').val() + '","je_qc":"' + $(_ + '#je_qc').val() + '" }')
+
+        var smData = $fm.serializeJson();
+        smData.barcode = $('#barcode').val();
+        smData.bm = $('#bm').val();
+        smData.mc = $('#mc').val();
+        smData.cd = $('#cd').val();
+        smData.dj_jh = $('#dj_jh').val();
+        smData.dj_ls = $('#dj_ls').val();
+        smData.dw = $('#dw').val();
+        smData.sl_kc_min = $('#sl_kc_min').val();
+        smData.sl_kc_max = $('#sl_kc_max').val();
+        smData.dj_hy = $('#dj_hy').val();
+        smData.yxq = $('#yxq').val();
+        smData.dj_ps = $('#dj_ps').val();
+        smData.dj_pf = $('#dj_pf').val();
+        smData.bz = $('#bz').val();
+
+        $.post(
+           $fm.attr('action'),
+           smData,
+           function (data) {
+               $btn.button("reset");
+               if (data.status == "success") {
+                   $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                   var id = '@copySP.ShopSP.id';
+                   var from = '@from';
+                   if (from != 'detail') {
+                       $.DHB.url('shopsp/list?page='+'@page', 'cache');
+                       $.fn.menuTab.deleteMenu('shopsp/edit');
+                   } else {
+                       $.fn.menuTab.load({ url: '/shopsp/detail?id=' + id + '&page=' + '@page', 'title': '商品详情', id: 'shopsp/detail', nocache: '1' });
+                       $.fn.menuTab.deleteMenu('shopsp/edit');
+                   }
+               }
+               else {
+                   $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                   btn.button('reset');
+               }
+           }, 'json');
+    }
+
+    //上传图片
+    app.shopsp.single_uploadimage = function () {
+        $.DHB.singleUpload({ 'config': 'excel', 'callback': 'app.shopsp.verify_single_uploadimage', 'allowed': 'jpg,png,jpeg' });
+    }
+
+    //上传图片回调
+    app.shopsp.verify_single_uploadimage = function (files) {
+        if (typeof (files) != 'undefined') {
+            $(_ + '#pic_path').val(files);
+            $(_ + '#img_pic_path').attr("src", files);
+        }
+    }
+    app.shopsp.onblur = function (e, num) {
+        var data = $(e).val();
+        $(e).val(limit_num($.trim(data), num));
+    };
+
+    app.shopsp.onfocus = function (e) {
+        $(e).select();
+    };
+
+
+   //新增多包装
+    app.shopsp.adddbz = function (obj) {
+        $(obj).trigger('blur');
+        var guid = parseInt($(_ + "#dbznum").val()) + 1;
+        var option = '@Html.Raw(optinList)';
+        var resultHtml = '';
+        resultHtml += '<tr data-options="guid">';
+        resultHtml += '<td style="text-align:center;" class="hidden">' + guid + '</td>';
+        resultHtml += '<td><div class="width200"><input style="width:130px;" class="form-control f-l {required:true,messages:{required:&#39;请输入商品条码&#39;}}" name="barcode" id="barcode_' + guid + '" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"  onkeyup="app.shopsp.checkbarcode(this)" onafterpaste="app.shopsp.checkbarcode(this)" ><button class="btn btn-info new_shengcheng f-l" type="button" onclick="app.shopsp.createbarcode(this,\'barcode_' + guid + '\',\'bm_' + guid + '\')">生成</button></div></td>';
+        resultHtml += '<td><input class="form-control f-l width100" type="text" name="bm" id="bm_'+guid+'" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }" /></td>';
+        resultHtml += '<td><input class="form-control  {maxlength:80,required:true,messages:{required:&#39;请输入商品名称&#39;}} valid" name="mc" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td>';
+        resultHtml += '<select id="dw_' + guid + '" name="dw" class="form-control input-sm box-shawn  search-result select2" style="width:95px;margin:0px auto;"  >';
+        resultHtml += option;
+        resultHtml += '</select>';
+        resultHtml += '</td>';
+        resultHtml += '<td><input class="form-control {required:true,number:true,maxlength:11,messages:{required:&#39;请输入转换率&#39;}} valid" name="zhl" type="text" onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入进货价&#39;}} valid" name="dj_jh" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入零售价&#39;}} valid" name="dj_ls" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入会员价&#39;}} valid" name="dj_hy" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入配送价&#39;}} valid" name="dj_ps" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';
+        @*resultHtml += '<td toggle="" style="text-align: center; display: table-cell;"><input class="form-control text-right p-r  {required:true,number:true,maxlength:11,messages:{required:&#39;请输入批发价&#39;}} valid" name="dj_pf" maxlength="11" type="text"  style="text-align:right;" onfocus="app.shopsp.onfocus(this)" onblur="app.shopsp.onblur(this, @digit["dj_digit"])"  onkeyup="check_digit(this,@digit["dj_digit"])" onafterpaste="check_digit(this,@digit["dj_digit"])"  onkeypress="if (event.keyCode == 13 || event.which == 13) { app.shopsp.onkeydown(this) }"></td>';*@
+
+        resultHtml += '<td style="text-align:center;">';
+        resultHtml += '<a onclick="app.shopsp.choice_spec_del(this);"  class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a>';
+        resultHtml += '</td>';
+        resultHtml += '</tr>';
+        $(_ + "#dbznum").val(guid);
+        $(_ + "#dbz_table>tbody").append(resultHtml);
+    }
+
+    //删除多包装的数据
+    app.shopsp.choice_spec_del = function (el) {
+        $(el).parents('tr').remove();
+        //app.goods.table_reset_multiprice();
+    }
+
+    //返回
+    function ShopspReturn(el) {
+
+        var id = '@copySP.ShopSP.id';
+        var from = '@from';
+        debugger;
+        if (from != 'detail') {
+            $.fn.menuTab.deleteMenu('shopsp/edit');
+            $.fn.menuTab.load({ url: '/shopsp/list', 'title': '商品管理', id: 'shopsp/list', nocache: '0' });
+        } else {
+            $.fn.menuTab.load({ url: '/shopsp/detail?id=' + id, 'title': '商品详情', id: 'shopsp/detail', nocache: '0' });
+            $.fn.menuTab.deleteMenu('shopsp/edit');
+        }
+
+
+    };
+
+
+</script>

@@ -1,0 +1,180 @@
+﻿@using CySoft.Model.Tb;
+@{
+    Layout = null;
+    IList<Tb_Function_Tree> list = ViewData["list"] as IList<Tb_Function_Tree>;
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="functionmanage/list"]').attr({ controller: 'functionmanage', action: 'list' });
+        app.c.public_data['functionmanage/list'] = app.c.public_data['functionmanage/list'] || {};
+        app.c.public_data['functionmanage/list']['once'] = false;
+        app.functionmanage = app.functionmanage || {};
+    });
+</script>
+<input type="hidden" pagesize value="" />
+<input type="hidden" page value="" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        功能管理
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        @*<p>1、设置商品分类的类目内容，最多支持5级的商品分类</p>
+                            <p>2、客户通过商品分类快速查找商品</p>
+                            <p>3、您也通过商品分类来管理商品，统计不同商品分类下的销售情况、所以请合理设置商品分类的类目内容</p>
+                            <p>
+                                比如：（一级）：饮品 小食   （饮品的二级）：啤酒 饮料 牛奶<span href="https://pc.dhb168.com/index.php?module=web&controller=helpCenter&action=index&classifyId=39" class='tool-link' id='help-link'>查看更多帮助</span>
+                            </p>*@
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+<script type="text/javascript">
+    app.c.public_data['functionmanage/list'] = app.c.public_data['functionmanage/list'] || {};
+    app.c.public_data['functionmanage/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['functionmanage/list']['threemenu'] === false) {
+            app.c.public_data['functionmanage/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="panel panel-default m-b-none">
+        <div class="main-content">
+            <!-- 功能管理 -->
+            <div class="m-b-md">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="nestable-menu" style="padding:0;margin:12px 0 0 15px;">
+                            <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="app.functionmanage.add(this, '');">新增功能</button>
+                            <button id="UButton" style="display:none;">＋操作功能</button>
+                            <button class="btn m-b-xs btn-default m-b-none btn-sm w-xs" type="button" data-action="expand-all"><i class="fa fa-angle-double-down"></i> 展开/收起</button>
+                        </div>
+                        @* 树排序信息 *@
+                        <input type="hidden" name="nestable-result" id="nestable-result" value="" />
+
+                        <div class="col-sm-12 m-t-xs">
+                            <!-- 功能树 -->
+                            <div class="dd" style="max-width:95%;">
+                                @helper NodeHelper(IList<Tb_Function_Tree> _list)
+                                {
+if (_list != null && _list.Count > 0)
+{
+        <ol class="dd-list">
+            @foreach (Tb_Function_Tree _item in _list)
+            {
+                <li class="dd-item" data-id="@_item.id">
+                    <div class="dd-handle" onmouseenter="$.DHB.func.nestableHover(this);" onmouseleave="$.DHB.func.nestableHover(this, 'leave');">
+                        @_item.name&nbsp;<span style="color:#98a6ad;">（编码：@_item.flag_type）</span>
+                        @*<span class="label label-success input-sm label-lg">默认</span>*@
+                        <span class="pull-right">
+                            <a onclick="app.functionmanage.add(this,'@_item.id');">增加子类</a>
+                            @if (_item.id != "0")
+                            {
+                                <span class="vertical-line"></span>
+                                <a onclick="app.functionmanage.edit(this,'@_item.id');">编辑</a>
+                                <span class="vertical-line"></span>
+                                <a onclick="app.functionmanage.del(this,'@_item.id');">删除</a>
+                            }
+                            else
+                            {
+                                <span class="vertical-line"></span>
+                                <a href="JavaScript:"><span style="color: #a9a9a9">编辑</span></a>
+                                <span class="vertical-line"></span>
+                                <a href="JavaScript:"><span style="color: #a9a9a9">删除</span></a>
+                            }
+                        </span>
+                    </div>
+
+                    <!-- 子分类 -->
+                    @NodeHelper(_item.children)
+                </li>
+            }
+        </ol>
+}
+}
+                                @NodeHelper(list)
+                            </div>
+                            @* 下面加入源代码 *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        @*<footer class="panel-footer lter"></footer>*@
+    </div>
+</div>
+
+<script type="text/javascript">
+    var catenestable = null;
+    app.functionmanage = app.functionmanage || {};
+
+    app.functionmanage.list_ready = function () {
+        $.DHB.loadJs([{ id: 'nestable', url: '/static/js/jquery/nestable/jquery.nestable.js' }], function () {
+            //更新排序
+            catenestable = $.DHB.func.nestable({ save_on: true });
+
+            //设置默认节点展开
+            setTimeout(function () {
+                //var curCat = $(_ + ".dd li[data-id='0ca2be3d-dd8a-4c24-9d96-4bf1d71ea2d4']");
+                //catenestable.nestable('expandAll', curCat.parents('li.dd-item'));
+                //curCat.find('.dd-handle').css('background', '#fff6ed');
+            }, 100);
+        });
+    }
+
+    //编辑分类
+    app.functionmanage.edit = function (obj, id) {
+        $(obj).trigger('blur');
+        $.DHB.dialog({ 'title': '编辑功能', 'url': $.DHB.U('functionmanage/edit?id=' + id), 'id': 'dialog-category' });
+    };
+
+    //新增分类
+    app.functionmanage.add = function (obj, id) {
+        $(obj).trigger('blur');
+        $.DHB.dialog({ 'title': '新增功能', 'url': $.DHB.U('functionmanage/add?parent_id=' + id), 'id': 'dialog-category' });
+    };
+
+    //删除分类
+    app.functionmanage.del = function (obj, id) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定删除吗?", function () {
+            $.post($.DHB.U('functionmanage/delete'),
+                {
+                    id: id
+                },
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        //$(_ + ".dd .dd-item[data-id='" + id + "']").remove();
+                        $.DHB.url('functionmanage/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                }, 'json');
+        });
+    };
+
+</script>

@@ -1,0 +1,633 @@
+﻿@using System.Collections
+@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Utility
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Td_Kc_Kspd_1_Query>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    //var IsDataShow = ViewData["_IsDataShow_"] as Func<string, List<string>, bool>;
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+    var digit = ViewData["DigitHashtable"] as Hashtable;//小数点控制
+    digit = digit ?? new Hashtable();
+    string sort = ViewData["sort"].ToString();
+    var mgrShopList= ViewData["MgrShop"] as List<Tb_User_ShopWithShopMc>;
+    mgrShopList = mgrShopList ?? new List<Tb_User_ShopWithShopMc>();
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="kcpd/list"]').attr({ controller: 'kcpd', action: 'list' });
+        app.c.public_data['kcpd/list'] = app.c.public_data['kcpd/list'] || {};
+        app.c.public_data['kcpd/list']['once'] = false;
+        app.kcpd = app.kcpd || {};
+    });
+</script>
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        库存盘点
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        @*<p>1、查找你所有的商品单位信息</p>
+                        <p>2、添加商品单位信息</p>*@
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+
+<script>
+    app.c.public_data['kcpd/list'] = app.c.public_data['kcpd/list'] || {};
+    app.c.public_data['kcpd/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['kcpd/list']['threemenu'] === false) {
+            app.c.public_data['kcpd/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/kcpd/list">
+                                    <div class="col-xs-10 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <div class="pull-right m-r-sm" style="margin-top:7px">
+                                                    <select id="s_id_shop" name="s_id_shop" class="form-control input-sm box-shawn user-input search-result select2" style="width:115px;" onmouseenter="app.search.search_enter(this);" onmouseleave="    app.search.search_leave(this);" onchange="app.search.do_search_kcpd_list(this);">
+                                                        <option value="">全部门店</option>
+                                                        @foreach (var item in mgrShopList.OrderBy(d => d.rq_create))
+                                                        {
+                                                            <option value="@item.id_shop">@item.mc</option>
+                                                        }
+                                                    </select>
+
+                                                </div>
+                                                <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                    <select id="s_flag_sh" name="s_flag_sh" class="form-control input-sm box-shawn user-input search-result select2" style="width: 115px;" onmouseenter="app.search.search_enter(this);" onmouseleave="app.search.search_leave(this);" onchange="app.search.do_search_kcpd_list(this);">
+                                                        <option value="">全部</option>
+                                                        <option value="0">未审核</option>
+                                                        <option value="1">已审核</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                    <div class="btn-group">
+                                                        <input type="hidden" name="start_time" id="start_time" value="">
+                                                        <button type="button" class="btn btn-default btn-sm m-l-none text-left" onclick="app.search.wdatepicker_kcpd_list(this);" title="开始日期" data-title="开始日期" data-field="start_time" data-type="start" style="width: 80px;">开始日期</button>
+                                                        <button type="button" class="btn btn-default disabled btn-sm"><i class="glyphicon glyphicon-calendar" style="min-width: 7%;"></i></button>
+                                                        <button type="button" class="btn btn-default btn-sm text-left" onclick="app.search.wdatepicker_kcpd_list(this);" data-field="start_time" data-type="end" data-position="" style="width: 80px;" title="结束日期">结束日期</button>
+                                                        <input type="hidden" name="start_time_end" id="start_time_end" value="">
+                                                    </div>
+                                                </div>
+                                                <!-- 内容搜索 -->
+                                                <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                    <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="text" value="" onkeypress="
+app.search
+    .trigger_search_kcpd_list(event);" class="form-control input-sm search-h inline v-middle search-result search" name="s_dh" id="s_dh" style="width: 250px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="单号" ondblclick="app.search.search_item_clear_kcpd_list(this);"/><span>
+                                                                <button type="button" onclick="app.search
+    .do_search_kcpd_list(this);" id="btn-search" class="btn btn-sm btn-default search-btn">
+                                                                    <i class="fa fa-search"></i>
+                                                                </button>
+                                                            </span>
+                                                        <span onclick="app.search.search_item_clear_kcpd_list(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;">
+                                                                <i class="fa fa-times-circle"></i>
+                                                            </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            app.c.public_data['kcpd/list'] = app.c.public_data['kcpd/list'] || {};
+                                            app.c.public_data['kcpd/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'kcpd/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' + currentSearch + '===false){app.search.search_kcpd_list();' + currentSearch + '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            app.search.search_kcpd_list = function () {
+                                                app.c.public_data['kcpd/list'] = app.c.public_data['kcpd/list'] || {};
+                                                app.c.public_data['kcpd/list']['_row_total_'] = '@pageList.ItemCount';
+                                                app.c.public_data['kcpd/list']['_page_size_'] = '@pageList.PageSize';
+                                                app.c.public_data['kcpd/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                app.search.do_search_pagination_kcpd_list();
+                                            }
+
+
+                                            app.search.trigger_search_kcpd_list = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_kcpd_list();
+                                                    event.preventDefault();
+                                                }
+                                            }
+
+                                            //查询
+                                            app.search.do_search_kcpd_list = function (el, isExport) {
+                                                isExport = isExport || 0;
+                                                var v = $(_ + ".filter-form").serialize();
+                                                var url = '/kcpd/list?_search_=1&' + v;
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    url = $.DHB.U(url);
+                                                    window.location.href = url;
+                                                }
+                                                else {
+                                                    var options = {
+                                                        url: $.DHB.U(url),
+                                                        dataType: 'html',
+                                                        beforeSend: function () {
+                                                            $.DHB.showButterbar();
+                                                        },
+                                                        success: function (data, textStatus, jqXHR) {
+                                                            if ($('#kcpd-list-list-fresh-box', _).length > 0) {
+                                                                $('#kcpd-list-list-fresh-box', _).html(data);
+                                                            }
+                                                            var curSearchcallback = 'app.kcpd.list_search_callback';
+                                                            var curListcallback = 'app.kcpd.list_listready';
+                                                            eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                                                            eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                            app.search.do_search_pagination_kcpd_list();
+                                                        },
+                                                        complete: function (XHR, TS) {
+                                                            $.DHB.closeButterbar();
+                                                        }
+                                                    };
+                                                    //cy.http.Get(options);
+                                                    app.httpAjax.post(options);
+                                                }
+                                                return false;
+                                            };
+
+                                            //分页
+                                            app.search.do_search_pagination_kcpd_list = function () {
+                                                $.DHB.func.pagination({
+                                                    module_name: 'Manager',
+                                                    controller_name: 'kcpd',
+                                                    action_name: 'list',
+                                                    ready_once: false
+                                                });
+                                            }
+
+
+                                            app.search.do_search_option_kcpd_list = function (el) {
+                                                if ($(el).attr('class') != '') {
+                                                    $(el)
+                                                        .find('span')
+                                                        .each(function () {
+                                                            if ($(this).attr('class') == '') {
+                                                                $(this).attr('class', 'order-active');
+                                                            } else {
+                                                                $(this).attr('class', '');
+                                                            }
+                                                        });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el)
+                                                        .parents('.btn-group')
+                                                        .find('input:eq(0)')
+                                                        .val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el)
+                                                    .parents('.btn-group')
+                                                    .find('button span:eq(0)')
+                                                    .html(selectA.html());
+
+                                                app.search.do_search_kcpd_list();
+                                            }
+
+
+                                            app.search.search_enter = function (el) {
+                                                if (app.c.public_data['kcpd/list']['search_all'] === false) {
+                                                    $(el)
+                                                        .parents('.search-box-container')
+                                                        .find(".bootstrap-select ul.dropdown-menu")
+                                                        .each(function () {
+                                                            var ts = $(this).find('li:first() span:first()');
+                                                            ts.text('全部');
+                                                        });
+                                                    /*$(el).parents('.search-box-container').find(".treeview .list-group>li:first()").each(function(){
+                                                        $(this).text('全部');
+                                                    });*/
+                                                    app.c.public_data['kcpd/list']['search_all'] = true;
+                                                }
+                                            }
+
+
+                                            app.search.search_leave = function (el) {
+                                            }
+
+                                            app.search.search_client_clear_kcpd_list = function (el) {
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_kcpd_list();
+                                            }
+
+
+                                            app.search.wdatepicker_kcpd_list = function (el) {
+                                                var booStart = $(el).data('type') == 'start';
+                                                var option = {};
+                                                option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                                option['onpicked'] = function () {
+                                                    $(el)
+                                                        .text($dp.cal.getP('y') +
+                                                            '-' +
+                                                            $dp.cal.getP('M') +
+                                                            '-' +
+                                                            $dp.cal.getP('d'));
+                                                    if (booStart) {
+                                                        setTimeout(function () {
+                                                                $(el)
+                                                                    .parent()
+                                                                    .find('[data-type="end"]')
+                                                                    .data('position', '1')
+                                                                    .click();
+                                                            },
+                                                            5000);
+                                                    }
+                                                    app.search.do_search_kcpd_list();
+                                                };
+
+                                                if (booStart) {
+                                                    option['maxDate'] =
+                                                        '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                                } else {
+                                                    option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                    if ($(el).data('position') == '1') {
+                                                        //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                                                        //$(el).data('position','');
+                                                    }
+                                                }
+                                                option['oncleared'] = function () {
+                                                    $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                    app.search.do_search_kcpd_list();
+                                                };
+
+                                                WdatePicker(option);
+                                            }
+
+
+                                            app.search.search_item_clear_kcpd_list = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                par.find("select.select2_")
+                                                    .selectpicker({ liveSearch: true })
+                                                    .selectpicker('refresh');
+                                                par.find("select.select2").selectpicker('refresh');
+                                                app.search.do_search_kcpd_list();
+                                            }
+                                        </script>
+                                    </div>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="@sort" />
+                                </form>
+                            </div>
+                        </div>
+                        @if (IsPermissionShow("add", actionlist))
+                        {
+                            <div class="col-xs-2 pull-left">
+                                <div class="btn-group m-t-12 f-l">                                
+                                    <button type="button" class="btn btn-info" onclick="app.kcpd.add(this)"><span class="fa fa-plus btn_icon"></span>新增</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!--数据表格-->
+                    @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                    <div id="kcpd-list-list-fresh-box" class="table_list table_max_h">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="40" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+                                    <th width="100">开单日期</th>
+                                    <th width="200">单号</th>
+                                    <th width="120">制单门店</th>
+                                    <th width="120">总金额</th>
+                                    <th width="80">审核状态</th>
+                                    <th width="200" class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kcpdlist-main-tbody">
+                                @{
+                                    if (pageList == null || pageList.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="7" align="center">
+                                                <img src="~/static/images/nodata.png" class="table_nodata">
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        var list = pageList.Items;
+                                        if (list != null && list.Any())
+                                        {
+                                            int index = pageList.PageIndex * pageList.PageSize + 1;
+                                            foreach (var item in list)
+                                            {
+                                                <tr id="row-kcpd-id-@item.id" class="tr-status-finished">
+                                                    <td class="text-center">
+                                                        @(index++)
+                                                    </td>
+                                                    <td class="text-center"><a class="list-link">@(item.rq == null ? "" : ((DateTime) item.rq).ToString("yyyy-MM-dd"))</a></td>
+                                                    <td class="text-center">
+                                                        @item.dh
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @item.mc_shop
+                                                    </td>
+                                                    <td class="align_right">
+                                                        @item.je_yk_mxtotal.Digit((int)digit["je_digit"])
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @(item.flag_sh == 0 ? "未审核" : "已审核")
+                                                    </td>
+                                                    <td class="list-operate">
+                                                        <div class="look-out1 supernatant">
+                                                            <div class="second-height-operate">
+                                                                @if (IsPermissionShow("edit", actionlist)&&item.flag_sh==0&&item.flag_delete==0)
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.kcpd.edit('@item.id',this)" title="编辑"></a>
+                                                                }
+                                                                @if (IsPermissionShow("copy", actionlist))
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-copy" href="javascript:;" onclick="app.kcpd.copy('@item.id',this)" title="复制"></a>
+                                                                }
+                                                                @if (IsPermissionShow("detial", actionlist))
+                                                                {
+                                                                <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="app.kcpd.detial('@item.id',this)" title="详细"></a>
+                                                                }
+                                                                @if (IsPermissionShow("delete", actionlist) && item.flag_sh == 0 && item.flag_delete == 0)
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.kcpd.del('@item.id',this)" title="删除"></a>
+                                                                }
+                                                                @if (IsPermissionShow("sh", actionlist) && item.flag_sh == 0 && item.flag_delete == 0 && item.flag_cancel == 0)
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-user" href="javascript:;" onclick="app.kcpd.sh('@item.id',this)" title="审核"></a>
+                                                                }
+                                                                @*@if (IsPermissionShow("zf", actionlist)&&item.flag_sh==1&&item.flag_cancel==0&&item.flag_delete==0)
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-ban" href="javascript:;" onclick="app.kcpd.zf('@item.id',this)" title="作废"></a>
+                                                                }*@
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--页脚-->
+                    <footer class="panel-footer">
+                        <div class="dropup d-i-b" style="position: relative">
+                        </div>&nbsp;
+                        <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    
+    app.kcpd = app.kcpd || {};
+
+    //分页回调
+    app.kcpd.list_pagination_callback = function (data, textStatus, idx, jq) {
+        app.kcpd.list_search_callback(data, textStatus);
+    };
+
+    //查询回调
+    app.kcpd.list_search_callback = function (data, textStatus) {
+        var sort_array = $('.table a[data-sort]', _);
+        var $current_sort = ($('#hid_sort', _).val().toLowerCase()).split(' ', 2);       //这是当前排序
+
+        //绑定UI
+        sort_array.each(function (index, obj) {
+            var $current = $(obj);
+            if ($current.attr('data-sort') === $current_sort[0]) {
+                $current.attr('data-dir', $current_sort[1]);
+                if ($current_sort[1] === 'asc')
+                    $current.append(app.sort_icon.asc);      //升序
+                else
+                    $current.append(app.sort_icon.desc);     //降序
+            }
+            else {
+                $current.append(app.sort_icon.sort);
+            }
+        });
+
+        //绑定事件
+        sort_array.off('click').on('click', function (e) {
+            var e = e || event;
+            var $current = $(e.target);        //获取当前点击派序列
+            var _dir = 'desc';
+            if ($.trim($current.attr('data-dir')).length == 0 || $.trim($current.attr('data-dir')) === 'asc') {
+                $current.attr('data-dir', _dir);
+            }
+            else {
+                _dir = 'asc';
+                $current.attr('data-dir', _dir);
+            }
+            $('#hid_sort', _).val($current.attr('data-sort') + ' ' + _dir);
+            app.search.do_search_kcpd_list();
+        });
+    };
+
+    //编辑
+    app.kcpd.edit = function (id, obj) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/kcpd/edit?id='+id, 'title': '编辑库存盘点', id: 'kcpd/add', nocache: '0' });
+    };
+    app.kcpd.detial = function (id, obj) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/kcpd/detial?id=' + id, 'title': '库存盘点详情', id: 'kcpd/add', nocache: '0' });
+    };
+    //编辑
+    app.kcpd.copy = function (id, obj) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/kcpd/copy?id=' + id, 'title': '复制库存盘点', id: 'kcpd/add', nocache: '0' });
+    };
+    //新增
+    app.kcpd.add = function (obj) {
+        $(obj).trigger('blur');
+        $.fn.menuTab.load({ url: '/kcpd/add', 'title': '新增库存盘点', id: 'kcpd/add', nocache: '0' });
+    };
+
+    //删除
+    app.kcpd.del = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定删除吗?", function () {
+
+            //$.post($.DHB.U('kcpd/delete'),
+            //    {
+            //        id: id
+            //    },
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+            //            $.DHB.url('kcpd/list', 'cache');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //        }
+            //    }, 'json');
+            app.httpAjax.post({
+                data: { id: id },
+                headers: {},
+                url: $.DHB.U('kcpd/delete'),
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('kcpd/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                error: null,
+                complete: null
+            });
+
+        });
+    };
+    //作废
+    app.kcpd.zf = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定作废吗?", function () {
+            //$.post($.DHB.U('kcpd/zf'),
+            //    {
+            //        id: id
+            //    },
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+            //            $.DHB.url('kcpd/list', 'cache','库存盘点');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //        }
+            //    }, 'json');
+            app.httpAjax.post({
+                data: { id: id },
+                headers: {},
+                url: $.DHB.U('kcpd/zf'),
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('kcpd/list', 'cache', '库存盘点');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                error: null,
+                complete: null
+            });
+
+        });
+    };
+    //审核
+    app.kcpd.sh = function (id, obj) {
+        $(obj).trigger('blur');
+        $.messager.confirm("提示", "确定审核吗?", function () {
+            //$.post($.DHB.U('kcpd/sh'),
+            //    {
+            //        id: id
+            //    },
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+            //            $.DHB.url('kcpd/list', 'cache','库存盘点');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //        }
+            //    }, 'json');
+            app.httpAjax.post({
+                data: { id: id },
+                headers: {},
+                url: $.DHB.U('kcpd/sh'),
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('kcpd/list', 'cache', '库存盘点');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                },
+                error: null,
+                complete: null
+            });
+
+        });
+    };
+    //内页加载完成
+    app.kcpd.list_ready = function () {
+        //Init Sort
+        app.kcpd.list_search_callback(null, null);
+    };
+</script>  

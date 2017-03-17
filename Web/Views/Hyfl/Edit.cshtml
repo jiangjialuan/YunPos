@@ -1,0 +1,204 @@
+﻿
+@using CySoft.Model.Ts;
+@using CySoft.Model.Tb;
+
+@{
+    Tb_Hyfl item_edit = ViewData["item_edit"] as Tb_Hyfl;
+    item_edit = item_edit ?? new Tb_Hyfl() { zk = 1 };
+    string option = ViewData["option"].ToString();
+
+    var yhlxSelect = ViewData["YHLXSelect"] as List<Ts_Flag>;
+    yhlxSelect = yhlxSelect ?? new List<Ts_Flag>();
+
+    string zkdis = string.Format(item_edit.flag_yhlx == 2 ? " disabled=\"disabled\" " : "");
+}
+<style>
+    .dropdown-menu {
+        max-height: 510px;
+    }
+</style>
+
+<div class="modal fade in" id="dialog-hyfl" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">编辑分类</h4>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="" onkeypress="if(event.keyCode==13||event.which==13){return false;}">
+                <div class="modal-body tab-content ">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>编码</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {maxlength:16,messages:{required:&#39;编码最多十六位长的数字&#39;}}" placeholder="请输入编码" type="text" name="bm" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.bm)" id="txt_bm" onkeyup="app.hyfl.checkbarcode(this)" onafterpaste="app.hyfl.checkbarcode(this)" old-data="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.bm)">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>名称</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true}" placeholder="请输入名称" type="text" name="mc" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.mc)" id="txt_mc">
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right lab-w80">
+                                <em class="tag">* </em><span>优惠类型</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+
+                                <select id="flag_yhlx" name="flag_yhlx"  onchange="app.hyfl.yhlx_onchange(this)"  class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择优惠类型&#39;}} valid" style="width:330px;">
+                                    @foreach (var item in yhlxSelect.OrderBy(d => d.listsort))
+                                    {
+                                        var stateChecked = item_edit.flag_yhlx == item.listdata ? "selected=\"selected\"" : "";
+                                        <option value="@item.listdata" @stateChecked>@item.listdisplay</option>
+                                    }
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>折扣</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true}" placeholder="请输入折扣" type="text" @zkdis name="zk" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.zk.ToString())" id="txt_zk">
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>排序</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,number:true}" placeholder="请输入排序" type="text" name="sort_id" value="@string.Format("{0}", item_edit == null ? "1" : item_edit.sort_id.ToString())" id="txt_sort_id">
+                            </label>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="id" name="id" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.id)" />
+                    <input type="hidden" id="hid_option" value="@option">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+
+            var zk = $(_ + "#txt_zk").val();
+            if (parseFloat(zk) == 0) {
+                $.DHB.message({ 'content': '折扣必须大于0！', 'time': 4000, 'type': 'e' });
+                return false;
+            }
+
+            $.messager.confirm("提示", "确定" + (Tnum > 0 ? ' 修改 ' : ' 新增 ') + "本条数据吗?", function () {
+
+                var post_data = $(_ + ".validate").serialize();
+                var zkdis = $(_ + "#txt_zk").attr('disabled');
+                if (zkdis == 'disabled') {
+                    post_data = post_data + '&zk=' + zk;
+                }
+
+                var btn = $(_ + '#submit-button').button('loading');
+
+                var options = {
+                    data: post_data,
+                    url: $.DHB.U('hyfl/' + (Tnum > 0 ? 'Edit' : 'Add')),
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (data, textStatus, jqXHR) {
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                            $(_ + '#submit-button').text("提交成功！");
+                            $.DHB.close("Hyfl/List");
+                            $.DHB.url('hyfl/list', 'cache', '会员类别');
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                            btn.button('reset');
+                        }
+                    },
+                    complete: function (XHR, TS) { btn.button('reset'); }
+                };
+                app.httpAjax.post(options)
+
+            });
+
+            return false;
+        });
+    };
+
+    app.hyfl = app.hyfl || {};
+
+    app.hyfl.checkbarcode = function (obj) {
+
+        //如果是上下左右Tab按键 回车 不处理
+        var event = arguments.callee.caller.arguments[0] || window.event;//消除浏览器差异
+        if (typeof (event) != 'undefined') {
+            var keyCode = event.keyCode;
+
+            if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40 || keyCode == 9 || keyCode == 13 || keyCode == 8) {
+                return false;
+            }
+        }
+
+        var value = new String($(obj).val().replace(/\s+/g, ""));
+        $(obj).val(value);
+        if (isNaN(value) || value.indexOf(".") != -1) {
+            $.DHB.message({ 'content': '仅允许输入数字', 'time': 4000, 'type': 'i' });
+            
+            var old_data = $(obj).attr('old-data');
+            if (typeof (old_data) == 'undefined') { old_data = ''; }
+            value = old_data;
+            $(obj).val(value);
+        }
+        value = value + "";
+        $(obj).attr('old-data', value);
+    }
+
+
+    app.hyfl.yhlx_onchange = function (e) {
+        var yhlx = $(e).find('option:selected').val();
+        //如果为折扣
+        if (yhlx == '2') {
+            $(_ + "#txt_zk").attr("disabled", "disabled");
+            $(_ + "#txt_zk").val('1');
+        } else {
+            $(_ + "#txt_zk").removeAttr("disabled");
+        }
+    };
+
+
+
+</script>

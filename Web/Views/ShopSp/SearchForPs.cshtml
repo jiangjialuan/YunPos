@@ -1,0 +1,596 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    PageList<Tb_Shopsp_Query_For_Ps> list_shopsp = ViewData["list_shopsp"] as PageList<Tb_Shopsp_Query_For_Ps>;
+    var selectListState = ViewData["selectListState"] as List<Ts_Flag>;
+    selectListState = selectListState ?? new List<Ts_Flag>();
+    var selectListCZFS = ViewData["selectListCZFS"] as List<Ts_Flag>;
+    selectListCZFS = selectListCZFS ?? new List<Ts_Flag>();
+    var selectListSPFL = ViewData["selectListSPFL"] == null ? "" : ViewData["selectListSPFL"].ToString();
+    var selectListShop = ViewData["selectListShop"] as List<Tb_Shop>;
+    selectListShop = selectListShop ?? new List<Tb_Shop>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    var keyword = ViewData["keyword"] == null ? "" : ViewData["keyword"].ToString().Trim();
+    var id_shop = ViewData["id_shop"] == null ? "" : ViewData["id_shop"].ToString().Trim();
+    var id_shop_ck = ViewData["id_shop_ck"] == null ? "" : ViewData["id_shop_ck"].ToString().Trim();
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop_new = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+
+}
+
+@Styles.Render("~/static/js/bootstrap-treeview/bootstrap-treeview.min.css")
+
+<script>
+    
+    $(function () {
+        $('div[contentID="shopsp/searchforps"]').attr({ controller: 'shopsp', action: 'searchforps' });
+        app.c.public_data['shopsp/searchforps'] = app.c.public_data['shopsp/searchforps'] || {};
+        app.c.public_data['shopsp/searchforps']['once'] = false;
+        app.shopsp = app.shopsp || {};
+    });
+</script>
+
+
+<div class="modal fade in" role="dialog" id="dialog-shopsp-searchforps">
+    <div class="modal-dialog popshop" >
+       
+            <div class="modal-header poptitle">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <p class="name">选择商品</p>
+            </div>
+
+            <div class="modal-body tab-content popcontent shopsp_cont">
+                
+                
+
+                <!--树-->
+
+                <div class="col-sm-2 p-l-r-none tree_left">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="l-tree_head">
+                                <ul>
+                                    <li class="text-center" style="line-height:40px;">商品分类</li>
+                                </ul>
+                                <div class="pull-left" style="margin-top:10px; padding-left:15px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div id="tree_left" class="p-b-30"></div>
+                        </div>
+                    </div>
+                </div>
+   
+                <div class="right_table col-sm-10">
+                    <div class="table_up col-sm-12">
+                        <div class="row wrapper1">
+                            <form class="filter-form-shopsp-searchforps-dialog" action="/shopsp/searchforps">
+                                <div class="col-xs-12">
+                                    <div class="searchforps-box-container">
+                                        <div class="clearfix">
+                                            <button type="button" onclick="app.shopsp.alert_add_shopsp();" class="btn btn-info w-xs f-l">新增商品</button>
+                                            <div class="pull-right m-r-sm" >
+                                                <div class="1" style="position:relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                    <input type="text" value="@keyword"
+                                                           onkeypress="app.searchforps.trigger_search_shopsp_list(event);"
+                                                           class="form-control input-sm search-h inline v-middle search-result search"
+                                                           name="keyword" id="keyword" style="width:250px;border-right:none;border-radius: 2px 0 0 2px;"
+                                                           placeholder="商品名称/首字母/编号/关键字/条形码"
+                                                           ondblclick="app.searchforps.search_client_clear_shopsp_list(this);"
+                                                           onblur="app.searchforps.do_search_shopsp_list(this);" />
+                                                    <span>
+                                                        <button type="button" onclick="app.searchforps.do_search_shopsp_list(this);"
+                                                                id="btn-search" class="btn btn-sm btn-default search-btn">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </span>
+                                                    <span onclick="app.searchforps.search_client_clear_shopsp_list(this);" style="display:none;position:absolute;right:27px;top:4px;padding:2px 2px 2px 4px;cursor:pointer;color:#d5d3d5;width:19px;height:25px;background:#fff;">
+                                                        <i class="fa fa-times-circle"></i>
+                                                    </span>
+
+                                                </div>
+                                            </div>
+
+
+                                            <input type="hidden" name="flag_state" value="1" />
+                                            <input type="hidden" name="id_shop" value="@id_shop" />
+                                            <input type="hidden" name="id_shop_ck" value="@id_shop_ck" />
+                                            <input id="id_spfl" name="id_spfl" value="" type="hidden" />
+
+
+                                        </div>
+                                    </div>
+                                    <script>
+                                app.c.public_data['shopsp/searchforps'] = app.c.public_data['shopsp/searchforps'] || {};
+                                app.c.public_data['shopsp/searchforps']['search_all'] = false;
+                                var currentSearch = 'app.c.public_data[\'shopsp/searchforps\'][\'search\']';
+                                eval(currentSearch + ' = false;');
+                                $.DHB._search = function () {
+                                    eval('if(' + currentSearch + '===false){app.searchforps.search_gys_list();' + currentSearch + '=true;}');
+                                }
+
+                                app.searchforps = app.searchforps || {};
+
+                                app.searchforps.search_gys_list = function () {
+                                    app.c.public_data['shopsp/searchforps'] = app.c.public_data['shopsp/searchforps'] || {};
+                                    app.c.public_data['shopsp/searchforps']['_row_total_'] = '@list_shopsp.ItemCount';
+                                    app.c.public_data['shopsp/searchforps']['_page_size_'] = '@list_shopsp.PageSize';
+                                    app.c.public_data['shopsp/searchforps']['_current_page_'] = '@(list_shopsp.PageIndex)';
+                                    app.searchforps.do_search_pagination_gys_list();
+                                }
+
+                                app.searchforps.trigger_search_shopsp_list = function (event) {
+                                    //绑定回车键
+                                    event = event || window.event
+                                    if (event.keyCode == 13) {
+                                        app.searchforps.do_search_shopsp_list();
+                                        event.preventDefault();
+                                    }
+                                }
+
+                                //查询
+                                app.searchforps.do_search_shopsp_list = function (el, isExport) {
+                                    
+                                    isExport = isExport || 0;
+                                    var v = $(_ + ".filter-form-shopsp-searchforps-dialog").serialize();
+                                    
+                                    if ($(_).attr('contentid') == 'promote/spflmsadd' || $(_).attr('contentid') == "promote/spflzkadd") {
+                                        
+                                        v=v.replace(/id_spfl/, 'id_spfls');
+                                    }
+                                    //var id_shop = $("#id_shop_sq", _).val();
+                                    //var id_shop_ck = $("#id_shop_ck", _).val();
+                                    //if (id_shop == ""|id_shop==undefined) {
+                                    //    var id_shop = $("#id_shop_rk",_).val();
+                                    //    var id_shop_ck = $("#id_shop",_).val();
+                                    //}
+                                    ////console.log(v);
+                                    var url = '/shopsp/searchforps?_search_=1&' + v;//+ '&id_shop_ck=' + id_shop_ck;
+                                    if (isExport == 1) {
+                                        url += '&export=1';
+                                        url = $.DHB.U(url);
+                                        window.location.href = url;
+                                    }
+                                    else {
+                                        var options = {
+                                            url: $.DHB.U(url),
+                                            datatype: 'html',
+                                            beforeSend: function () {
+                                                $.DHB.showButterbar();
+                                            },
+                                            callback: function (data, textStatus, jqXHR) {
+                                                if ($('#shopsp-searchforps-list-fresh-box', _).length > 0) {
+                                                    $('#shopsp-searchforps-list-fresh-box', _).html(data);
+                                                }
+                                                var curSearchcallback = 'app.shopsp.list_search_callback';
+                                                var curListcallback = 'app.shopsp.list_listready';
+                                                eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                                                eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                app.searchforps.do_search_pagination_gys_list();
+                                            },
+                                            complete: function (XHR, TS) {
+                                                $.DHB.closeButterbar();
+                                            }
+                                        };
+                                        cy.http.Get(options);
+                                    }
+                                    return false;
+                                };
+
+                                //分页
+                                app.searchforps.do_search_pagination_gys_list = function () {
+                                    $.DHB.func.pagination({
+                                        module_name: 'Manager',
+                                        controller_name: 'shopsp',
+                                        action_name: 'searchforps',
+                                        ready_once: false,
+                                        filter_form: ".filter-form-shopsp-searchforps-dialog",
+                                        page_box: "#Pagination-shopsp-dialog",
+                                       // dialog_pagesize: true
+                                    });
+                                }
+
+                                app.searchforps.search_enter = function (el) {
+                                    if (app.c.public_data['shopsp/searchforps']['search_all'] === false) {
+                                        $(el)
+                                            .parents('.searchforps-box-container')
+                                            .find(".bootstrap-select ul.dropdown-menu")
+                                            .each(function () {
+                                                var ts = $(this).find('li:first() span:first()');
+                                                ts.text('全部');
+                                            });
+                                        app.c.public_data['shopsp/searchforps']['search_all'] = true;
+                                    }
+                                }
+
+                                app.searchforps.search_leave = function (el) {
+                                }
+
+                                app.searchforps.search_client_clear_shopsp_list = function (el) {
+                                    //var par = $(el).parents('form');
+                                    //par.get(0).reset();
+
+                                    $("#keyword", _).val('');
+                                    app.searchforps.do_search_shopsp_list();
+                                }
+
+                                    </script>
+
+                                </div>
+                                <input type="hidden" name="for_type" value="orders" />
+                                <input type="hidden" id="shopsp_table_json" name="shopsp_table_json" value="" />
+                            </form>
+                        </div>
+
+                        <div class="clear"></div>
+                    </div>
+                    <div id="shopsp-searchforps-list-fresh-box"  class="table_list  col-sm-12">
+                        <table id="shopsp_table_alert" class="table m-b-none row1 selectAll-table b-b" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th style="width:45px;">
+                                        <label class="i-checks m-b-none">
+                                            <input id="goods-dialog-selectAll" type="checkbox" onclick="$.DHB.func.selectAllThis(this);">
+                                            <i>
+                                            </i>
+                                        </label>
+                                    </th>
+                                    <th width="15%">
+                                        条形码
+                                    </th>
+                                    <th width="30%">
+                                        商品
+                                    </th>
+                  @*@if (version == "20")// 10 单店  连锁 20
+                                  {            
+                                    <th width="7%">
+                                        所属门店
+                                    </th>
+                                 }*@
+                                    <th width="7%">
+                                        商品分类
+                                    </th>
+                                    <th width="7%">
+                                        单位
+                                    </th>
+                                    <th width="7%">
+                                        零售价
+                                    </th>
+                                    <th width="7%">
+                                        进货价
+                                    </th>
+                                    <th width="7%">
+                                        批发价
+                                    </th>
+                                    <th width="7%">
+                                        会员价
+                                    </th>
+                                    <th width="7%">
+                                        状态
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @{
+                                    if (list_shopsp == null || list_shopsp.Count == 0)
+                                    {
+                                    }
+                                    else
+                                    {
+                                        int index = 1;
+                                        foreach (var item in list_shopsp)
+                                        {
+                                            <tr data-options="@item.id" style="cursor:pointer;" onclick="app.shopsp.select_click(this)">
+                                                <td class="align_center">
+                                                    <label class="i-checks m-b-none">
+                                                        <input type="checkbox" name="goods-dialog-post[]" data-realnumber="0" data-wholeinventory="0" value="@item.id" data-id="@item.id" data-goodsname="@item.mc" data-translation="1" data-category="@item.spfl_mc" data-name="@item.mc"
+                                                               data-wholeprice="@item.dj_jh.Digit((int)digit["dj_digit"])" data-purchaseprice="@item.dj_ls.Digit((int)digit["dj_digit"])" data-numberprice="[]"
+                                                               data-baseunits="@item.dw"
+                                                               data-containerunits=""
+                                                               data-orderunits="@item.barcode" data-minorder="1" data-conversionnumber="1" data-goodsnum="@item.bm"
+                                                               data-goodspicture="@Html.Raw(string.IsNullOrWhiteSpace(item.pic_path) ? "/static/images/default.jpg" : item.pic_path) "
+                                                               data-id_kcsp="@item.id_kcsp"
+                                                               data-id_sp="@item.id_sp"
+                                                               data-zhl="@item.zhl"
+                                                               data-dj_jh="@item.dj_jh.Digit((int)digit["dj_digit"])"
+                                                               data-dj_pf="@item.dj_pf.Digit((int)digit["dj_digit"])"
+                                                               data-dj_ls="@item.dj_ls.Digit((int)digit["dj_digit"])"
+                                                               data-dj_hy="@item.dj_hy.Digit((int)digit["dj_digit"])"
+                                                               data-barcode="@item.barcode"
+                                                               data-bm="@item.bm"
+                                                               data-id_shop="@item.id_shop"
+                                                               data-id_spfl="@item.id_spfl"
+                                                               data-dw="@item.dw"
+                                                               data-sl_qm="@item.sl_qm.Digit((int)digit["sl_digit"])"
+                                                               data-je_qm="@item.je_qm.Digit((int)digit["je_digit"])"
+                                                               data-dj_cb="@item.dj_cb.Digit((int)digit["dj_digit"])"
+                                                               data-dj_ps="@item.dj_ps.Digit((int) digit["dj_digit"])"
+                                                               data-id_shopsp_ck="@item.id_shopsp_ck"
+                                                               data-id_kcsp_ck="@item.id_kcsp_ck"
+                                                               />
+                                                        <i onclick="app.shopsp.stoppro(this)"></i>
+                                                    </label>
+                                                </td>
+                                                <td field="barcode">
+                                                    <div>
+                                                        @item.barcode
+                                                    </div>
+                                                </td>
+                                                <td field="mc">
+                                                    <div>
+                                                        @item.mc
+                                                    </div>
+                                                </td>
+                                @*@if (version == "20")// 10 单店  连锁 20
+                                                   {                                      
+                                                <td field="shop_mc">
+                                                    <div>
+                                                        @item.shop_mc
+                                                    </div>
+                                                </td>
+                                                    }*@
+                                                <td field="spfl_mc">
+                                                    <div>
+                                                        @item.spfl_mc
+                                                    </div>
+                                                </td>
+                                                <td field="dw">
+                                                    <div>
+                                                        @item.dw
+                                                    </div>
+                                                </td>
+                                                <td field="dj_ls">
+                                                    <div>
+                                                        @item.dj_ls.Digit((int)digit["dj_digit"])
+                                                    </div>
+                                                </td>
+                                                <td field="dj_jh">
+                                                    <div>
+                                                        @item.dj_jh.Digit((int)digit["dj_digit"])
+                                                    </div>
+                                                </td>
+                                                <td field="dj_pf">
+                                                    <div>
+                                                        @item.dj_pf.Digit((int)digit["dj_digit"])
+                                                    </div>
+                                                </td>
+                                                <td field="dj_hy">
+                                                    <div>
+                                                        @item.dj_hy.Digit((int)digit["dj_digit"])
+                                                    </div>
+                                                </td>
+                                                <td field="flag_state">
+                                                    <div>
+                                                        @Html.Raw(item.flag_state == 1 ? "正常" : "停用")
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class=" m-t-12 m-b-12 m-r-md  col-sm-12 ">
+                        <ul id="Pagination-shopsp-dialog" class="pagination pagination-sm pull-right m-b-none"></ul>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer popfooter align_center">
+                <button type="button" id="submit-button" data-loading-text="提交中..." data-confirm="confirm" onclick="app.shopsp.save_shopsp(this);" class="btn btn-info w-xs">确定</button>
+                <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+            </div>
+
+        
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(function () {
+        $(_ + "#dialog-shopsp-searchforps .modal-body").removeClass('modal-body');
+    });
+
+    app.shopsp = app.shopsp || {};
+    app.shopsp.select_click = function (e) {
+        //
+        $(e).find('input[type=checkbox]').click();
+    }
+    //$('#shopsp-search-list-fresh-box').on('click', 'input[type=checkbox]+i', function (event) {
+    //    
+
+    //})
+    app.shopsp.stoppro = function () {
+        //
+        event.stopPropagation();
+    }
+
+    app.shopsp.select_shopsp = function (el) {
+        var checkItem = $(el).find('input:checkbox').get(0);
+        if (checkItem.disabled !== true) {
+            if (checkItem.checked === false) {
+                checkItem.checked = true;
+            } else {
+                checkItem.checked = false;
+            }
+        }
+    }
+
+
+    app.shopsp.multioption_goods_list = function (el) {
+        var intGoodsID = $(el).data('goods_id');
+        var currentBody = $('#view-row-multioption-' + intGoodsID + ' tbody', _);
+
+        if (currentBody.data('init') != '1') {
+            $.fn.menuTab.loadMessage(currentBody);
+            $.get($.DHB.U('Quote/Public/goodsMultiOptions?goods_id=' + intGoodsID + '&client_id=27039'),
+                function (data, textStatus) {
+                    currentBody.data('init', '1').html(data);
+                    var objA = $(_ + '#view-row-multioption-' + intGoodsID + ' .selectAll-table td a');
+                    $.DHB.func.selectAll({
+                        'select': '#view-row-multioption-' + intGoodsID + ' .selectAll-table', callback: function (intNum) {
+                            if ($(_ + '#view-row-multioption-' + intGoodsID + ' .selectAll-table th input:checkbox').get(0).checked === true) {
+                                objA.addClass('multi-btn-active');
+                            } else {
+                                objA.removeClass('multi-btn-active');
+                            }
+                            app.public.set_goods_status(intGoodsID, intNum);
+                        }
+                    });
+                    objA.niceTitle({ showLink: false });
+                    objA.each(function () {
+                        $(this).click(function () {
+                            if ($(this).hasClass('multi-btn-active')) {
+                                $(this).removeClass('multi-btn-active');
+                                $(this).find('input:checkbox').prop("checked", false);
+                            } else {
+                                $(this).addClass('multi-btn-active');
+                                $(this).find('input:checkbox').prop("checked", true);
+                            }
+                            app.public.set_goods_status(intGoodsID, $.DHB.func.getSelectedAttr('#view-row-multioption-' + intGoodsID + ' .selectAll-table').length);
+                        });
+                    });
+                }, 'html'
+            );
+        }
+
+        $(_ + '.goods-multioption-box').click(function (e) {
+            e.stopPropagation();
+        });
+    }
+
+
+    app.shopsp.set_goods_status = function (intGoodsID, intNum) {
+        $('#row-multioption-count-' + intGoodsID, _).text(intNum);
+    }
+
+    app.shopsp.alert_add_shopsp = function () {
+        $.fn.menuTab.load({ url: '/shopsp/add?from=search', 'title': '新增商品', id: 'shopsp/add', nocache: '0' });
+    }
+    app.shopsp.save_shopsp = function (el) {
+        
+        var find = false;
+        var e = [];
+        var shopsp = [];
+        var i = 0;
+        $(_ + "#dialog-shopsp-searchforps input[name='goods-dialog-post[]']").each(function () {
+            //
+            if ($(this)[0].checked == true) {
+                //
+                find = true;
+                var shopsp_e = {};
+                shopsp_e.id_shopsp = $(this)[0].attributes["value"].value;
+                shopsp_e.barcode = $(this)[0].attributes["data-barcode"].value;
+                shopsp_e.bm = $(this)[0].attributes["data-bm"].value;
+                shopsp_e.mc = $(this)[0].attributes["data-name"].value;
+                shopsp_e.id_shop = $(this)[0].attributes["data-id_shop"].value;
+                shopsp_e.id_spfl = $(this)[0].attributes["data-id_spfl"].value;
+                shopsp_e.dw = $(this)[0].attributes["data-dw"].value;
+                shopsp_e.dj_jh = $(this)[0].attributes["data-dj_jh"].value;
+                shopsp_e.dj_ls = $(this)[0].attributes["data-dj_ls"].value;
+                shopsp_e.dj_hy = $(this)[0].attributes["data-dj_hy"].value;
+                shopsp_e.id_kcsp = $(this)[0].attributes["data-id_kcsp"].value;
+                shopsp_e.zhl = $(this)[0].attributes["data-zhl"].value;
+                shopsp_e.sl = '1';
+
+                shopsp_e.sl_qm = $(this)[0].attributes["data-sl_qm"].value;
+                shopsp_e.je_qm = $(this)[0].attributes["data-je_qm"].value;
+                shopsp_e.dj_cb = $(this)[0].attributes["data-dj_cb"].value;
+                shopsp_e.dj_ps = $(this)[0].attributes["data-dj_ps"].value;
+                shopsp_e.id_sp = $(this)[0].attributes["data-id_sp"].value;
+                shopsp_e.id_shopsp_ck = $(this)[0].attributes["data-id_shopsp_ck"].value;
+                shopsp_e.id_kcsp_ck = $(this)[0].attributes["data-id_kcsp_ck"].value;
+                shopsp.push(shopsp_e);
+            }
+        });
+        if (find === true) {
+            var jsonStr = JSON.stringify(shopsp);
+            
+            $(_ + "#shopsp_table_json").val(jsonStr);
+            ////console.log(jsonStr);
+
+        } else {
+            $.DHB.message({ content: '请至少选择一项！', type: 'i' });
+        }
+        
+    }
+
+
+    
+    app.shopsp.search_ready = function () {
+        $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+            
+            if ($('#fldata').attr('lwfl') == "1") {
+                
+                    $('.tree_left', _).hide();
+                    $('.right_table', _).addClass("col-sm-12").removeClass("col-sm-10");
+                    var flid = $('#fldata', _).attr('flstr');
+                    ////console.log(flid);
+                    $(_ + "#id_spfl").val(flid);
+            } else {
+                app.shopsp.bind_spfl_tree();
+            }
+               // app.searchforps.do_search_shopsp_list();                   
+            
+            
+        });
+        
+    };
+
+    //绑定左侧商品分类树
+    app.shopsp.bind_spfl_tree = function () {
+        var tree_selector = '#tree_left';
+
+        $(_ + tree_selector)
+                .jstree("destroy")
+               .on("changed.jstree", function (e, data) {
+                   if (data.selected && data.selected.length) {
+                       var i, j, r = [];
+                       for (i = 0, j = data.selected.length; i < j; i++) {
+                           r.push(data.instance.get_node(data.selected[i]).id);
+                       }
+                       //TODO：赋值到hidden，触发查询事件等  
+                       $(_ + "#id_spfl").val(r.join(''));
+                       app.searchforps.do_search_shopsp_list();
+
+                   }
+               })
+               .on('ready.jstree', function (e, obj) {
+                   obj.instance.select_node({ "id": "0" }, true, false);
+                   obj.instance.open_node({ "id": "0" });
+                   //app.searchforps.do_search_shopsp_list();
+                   
+               })
+               .jstree({
+                   'core': {
+                       'data': {
+                           'url': function (obj) {
+                               var type = $.trim($('#hid_type',_).val());
+                               return '/shopsp/get_left_tree?rd=' + new Date().getTime() + '&type=' + type;
+                           }
+                       },
+                   }
+               });
+    }
+
+    app.shopsp.search_ready();
+    
+
+</script>
+
+
+
+
+

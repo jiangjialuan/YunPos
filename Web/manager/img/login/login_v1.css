@@ -1,0 +1,346 @@
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, a, blockquote, th, table, td, tr { margin: 0; padding: 0; font-family: "微软雅黑", "宋体",Arial, Helvetica, sans-serif !important; font-family: "宋体",Arial, Helvetica, sans-serif; }
+input { font-size: 16px; }
+body { background-color: #E8E7E7; min-width: 1200px; }
+a { font-family: "微软雅黑"; text-decoration: none; font-size: 12px; color: #969696; }
+a:hover { color: #FF0000; }
+img { border: 0; }
+
+.header { height: 260px; width: 100%; background: url("login-bg.jpg") no-repeat center; background-size: cover; text-align: center; }
+.con-row { min-height: 500px; }
+.logo { display: block; margin: 40px auto auto auto; }
+.company-name { color: #FFFFFF; text-align: center; font-size: 24px; margin-top: 30px; }
+.slogan { color: #FFFFFF; text-align: center; font-size: 16px; margin-top: 20px; }
+.content { width: 380px; height: auto; margin: auto; padding-top: 40px; }
+.u-name, .u-password, .u-code ,.u-qynumber{ border: 1px solid #dee5e7; width: 380px; *width: 332px; box-sizing: border-box; border-radius: 4px; height: 45px; line-height: 45px; padding-left: 47px; font-size: 14px; outline: none; }
+.u-name:focus, .u-password:focus, .u-code:focus { border: 1px solid #fb5210; }
+.u-name { margin-bottom: 15px; }
+.login-block, .control-box { position: relative; line-height: 24px; }
+.user, .password { position: absolute; left: 10px; top: 9px; width: 27px; height: 27px; }
+.back-icon { background: url(icon.png) no-repeat; background-position: 2px 2px; }
+.password { background-position: 2px -31px; }
+.warn { height: 40px; line-height: 40px; }
+.warn-info { color: #fb5210; margin-bottom: 0px; }
+.remember { display: inline-block; width: 19px; height: 19px; background-position: -63px -35px; position: relative; top: 2px; cursor: pointer; }
+.add-remember { background: url(icon_hover.png) no-repeat; background-position: -63px -35px; }
+.control-box span { color: #999999; }
+.remember-font { margin-left: 5px; cursor: pointer; }
+.forget-box a { font-size: 14px; text-decoration: none; color: #999999; }
+.forget-box a:hover { color: #fb2510; text-decoration: none; }
+.f-l { float: left; }
+.f-r { float: right; }
+.login-btn { width: 100%; height: 45px; background: #fb5210; border: none; outline: none; border-radius: 4px; margin-top: 15px; color: #FFFFFF; }
+.login-btn[disabled] { background: #ddd; }
+.to-register a { width: 100%; height: 45px; border: 1px solid #999999; outline: none; border-radius: 4px; margin-top: 15px; display: block; color: #999999; font-size: 14px; text-align: center; line-height: 45px; }
+.to-register a:hover { color: #fb5210; border: 1px solid #fb5210; text-decoration: none; }
+
+.bottom-box { margin-top: 15px; *margin-top: 50px; }
+.app-load-box, .weixin-load-box { width: 180px; *width: 90px; height: 45px; line-height: 45px; text-align: center; color: #999999; border: 1px solid #999999; border-radius: 4px; position: relative; }
+.weixin-load-box { margin-left: 20px; *margin-left: 0px; }
+
+.to-register a:visited{
+    color:rgb(153, 153, 153);
+}
+
+
+.app-load-box:hover,
+.weixin-load-box:hover { border-color: #ff5a1a; color: #ff5a1a; }
+.app-load-box, .weixin-load-box { padding-left: 45px; padding-right: 45px; cursor: pointer; }
+
+.app-load-box:hover .app-load { background: url(icon_hover.png) no-repeat -155px 5px; }
+.weixin-load-box:hover .weixin-load { background: url(icon_hover.png) no-repeat -190px 5px; }
+.app-load, .weixin-load { width: 25px; height: 30px; background-position: -155px 5px; position: relative; top: 7px; float: left; }
+.weixin-load { background-position: -190px 5px; }
+.qr-row { position: absolute; display: none; top: -195px; width: 180px; height: 180px; border-radius: 4px; box-shadow: 0 0 5px #ccc; left: 0; }
+.qr-row img { width: 100%; height: 100%; }
+.app-img { background: url("app_code.png") no-repeat center; background-size: cover; }
+.weixin-img { background: url("app_weixin.png") no-repeat center; background-size: cover; }
+.app-img .qr-san,
+.weixin-img .qr-san { position: absolute; z-index: 2; bottom: -20px; width: 0; height: 0; left: 50%; margin-left: -10px; border-bottom: 10px solid transparent; border-top: 10px solid #fff; border-left: 10px solid transparent; border-right: 10px solid transparent; }
+.app-img .qr-san-border,
+.weixin-img .qr-san-border { position: absolute; z-index: 1; bottom: -22px; left: 50%; width: 0; height: 0; margin-left: -11px; border-bottom: 11px solid transparent; border-top: 11px solid #EAEAEA; border-left: 11px solid transparent; border-right: 11px solid transparent; }
+.footer { position: inherit; left: 0; right: 0; bottom: 0; width: 100%; height: 70px; font-size: 12px; color: #999; text-align: center; background: #fcfcfc; }
+.footer p { margin-top: 20px; margin-bottom: 0; }
+.login-methods { display: inline-block; width: 22px; height: 22px; vertical-align: middle; margin-right: 5px; cursor: pointer; }
+.wx { background-position: -62px 0; }
+.tencent { background-position: -96px 0; }
+.wx:hover { background: url(icon_hover.png) no-repeat; background-position: -62px 0; }
+.tencent:hover { background: url(icon_hover.png) no-repeat; background-position: -96px 0; }
+.login-type { color: #999999; font-size: 14px; }
+.m-t-sm { margin-top: 15px; }
+.experience { font-size: 14px; text-decoration: none; color: #999999; }
+.experience:hover { color: #FB5210; text-decoration: none; }
+::-webkit-input-placeholder { /* WebKit browsers */ color: #ccc; }
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */ color: #ccc; }
+::-moz-placeholder { /* Mozilla Firefox 19+ */ color: #ccc; }
+:-ms-input-placeholder { /* Internet Explorer 10+ */ color: #ccc; }
+.replace-logo { display: inline-block; max-width: 376px; height: 86px; background: #FFFFFF; padding: 15px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+.replace-logo img { max-height: 100%; max-height: 100%; }
+
+
+.m-b-sm { margin-bottom: 15px; }
+.code { width: 120px; color: #4F4F4F; height: 43px; *height: 45px; line-height: 43px; *line-height: 45px; position: absolute; text-align: center; right: 1px; *right: -1px; top: 1px; *top: 2px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; cursor: pointer; }
+.code img { border-top-right-radius: 4px; border-bottom-right-radius: 4px; position: relative; top: -2px; height: 100%; width: 100%; }
+.recognition-code { border: 1px solid #dee5e7; width: 380px; *width: 380px; box-sizing: border-box; border-radius: 4px; height: 45px; line-height: 45px; padding-left: 47px; font-size: 14px; outline: none; }
+
+
+
+
+
+
+/*  LZ ADD 20170119 */ 
+
+        .dialog_box_ {
+            width: 520px;
+            height: auto;
+            padding: 0 30px;
+            box-shadow: -3px 0 3px #F2F2F2, 0px 0 0px #F2F2F2, 0 -3px 3px #F2F2F2, 0 3px 3px #D4D3D3;
+            /*底边阴影*/
+            background: #fff;
+            z-index: 22222222222222222222222;
+            position: fixed;
+            top: 500px;
+            left: 150px;
+        }
+
+            .dialog_box_ .dialog_header {
+                border-bottom: 1px solid #F7F7EF;
+                padding: 10px 0px;
+            }
+
+                .dialog_box_ .dialog_header .dialog_lose {
+                    float: right;
+                    width: 28px;
+                    height: 28px;
+                    cursor: pointer;
+                }
+
+                    .dialog_box_ .dialog_header .dialog_lose img {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+        .dialog_header .dialog_title h2 {
+            float: left;
+            font-size: 18px;
+            line-height: 45px;
+            color: #000;
+        }
+
+        .dialog_box_ .dialog_content {
+            padding: 30px 0;
+        }
+
+            .dialog_box_ .dialog_content p {
+                font-size: 14px;
+                color: #999;
+                line-height: 26px;
+            }
+
+        .dialog_box_ .dialog_footer {
+            margin-bottom: 30px;
+        }
+
+            .dialog_box_ .dialog_footer .btn-default {
+                padding: 0 50px;
+                height: 30px;
+                display: block;
+                font-weight: 14px;
+                margin: auto;
+                background: #EA5B24;
+                color: #fff;
+            }
+
+            .dialog_box_ .dialog_footer .btn:hover {
+                background: #F58A36;
+            }
+
+        .dialog_left {
+            width: 50%;
+            height: auto;
+            border-right: 1px solid #F7F7EF;
+            float: left;
+            padding-right: 30px;
+        }
+
+        .dialog_right {
+            width: 50%;
+            height: auto;
+            float: left;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .dialog_content_title {
+            font-size: 16px;
+            color: #999;
+        }
+
+        .client_login_2, .client_login_3, .manager_login_2 {
+            display: block;
+            border-radius: 5px;
+            text-align: center;
+            width: 200px;
+            height: 40px;
+            line-height: 40px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        .dialog_left p > a {
+            color: #fb6326;
+        }
+
+        .client_login_2, .client_login_3 {
+            background: #fb6326;
+        }
+
+        .manager_login_2 {
+            background: #0ea6cc;
+        }
+        .loginItem{
+            margin-bottom:20px;
+            overflow:hidden;
+            border:1px solid #E8E7E7;
+            border-radius: 4px;
+        }
+        #form2{
+            display:none;
+        }
+        .loginItem div{
+            display: inline-block;
+            height: 42px;
+            line-height: 42px;
+            border: 0;
+            border-radius: 4px;
+            color:#666;
+            text-align: center;
+            font-size: 18px;
+            
+            cursor: pointer;
+        }
+        .loginItem div.active{
+            background: #03b8cc;
+            color: #FFF;
+        }
+        .loginItem div.login_item_left{
+            border-radius:4px 0px 0px 4px;
+            
+        }
+        .loginItem div.login_item_right{
+            border-radius:0px 4px 4px 0px;
+        }
+
+        .user .fa{
+            font-size:21px;
+            color:#ddd;
+            line-height:27px;
+        }
+#demoDiv{
+    display:none;
+}
+#demoDiv .cover {
+    background: #666;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 10000;
+    display: block;
+    opacity:0.6;
+}
+.choseVersion {
+    position: fixed;
+    z-index: 10001;
+    top: 190px;
+    left: 33%;
+    width: 462px;
+    height: 220px;
+    background: #FFF;
+}
+.choseVersion .title {
+    background: #f2f2f2;
+    border-bottom: 1px solid #d7d7d7;
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+    color: #666;
+    text-indent: 10px;
+    line-height: 40px;
+}
+.choseVersion .closeIcon {
+    background-image: url(../images/closeIcon.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    width: 23px;
+    height: 23px;
+    background-color: #999;
+    float: right;
+    margin-right: 20px;
+}
+#demoDiv .fr {
+    float: right;
+    display: inline-block;
+}
+#demoDiv .fl {
+    float: left;
+    display: inline-block;
+}
+.choseVersion .content .baseVersion h1 {
+    font-size: 14px;
+    color: #FFF;
+    padding-left: 70px;
+    padding-top: 15px;
+}
+.choseVersion .content .chainVersion h2 {
+    font-size: 12px;
+    color: #dcf2df;
+    padding-left: 70px;
+    line-height: 120%;
+}
+#demoDiv a {
+    color: #4287cf;
+    text-decoration: none;
+    cursor: pointer;
+    line-height:110px;
+    text-align:center;
+    font-size:20px;
+    color:#fff;
+}
+.choseVersion .content .baseVersion {
+    background: #449bf1 no-repeat 20px 35px;
+    transition: background linear .2s;
+    width: 200px;
+    height: 110px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin-right: 20px;
+}
+.choseVersion .content .chainVersion {
+    background:  #4ac55d no-repeat 20px 35px;
+    transition: background linear .2s;
+    width: 200px;
+    height: 110px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+}
+.choseVersion .content {
+    padding: 20px;
+    float: left;
+    width:100%;
+}
+#to_login a{
+    opacity:0.9;
+}
+#to_login a:hover{
+    color:#fff;
+    text-decoration:none;
+    opacity:1;
+}
+.dialog_right{
+    cursor:pointer;
+}

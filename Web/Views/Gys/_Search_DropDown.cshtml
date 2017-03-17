@@ -1,0 +1,35 @@
+﻿@using CySoft.Model.Tb
+@{
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var pageList = ViewData["List"] as PageList<Tb_Gys>;
+}
+
+
+
+<div style="margin-bottom: 35px">
+    @{
+        if (pageList == null || pageList.Count == 0)
+        {
+        }
+        else
+        {
+            var list = pageList.Items;
+            if (list != null && list.Any())
+            {
+                int index = 1;
+                foreach (var item in list)
+                {
+                    <a class="media list-group-item" dataname="@item.mc" dataid="@item.id">
+                        <div class="media-body block m-b-none ">
+                            <div style="height:20px;line-height:20px;color:#333;" class="cut-out" title="@item.id - @item.mc">@item.mc</div>
+                        </div>
+                    </a>
+                }
+            }
+        }
+    }
+</div>
+<a class="media list-group-item moreQ list-group-item-more" style="padding-left:15px;">+ 选择更多</a>

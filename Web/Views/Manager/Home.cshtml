@@ -1,0 +1,1152 @@
+﻿@using System.Collections
+@using CySoft.Model.Tb;
+@using System.Text;
+@{
+    Layout = null;
+    List<Tb_Menu> list_menu = ViewData["list_menu"] as List<Tb_Menu>;
+    list_menu = list_menu ?? new List<Tb_Menu>();
+    var endData = "";
+    var vEndData = ViewData["vEndData"] == null ? "" : ViewData["vEndData"].ToString();
+
+    if (!string.IsNullOrEmpty(vEndData))
+    {
+        DateTime d1 = DateTime.Parse(vEndData);
+        DateTime d2 = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
+        if (d1 > DateTime.Parse("1900-01-01"))
+        {
+            endData = ((int)(d1 - d2).TotalDays).ToString();//天数差        //endData = days
+        }
+    }
+    var buyUrl = ViewData["buyUrl"] == null ? "" : ViewData["buyUrl"].ToString();
+    var downUrl = ViewData["downUrl"] == null ? "" : ViewData["downUrl"].ToString();
+    var cyBuyServiceHistoryUrl= ViewData["cyBuyServiceHistoryUrl"] == null ? "" : ViewData["cyBuyServiceHistoryUrl"].ToString();
+    var cyLoginOutUrl = ViewData["cyLoginOutUrl"] == null ? "" : ViewData["cyLoginOutUrl"].ToString();
+    var isYanshi = string.Format("{0}", ViewData["yanshi"]) == "true";
+}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    @*[if lte IE 9]><script>window.location.replace("http://yun.pos.cn/download.html");</script><![endif]
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />*@
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>云Pos</title>
+    <meta name="description" content="云Pos" />
+
+    @Styles.Render(
+            "~/static/css/global/core.css",
+            "~/static/bootstrap/Bootstrap-select.css",
+            "~/static/js/jstree/themes/proton/style.css"
+            , "~/static/home.css"
+            )
+    <link href="~/static/css/global/font_awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/static/css/common/modify.css" />
+    <link href="~/static/css/common/common.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/static/js/common/jquery-2.1.1.js"></script>
+   
+    <link rel="stylesheet/less" type="text/css" href="~/static/css/common/common.less" />
+    <script src="~/static/js/less/less.min.js"></script>
+</head>
+<body style="overflow-y:scroll;overflow:hidden;">
+    <div id="menutabload_box">
+        <div class="menutabload_mask menutabload_opacity"></div>
+        <div class="menutabload_content">
+            <div class="message-loading">
+                <img src="/static/images/loadmenu.gif" alt="Load..." style="margin: auto;display: block;width: 40px;height: 40px">
+                <p class="text-center m-t-xs " style="font-size: 16px">正在努力加载...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- HeaderMenu START -->
+    <div class="navbar navbar-fixed-top navbar-header-box">
+        <div class="navbar-header bg-danger">
+            <a class="navbar-brand" href="http://www.pos.cn" target="_blank" title="云POS 助力分销渠道">
+                @*<div class="brand-img"></div>*@
+                <img src="~/static/images/new_logo.png" />
+            </a>
+        </div>
+    </div>
+    <!-- HeaderMenu END -->
+    <!-- 左菜单 -->
+    <div class="bg-dark nav-sidebar v_nav">
+        <img src="~/Images/icon/image.png" class="img_menue_btn" />
+        <div class="logoblock">
+            <img src="~/static/images/new_logol.png" title="展开菜单" id="menueOpen" class="f-l" />
+            <img src="~/static/images/new_logor.png" title="收起菜单" id="menueClose" class="f-r" />
+        </div>
+        <div class="aside-wrap">
+            <div class="navi-wrap">
+                <nav class="navi">
+                    <ul class="nav">
+                        @foreach (Tb_Menu menu in list_menu)
+                        {
+
+                            var tagNames = (from item in menu.Items orderby item.sort_id select item.TagName).ToList().Distinct();
+
+                            //TODO：★此处循环生成菜单
+                        <li class="navi-item @(tagNames.Count() > 1 ? "parent_menue" : "")">
+                            <!-- 顶级菜单parent_menue -->
+                            <a onclick="$.DHB.propagation();" @*title="@menu.Title"*@ class="nav-root">
+                                <i class="d-i-b fa @menu.Icon" class_="@menu.Icon"></i>
+                                <span class="nav-item-title">@menu.Name</span>
+                                @*<i class="right_ico "></i>*@
+                            </a>
+
+                            <!-- 子菜单 -->
+                            <div class="nav-sub">
+                                <ul class="nav new_background" style="overflow: hidden">
+                                    @{
+
+                                            if (tagNames.Any())
+                                            {
+                                                foreach (var tagName in tagNames)
+                                                {
+                                                    var items = menu.Items.Where(i => i.TagName == tagName);
+
+                                        <div class="menu_block">
+                                            @if (string.IsNullOrEmpty(tagName) && tagNames.Count() > 1)
+                                                        {
+                                                        <li class="second_menue">其它</li>
+                                                        }
+                                                        else
+                                                        {
+                                                        <li class="second_menue">@tagName</li>
+                                                        }
+                                            @foreach (var menu_item in items)
+                                                        {
+                                                        <li class="nav-sub-header">
+                                                            <a @*title="@menu_item.Title"*@ tabtitle="@menu_item.TabTitle" style="border-bottom: 0px;" tabid="@string.Format("{0}/{1}", menu_item.ControllerName, menu_item.ActionName)"
+                                                               taburl="@string.Format("/{0}/{1}", menu_item.ControllerName, menu_item.ActionName + (string.IsNullOrEmpty(menu_item.Param) ? "" : ("?" + menu_item.Param)))" class="menuTab tab">
+                                                                @if (menu_item.HasRemark)
+                                                                    {
+                                                                        //有备注
+                                                                    <span class="has-info">
+                                                                        @menu_item.Name<br />
+                                                                        <!-- 描述 -->
+                                                                        <span class="remark" style="overflow: hidden; width: 100%; text-overflow: ellipsis; display: block; white-space: nowrap; position: relative; top: 8px;">
+                                                                            @menu_item.Remark
+                                                                        </span>
+                                                                    </span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        //无备注
+                                                                    <span class="no-info">
+                                                                        @menu_item.Name<br />
+                                                                    </span>
+                                                                    }
+                                                            </a>
+                                                        </li>
+                                                        }
+                                        </div>
+                                                }
+                                            }
+                                    }
+
+                                </ul>
+                            </div>
+                        </li>
+                                            }
+
+                        @*<li><a href="~/Down/YUNPOS.exe">PC端下载</a></li>
+                            <li><a href="~/Down/YUNPOS.apk">安卓手机端下载</a></li>
+                            <li><a href="~/Down/android-ipad-YUNPOS.apk">安卓平板端下载</a></li>*@
+
+                        @* 底部菜单 *@
+                        <!-- 设置 -->
+                        <li class="navi-item system-menu hidden">
+                            <a onclick="$.DHB.propagation();" title="系统" class="text-center" style="line-height: 54px;">
+                                <i class="sysytem-coin clear d-i-b" class_="sysytem-coin" style="position: relative;top:3px;"></i>
+                            </a>
+
+                            <div class="nav-sub">
+                                <ul class="nav white" style="overflow: hidden">
+                                    <li class="nav-sub-header">
+                                        <a title="公司资料与客服初始化" tabTitle="公司资料与客服初始化" tabId="CompanyAndService/index" tabUrl="/?module=Manager&controller=System&action=information" class="menuTab tab">
+                                            <span class="has-info">
+                                                公司资料与客服初始化                                        <br />
+                                                <span class="remark" style="overflow:hidden;width:100%;text-overflow:ellipsis;display: block;white-space:nowrap;position: relative;top: 8px;">方便你的客户通过平台联系你</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-sub-header">
+                                        <a title="帐号管理" tabTitle="帐号管理" tabId="Accounts/index" tabUrl="/?module=Manager&controller=Accounts&action=manager" class="menuTab tab">
+                                            <span class="has-info">
+                                                帐号管理                                        <br />
+                                                <span class="remark" style="overflow:hidden;width:100%;text-overflow:ellipsis;display: block;white-space:nowrap;position: relative;top: 8px;">部门员工账号，权限设置</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-sub-header">
+                                        <a title="平台品牌" tabTitle="平台品牌" tabId="BrandAndIndex/index" tabUrl="/?module=Manager&controller=BannerSet&action=brand" class="menuTab tab">
+                                            <span class="has-info">
+                                                平台品牌                                        <br />
+                                                <span class="remark" style="overflow:hidden;width:100%;text-overflow:ellipsis;display: block;white-space:nowrap;position: relative;top: 8px;">满足你的品牌特性需求</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-sub-header">
+                                        <a title="系统与业务初始化" tabTitle="系统与业务初始化" tabId="SystemInit/index" tabUrl="/?module=Manager&controller=SystemSet&action=initialize" class="menuTab tab">
+                                            <span class="has-info">
+                                                系统与业务初始化                                        <br />
+                                                <span class="remark" style="overflow:hidden;width:100%;text-overflow:ellipsis;display: block;white-space:nowrap;position: relative;top: 8px;">让平台更个性化地满足你的要求</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-sub-header">
+                                        <a title="单据规则与打印" tabTitle="单据规则与打印" tabId="DocumentSet/index" tabUrl="/?module=Manager&controller=DocumentSet&action=serail" class="menuTab tab">
+                                            <span class="has-info">
+                                                单据规则与打印                                        <br />
+                                                <span class="remark" style="overflow:hidden;width:100%;text-overflow:ellipsis;display: block;white-space:nowrap;position: relative;top: 8px;">订货单、出货单、款单的使用规则设置</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- 帮助中心 -->
+                        <li class="navi-item help-center hidden">
+                            <a class="d-b" title="帮助中心" style="line-height: 54px;height: 54px;padding-top: 15.5px;">
+                                <i class="help-icon"></i>
+                            </a>
+                            <!--帮助中心二级菜单-->
+                            <div class="nav-sub">
+                                <ul class="nav white" style="overflow: hidden">
+                                    <li class="nav-sub-header">
+                                        <a title="帮助中心" href="/index.php?module=web&controller=helpCenter&action=index" class="tab" target="_blank">
+                                            <span class="no-info">
+                                                帮助中心<br>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-sub-header">
+                                        <a title="意见反馈" tabTitle="意见反馈" class="tab" href="javascript:void(0)" onclick="app.home.add_feedback();">
+                                            <span class="no-info">
+                                                意见反馈<br>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- 客服咨询 -->
+                        <li class="navi-item online hidden">
+                            <a class="d-b" title="在线咨询" style="line-height: 54px;height: 54px;padding-top: 15.5px;">
+                                <i class="online-icon"></i>
+                            </a>
+                            <div class="nav-sub" style="width: 200px;">
+                                <div class="nav white_ wrapper-md meiqia-box" style="overflow: hidden;">
+                                    <a class="text-left m-b-xs" style="font-size: 14px">您的专属客服：</a>
+                                    <!--//企业ＱＱ
+                                    <a href="http://wpa.b.qq.com/cgi/wpa.php?ln=2&uin=4006311682" target="_blank" class="btn btn-info m-b-md w-sm l-h-30">在线咨询</a>
+                                    -->
+                                    <script type="text/javascript">
+                                        //美洽客户系统
+                                        if (typeof app == "undefined") {
+                                            app = {};
+                                        }
+                                        app.home = app.home || {};
+                                        isInitMq = false;
+                                        //显示美洽客户系统
+                                        app.home.showMq = function () {
+                                            //首次初始化，加载美洽js和相应初始化
+                                            if (isInitMq != true) {
+                                                (function (m, ei, q, i, a, j, s) {
+                                                    m[a] = m[a] || function () {
+                                                        (m[a].a = m[a].a || []).push(arguments)
+                                                    };
+                                                    j = ei.createElement(q),
+                                                    s = ei.getElementsByTagName(q)[0];
+                                                    j.async = true;
+                                                    j.charset = 'UTF-8';
+                                                    j.src = i + '?v=' + new Date().getUTCDate();
+                                                    s.parentNode.insertBefore(j, s);
+                                                })(window, document, 'script', '//eco-api.meiqia.com/dist/meiqia.js', '_MEIQIA');
+                                                _MEIQIA('entId', 7802);
+                                                _MEIQIA('groupToken', '9bfebca36f088e3e70d5eda2535e3185');
+                                                _MEIQIA('withoutBtn', true);
+
+                                                //在这里设置你的自定义数据
+                                                _MEIQIA('metadata', {
+                                                    comment: '餐饮连锁 体验帐号', // 美洽默认字段
+                                                    address: '欢迎体验云POS', // 自定义字段
+                                                    name: '云POS', // 自定义字段
+                                                    tel: '13366668888' // 自定义字段
+                                                });
+                                                isInitMq = true;
+                                            }
+
+                                            //美洽加载中可能出现延迟，校验方法是否存在，如果不存在主动等待10秒
+                                            if (typeof _MEIQIA._SHOWPANEL !== "function") {
+                                                var mqWaitTime = 0;
+                                                var mqTimer = setInterval(function () {
+                                                    mqWaitTime++;
+                                                    if (typeof _MEIQIA._SHOWPANEL == "function") {
+                                                        _MEIQIA._SHOWPANEL();
+                                                        clearInterval(mqTimer);
+                                                    } else {
+                                                        //如果等待超过10秒，停止等待，提示稍后再试
+                                                        if (mqWaitTime > 20) {
+                                                            clearInterval(mqTimer);
+                                                            alert("咨询系统加载中...请稍后");
+                                                        }
+                                                    }
+                                                }, 500);
+                                            } else {
+                                                _MEIQIA._SHOWPANEL();
+                                            }
+                                        }
+                                    </script>
+                                    <a href="javascript:void(0)" onclick="app.home.showMq()" class="btn btn-info m-b-md w-sm l-h-30">在线咨询</a>
+                                    <a class="text-left" style="font-size: 14px">电话：</a>
+                                    <a href="tel:400-6311-887" class="text-left online-num">400-6311-887</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // sourceURL=home.js
+        if (typeof (app) == 'undefined') {
+            var app = {};
+        }
+
+        app.home = app.home || {};
+
+        /**
+         * 生成报表
+         *
+         */
+        app.home.make_home = function () {
+            // 统计效果
+            var option = {
+                credits: {
+                    enabled: false
+                },
+                chart: {
+                    //                zoomType: 'xy'
+                },
+                title: {
+                    text: "&nbsp;"
+                },
+                tooltip: {
+                    shared: true,
+                    style: {
+                        lineHeight: 26,
+                        fontSize: "14px"
+                    }
+                },
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    margin: 40,
+                    verticalAlign: 'top',
+                    floating: true,
+                    backgroundColor: '#FFFFFF'
+                },
+                xAxis: [{
+                    categories: ['2016-06-27', '2016-06-29', '2016-06-30', '2016-07-04', '2016-07-06', '2016-07-08', '2016-07-11', '2016-07-13', '2016-07-14', '2016-07-15', '2016-07-18', '2016-07-19', '2016-07-20', '2016-07-21', '2016-07-25']
+                }],
+                yAxis: [
+                    { // Primary yAxis
+                        labels: {
+                            format: '￥ {value}',
+                            style: {
+                                color: '#222'
+                            }
+                        },
+                        title: {
+                            text: '订单金额',
+                            align: "high",
+                            offset: 0,
+                            rotation: 0,
+                            y: -30,
+                            style: {
+                                color: '#222'
+                            }
+                        }
+                    },
+                    { // Secondary yAxis
+                        title: {
+                            text: '订单数',
+                            align: "high",
+                            offset: 0,
+                            rotation: 0,
+                            y: -30,
+                            style: {
+                                color: '#222'
+                            }
+                        },
+                        labels: {
+                            format: '{value} 个',
+                            style: {
+                                color: '#222'
+                            }
+                        },
+                        opposite: true
+                    }],
+                series: [
+                    {
+                        name: '订单金额',
+                        type: 'column',
+                        data: [60000.00, 3000.00, 50.00, 3640.00, 9785.00, 7178.00, 7110.00, 34218.70, 15600.00, 16901.27, 7360.00, 484.00, 9160.00, 469.68, 31049.00],
+                        tooltip: {
+                            valueSuffix: '元'
+                        }
+
+                    }
+                    ,
+                    {
+                        name: '订单数',
+                        type: 'spline',
+                        data: [1.000, 1.000, 1.000, 1.000, 1.000, 2.000, 1.000, 4.000, 1.000, 1.000, 4.000, 1.000, 1.000, 1.000, 2.000],
+                        tooltip: {
+                            valueSuffix: '个'
+                        },
+                        yAxis: 1
+                    }
+                ]
+            };
+
+            //$("[contentID='index'] #report-main-box").highcharts(option);
+
+        }
+
+        var already = 0;
+
+
+        app.home.multi_uploadgoods = function () {
+            $.DHB.multiUpload({ 'parent_id': _, 'config': 'img', 'callback': 'app.home.multi_picturehandler', type: 'all', title: '意见反馈附件', 'maxnum': 5, 'already': already });
+        }
+
+        app.home.multi_picturehandler = function (files) {
+            if (typeof (files['filepath']) != 'undefined') {
+                var strHtml = '';
+
+                $.each(files.filename, function (i, val) {
+                    strHtml += '<li>' + files.name[i] + '<a class="color-b" target="_blank" href="https://res.dhb168.com/' + files.filepath[i] + '">查看</a><a class="color-b" onclick="app.home.file_delete(this);">删除</a><input type="hidden" name="file[]" value="' + files.filepath[i] + '" /><input type="hidden" name="filename[]" value="' + files.name[i] + '" /></li>';
+                    already++;
+                });
+
+                $("#feed-back ul#other-upload-file").append(strHtml);
+            }
+        }
+
+        app.home.file_delete = function (el) {
+            $.messager.confirm("系统提示", "确定删除该附件?", function () {
+                if (already > 0) already--;
+                $(el).parents('li').remove();
+            });
+        }
+
+        app.home.add_feedback = function () {
+            $.DHB.dialog({ 'title': '意见反馈', 'url': $.DHB.U('Home/addFeedBack'), 'id': 'feed-back' });
+        }
+
+        app.home.save_feedback = function () {
+            var objData = {};
+            objData.feedback = $("#feed-back textarea[name='feed_back']").val();
+            objData.file = $('#feed-back input[name="file[]"]').serializeArray();
+            objData.filename = $('#feed-back input[name="filename[]"]').serializeArray();
+
+            if (objData.feedback == '') {
+                $.DHB.message({ 'content': '请填写反馈意见！', 'type': 'e' });
+            } else if (objData.feedback.length > 200) {
+                $.DHB.message({ 'content': '反馈意见不能超过200个字！', 'type': 'e' });
+            } else {
+                var btn = $('#feed-back #submit-button').button('loading');
+                ////console.log($.DHB.U('Account/ChangePassword'));
+                $.post($.DHB.U('Account/ChangePassword'), objData,
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        btn.button('reset');
+                        $('#feed-back').remove();
+                    } else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        btn.button('reset');
+                        $('#feed-back').remove();
+                    }
+                }, 'json'
+            );
+            }
+        }
+
+        /**
+         * 初始化
+         */
+        window.onload = function () {
+            if (typeof $ === "function" && typeof Highcharts === "object") {
+                app.home.make_home();
+            }
+            //getLevelMessageCount();
+            $.DHB.loadJs([
+                //{ id: 'highChars', url: '/static/js/highcharts/highcharts.js' },
+                { id: 'plupload', url: '/static/js/jquery/plupload/js/uploadall.js' }
+            ]);
+        };
+
+        function goMakeHome() {
+            if (typeof $ === "function" && typeof Highcharts === "object" && typeof app.home.make_home === "function") {
+                app.home.make_home();
+            } else {
+                setTimeout(function () {
+                    goMakeHome();
+                }, 1000);
+            }
+        }
+        goMakeHome();
+
+        function getLevelMessageCount() {
+            window.setInterval("refreshMsg()", 30000);
+        }
+
+        function refreshMsg() {
+            $.post($.DHB.U('Home/getLevelMessage'), {},
+                function (data) {
+                    if (data.status == "success") {
+                        var oData = data.data;
+                        $('#orderMsg').find('label').html(oData['order_msg_count']);
+                        $('#msgPost').find('label').html(oData['post_msg_count']);
+                        if (oData['order_msg_count'] > 0 || oData['post_msg_count'] > 0) {
+                            $('#aLevelMsg .has-msg').show();
+                        } else {
+                            $('#aLevelMsg .has-msg').hide();
+                        }
+                    }
+                }, 'json');
+        }
+
+        app.home.setOprGuide = function (_this) {
+            $.post($.DHB.U('Home/setOprGuide'), {},
+                function (data) {
+                    if (data.status == "success") {
+                        $(_this).find('.user-guide').removeClass('animate');
+                    }
+                }, 'json');
+        }
+
+    </script>
+
+    <!-- Maincontent START -->
+    <div class="wrap-content">
+        <div class="bg-white wrap-content-header box-shadow">
+            <div style="position: relative">
+                <div class="nav-tab wrap-header-tabbox">
+                    <div class="row m-l-none m-r-none" style="padding-right:400px;">
+                        <div class="col-xs-12 clear-padding">
+                            <ul class="first-level" id="wrap-header-menu-move">
+                                <li class="active" menuID="index" id="menuIndex">
+                                    @* 此处设定首页 *@
+                                    <a title="首页" _id="index" _title="首页" _url="/manager/index">
+                                        <span class="index" tabId="index">首页</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="wrap-header-right-menu" style="position: absolute;top:0;right: 0; width:400px;">
+                        <div class="text-right p-r-15" style="height: 50px;padding-top: 0px;">
+                            <!--距离试用期结束还有几天-->
+                            <a class="dropdown-toggle d-i-b show-list cut-out pad-r10">
+                                @if (!string.IsNullOrEmpty(endData))
+                                {
+                                    <a class="dropdown-toggle d-i-b show-list cut-out pad-r10 mar-r5">
+                                        到期时间：剩<span class="font-weight font16">@endData</span>天
+                                    </a>
+                                    if (isYanshi)
+                                    {
+                                        <a class="dropdown-toggle d-i-b show-list cut-out pad-r10 mar-r5">
+                                            购买
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="dropdown-toggle d-i-b show-list cut-out pad-r10 mar-r5" href="@buyUrl" target="_blank">
+                                            购买
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    @*<a class="dropdown-toggle d-i-b show-list cut-out pad-r10 mar-r5">
+                                        到期时间：<span class="font-weight font16">永久使用</span>
+                                    </a>*@
+                                }
+
+                                <a class="dropdown-toggle d-i-b show-list cut-out pad-r10 mar-r5" href="@downUrl" target="_blank" title="收银端下载">
+                                    @*<i class="fa fa-download" style="font-size:20px; color:#666; vertical-align:middle; cursor:pointer;"></i>*@
+                                    收银端下载
+                                </a>
+
+
+
+                                <!--专属客服-->
+                                <a id="aLevelMsg" class="dropdown-toggle d-i-b show-list cut-out pad-r10 mar-r5 kefu_icon" data-toggle="dropdown" style="color: #56666e;position: relative;display:inline-block;" title="专属客服">
+                                    @*<i class="fa fa-qq" style="font-size:18px; color:#666"></i>*@
+                                    <em></em>
+                                    @*<span class="has-msg"></span>*@
+                                </a>
+                                <ul class="top-menu dropdown-menu animated fadeInRight-2 show-li" style="right:20px;width: 205px!important; padding:0px 15px;">
+                                    @if (ViewData["cusName"] != null && !string.IsNullOrEmpty(ViewData["cusName"].ToString()))
+                                    {
+                                        <li style="text-align:left;">
+                                            我的客服：@ViewData["cusName"].ToString()
+                                        </li>
+                                    }
+                                    @if (ViewData["cusPhone"] != null && !string.IsNullOrEmpty(ViewData["cusPhone"].ToString()))
+                                    {
+                                        <li style="text-align:left;">
+                                            客服手机：@ViewData["cusPhone"].ToString()
+                                        </li>
+                                    }
+                                    @if (ViewData["cusTel"] != null && !string.IsNullOrEmpty(ViewData["cusTel"].ToString()))
+                                    {
+                                        <li style="text-align:left;">
+                                            客服座机：@ViewData["cusTel"].ToString()
+                                        </li>
+                                    }
+                                    @if (ViewData["cusQQ"] != null && !string.IsNullOrEmpty(ViewData["cusQQ"].ToString()))
+                                    {
+                                        <li style="text-align:left;">
+                                            <a href="http://wpa.b.qq.com/cgi/wpa.php?ln=2&uin=@ViewData["cusQQ"].ToString()" target="_blank" style="padding:0px;" >客服QQ：@ViewData["cusQQ"].ToString()</a>
+                                            @*<a target="_blank" href="tencent://message/?uin=@ViewData["cusQQ"].ToString()&Site=点击这里给我发消息&Menu=yes">QQ：@ViewData["cusQQ"].ToString()</a>*@
+                                        </li>
+                                    }
+                                    @if (ViewData["cusEamil"] != null && !string.IsNullOrEmpty(ViewData["cusEamil"].ToString()))
+                                    {
+                                        <li style="text-align:left;">
+                                            客服邮箱：@ViewData["cusEamil"].ToString()
+                                        </li>
+                                    }
+                                </ul>
+
+
+
+                                <!-- 新手指引 -->
+                                <a class="m-r-25 d-i-b show-list hidden" href="javascript:;">
+                                    <button data-toggle="modal" data-target="#user-guide" class="btn btn-lg btn-default user-guide ">新手引导</button>
+                                </a>
+                                <!--刷新-->
+                                @*<a class="dropdown-toggle m-r-25 d-i-b show-list cut-out" data-toggle="dropdown" onclick="$.DHB.refresh();" style="position: relative;right: 10px;display:inline-block; ">*@
+                                <a class="dropdown-toggle d-i-b show-list cut-out pad-r10 mar-r5" data-toggle="dropdown" onclick="$.DHB.refresh();" style="position: relative;display:inline-block; ">
+                                    <span class="refresh"></span>
+                                </a>
+                                @*<ul class="top-menu dropdown-menu animated fadeInRight-2 show-li" style="right:110px;">*@
+                                <ul class="top-menu dropdown-menu animated fadeInRight-2 show-li" style="right:20px;">
+                                    <li onmouseenter="$(this).nextAll('.need-hide').hide();"><a onclick="$.DHB.refresh();">刷新当前页面</a></li>
+                                    <li onmouseenter="$(this).nextAll('.need-hide').hide();"><a onclick="$.DHB.close();">关闭当前页面</a></li>
+                                    <li onmouseenter="$(this).nextAll().show();"><a onclick="app.c.clearMenu();">关闭全部页面</a></li>
+                                    <li class="need-hide" style="display:none;"><a onclick="app.c.clearMenu('other');">关闭其它页面</a></li>
+                                    <li class="need-hide" style="display:none;"><a onclick="app.c.clearMenu('right');">关闭右侧页面</a></li>
+                                </ul>
+
+                                <!--消息模块-->
+                                <a id="aLevelMsg" class="dropdown-toggle d-i-b show-list cut-out hidden" data-toggle="dropdown" style="color: #56666e;position: relative;right:18px;display:inline-block;">
+                                    <span class="msg-icon"></span>
+                                    <span class="has-msg"></span>
+                                </a>
+                                <ul class="top-menu dropdown-menu animated fadeInRight-2 show-li" style="right:70px;width: 125px!important;">
+                                    <li><a id="orderMsg" onclick="$.fn.menuTab.load({ url: '/manager/index', 'title': '订单留言', id: 'manager/index', nocache: '0' });">订单留言（<label class="wait" style="display: inline !important;">4</label>）</a></li>
+                                    <li><a id="msgPost" onclick="$.fn.menuTab.load({ url: '/manager/index', 'title': '留言咨询', id: 'manager/index', nocache: '0' });">留言咨询（<label class="wait" style="display: inline !important;">0</label>）</a></li>
+                                </ul>
+
+                                <!--用户信息模块-->
+                                <a class="dropdown-toggle d-i-b show-list cut-out" data-toggle="dropdown" style="color: #56666e;display:inline-block;/*width:75px;*/max-width:185px; text-align: left">
+                                    <span class="user-icon"></span>
+                                    <span title="@ViewData["loginInfo.name"]" class="user-name">@ViewData["loginInfo.name"]</span>
+                                </a>
+                                <ul class="top-menu dropdown-menu animated fadeInRight-2 show-li">
+                                    <li><a onclick="$.fn.menuTab.load({ url: '/account/myinfo', 'title': '我的账号', id: 'account/myinfo', nocache: '0' }); ">我的账号</a></li>
+                                    <li><a data-toggle="modal" data-target="#update-pwd">修改密码</a></li>
+                                    @if (isYanshi)
+                                    {
+                                        <li><a>购买记录</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="@cyBuyServiceHistoryUrl" target="_blank">购买记录</a></li>
+                                    }
+                                    <li><a href="/Account/Logout" onclick="app.cy_login_out();">退出</a></li>
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--加载的条条-->
+                <div class="butterbar active">
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </div>
+        <!--内容页-->
+        <div class="wrap-content-body">
+            <div class="wrap-tab-contentbox" contentid="index" style="display:block; min-height: 850px;">
+                @Html.Partial("~/Views/Manager/_Index.cshtml", ViewData["ShowData"])
+            </div>
+        </div>
+    </div>
+
+    <!-- 新手引导对话框 -->
+    <div class="modal fade in" id="user-guide" role="dialog">
+        <div class="modal-dialog" style="width:900px;height:640px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">新手引导</h4>
+                </div>
+                <form class="form-horizontal dialog-user-guide f0" method="post" id="">
+                    <div class="modal-body tab-content ">
+                        <div class="guide-modal">
+                            <div class="guide-con">
+                                <p class="list-tit m-t-none">系统初始化</p>
+                                <ul class="speed-list">
+                                    <li>系统初始化是使用云POS的第一步。符合业务流程的系统配置才能让工作效率更高。</li>
+                                    <li>系统初始化分为：系统初始化和订单流程初始化。</li>
+                                    <li>
+                                        系统初始化一般和异常业务相关，某些配置的开启和关闭会影响异常业务的处理。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=SystemSet&action=initialize','title':'系统与业务初始化',id:'SystemInit/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li>
+                                        订单流程初始化是指开启或者关闭订货、退货中的某些流程节点，比如：发货、确认收货、确认退款等。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=SystemSet&action=process','title':'系统与业务初始化',id:'SystemInit/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li><a href="/index.php?module=Web&controller=HelpCenter&action=index&classifyId=19" class="color-b" target="_blank">了解更多&gt;&gt;</a></li>
+                                </ul>
+                                <p class="list-tit m-t-none">添加客户</p>
+                                <ul class="speed-list">
+                                    <li>
+                                        拥有云POS账号的客户才可以在你的订货端购买商品。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=Client&action=addClient','title':'客户管理',id:'ClientGroup/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li><a href="/index.php?module=web&controller=helpCenter&action=index&classifyId=35" target="_blank" class="color-b">了解更多&gt;&gt;</a></li>
+                                </ul>
+                                <p class="list-tit m-t-none">添加商品</p>
+                                <ul class="speed-list">
+                                    <li>添加商品后，客户才能在订货端购买。</li>
+                                    <li>添加商品前，需要先添加商品的初始化数据。主要有商品分类、商品单位、商品规格、商品品牌。</li>
+                                    <li>
+                                        合理的分类有利于客户在订货端查询商品，也有利于商品管理。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=BaseCategory&action=index','title':'商品分类 品牌  规格及单位设置',id:'GoodsGroup/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li>
+                                        添加商品单位后，方便添加商品时设置单位。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=BaseUnits&action=index','title':'商品分类 品牌  规格及单位设置',id:'GoodsGroup/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li>
+                                        设置商品规格方便多规格商品的添加。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=BaseMultiOptions&action=index','title':'商品分类 品牌  规格及单位设置',id:'GoodsGroup/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li>
+                                        添加商品品牌有利于你对商品的管理。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=BaseBrand&action=index','title':'商品分类 品牌  规格及单位设置',id:'GoodsGroup/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li><a href="/index.php?module=web&controller=helpCenter&action=index&classifyId=21" target="_blank" class="color-b">了解更多&gt;&gt;</a></li>
+                                </ul>
+                                <p class="list-tit m-t-none">添加员工账号</p>
+                                <ul class="speed-list">
+                                    <li>添加员工账号方便公司员工使用云POS协同工作。</li>
+                                    <li>
+                                        添加账号前，首先要设置角色权限。设置角色权限后，你可以设置账号可以查看哪些数据、可以操作哪些功能。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=AccountsGroup&action=addAccountGroup','title':'帐号管理',id:'Accounts/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li>
+                                        角色权限设置好以后，就可以添加员工账号了。
+                                        <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=Accounts&action=addAccount','title':'帐号管理',id:'Accounts/index',nocache:'1'});; $('#user-guide .close').click();" class="color-b">去设置&gt;&gt;</a>
+                                    </li>
+                                    <li><a href="/index.php?module=web&controller=helpCenter&action=index&classifyId=29" target="_blank" class="color-b">了解更多&gt;&gt;</a></li>
+                                </ul>
+                                <p class="list-tit m-t-none">代客下单</p>
+                                <ul class="speed-list m-b-none">
+                                    <li>完成商品和客户的添加后，你就可以去帮客户在后台下单了，已有云POS账号的客户可以在订货端自主下单。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                        <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!--修改密码弹窗-->
+    <div class="modal fade in" id="update-pwd" role="dialog">
+        <div class="modal-dialog" style="width:450px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">修改密码</h4>
+                </div>
+                <form class="form-horizontal update-pwd-the f0" method="post" id="update-my-pwd-form">
+                    <div class="modal-body tab-content ">
+                        <table class="debit-note-info">
+                            <tbody>
+                                <tr>
+                                    <td width="65" class="text-right">
+                                        <label class="m-b">
+                                            <span>旧密码</span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label class="sub-label w-lg m-b m-l-sm1">
+                                            <input class="form-control {required:true, messages:{required:'请输入旧密码'}}" name="oldPassword" type="password">
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="65" class="text-right">
+                                        <label class="m-b">
+                                            <span>新密码</span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label class="sub-label w-lg m-b m-l-sm1">
+                                            <input class="form-control {required:true,check_length:6, messages:{required:'请输入新密码'}}" name="newPassword" id="newPassword" type="password">
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="65" class="text-right">
+                                        <label>
+                                            <span>确认密码</span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label class="sub-label w-lg m-l-sm1">
+                                            <input class="form-control {required:true, messages:{required:'请确认新密码'},equalTo:'#newPassword'}" name="req_newPassword" type="password">
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        @if (isYanshi)
+                        {
+                            <button type="button" class="btn btn-default w-xs" data-dismiss="modal">确定</button>
+                        }
+                        else
+                        {
+                            <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                        }
+                        <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Footer START -->
+    <div class="footer b-t bg-light">
+        <span class="pull-right">3.0.4.11135</span>
+        &copy;2016 云POS.
+    </div>
+    <!-- Footer END -->
+
+    <div id="global-msg">
+        <p><i></i></p>
+        <span class="msg-content"></span>
+    </div>
+
+
+    <script type="text/javascript">
+        /**
+         * 全局通用应用
+         */
+        var app = app || {};
+
+        //TODO：★此处需要将菜单保存到JS变量中
+        //app.menutab = {
+        //    "manager/home@spfl@list": {
+        //        "title": "商品分类管理",
+        //        "id": "spfl/list"
+        //    },
+        //    "manager/home@functionmanage@list": {
+        //        "title": "功能管理",
+        //        "id": "functionmanage/list"
+        //    },
+        //};
+
+        app.menutab = {
+            @{
+                var funList= ViewData["dialog_tab_ids"] as List<Tb_Function>;
+                StringBuilder str_menu = new StringBuilder();
+                if (funList != null && funList.Any())
+                {
+                    foreach (var item in funList)
+                    {
+                        str_menu.AppendFormat("'manager/home@{0}@{1}':", item.controller_name.ToLower(), item.action_name.ToLower());
+                        str_menu.Append("{");
+                        str_menu.AppendFormat("'title':'{0}','id':'{1}/{2}'", item.name, item.controller_name.ToLower(), item.action_name.ToLower());
+                        str_menu.Append("},");
+                        str_menu.AppendLine();
+                    }
+                }
+                //foreach (Tb_Menu menu in list_menu)
+                //{
+                //    foreach (Tb_Menu_Item menu_item in menu.Items)
+                //    {
+                //        if (!string.IsNullOrWhiteSpace(menu_item.ControllerName) && !string.IsNullOrWhiteSpace(menu_item.ActionName))
+                //        {
+                //            str_menu.AppendFormat("'manager/home@{0}@{1}':", menu_item.ControllerName.ToLower(), menu_item.ActionName.ToLower());
+                //            str_menu.Append("{");
+                //            str_menu.AppendFormat("'title':'{0}','id':'{1}/{2}'", menu_item.Title, menu_item.ControllerName, menu_item.ActionName);
+                //            str_menu.Append("},");
+                //            str_menu.AppendLine();
+                //        }
+                //    }
+                //}
+
+                str_menu.AppendFormat("'manager/home@{0}@{1}':", "utility", "uploadfiles");
+                str_menu.Append("{");
+                str_menu.AppendFormat("'title':'{0}','id':'{1}/{2}'", "", "utility", "uploadfiles");
+                str_menu.Append("},");
+                str_menu.AppendLine();
+
+
+
+                str_menu.AppendFormat("'manager/home@{0}@{1}':", "jh", "add");
+                str_menu.Append("{");
+                str_menu.AppendFormat("'title':'{0}','id':'{1}/{2}'", "", "jh", "add");
+                str_menu.Append("},");
+                str_menu.AppendLine();
+
+
+
+                str_menu.AppendFormat("'manager/home@{0}@{1}':", "iframe", "setshop");
+                str_menu.Append("{");
+                str_menu.AppendFormat("'title':'{0}','id':'{1}/{2}'", "", "iframe", "setshop");
+                str_menu.Append("},");
+                str_menu.AppendLine();
+
+                str_menu.AppendFormat("'manager/home@{0}@{1}':", "iframe", "index");
+                str_menu.Append("{");
+                str_menu.AppendFormat("'title':'{0}','id':'{1}/{2}'", "", "iframe", "index");
+                str_menu.Append("},");
+                str_menu.AppendLine();
+
+
+
+                str_menu.AppendFormat("'manager/home@{0}@{1}':", "ShopManager", "Test");
+                str_menu.Append("{");
+                str_menu.AppendFormat("'title':'{0}','id':'{1}/{2}'", "", "ShopManager", "Test");
+                str_menu.Append("},");
+                str_menu.AppendLine();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                if (str_menu.Length > 3)
+                {
+                    str_menu.Remove(str_menu.Length - 3, 3);
+                }
+                @Html.Raw(str_menu)
+            }
+        };
+
+        //列表排序icon
+        app.sort_icon = {
+            'sort': '<i class="fa fa-sort" aria-hidden="true"></i>',                  //这是全部
+            'asc': '<i class="fa fa-sort-asc" aria-hidden="true"></i>',               //这是升序
+            'desc': '<i class="fa fa-sort-desc" aria-hidden="true"></i>'              //这是降序
+        };
+
+        //js 公共变量配置
+        var publicSettings = {
+            'rootUrl': '/',
+            'publicUrl': '/',  // 公共资源路径
+            'resource': '/',
+            //'homeUrl': "/?controller=manager&action=home",
+            'homeUrl': "/manager/home",
+            'homeNode': "manager/index",
+            'pageVar': "page",
+            'pageSize': "10",
+            'minPageSize': "10",
+            'moduleName': "manager/home",
+            'developmentMode': "online",
+            'set_accuracy_price': 2,
+            'set_accuracy_number': 3,
+            'version': '20160720',
+            'goods_price_type': 'type_price',
+            'inventory_control': 'F',
+            'order_approval': 'T'
+        };
+    </script>
+
+    <script src="@Scripts.Url("~/static/js/home-source.js")"></script>
+    <script src="@Scripts.Url("~/static/js/util.js")"></script>
+    @*<script src="@Scripts.Url("~/static/js/My97DatePicker/WdatePicker.js")"></script>*@
+
+    <script>
+        //更新密码
+        $(function () {
+            var selector = '#update-pwd form';
+            $(selector).attr('action', "/Account/ChangePassword?module=Manager&controller=Account&action=ChangePassword");
+
+            $('#update-my-pwd-form').validate({
+                errorPlacement: function (error, element) {
+                    var currentElement = $(element);
+                    if ($(element).hasClass('error') && !$(element).hasClass('valid')) {
+                        currentElement.popover('destroy');
+                        currentElement.popover(
+                            {
+                                'trigger': 'hover',
+                                'content': '<span class="_red">' + $(error).html() + '</span>',
+                                'placement': 'bottom',
+                                'html': true
+                            }
+                        );
+                    } else {
+                        currentElement.popover('destroy');
+                    }
+                },
+                submitHandler: function () {
+                    postUpdateMyPwdForm();
+                    $('#update-my-pwd-form').validate().resetForm();
+                },
+                success: function (label) {
+                    $('#update-my-pwd-form .valid').popover('destroy');
+                    $('#update-my-pwd-form .valid').removeClass('valid');
+                }
+            });
+
+            function postUpdateMyPwdForm() {
+                var $form = $(selector);
+                $.post($form.attr('action'), $form.serialize(), function (data) {
+                    $.DHB.message({ content: data.message, type: (data.status == 'success' ? 's' : 'e') });
+                    if (data.status === "success") {
+                        $('.modal#update-pwd').modal('hide');
+                    }
+                });
+            }
+        });
+        jQuery.validator.addMethod("check_length",
+            function (value, element) {
+                if ((value + "").length < 6) {
+                    return false;
+                }
+                if ((value + "").length > 20) {
+                    return false;
+                }
+                return true;
+            }, "密码长度6~20个英文或数字字符！"
+        );
+    </script>
+
+    <script src="~/static/js/jquery/jquery.jsonp.js"></script>
+
+    <script type="text/javascript">
+        //判断菜单项是否为空，为空则不显示
+        app.menueHide = function () {
+            $('.second_menue').each(function () {
+                if ($(this).html() == '') {
+                    $(this).hide();
+                }
+            });
+        }
+        app.menueHide();
+        //展开菜单
+        $('#menueOpen,.img_menue_btn').click(function () {
+            
+            $('.img_menue_btn').hide();
+            $('.v_nav.nav-sidebar .navi ul.nav li span').show();
+            $('.v_nav #menueClose').show();
+            $('.v_nav').css({ 'width': '185px', 'transition': 'margin-left 0.25s' });
+
+            $('.wrap-content').css({ 'margin-left': '185px', 'transition': 'margin-left 0.25s' });
+            $('.wrap-content .wrap-content-header').css({ 'left': '185px', 'transition': 'margin-left 0.25s' });
+            $('.nav-sidebar .nav .nav-sub').css({ 'left': '185px', 'transition': 'margin-left 0.25s' });
+        });
+        //关闭菜单
+        $('#menueClose').click(function () {
+            $('.img_menue_btn').show();
+            $('.v_nav.nav-sidebar .navi ul.nav li span').hide();
+            $('.v_nav #menueClose').hide();
+            $('.no-info').css('display', 'block');
+            $('.v_nav').css({ 'width': '64px', 'transition': 'margin-left 0.25s' });
+            $('.nav-sidebar .nav .nav-sub').css({ 'left': '64px', 'transition': 'margin-left 0.25s' });
+            $('.wrap-content').css({ 'margin-left': '64px', 'transition': 'margin-left 0.25s' });
+            $('.wrap-content .wrap-content-header').css({ 'left': '64px', 'transition': 'margin-left 0.25s' });
+
+        });
+
+        //退出超赢系统单点登录
+        app.cy_login_out = function () {
+            var url = "@cyLoginOutUrl";
+            $.jsonp({
+                "url": url,
+                "success": function (data) {
+                },
+                "error": function (d, msg) {
+                }
+            });
+        }
+
+
+    </script>
+    <script>
+       // setTimeout(function () {
+            $.DHB.loadJs([
+               { id: 'vueJs', url: '/static/js/vue/vue.js' },
+               { id: 'dataTables', url: '/static/js/report/jquery.dataTables.js' },
+               { id: 'jstree', url: '/static/js/jstree/jstree.js' },
+               { id: 'underscore', url: "/static/js/underscore/underscore.min.js" }
+            ]);
+            // },3000);
+            
+        
+    </script>
+</body>
+</html>

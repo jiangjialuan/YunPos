@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Td_Sale_Cart"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Td_Sale_Cart" type="CySoft.Model.Td.Td_Sale_Cart,CySoft.Model" />
+    <typeAlias alias="Td_Sale_Cart_Query" type="CySoft.Model.Td.Td_Sale_Cart_Query,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="id_userList">
+			db.[id_user] in <iterate property="id_userList" conjunction="," open="(" close=")">#id_userList[]#</iterate>
+		</isNotNull>
+		<isNotNull prepend="and" property="id_user">db.[id_user]=#id_user#</isNotNull>
+		<isNotNull prepend="and" property="not_id_user">db.[id_user] <![CDATA[ <> ]]> #not_id_user#</isNotNull>
+		<isNotNull prepend="and" property="id_gysList">
+			db.[id_gys] in <iterate property="id_gysList" conjunction="," open="(" close=")">#id_gysList[]#</iterate>
+		</isNotNull>
+		<isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>
+		<isNotNull prepend="and" property="not_id_gys">db.[id_gys] <![CDATA[ <> ]]> #not_id_gys#</isNotNull>
+		<isNotNull prepend="and" property="id_skuList">
+			db.[id_sku] in <iterate property="id_skuList" conjunction="," open="(" close=")">#id_skuList[]#</iterate>
+		</isNotNull>
+		<isNotNull prepend="and" property="id_sku">db.[id_sku]=#id_sku#</isNotNull>
+		<isNotNull prepend="and" property="not_id_sku">db.[id_sku] <![CDATA[ <> ]]> #not_id_sku#</isNotNull>
+		<isNotNull prepend="and" property="id_cgs">db.[id_cgs]=#id_cgs# and exists(select 1 from Tb_Gys_Cgs as gys where gys.id_gys = db.id_gys and  gys.id_cgs = db.id_cgs)</isNotNull>
+		<isNotNull prepend="and" property="id_sp">db.[id_sp]=#id_sp#</isNotNull>
+		<isNotNull prepend="and" property="sl">db.[sl]=#sl#</isNotNull>
+		  <isNotNull prepend="and" property="id_skuList">
+			  db.[id_sku] in <iterate property="id_skuList" conjunction="," open="(" close=")">#id_skuList[]#</iterate>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[id_gys] asc,db.[id_cgs] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+		  <isNotNull prepend="," property="new_sl">db.[sl]=#new_sl#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Td_sale_cart]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Cart_Query">
+		set nocount on
+		<include refid="NoLock" />
+      select db.[id_user],db.[id_gys],db.[id_sku],db.[id_cgs],db.[id_sp],db.[sl]
+      ,(case when (gsp.flag_stop = 1 or sku.flag_stop = 1 or gsp.flag_up = 0) then 0 else 1 end) as flag_up
+      ,<isNotNull property="baseurl">#baseurl#+</isNotNull>sku.photo as photo
+      ,sp.mc
+      ,gsp.dj_base
+      ,isnull(isnull(dj.dj_dh,gsp.dj_base),0.0) as dj_old
+      ,(case isnull(gsp.bm_Interface,'') when '' then sku.bm else gsp.bm_Interface end) as bm_Interface
+      ,sku.unit
+      ,isnull(isnull(isnull(spcgs.dj_dh,dj.dj_dh),gsp.dj_base),00) as dj
+      ,case isnull(spcgs.sl_dh_min,0) when 0 then isnull(dj.sl_dh_min,0.0) else spcgs.sl_dh_min end as sl_dh_min
+      ,N'' as gg
+      from <include refid="Table"/> as db
+      inner join Tb_gys_sp as gsp on gsp.id_gys = db.id_gys and gsp.id_sku = db.id_sku
+      left join Tb_sp as sp on sp.id =db.id_sp
+      left join Tb_sp_sku as sku on sku.id = db.id_sku
+      left join Tb_gys_cgs as gc on gc.id_gys = db.id_gys and gc.id_cgs = db.id_cgs
+      left join Tb_sp_dj as dj on dj.id_gys = db.id_gys and dj.id_sku = db.id_sku and dj.id_cgs_level = gc.id_cgs_level
+      LEFT JOIN Tb_sp_cgs spcgs ON db.id_sku=spcgs.id_sku AND db.id_gys=spcgs.id_gys and spcgs.id_cgs=db.id_cgs
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Cart">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db
+      inner join Tb_gys_sp as gsp on gsp.id_gys = db.id_gys and gsp.id_sku = db.id_sku
+      <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      inner join Tb_gys_sp as gsp on gsp.id_gys = db.id_gys and gsp.id_sku = db.id_sku
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Cart">
+      set nocount on
+      <include refid="NoLock" />
+		select db.[id_user],db.[id_gys],db.[id_sku],db.[id_cgs],db.[id_sp],db.[sl] from <include refid="Table"/> as db
+      inner join Tb_gys_sp as gsp on gsp.id_gys = db.id_gys and gsp.id_sku = db.id_sku
+      <include refid="Where"/>
+    </select>
+
+  </statements>
+</sqlMap>
+

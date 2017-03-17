@@ -1,0 +1,103 @@
+﻿@{
+    Layout = null; 
+}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>云Pos</title>
+    <meta name="description" content="云Pos" />
+    @Styles.Render(
+
+    "~/static/bootstrap/bootstrap.min.css", "~/manager/img/login/login.css")
+
+    <link href="~/static/css/global/font_awesome.min.css" rel="stylesheet" />
+</head>
+<Body style="background:url('../../manager/img/login/login_bg.jpg') repeat-x top center;">
+    <div class="header login_logo"><img src="~/manager/img/login/login_login.png" /></div>
+    <div class="con-row">
+        <div class="login_content_bg">
+            <div class="content">
+                <div class="banner"></div>
+                <div class="loginItem">
+
+                </div>
+                <h5>
+                    <span style="font-size: 20px;">您当前的浏览器版本,可能会影响使用体验!</span>
+                </h5>
+                <h5>
+                    <span style="font-size: 20px;">建议使用谷歌、火狐、IE10、IE11</span>
+                </h5>
+
+                <a class="manager_login_2 browser_down" style="font-size: 20px; text-decoration: none; width: 180px;" tabindex="5" href="http://yun.pos.cn/down/ChromeStandalone_56.0.2924.87_Setup.exe">谷歌浏览器下载</a>
+                <a class="manager_login_2 browser_down" style="font-size: 20px;text-decoration: none;width: 180px;" tabindex="5" href="http://yun.pos.cn/down/Firefox_51.0.1.6234_setup.exe">火狐浏览器下载</a>
+
+            </div>
+        </div>
+    </div>
+
+    <!--演示弹框-->
+    <div id="demoDiv">
+        <div class="cover"></div>
+        <div class="choseVersion" style="position:fixed">
+            <div class="title">
+                <span class="fr" onclick="closeDemo()" style="background:#999; text-align:center; padding-right:10px;"><img src="~/manager/img/login/close_btn.png" alt="" width="15" height="15"></span>
+                <span class="fl">请您选择要体验的版本</span>
+            </div>
+            <div class="content">
+                <a class="baseVersion fl" id="ddversion">
+                    单店版收银软件
+                </a>
+                <a class="chainVersion fl" id="lsversion">
+                    连锁版收银软件
+                </a>
+            </div>
+        </div>
+    </div>
+    <!--登录页面弹窗-->
+    <div id="to_login" style="display:none;">
+        <div class="cover"></div>
+        <div class="dialog_box_ " >
+            <div class="dialog_header clearfix">
+                <div class="dialog_title">
+                    提示
+                </div>
+                <div class="dialog_lose"><img src="~/manager/img/login/close_btn.png" alt="" width="28" height="28"></div>
+            </div>
+            <div class="dialog_content clearfix">
+                <h2 id="MsgLogin"></h2>
+                <div class="dialog_left">
+                    <a id="a_buy_service" target="_blank" href="" class="client_login_2">购买服务</a>
+                </div>
+                <div class="dialog_right" id="div_right" style="display:none;">
+                    <a id="a_go_login" onclick="go_login();" class="manager_login_2">稍后购买服务</a>
+                </div>
+            </div>
+            <div class="dialog_footer">
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="footer clearfix" style="background:none;">
+        <p>
+            Copyright © 2016 <a href="http://www.pos.cn/" target="_blank" style="text-decoration:none;" tabindex="-1">pos.cn</a>
+        </p>
+    </div>
+
+    <script src="@Scripts.Url("~/static/js/jquery/jquery.min.js")"></script>
+    <script src="@Scripts.Url("~/static/js/util.js")"></script>
+    <script src="@Scripts.Url("~/static/js/placeholder/placeholder.js")"></script>
+<script type="text/javascript">
+    
+</script>
+</body>
+</html>

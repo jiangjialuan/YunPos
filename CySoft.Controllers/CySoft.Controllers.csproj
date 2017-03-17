@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{439BDFD4-44D7-40CF-883D-67AAD9787AF4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CySoft.Controllers</RootNamespace>
+    <AssemblyName>CySoft.Controllers</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Web\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CySoft.Frame, Version=1.0.0.18457, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\CySoft\CySoft.Frame.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.6190.17746, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Tools\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Tools\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Tools\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Tools\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Tools\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Aop, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Spring.Net\Spring.Aop.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Spring.Net\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\..\lib\System.Web\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ThoughtWorks.QRCode, Version=1.0.4778.30637, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ThoughtWorks.QRCode.1.1.0\lib\ThoughtWorks.QRCode.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountCtl\AccountController.cs" />
+    <Compile Include="AccountCtl\OpenAPIController.cs" />
+    <Compile Include="AdminCtl\FunctionManageController.cs" />
+    <Compile Include="AdminCtl\PosRoleModuleController.cs" />
+    <Compile Include="AdminCtl\RoleModuleController.cs" />
+    <Compile Include="AdminCtl\UserManageController.cs" />
+    <Compile Include="AdvertisCtl\AdvertisController.cs" />
+    <Compile Include="AdvertisCtl\AdvertisLogController.cs" />
+    <Compile Include="AreaCtl\AreaController.cs" />
+    <Compile Include="Areas\W_Account\W_AccountController.cs" />
+    <Compile Include="Areas\W_Main\W_MainController.cs" />
+    <Compile Include="Areas\W_Product\W_ProductController.cs" />
+    <Compile Include="BulletinCtl\BulletinController.cs" />
+    <Compile Include="BusinessCtl\XsthController.cs" />
+    <Compile Include="BusinessCtl\XsckController.cs" />
+    <Compile Include="BusinessCtl\XsController.cs" />
+    <Compile Include="BusinessCtl\DhController.cs" />
+    <Compile Include="BusinessCtl\KcpdController.cs" />
+    <Compile Include="BusinessCtl\KcsltzdController.cs" />
+    <Compile Include="BusinessCtl\PsdbckController.cs" />
+    <Compile Include="BusinessCtl\PsdbrkController.cs" />
+    <Compile Include="BusinessCtl\PsfpsqController.cs" />
+    <Compile Include="BusinessCtl\PsckController.cs" />
+    <Compile Include="BusinessCtl\PscktzdController.cs" />
+    <Compile Include="BusinessCtl\PsfpckController.cs" />
+    <Compile Include="BusinessCtl\PsfprkController.cs" />
+    <Compile Include="BusinessCtl\PsfptzdController.cs" />
+    <Compile Include="BusinessCtl\PsrkController.cs" />
+    <Compile Include="BusinessCtl\PssqController.cs" />
+    <Compile Include="BusinessCtl\SkController.cs" />
+    <Compile Include="BusinessCtl\ThController.cs" />
+    <Compile Include="BusinessCtl\JhfkController.cs" />
+    <Compile Include="Filters\ActionAliasAttribute.cs" />
+    <Compile Include="IframeCtl\IframeController.cs" />
+    <Compile Include="KHCtl\KhController.cs" />
+    <Compile Include="KHCtl\KhflController.cs" />
+    <Compile Include="MemberCtl\HYCZRuleController.cs" />
+    <Compile Include="MemberCtl\HYJFRuleController.cs" />
+    <Compile Include="MemberCtl\HyflController.cs" />
+    <Compile Include="MemberCtl\HyController.cs" />
+    <Compile Include="BusinessCtl\JhController.cs" />
+    <Compile Include="BuyerCtl\RecieverAddressController.cs" />
+    <Compile Include="Filters\W_LoginActionFilter.cs" />
+    <Compile Include="FundsCtl\BankAccountController.cs" />
+    <Compile Include="FundsCtl\PayConfirmController.cs" />
+    <Compile Include="GoodsCtl\GysController.cs" />
+    <Compile Include="GoodsCtl\DwController.cs" />
+    <Compile Include="GoodsCtl\GoodsFdController.cs" />
+    <Compile Include="GoodsCtl\GoodsRecommendController.cs" />
+    <Compile Include="GoodsCtl\PayTypeController.cs" />
+    <Compile Include="GoodsCtl\QcController.cs" />
+    <Compile Include="GoodsCtl\ShopSpController.cs" />
+    <Compile Include="GoodsCtl\GysflController.cs" />
+    <Compile Include="GoodsCtl\SpflController.cs" />
+    <Compile Include="MemberCtl\MemberController.cs" />
+    <Compile Include="Mobile\MobileGoodsCartController.cs" />
+    <Compile Include="Mobile\MobileOrderGoodsController.cs" />
+    <Compile Include="Mobile\MobileAccountController.cs" />
+    <Compile Include="NotificationCtl\InfoTypeController.cs" />
+    <Compile Include="MainController.cs" />
+    <Compile Include="NotificationCtl\FaqController.cs" />
+    <Compile Include="OrderCtl\OrderGoodsController.cs" />
+    <Compile Include="OrderCtl\OrderOutController.cs" />
+    <Compile Include="OrderCtl\OrderPayController.cs" />
+    <Compile Include="OrderCtl\OrderStatisticsController.cs" />
+    <Compile Include="OtherCtl\DownloadController.cs" />
+    <Compile Include="Parm\ParmController.cs" />
+    <Compile Include="Parm\ParmShopController.cs" />
+    <Compile Include="PromoteCtl\PromoteSortController.cs" />
+    <Compile Include="SaleCtl\SaleOrderPayController.cs" />
+    <Compile Include="PromoteCtl\PromoteController.cs" />
+    <Compile Include="SearchConditionController.cs" />
+    <Compile Include="Service\AccountServiceController.cs" />
+    <Compile Include="Service\Base\ServicePublicController.cs" />
+    <Compile Include="Service\LogServiceController.cs" />
+    <Compile Include="Service\ShopspServiceController.cs" />
+    <Compile Include="Service\MemberServiceController.cs" />
+    <Compile Include="Service\BusinessServiceController.cs" />
+    <Compile Include="Service\PayServiceController.cs" />
+    <Compile Include="Service\SystemServiceController.cs" />
+    <Compile Include="Service\UtilityServiceController.cs" />
+    <Compile Include="ShopCtl\ShopController.cs" />
+    <Compile Include="AdminCtl\PosFunctionController.cs" />
+    <Compile Include="ShopCtl\ShopManagerController.cs" />
+    <Compile Include="SystemCtl\NoticeController.cs" />
+    <Compile Include="SystemCtl\PayConfigController.cs" />
+    <Compile Include="SystemCtl\RedirectController.cs" />
+    <Compile Include="SaleCtl\SaleOrderController.cs" />
+    <Compile Include="SaleCtl\SaleOrderStatisticsController.cs" />
+    <Compile Include="SaleCtl\SaleOutController.cs" />
+    <Compile Include="SaleCtl\SaleReturnController.cs" />
+    <Compile Include="OtherCtl\FavoritesController.cs" />
+    <Compile Include="GoodsCtl\GoodsCartController.cs" />
+    <Compile Include="GoodsCtl\GoodsController.cs" />
+    <Compile Include="GoodsCtl\GoodsInventoryController.cs" />
+    <Compile Include="GoodsCtl\GoodsSpecController.cs" />
+    <Compile Include="GoodsCtl\GoodsTypeController.cs" />
+    <Compile Include="GoodsCtl\GoodsUnitsController.cs" />
+    <Compile Include="HomeController.cs" />
+    <Compile Include="IndustrieCtl\IndustrieController.cs" />
+    <Compile Include="ManagerCtl\ManagerController.cs" />
+    <Compile Include="Base\BaseController.cs" />
+    <Compile Include="Base\BusinessFactory.cs" />
+    <Compile Include="Filters\ActionPurviewAttribute.cs" />
+    <Compile Include="Filters\LoginActionFilter.cs" />
+    <Compile Include="NotificationCtl\NotificationController.cs" />
+    <Compile Include="OrderCtl\OrderController.cs" />
+    <Compile Include="OrderCtl\ReturnOrderController.cs" />
+    <Compile Include="OrderCtl\ShippingRecordController.cs" />
+    <Compile Include="OtherCtl\ErrorController.cs" />
+    <Compile Include="PromotionsCtl\PromotionsController.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportCtl\ReportController.cs" />
+    <Compile Include="Service\Base\ServiceBaseController.cs" />
+    <Compile Include="SystemCtl\LogController.cs" />
+    <Compile Include="SystemCtl\RoleSettingController.cs" />
+    <Compile Include="SystemCtl\SettingController.cs" />
+    <Compile Include="SupplierCtl\CustomerCtl\CustomerController.cs" />
+    <Compile Include="SupplierCtl\CustomerCtl\CustomerTypeController.cs" />
+    <Compile Include="SupplierCtl\SupplierController.cs" />
+    <Compile Include="TestCtl\TestController.cs" />
+    <Compile Include="UtilityController.cs" />
+    <Compile Include="Mobile\Base\MobileBaseController.cs" />
+    <Compile Include="Mobile\MobileHomeController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CySoft.IBLL\CySoft.IBLL.csproj">
+      <Project>{C6F971E2-F9E0-40B3-BF32-C3EB27088199}</Project>
+      <Name>CySoft.IBLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.IDAL\CySoft.IDAL.csproj">
+      <Project>{76CD450C-470B-4D37-9A56-5B08FB056082}</Project>
+      <Name>CySoft.IDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Model\CySoft.Model.csproj">
+      <Project>{48225337-7e00-43f0-a2ab-e19db332f6c9}</Project>
+      <Name>CySoft.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Utility\CySoft.Utility.csproj">
+      <Project>{26C05CD0-58EE-4721-A3E0-DD0F66F9FDC0}</Project>
+      <Name>CySoft.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ShopSpCtl\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

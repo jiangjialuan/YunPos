@@ -1,0 +1,62 @@
+﻿@using CySoft.Model.Tb
+@{
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+            @*<th><a data-sort="dw">单位名称</a></th>*@
+            <th>单位名称</th>
+            <th width="110" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="dwlist-main-tbody">
+        @{
+            var pageList = ViewData["List"] as PageList<Tb_DwWithUserName>;
+            if (pageList != null)
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = pageList.PageIndex* pageList.PageSize+1;
+                    foreach (var item in list)
+                    {
+                        <tr id="row-dw-id-@item.id" class="tr-status-finished">
+                            <td class="text-center">
+                                @(index++)
+                            </td>
+                            <td><a class="list-link">@item.dw</a></td>
+                            @*<td>@item.username</td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM:dd HH:mm:ss}", item.rq_create)</td>*@
+                            <td class="list-operate">
+                                <div class="look-out1">
+                                    <div class="second-height-operate">
+                                        @if (isEdit)
+                                        {
+                                            <a class="bg-state bg-state-info  fa fa-pencil" href="javascript:;" onclick="app.dw.edit('@item.id',this)" title="编辑"></a>
+                                        }
+                                        @if (isDel)
+                                        {
+                                            <a class="bg-state bg-state-info  fa fa-trash" href="javascript:;" onclick="app.dw.del('@item.id',this)" title="删除"></a>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    app.c.public_data['dw/list'] = app.c.public_data['dw/list'] || {};
+    app.c.public_data['dw/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['dw/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['dw/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

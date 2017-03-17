@@ -1,0 +1,6 @@
+D:\CySoft_YunPos\廖冬\Web\bin\CySoft.Model.dll.config
+D:\CySoft_YunPos\廖冬\Web\bin\CySoft.Model.dll
+D:\CySoft_YunPos\廖冬\Web\bin\CySoft.Model.pdb
+D:\CySoft_YunPos\廖冬\CySoft.Model\obj\Debug\CySoft.Model.csprojResolveAssemblyReference.cache
+D:\CySoft_YunPos\廖冬\CySoft.Model\obj\Debug\CySoft.Model.dll
+D:\CySoft_YunPos\廖冬\CySoft.Model\obj\Debug\CySoft.Model.pdb

@@ -1,0 +1,8 @@
+﻿@{
+    var AreaData = ViewData["AreaData"] == null ? new List<CySoft.Model.Tb.Tb_Districts>() : (List<CySoft.Model.Tb.Tb_Districts>)ViewData["AreaData"];
+}
+
+@foreach (var item in AreaData.OrderBy(d => d.sort))
+{
+    <a data-code="@item.id" class="">@item.name</a>
+}

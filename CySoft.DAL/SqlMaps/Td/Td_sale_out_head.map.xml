@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Td_Sale_Out_Head"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Td_Sale_Out_Head" type="CySoft.Model.Td.Td_Sale_Out_Head,CySoft.Model" />
+    <typeAlias alias="Td_Sale_Out_Head_Query" type="CySoft.Model.Td.Td_Sale_Out_Head_Query,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="dhList">
+          db.[dh] in <iterate property="dhList" conjunction="," open="(" close=")">#dhList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="dh_orderList">
+          db.[dh_order] in <iterate property="dh_orderList" conjunction="," open="(" close=")">#dh_orderList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="dh">db.[dh]=#dh#</isNotNull>
+        <isNotNull prepend="and" property="not_dh">db.[dh] <![CDATA[ <> ]]> #not_dh#</isNotNull>
+        <isNotNull prepend="and" property="dh_order">db.[dh_order]=#dh_order#</isNotNull>
+        <isNotNull prepend="and" property="id_gys">db.[id_gys]=#id_gys#</isNotNull>
+        <isNotNull prepend="and" property="id_cgs">db.[id_cgs]=#id_cgs#</isNotNull>
+        <isNotNull prepend="and" property="flag_state">db.[flag_state]=#flag_state#</isNotNull>
+        <isNotNull prepend="and" property="flag_delete">db.[flag_delete]=#flag_delete#</isNotNull>
+        <isNotNull prepend="and" property="sl_sum">db.[sl_sum]=#sl_sum#</isNotNull>
+        <isNotNull prepend="and" property="company_logistics">db.[company_logistics]=#company_logistics#</isNotNull>
+        <isNotNull prepend="and" property="no_logistics">db.[no_logistics]=#no_logistics#</isNotNull>
+        <isNotNull prepend="and" property="rq_fh_logistics">db.[rq_fh_logistics]=#rq_fh_logistics#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_fh_logistics">Datediff(day,#start_rq_fh_logistics#,db.[rq_fh_logistics]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_fh_logistics">Datediff(day,db.[rq_fh_logistics],Convert(date,#end_rq_fh_logistics#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="rq_fh">db.[rq_fh]=#rq_fh#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_fh">Datediff(day,#start_rq_fh#,db.[rq_fh]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_fh">Datediff(day,db.[rq_fh],Convert(date,#end_rq_fh#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_fh">db.[id_fh]=#id_fh#</isNotNull>
+        <isNotNull prepend="and" property="remark">db.[remark]=#remark#</isNotNull>
+        <isNotNull prepend="and" property="id_create">db.[id_create]=#id_create#</isNotNull>
+        <isNotNull prepend="and" property="rq_create">db.[rq_create]=#rq_create#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_create">Datediff(day,#start_rq_create#,db.[rq_create]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_create">Datediff(day,db.[rq_create],Convert(date,#end_rq_create#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="id_edit">db.[id_edit]=#id_edit#</isNotNull>
+        <isNotNull prepend="and" property="rq_edit">db.[rq_edit]=#rq_edit#</isNotNull>
+        <isNotNull prepend="and" property="start_rq_edit">Datediff(day,#start_rq_edit#,db.[rq_edit]) > -1</isNotNull>
+        <isNotNull prepend="and" property="end_rq_edit">Datediff(day,db.[rq_edit],Convert(date,#end_rq_edit#)) > -1</isNotNull>
+        <isNotNull prepend="and" property="start_flag_state">db.[flag_state]<![CDATA[ >= ]]>#start_flag_state#</isNotNull>
+        <isNotNull prepend="and" property="end_flag_state">db.[flag_state]<![CDATA[ <= ]]>#end_flag_state#</isNotNull>
+        <isNotNull prepend="and" property="beginDate_ck">db.[rq_create] <![CDATA[ >= ]]> #beginDate_ck#</isNotNull>
+        <isNotNull prepend="and" property="endDate_ck">db.[rq_create] <![CDATA[ <= ]]> #endDate_ck#</isNotNull>
+        <isNotNull prepend="and" property="beginDate_fh">db.[rq_fh] <![CDATA[ >= ]]> #beginDate_fh#</isNotNull>
+        <isNotNull prepend="and" property="endDate_fh">db.[rq_fh] <![CDATA[ <= ]]> #endDate_fh#</isNotNull>
+        <isNotNull prepend="and" property="now">Datediff(day,db.[rq_fh],#now#) > 7</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[dh] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_dh_order">db.[dh_order]=#new_dh_order#</isNotNull>
+        <isNotNull prepend="," property="new_id_gys">db.[id_gys]=#new_id_gys#</isNotNull>
+        <isNotNull prepend="," property="new_id_cgs">db.[id_cgs]=#new_id_cgs#</isNotNull>
+        <isNotNull prepend="," property="new_id_cgs">db.[sl_sum]=#new_sl_sum#</isNotNull>
+        <isNotNull prepend="," property="new_flag_state">db.[flag_state]=#new_flag_state#</isNotNull>
+        <isNotNull prepend="," property="new_flag_delete">db.[flag_delete]=#new_flag_delete#</isNotNull>
+        <isNotNull prepend="," property="new_company_logistics">db.[company_logistics]=#new_company_logistics#</isNotNull>
+        <isNotNull prepend="," property="new_no_logistics">db.[no_logistics]=#new_no_logistics#</isNotNull>
+        <isNotNull prepend="," property="new_rq_fh_logistics">db.[rq_fh_logistics]=#new_rq_fh_logistics#</isNotNull>
+        <isNotNull prepend="," property="new_rq_fh">db.[rq_fh]=#new_rq_fh#</isNotNull>
+        <isNotNull prepend="," property="new_id_fh">db.[id_fh]=#new_id_fh#</isNotNull>
+        <isNotNull prepend="," property="new_remark">db.[remark]=#new_remark#</isNotNull>
+        <isNotNull prepend="," property="new_id_create">db.[id_create]=#new_id_create#</isNotNull>
+        <isNotNull prepend="," property="new_rq_create">db.[rq_create]=#new_rq_create#</isNotNull>
+        <isNotNull prepend="," property="new_id_edit">db.[id_edit]=#new_id_edit#</isNotNull>
+        <isNotNull prepend="," property="new_rq_edit">db.[rq_edit]=#new_rq_edit#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Td_sale_out_head]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Out_Head_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[dh],db.[dh_order],db.[id_gys],db.[id_cgs],db.[flag_state],db.[flag_delete],db.[sl_sum],db.[company_logistics],db.[no_logistics],db.[rq_fh_logistics],db.[rq_fh],db.[id_fh],db.[remark],db.[id_create],db.[rq_create],db.[rq_create] as LibraryHours,db.[rq_fh] as DeliveryTime,db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Out_Head_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select t.dh,um.name as CustomeName,t.dh_order,t.rq_create as LibraryHours,t.rq_fh as DeliveryTime from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/>
+      as db <include refid="Where"/>
+      ) as t
+      left join Tb_cgs as cgs on cgs.id=t.id_cgs
+      left join Tb_user um on um.id=cgs.id_user_master
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Out_Head">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[dh],db.[dh_order],db.[id_gys],db.[id_cgs],db.[flag_state],db.[flag_delete],db.[sl_sum],db.[company_logistics],db.[no_logistics],db.[rq_fh_logistics],db.[rq_fh],db.[id_fh],db.[remark],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit] from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+    <select id="QueryCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+    left join Tb_user as um on um.id = db.id_gys
+      <include refid="Where"/>
+    </select>
+  </statements>
+</sqlMap>
+

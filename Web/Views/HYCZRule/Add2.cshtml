@@ -1,0 +1,110 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Model.Ts
+@using CySoft.Model.Tz
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    var digit = ViewData["DigitHashtable"] as Hashtable;//小数点控制
+    digit = digit ?? new Hashtable();
+    var id_shop = ViewData["id_shop"] ?? "";
+    var selectListShopShop = ViewData["shopList"] as List<Tb_User_ShopWithShopMc>;
+    selectListShopShop = selectListShopShop ?? new List<Tb_User_ShopWithShopMc>();
+    var selectListDigitlx = ViewData["digitlx"] as List<Ts_Flag>;
+    selectListDigitlx = selectListDigitlx ?? new List<Ts_Flag>();
+    var hyfls = ViewData["hyfls"] as List<Tb_Hyfl>;
+    hyfls = hyfls ?? new List<Tb_Hyfl>();
+    var defaultStarTime = DateTime.Now.ToString("yyyy-MM-dd");
+    var defaultEndTime = DateTime.Now.AddYears(50).ToString("yyyy-MM-dd");
+    //门店
+    var optinShopList = " <option value=\"0\">All-所有门店</option> ";
+    foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+    { optinShopList += Html.Raw("<option value=\"" + item.id_shop + "\">" + item.mc + "</option>"); }
+    //会员类型
+    var optinHyflList = "  <option value=\"0\">All-所有会员卡类别</option>";
+    foreach (var item in hyfls.OrderBy(d => d.rq_create))
+    { optinHyflList += Html.Raw("<option value=\"" + item.id + "\">" + item.mc + "</option>"); }
+    //截取小数类型
+    var optinJqxslxList = "";
+    foreach (var item in selectListDigitlx.OrderBy(d => d.listsort))
+    { optinJqxslxList += Html.Raw("<option value=\"" + item.listdata + "\">" + item.listdisplay + "</option>"); }
+
+    var db_data = ViewData["db_data"] as List<Tb_Hy_Czrule_Query>;
+    db_data = db_data ?? new List<Tb_Hy_Czrule_Query>();
+
+    var db_dbjf_data = ViewData["db_dbjf_data"] as Ts_HykDbjf;
+    db_dbjf_data = db_dbjf_data ?? new Ts_HykDbjf();
+
+    var version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    var is_master = ViewData["is_master"] == null ? "false" : ViewData["is_master"].ToString().ToLower();
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="hyczrule/add"]').attr({ controller: 'hyczrule', action: 'add' });
+        app.c.public_data['hyczrule/add'] = app.c.public_data['hyczrule/add'] || {};
+        app.c.public_data['hyczrule/add']['once'] = false;
+
+    });
+</script>
+<div class="modal fade in" role="dialog">
+    <div class="modal-dialog popshop">
+        <div class="modal-header poptitle">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <p class="name">添加充值规则</p>
+        </div>
+        <div class="modal-body tab-content popcontent">
+            <div data-group="_jfgz_new" data-name="db_new" class="xzsp_div table_list">
+                <div>
+                    <button class="btn btn-info w-xs" type="button" onclick="app.hyczrule.czruleset.add_row(this)">增加行</button>
+                </div>
+            </div>
+
+            <div data-group="_jfgz_new" data-name="db_new" class="xzsp_div table_list">
+                <table class="table table_input" id="table_hyczrule_czruleset_db_new">
+                    <thead>
+                        <tr>
+                            <th width="5%">序号</th>
+                            <th>门店</th>
+                            <th>开始日期</th>
+                            <th>结束日期</th>
+                            <th>指定会员卡类别</th>
+                            <th>充值金额</th>
+                            <th>赠送金额</th>
+                            <th>商品</th>
+                            <th>备注</th>
+                            <th>操作类型</th>
+                            <th width="5%">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer popfooter align_center">
+            <button type="button" id="submit-button" data-loading-text="提交中..." data-confirm="confirm" onclick="app.hyczrule.czruleset.save(this)" class="btn btn-info w-xs">确定</button>
+            <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+        </div>
+        </div>
+</div>
+
+        <script type="text/javascript">
+
+            //定义全局容器
+            $.DHB._ = function () {
+                app.c.public_data['hyczrule/czruleset'] = app.c.public_data['hyczrule/czruleset'] || {};
+                if (app.c.public_data['hyczrule/czruleset']['once'] === false) {
+                    app.c.public_data['hyczrule/czruleset']['once'] = true;
+                    $.DHB.checkForm(function () {
+                        return false;
+                    });
+                }
+            };
+
+
+
+        </script>
+

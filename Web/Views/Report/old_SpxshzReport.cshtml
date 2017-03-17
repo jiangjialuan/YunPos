@@ -1,0 +1,583 @@
+﻿@using System.Collections
+@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Utility
+@{
+    Layout = null;
+    var _result= ViewData["_result_"] as ProcedureOutQueryResult;
+    _result = _result ?? new ProcedureOutQueryResult();
+    var spkc_data = _result.rList;
+    var pageSize= Convert.ToInt32(string.Format("{0}", ViewData["pageSize"] ?? "10"));
+    var page = Convert.ToInt32(string.Format("{0}", ViewData["page"] ?? "1"));
+    var shoplist= ViewData["shop_list"] as List<Tb_User_ShopWithShopMc>;
+    shoplist = shoplist ?? new List<Tb_User_ShopWithShopMc>();
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    //var IsDataShow = ViewData["_IsDataShow_"] as Func<string, List<string>, bool>;
+    //string sort = ViewData["sort"].ToString();
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="report/spxshzreport"]').attr({ controller: 'report', action: 'spxshzreport' });
+        app.c.public_data['report/spxshzreport'] = app.c.public_data['report/spxshzreport'] || {};
+        app.c.public_data['report/spxshzreport']['once'] = false;
+        app.report = app.report || {};
+    });
+</script>
+<input type="hidden" pagesize value="10" />
+<input type="hidden" page value="1" />
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        商品库存报表
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>1、查找你所有的商品库存信息</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+
+<script>
+    app.c.public_data['report/spxshzreport'] = app.c.public_data['report/spxshzreport'] || {};
+    app.c.public_data['report/spxshzreport']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['report/spxshzreport']['threemenu'] === false) {
+            app.c.public_data['report/spxshzreport']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/report/spxshzreport">
+                                    <div class="col-xs-10 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                    <input id="s_id_spfl" name="s_id_spfl" value="" type="hidden" />
+                                                    <select id="s_id_shop" name="s_id_shop" class="form-control input-sm box-shawn user-input search-result select2" style="width: 115px;" onmouseenter="app.search.search_enter(this);" onmouseleave=" app.search.search_leave(this);" onchange="app.search.do_search_report_spxshzreport(this);">
+                                                        <option value="">全部商品门店</option>
+                                                        @foreach (var item in shoplist.OrderBy(d => d.rq_create))
+                                                        {
+                                                            <option value="@item.id_shop">@item.mc</option>
+                                                        }
+                                                    </select>
+
+                                                </div>
+                                                <div class="pull-right m-r-sm" style="margin-top:7px">
+                                                    <div class="btn-group">
+                                                        <input type="hidden" name="start_time" id="start_time" value="">
+                                                        <button type="button" class="btn btn-default btn-sm m-l-none text-left" onclick="app.search.wdatepicker_report_spxshzreport(this);" title="开始时间" data-title="开始时间" data-field="start_time" data-type="start" style="width:80px;">开始时间</button>
+                                                        <button type="button" class="btn btn-default disabled btn-sm"><i class="glyphicon glyphicon-calendar" style="min-width: 7%;"></i></button>
+                                                        <button type="button" class="btn btn-default btn-sm text-left" onclick="app.search.wdatepicker_report_spxshzreport(this);" data-field="start_time" data-type="end" data-position="" style="width:80px;" title="结束时间">结束时间</button>
+                                                        <input type="hidden" name="start_time_end" id="start_time_end" value="">
+                                                    </div>
+                                                </div>
+                                                <div class="pull-right m-r-sm" style="margin-top: 7px">
+                                                    <div class="1" style="position: relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="hidden" name="s_id_shopsp" id="s_id_shopsp"/>
+                                                        <input type="text" onclick="app.report.get_select_xshz()" value="" onkeypress=" app.search
+    .trigger_search_report_spxshzreport(event);" class="form-control input-sm search-h inline v-middle search-result search" id="s_id_shopsp_mc" style="width: 250px; border-right: none; border-radius: 2px 0 0 2px;" placeholder="选择商品" ondblclick=" app.search
+    .search_item_clear_report_spxshzreport(this);"/><span>
+                                                            <button type="button" onclick="app.search
+    .do_search_report_spxshzreport(this);" id="btn-search" class="btn btn-sm btn-default search-btn">
+                                                                <i class="fa fa-search"></i>
+                                                            </button>
+                                                        </span>
+                                                        <span onclick="app.search.search_item_clear_report_spxshzreport(this);" style="display: none; position: absolute; right: 27px; top: 4px; padding: 2px 2px 2px 4px; cursor: pointer; color: #d5d3d5; width: 19px; height: 25px; background: #fff;">
+                                                            <i class="fa fa-times-circle"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                               
+                                            </div>
+                                        </div>
+
+                                    <script>
+                                            app.c.public_data['report/spxshzreport'] = app.c.public_data['report/spxshzreport'] || {};
+                                            app.c.public_data['report/spxshzreport']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'report/spxshzreport\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' + currentSearch + '===false){app.search.search_report_spxshzreport();' + currentSearch + '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            app.search.search_report_spxshzreport = function () {
+                                                app.c.public_data['report/spxshzreport'] = app.c.public_data['report/spxshzreport'] || {};
+                                                app.c.public_data['report/spxshzreport']['_row_total_'] = '@_result.outstr';
+                                                app.c.public_data['report/spxshzreport']['_page_size_'] = '@pageSize';
+                                                app.c.public_data['report/spxshzreport']['_current_page_'] = '@(page)';
+                                                app.search.do_search_pagination_report_spxshzreport();
+                                            }
+
+
+                                            app.search.trigger_search_report_spxshzreport = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_report_spxshzreport();
+                                                    event.preventDefault();
+                                                }
+                                            }
+
+                                            //查询
+                                            app.search.do_search_report_spxshzreport = function (el, isExport) {
+                                                debugger;
+                                                isExport = isExport || 0;
+                                                var v = $(_ + ".filter-form").serialize();
+                                                var url = '/report/spxshzreport?_search_=1&' + v;
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    url = $.DHB.U(url);
+                                                    window.location.href = url;
+                                                }
+                                                else {
+                                                    var options = {
+                                                        url: $.DHB.U(url),
+                                                        datatype: 'html',
+                                                        beforeSend: function () {
+                                                            $.DHB.showButterbar();
+                                                        },
+                                                        callback: function (data, textStatus, jqXHR) {
+                                                            //debugger;
+                                                            if ($('#report-spxshzreport-list-fresh-box', _).length > 0) {
+                                                                $('#report-spxshzreport-list-fresh-box', _).html(data);
+                                                            }
+                                                            var curSearchcallback = 'app.report.spxshzreport_search_callback';
+                                                            var curListcallback = 'app.report.spxshzreport_listready';
+                                                            eval('try {if(' + curSearchcallback + ' && typeof(' + curSearchcallback + ')=="function"){' + curSearchcallback + '(data, textStatus); }}catch(e){}');
+                                                            eval('try {if(' + curListcallback + ' && typeof(' + curListcallback + ')=="function"){' + curListcallback + '(); }}catch(e){}');
+                                                            app.search.do_search_pagination_report_spxshzreport();
+                                                        },
+                                                        complete: function (XHR, TS) {
+                                                            $.DHB.closeButterbar();
+                                                        }
+                                                    };
+                                                    cy.http.Get(options);
+                                                }
+                                                return false;
+                                            };
+
+                                            //分页
+                                            app.search.do_search_pagination_report_spxshzreport = function () {
+                                                $.DHB.func.pagination({
+                                                    module_name: 'Manager',
+                                                    controller_name: 'report',
+                                                    action_name: 'spxshzreport',
+                                                    ready_once: false
+                                                });
+                                            }
+
+
+                                            app.search.do_search_option_report_spxshzreport = function (el) {
+                                                if ($(el).attr('class') != '') {
+                                                    $(el)
+                                                        .find('span')
+                                                        .each(function () {
+                                                            if ($(this).attr('class') == '') {
+                                                                $(this).attr('class', 'order-active');
+                                                            } else {
+                                                                $(this).attr('class', '');
+                                                            }
+                                                        });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el)
+                                                        .parents('.btn-group')
+                                                        .find('input:eq(0)')
+                                                        .val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el)
+                                                    .parents('.btn-group')
+                                                    .find('button span:eq(0)')
+                                                    .html(selectA.html());
+
+                                                app.search.do_search_report_spxshzreport();
+                                            }
+
+
+                                            app.search.search_enter = function (el) {
+                                                if (app.c.public_data['report/spxshzreport']['search_all'] === false) {
+                                                    $(el)
+                                                        .parents('.search-box-container')
+                                                        .find(".bootstrap-select ul.dropdown-menu")
+                                                        .each(function () {
+                                                            var ts = $(this).find('li:first() span:first()');
+                                                            ts.text('全部');
+                                                        });
+                                                    /*$(el).parents('.search-box-container').find(".treeview .spxshzreport-group>li:first()").each(function(){
+                                                        $(this).text('全部');
+                                                    });*/
+                                                    app.c.public_data['report/spxshzreport']['search_all'] = true;
+                                                }
+                                            }
+
+
+                                            app.search.search_leave = function (el) {
+                                            }
+
+                                            app.search.search_client_clear_report_spxshzreport = function (el) {
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_report_spxshzreport();
+                                            }
+
+
+                                            app.search.wdatepicker_report_spxshzreport = function (el) {
+                                                var booStart = $(el).data('type') == 'start';
+                                                var option = {};
+                                                option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+                                                option['onpicked'] = function () {
+                                                    $(el)
+                                                        .text($dp.cal.getP('y') +
+                                                            '-' +
+                                                            $dp.cal.getP('M') +
+                                                            '-' +
+                                                            $dp.cal.getP('d'));
+                                                    if (booStart) {
+                                                        setTimeout(function () {
+                                                            $(el)
+                                                                .parent()
+                                                                .find('[data-type="end"]')
+                                                                .data('position', '1')
+                                                                .click();
+                                                        },
+                                                            5000);
+                                                    }
+                                                    app.search.do_search_report_spxshzreport();
+                                                };
+
+                                                if (booStart) {
+                                                    option['maxDate'] =
+                                                        '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+                                                } else {
+                                                    option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+                                                    if ($(el).data('position') == '1') {
+                                                        //option['position'] ={left:$(el).offset().left,top:$(el).offset().top+34};
+                                                        //$(el).data('position','');
+                                                    }
+                                                }
+                                                option['oncleared'] = function () {
+                                                    $(el).html(booStart ? $(el).data('title') : '截至日期');
+                                                    app.search.do_search_report_spxshzreport();
+                                                };
+
+                                                WdatePicker(option);
+                                            }
+
+
+                                            app.search.search_item_clear_report_spxshzreport = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                par.find("select.select2_")
+                                                    .selectpicker({ liveSearch: true })
+                                                    .selectpicker('refresh');
+                                                par.find("select.select2").selectpicker('refresh');
+                                                $(_ + "#s_id_shopsp").val("");
+                                                app.search.do_search_report_spxshzreport();
+                                            }
+                                        </script>
+                                    </div>
+
+                                    <input id="hid_sort" type="hidden" name="sort" value="" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clear"></div>
+                    <div class="shopsp_cont">
+                        <div class="close_tree  fa fa-chevron-left"></div>
+                        <!--树-->
+                        <div class="col-xs-2 p-l-r-none tree_left" id="spxshzreport">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="l-tree_head">
+                                        <ul>
+                                            <li>商品分类</li>
+                                        </ul>
+                                        <div class="pull-left" style="margin-top:10px; padding-left:15px;">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div id="tree_left" class="p-b-30" style="height:550px; overflow:auto;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right_table col-xs-10">
+                            
+                            <!--数据表格-->
+                            @* //TODO: 此ID名称一定要按格式要求Controller-Action-spxshzreport-fresh-box *@
+                            <div id="report-spxshzreport-list-fresh-box" class="table_list table_max_h">
+                                <table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                                    <thead>
+                                        <tr>
+                                            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+                                            @{
+                                                List<string> orderKeysName = new List<string>()
+                                        {
+                                           "销售日期","星期","门店名称","商品分类","商品名称","条码","单位","销售数量","应销售金额","折扣金额","实际销售金额","成本金额","毛利金额","毛利率"
+                                        };
+                                                List<string> orderKeys = new List<string>()
+                                        {
+                                            "rq_xs","rq_wd","mc_shop","mc_spfl","mc_sp","barcode","dw","sl_xs","je_yxs","je_zk","je_xs","je_cb","je_ml","mll"
+                                        };
+                                                if (orderKeysName.Any())
+                                                {
+                                                    foreach (var v in orderKeysName)
+                                                    {
+                                                        <th width="110" class="table-p-l-sm table-p-r-xsm-fixed">@v</th>
+                                                    }
+                                                }
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reportlist-main-tbody">
+                                        @{
+                                            if (spkc_data != null && spkc_data.Count > 0)
+                                            {
+                                                var index = page * pageSize + 1;
+                                                foreach (var item in spkc_data)
+                                                {
+                                                    var hashtab = item as Hashtable;
+                                                    if (hashtab != null && hashtab.Count > 0)
+                                                    {
+                                                        Dictionary<string, string> xq = new Dictionary<string, string>()
+                                               {
+                                                   {"2","星期一"},{"3","星期二"},{"4","星期三"},{"5","星期四"},
+                                                   {"6","星期五"},{"7","星期六"},{"1","星期日"},
+                                               };
+                                                        <tr>
+                                                            <td class="align_center"><a class="list-link">@(index++)</a></td>
+                                                            @foreach (var key in orderKeys)
+                                                            {
+                                                                if (key == "rq_wd")
+                                                                {
+                                                                    var v = string.Format("{0}", hashtab[key]);
+                                                                    <td class="align_center"><a class="list-link">@xq[v]</a></td>
+                                                                }
+                                                                else if (key.Contains("je"))
+                                                                {
+                                                                    var v = string.Format("{0}", hashtab[key]);
+                                                                    decimal d = 0;
+                                                                    decimal.TryParse(v, out d);
+                                                                    decimal? nd = d;
+                                                                    <td  class="align_right"><a class="list-link">@nd.Digit((int)digit["je_digit"])</a></td>
+                                                                }
+                                                                else if (key == "mll")
+                                                                {
+                                                                    var v = string.Format("{0}", hashtab[key]);
+                                                                    decimal d = 0;
+                                                                    decimal.TryParse(v, out d);
+                                                                    decimal? nd = d * 100;
+                                                                    <td  class="align_right"><a class="list-link">@(nd.Digit((int)digit["sl_digit"]))%</a></td>
+                                                                }
+                                                                else if (key == "rq_xs")
+                                                                {
+                                                                    var v = string.Format("{0}", hashtab[key]).Replace("0:00:00", "");
+                                                                    <td  class="align_center"><a class="list-link">@v</a></td>
+                                                                }
+                                                                else if (key.Contains("sl"))
+                                                                {
+                                                                    var v = string.Format("{0}", hashtab[key]);
+                                                                    decimal d = 0;
+                                                                    decimal.TryParse(v, out d);
+                                                                    decimal? nd = d;
+                                                                    <td class="align_right"><a class="list-link">@nd.Digit((int)digit["sl_digit"])</a></td>
+                                                                }
+
+                                                                else
+                                                                {
+                                                                    <td><a class="list-link">@hashtab[key]</a></td>
+                                                                }
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--页脚-->
+                            <footer class="panel-footer">
+                                <div class="dropup d-i-b" style="position: relative">
+                                </div>&nbsp;
+                                <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                                <div style="clear:both;">
+                                </div>
+                            </footer>
+                        </div>
+                    </div>
+                        
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //var catenestable = null;
+    app.report = app.report || {};
+    app.report.get_select_xshz = function () {
+        debugger;
+        var id_shop = "";
+        $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?searchType=report&count=1&id_shop=' + id_shop), 'id': 'dialog-shopsp-search', 'confirm': app.report.dialogCallBack_xshz });
+    }
+    app.report.dialogCallBack_xshz = function (array) {
+        var jsonStr = "";
+        $.each(array, function (index, item) {
+            if (item.name == "shopsp_table_json") {
+                jsonStr = item.value;
+            }
+        });
+        var objList = jQuery.parseJSON(jsonStr);
+        debugger;
+        if (objList.length > 0) {
+            $(_ + "#s_id_shopsp_mc").val(objList[0].mc);
+            $(_ + "#s_id_shopsp").val(objList[0].id_shopsp);
+        }
+        $.DHB.dialog({ 'id': 'dialog-shopsp-search', 'action': 'destroy' });
+        app.search.do_search_report_spxshzreport();
+    }
+
+
+
+    //分页回调
+    app.report.spxshzreport_pagination_callback = function (data, textStatus, idx, jq) {
+        app.report.spxshzreport_search_callback(data, textStatus);
+    };
+
+    //查询回调
+    app.report.spxshzreport_search_callback = function (data, textStatus) {
+        var sort_array = $('.table a[data-sort]', _);
+        var $current_sort = ($('#hid_sort', _).val().toLowerCase()).split(' ', 2);       //这是当前排序
+
+        //绑定UI
+        sort_array.each(function (index, obj) {
+            var $current = $(obj);
+            if ($current.attr('data-sort') === $current_sort[0]) {
+                $current.attr('data-dir', $current_sort[1]);
+                if ($current_sort[1] === 'asc')
+                    $current.append(app.sort_icon.asc);      //升序
+                else
+                    $current.append(app.sort_icon.desc);     //降序
+            }
+            else {
+                $current.append(app.sort_icon.sort);
+            }
+        });
+
+        //绑定事件
+        sort_array.off('click').on('click', function (e) {
+            var e = e || event;
+            var $current = $(e.target);        //获取当前点击派序列
+            var _dir = 'desc';
+            if ($.trim($current.attr('data-dir')).length == 0 || $.trim($current.attr('data-dir')) === 'asc') {
+                $current.attr('data-dir', _dir);
+            }
+            else {
+                _dir = 'asc';
+                $current.attr('data-dir', _dir);
+            }
+            $('#hid_sort', _).val($current.attr('data-sort') + ' ' + _dir);
+            app.search.do_search_report_spxshzreport();
+        });
+    };
+
+
+
+    //内页加载完成
+    app.report.spxshzreport_ready = function () {
+        //Init Sort
+        app.report.spxshzreport_search_callback(null, null);
+        $('.close_tree', _).click(function () {
+            $(this).parent().toggleClass('close_t');
+        });
+        $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+            app.report.bind_spfl_tree();
+        });
+        //绑定左侧商品分类树#modify_goods_info
+        app.report.bind_spfl_tree = function () {
+            var tree_selector = '#tree_left';
+
+            $(_ + tree_selector)
+                .jstree("destroy")
+                .jstree({
+                    'core': {
+                        'data': {
+                            'url': function (obj) {
+                                var type = $.trim($('#hid_type').val());
+                                return '/shopsp/get_left_tree?rd=' + new Date().getTime() + '&type=' + type;
+                            }
+                        },
+                    }
+                })
+                .on('ready.jstree', function (e, obj) {
+                    obj.instance.select_node({ "id": "0" }, true, false);
+                    obj.instance.open_node({ "id": "0" });
+                })
+                .on("changed.jstree", function (e, data) {
+                    debugger;
+                    if (data.selected && data.selected.length) {
+                        var i, j, r = [];
+                        for (i = 0, j = data.selected.length; i < j; i++) {
+                            r.push(data.instance.get_node(data.selected[i]).id);
+                        }
+                        //TODO：赋值到hidden，触发查询事件等
+                        $(_ + "#s_id_spfl").val(r.join(''));
+                       // debugger;
+                        app.search.do_search_report_spxshzreport();
+
+                    }
+                });
+
+
+        }
+       
+    };
+</script>  

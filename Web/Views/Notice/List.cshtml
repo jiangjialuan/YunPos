@@ -1,0 +1,459 @@
+﻿@using CySoft.Model.Ts;
+
+@{
+    Layout = null;
+    var pageList = ViewData["List"] as PageList<Ts_Notice_View>;
+    var func = ViewData["GetTypeName"] as Func<string, string>;
+    var IsPermissionShow = ViewData["_IsPermissionShow_"] as Func<string, List<string>, bool>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="notice/list"]').attr({ controller: 'notice', action: 'list' });
+        app.c.public_data['notice/list'] = app.c.public_data['notice/list'] || {};
+        app.c.public_data['notice/list']['once'] = false;
+        app.notice = app.notice || {};
+    });
+</script>
+
+
+<input type="hidden" pagesize value="@ViewData["pagesize"]" />
+<input type="hidden" page value="@ViewData["page"]" />
+
+
+
+<div class="contentbox-header">
+    <a active="active" class="sub-tab" onclick="$.DHB.refresh();">
+        系统公告
+        <div style="width: 14px;display: inline-block;">
+            <label class="copy d-i-b l-h-30 m-l-none 1" id="copy" style="position: relative">
+                <span class="icon-question tool" style="position: relative;left:0px;"></span>
+                <div class="popover fade bottom in tool-box" style="left: 85px;width: auto;">
+                    <div class="arrow"></div>
+                    <div class="popover-content">
+                        <p>1、查询你所有的系统公告信息</p>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </a>
+    <span style="left: 15px;"></span>
+</div>
+
+<script type="text/javascript">
+    app.c.public_data['notice/list'] = app.c.public_data['notice/list'] || {};
+    app.c.public_data['notice/list']['threemenu'] = false;
+    $.DHB._threeMenu = function () {
+        if (app.c.public_data['notice/list']['threemenu'] === false) {
+            app.c.public_data['notice/list']['threemenu'] = true;
+
+            $(document).ready(function () {
+                if ($(_ + 'div.contentbox-header a[active="active"]').length > 0) {
+                    var currEle = $(_ + 'div.contentbox-header a[active="active"]');
+                    var p = currEle.position();
+                    var currLeft = p.left + currEle.width() / 2 - 16;
+                    $(_ + 'div.contentbox-header > span').animate({
+                        'left': currLeft
+                    }, 450);
+                    $(_ + 'div.contentbox-header a[active="active"]').css("color", "#58666e")
+                }
+            });
+        }
+    }
+</script>
+
+
+
+
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+                    <!--页头-->
+                    <div class="row wrapper1 ">
+                        <div class="col-xs-10 pull-right">
+                            <div class="row">
+                                <form class="filter-form" action="/notice/list">
+                                    <div class="col-xs-10 pull-right">
+                                        <div class="search-box-container">
+                                            <div class="clearfix">
+                                                <!-- 内容搜索 -->
+                                                <div class="pull-right m-r-sm" style="margin-top:7px">
+                                                    <div class="1" style="position:relative;" onmouseenter="$(this).parent().find('span:last()').show();" onmouseleave="$(this).parent().find('span:last()').hide();">
+                                                        <input type="text" value="" onkeypress="app.search.trigger_search_notice_client(event);" class="form-control input-sm search-h inline v-middle search-result search" name="s_title" id="s_title" style="width:250px;border-right:none;border-radius: 2px 0 0 2px;" placeholder="请输入公告标题" ondblclick=" app.search.search_item_clear_notice_client(this);" onblur=" app.search.do_search_notice_client(this);" /><span><button type="button" onclick=" app.search.do_search_notice_client(this);" id="btn-search" class="btn btn-sm btn-default search-btn"><i class="fa fa-search"></i></button></span><span onclick="app.search.search_item_clear_notice_client(this);" style="display:none;position:absolute;right:27px;top:4px;padding:2px 2px 2px 4px;cursor:pointer;color:#d5d3d5;width:19px;height:25px;background:#fff;"><i class="fa fa-times-circle"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <script type="text/javascript">
+                                            app.c.public_data['notice/list'] = app.c.public_data['notice/list'] || {};
+                                            app.c.public_data['notice/list']['search_all'] = false;
+                                            var currentSearch = 'app.c.public_data[\'notice/list\'][\'search\']';
+                                            eval(currentSearch + ' = false;');
+                                            $.DHB._search = function () {
+                                                eval('if(' + currentSearch + '===false){app.search.search_client_client();' + currentSearch + '=true;}');
+                                            }
+
+                                            app.search = app.search || {};
+
+                                            //TODO：分页参数
+                                            app.search.search_client_client = function () {
+                                                app.c.public_data["notice/list"] = app.c.public_data['notice/list'] || {};
+                                                app.c.public_data['notice/list']['_row_total_'] = '@pageList.ItemCount';
+                                                app.c.public_data['notice/list']['_page_size_'] = '@pageList.PageSize';
+                                                app.c.public_data['notice/list']['_current_page_'] = '@(pageList.PageIndex)';
+                                                app.search.do_search_pagination_client_client();
+                                            }
+
+                                            app.search.trigger_search_notice_client = function (event) {
+                                                //绑定回车键
+                                                event = event || window.event
+                                                if (event.keyCode == 13) {
+                                                    app.search.do_search_notice_client();
+                                                    event.preventDefault();
+                                                }
+                                            }
+
+                                            app.search.do_search_notice_client = function (el, isExport) {
+
+                                                isExport = isExport || 0;
+
+                                                var url = 'Manager/notice/list?_search_=1&' + $(_ + ".filter-form").serialize();
+
+                                                if (isExport == 1) {
+                                                    url += '&export=1';
+                                                    window.location.href = $.DHB.U(url);
+                                                }
+                                                else {
+                                                    $.DHB.showButterbar();
+
+                                                    $.get($.DHB.U(url), function (data, textStatus) {
+                                                        $.DHB.closeButterbar();
+                                                        @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                                                        if ($('#notice-list-list-fresh-box', _).length > 0) {
+                                                            $('#notice-list-list-fresh-box', _).html(data);
+                                                        }
+                                                        app.search.do_search_pagination_client_client();
+                                                    }, 'html');
+                                                }
+                                                return false;
+                                            }
+
+                                            //分页
+                                            app.search.do_search_pagination_client_client = function () {
+                                                $.DHB.func.pagination({ module_name: 'Manager', controller_name: 'notice', action_name: 'list', ready_once: false });
+                                            }
+
+                                            app.search.do_search_option_client_client = function (el) {
+                                                if ($(el).attr('class') != '') {
+                                                    $(el).find('span').each(function () {
+                                                        if ($(this).attr('class') == '') {
+                                                            $(this).attr('class', 'order-active');
+                                                        } else {
+                                                            $(this).attr('class', '');
+                                                        }
+                                                    });
+
+                                                    if ($(el).find('span:eq(0)').attr('class') == '') {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('desc');
+                                                    } else {
+                                                        $(el).parents('.btn-group').find('input:eq(1)').val('asc');
+                                                    }
+                                                }
+
+                                                if ($(el).attr('class') == '') {
+                                                    $(el).parent().find('.active').removeClass('active');
+                                                    $(el).addClass('active');
+                                                    $(el).parents('.btn-group').find('input:eq(0)').val($(el).attr('value'));
+                                                }
+
+                                                $(el).parents('.btn-group').removeClass('open');
+                                                var selectA = $(el).find('a').clone();
+                                                selectA.find('span[class=""]').remove();
+                                                $(el).parents('.btn-group').find('button span:eq(0)').html(selectA.html());
+
+                                                app.search.do_search_notice_client();
+                                            }
+
+                                            app.search.search_enter = function (el) {
+                                                if (app.c.public_data['notice/list']['search_all'] === false) {
+                                                    $(el).parents('.search-box-container').find(".bootstrap-select ul.dropdown-menu").each(function () {
+                                                        var ts = $(this).find('li:first() span:first()');
+                                                        ts.text('全部');
+                                                    });
+                                                    app.c.public_data['notice/list']['search_all'] = true;
+                                                }
+                                            }
+
+                                            app.search.search_leave = function (el) {
+                                            }
+
+                                            app.search.search_client_clear_client_client = function (el) {
+                                                $(el).parents('.input-group').find('input').val('');
+                                                app.search.do_search_notice_client();
+                                            }
+
+                                            app.search.search_item_clear_notice_client = function (el) {
+                                                var par = $(el).parents('form');
+                                                par.get(0).reset();
+                                                par.find("select.select2_").selectpicker({ liveSearch: true }).selectpicker('refresh');
+                                                par.find("select.select2").selectpicker('refresh');
+                                                app.search.do_search_notice_client();
+                                            }
+                                        </script>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-xs-2 pull-left">
+                            <div class="btn-group m-t-12 f-l">
+                                @if (IsPermissionShow("add", actionlist))
+                                {
+                                    <button type="button" class="btn btn-info" onclick="app.notice.add(this)"><span class="fa fa-plus btn_icon"></span>新增公告</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--数据表格-->
+                    @* //TODO: 此ID名称一定要按格式要求Controller-Action-list-fresh-box *@
+                    <div id="notice-list-list-fresh-box" class="table_list table_max_h">
+                        <table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+                            <thead>
+                                <tr>
+                                    <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+                                    <th>标题</th>
+                                    <th>时间</th>
+                                    <th>类型</th>
+                                    <th width="110" class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="qclist-main-tbody">
+                                @{
+                                    if (pageList == null || pageList.Count == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="5" align="center">
+                                                <img src="~/static/images/nodata.png" class="table_nodata">
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        var list = pageList.Items;
+                                        if (list != null && list.Any())
+                                        {
+                                            int index = pageList.PageIndex * pageList.PageSize + 1;
+                                            foreach (var item in list)
+                                            {
+                                                <tr id="row-dw-id-@item.id" class="tr-status-finished">
+                                                    <td class="text-center">
+                                                        @(index++)
+                                                    </td>
+                                                    <td>
+                                                        <a onclick="app.notice.detail('@item.id', this)">@item.title</a>
+                                                    </td>
+                                                    <td>@( string.Format(((DateTime)item.rq_create).ToString("yyyy-MM-dd HH:mm")))</td>
+                                                    <td>
+                                                        @func(item.flag_type.ToString()).ToLower()
+                                                    </td>
+
+                                                    <td class="list-operate">
+                                                        <div class="look-out1 supernatant">
+                                                            <div class="second-height-operate">
+                                                                <a class="bg-state bg-state-info fa fa-eye" href="javascript:;" onclick="app.notice.detail('@item.id',this)" title="查看"></a>
+                                                                @if (IsPermissionShow("edit", actionlist))
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-pencil" href="javascript:;" onclick="app.notice.edit('@item.id',this)" title="编辑"></a>
+                                                                }
+                                                                @if (IsPermissionShow("delete", actionlist))
+                                                                {
+                                                                    <a class="bg-state bg-state-info fa fa-trash" href="javascript:;" onclick="app.notice.del('@item.id',this)" title="删除"></a>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--页脚-->
+                    <footer class="panel-footer">
+                        <ul id="Pagination" class="pagination pagination-sm m-t-none m-b-none"></ul>
+                        <div style="clear:both;">
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    app.notice = app.notice || {};
+
+    //内页加载完成
+    app.notice.list_ready = function () {
+
+
+
+    };
+
+    //新增公告
+    app.notice.add = function (obj) {
+        $.fn.menuTab.load({ url: '/notice/add', 'title': '新增公告', id: 'notice/list', nocache: '1' });
+    };
+
+    //编辑公告
+    app.notice.edit = function (id, obj) {
+        $.fn.menuTab.load({ url: '/notice/edit?id=' + id, 'title': '编辑公告', id: 'notice/list', nocache: '1' });
+    };
+
+    //公告详情
+    app.notice.detail = function (id, obj) {
+        $.fn.menuTab.load({ url: '/notice/detail?id=' + id, 'title': '公告详情', id: 'notice/detail', nocache: '1' });
+    };
+
+    //删除公告
+    app.notice.del = function (id, obj) {
+        $.messager.confirm("提示", "确定删除吗?", function () {
+            $.post($.DHB.U('notice/delete'),
+            {
+                id: id
+            },
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.fn.menuTab.load({ url: '/notice/list', 'title': '系统公告', id: 'notice/list', nocache: '1' });
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                    }
+                }, 'json');
+        });
+    };
+
+
+    app.notice.search_item_clear_notice_list = function (el) {
+        var par = $(el).parents('form');
+        par.get(0).reset();
+        par.find("select.select2_")
+            .selectpicker({ liveSearch: true })
+            .selectpicker('refresh');
+        par.find("select.select2").selectpicker('refresh');
+        app.search.do_search_dw_list();
+    }
+
+    app.notice.trigger_search_notice_list = function (event) {
+        //绑定回车键
+        event = event || window.event
+        if (event.keyCode == 13) {
+            app.notice.do_search_notice_list();
+            event.preventDefault();
+        }
+    }
+
+    //查询
+    app.notice.do_search_notice_list = function (el, isExport) {
+        isExport = isExport || 0;
+        var v = $(_ + ".filter-form").serialize();
+        var url = '/notice/list?_search_=1&' + v;
+        if (isExport == 1) {
+            url += '&export=1';
+            url = $.DHB.U(url);
+            window.location.href = url;
+        }
+        else {
+            var options = {
+                url: $.DHB.U(url),
+                datatype: 'html',
+                beforeSend: function () {
+                    $.DHB.showButterbar();
+                },
+                callback: function (data, textStatus, jqXHR) {
+                    if ($('#notice-list-list-fresh-box', _).length > 0) {
+                        $('#notice-list-list-fresh-box', _).html(data);
+                    }
+                    app.notice.do_search_pagination_notice_list();
+                },
+                complete: function (XHR, TS) {
+                    $.DHB.closeButterbar();
+                }
+            };
+            cy.http.Get(options);
+        }
+        return false;
+    };
+
+    //分页
+    app.notice.do_search_pagination_notice_list = function () {
+        $.DHB.func.pagination({
+            module_name: 'Manager',
+            controller_name: 'gys',
+            action_name: 'list',
+            ready_once: false
+        });
+    }
+
+
+    //var editor;
+    //var item = ['formatblock', 'fontname', 'fontsize', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'image', 'link', 'unlink', 'plainpaste', 'wordpaste', 'insertorderedlist', 'insertunorderedlist', 'table', 'fullscreen', 'cyshowmore', '/', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'subscript', 'superscript', 'clearhtml', 'removeformat', , 'preview', 'source'];
+    //editor = KindEditor.create('#content', {
+    //    width: '800px',
+    //    height: '480px',
+    //    items: item,
+    //    resizeType: 1,
+    //    allowPreviewEmoticons: false,
+    //    allowImageUpload: true,//允许上传图片
+    //    allowFileManager: true, //允许对上传图片进行管理
+    //    uploadJson: '/Utility/UploadImages', //上传图片的代码
+    //    fileManagerJson: '/Utility/UploadQualification',
+    //    afterUpload: function () { this.sync(); }, //图片上传后，将上传内容同步到textarea中
+    //    afterBlur: function () { this.sync(); },   ////失去焦点时，将上传内容同步到textarea中
+    //    allowFileManager: true
+    //});
+
+    //KindEditor('input[name=getHtml]').click(function (e) {
+    //    alert(editor.html());
+    //});
+    //KindEditor('input[name=isEmpty]').click(function (e) {
+    //    alert(editor.isEmpty());
+    //});
+    //KindEditor('input[name=getText]').click(function (e) {
+    //    alert(editor.text());
+    //});
+    //KindEditor('input[name=selectedHtml]').click(function (e) {
+    //    alert(editor.selectedHtml());
+    //});
+    //KindEditor('input[name=setHtml]').click(function (e) {
+    //    editor.html('<h3>Hello KindEditor</h3>');
+    //});
+    //KindEditor('input[name=setText]').click(function (e) {
+    //    editor.text('<h3>Hello KindEditor</h3>');
+    //});
+    //KindEditor('input[name=insertHtml]').click(function (e) {
+    //    editor.insertHtml('<strong>插入HTML</strong>');
+    //});
+    //KindEditor('input[name=appendHtml]').click(function (e) {
+    //    editor.appendHtml('<strong>添加HTML</strong>');
+    //});
+    //KindEditor('input[name=clear]').click(function (e) {
+    //    editor.html('');
+    //});
+
+
+</script>

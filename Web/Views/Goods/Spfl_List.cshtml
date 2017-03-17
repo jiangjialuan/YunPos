@@ -1,0 +1,415 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Utility
+@{
+    Layout = null;
+    List<Tb_Spfl_Tree> list_spfl = ViewData["list_spfl"] as List<Tb_Spfl_Tree>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var isImport = actionlist.Any(l => l.ToLower() == "importin");
+    var actionstr = JSON.Serialize(actionlist);
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="spfl/list"]').attr({ controller: 'spfl', action: 'list' });
+        app.c.public_data['spfl/list'] = app.c.public_data['spfl/list'] || {};
+        app.c.public_data['spfl/list']['once'] = false;
+        app.spfl = app.spfl || {};
+    });
+    app.c.public_data['spfl/list']['threemenu'] = false;
+
+</script>
+
+<script src="~/static/js/linq.js"></script>
+
+<div class="col">
+    <input hidden="" id="actionlist" value="@actionstr"/>
+    <div class="panel panel-default m-b-none">
+        <div class="main-content">
+            <!-- 商品分类 -->
+            <div class="m-b-md">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="nestable-menu" style="padding: 0; margin: 12px 0 0 15px;">
+                            @if (isAdd)
+                            {
+                                <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="app.spfl.list.addspfl()">新增分类</button>
+                            }
+                            @if (isImport)
+                            {
+                                <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="$.DHB.dialog({'title': '导入分类', 'url': $.DHB.U('/spfl/ImportIn'), 'id': 'dialog-spfl-importIn'}); ">导入分类</button>
+                            }
+                        </div>
+                        <div class="shopsp_cont" style="margin-top: 20px;">
+                            <!--左侧树-->
+                            <div class="p-l-r-none tree_left col-xs-2" id="spfl">
+                                <div class="l-tree_head">
+                                    <ul>
+                                        <li>商品分类</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div id="tree_left" class="p-b-30" style="height: 600px; overflow: auto;"></div>
+                                </div>
+                            </div>
+                            <!--右侧-->
+                            <div class="right_table col-xs-10">
+                                <div id="spfl_list" class="p-l-r-none table_list table_max_h">
+                                    <input type="hidden" xh="" value="" id="clicktree"/>
+                                    <table class="table m-b-none row1 selectAll-table sptable" >
+                                        <thead>
+                                        <tr>
+                                            <th width="10%">序号</th>
+                                            <th width="15%">编码</th>
+                                            <th>名称</th>
+                                            <th width="10%">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+    </div>
+</div>
+
+<script type="text/javascript">
+    
+    app.spfl = app.spfl || {};
+    app.spfl.list = app.spfl.list || {};
+    
+    
+    app.spfl.list_ready = function () {
+        //权限字串转JSON
+        app.spfl.list.action_list = function () {
+            //
+            ////console.log($('#actionlist', _).val());
+            var arr = $('#actionlist', _).val().replace('[', "").replace(']', "").replace(/"/g, "").split(",");
+            ////console.log(arr);
+            var obj = {};
+            for (var i = 0; i < arr.length; i++) {
+                //
+                obj[arr[i]] = arr[i];
+            }
+            //
+            
+            return obj;
+            
+
+        }
+
+        $('.right_table', _).height($('.tree_left',_).height());
+        $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+            app.spfl.list_tree();
+        });
+        
+
+
+        //绑定左侧商品分类树#modify_goods_info
+        app.spfl.list_tree = function () {
+            var tree_selector = '#tree_left';
+            var action_obj = app.spfl.list.action_list();
+            var type = $.trim($('#hid_type',_).val());
+            var url = $.DHB.U('ShopSp/Get_Left_Tree');
+                $.get(
+                     url,
+                       { rd: new Date().getTime() },
+                       function (data) {
+                           ////console.log(data);
+                           var objList = Enumerable.From(data).OrderBy("x=>x.bm").ToArray();
+                           if ("movenode" in action_obj) {
+                               $(_ + tree_selector)
+                               .jstree("destroy")
+                               .jstree({
+                                   'plugins': ['dnd'],
+                                   'core': { 
+                                       'data': objList,
+                                       "themes": {
+                                           "theme": "proton",
+                                           "dots": true,
+                                           "icons": true,
+                                       }, 
+                                   }, 
+                               })
+                               .on('ready.jstree', function (e, obj) {
+                                   
+                                   if ($('#spfl_list tr td',_).length == 0) {
+                                       app.spfl.list.children(0);
+                                   }
+                               obj.instance.select_node({ "id": "0" }, true, false);
+                               obj.instance.open_node({ "id": "0" });
+                           })
+                               .on("changed.jstree", function (e, data) {
+                                   
+                                   if (data.selected && data.selected.length) {
+                                       var i, j, r = [];
+                                       for (i = 0, j = data.selected.length; i < j; i++) {
+                                           r.push(data.instance.get_node(data.selected[i]).id);
+                                       }
+                                       //TODO：赋值到hidden，触发查询事件等
+                                       var child_id = r.join('_')
+                                       ////console.log(r.join('_'));
+
+                                       app.spfl.list.children(child_id);
+                                       //app.search.do_search_shopsp_list();
+
+                                   }
+                               }).on('move_node.jstree', function (e, data) {
+
+                                   ////console.log(data);
+                                   var smDate = {};
+                                   smDate.id = data.node.id;
+                                   smDate.id_father = data.parent;
+                                   $.post($.DHB.U('Spfl/MoveNode'), smDate, function (ret) {
+
+                                       if (ret.Success == true) {
+                                           $.DHB.message({ "content": "移动成功！" });
+                                       } else {
+                                           $.DHB.message({ "content": ret.Message });
+                                           data.instance.refresh();
+
+                                       }
+                                   }, 'json');
+
+                               });
+                           } else {
+                               $(_ + tree_selector)
+                               .jstree("destroy")
+                               .jstree({
+                                   'core': { 
+                                       'data': objList,
+                                       "themes": {
+                                           "theme": "proton",
+                                           "dots": true,
+                                           "icons": true,
+                                       },
+
+                                   },
+
+                               })
+                           .on('ready.jstree', function (e, obj) {
+                               ////console.log(obj);
+                               ////console.log(e);
+                               obj.instance.select_node({ "id": "0" }, true, false);
+                               obj.instance.open_node({ "id": "0" });
+                           })
+                               .on("changed.jstree", function (e, data) {
+                                   if (data.selected && data.selected.length) {
+                                       var i, j, r = [];
+                                       for (i = 0, j = data.selected.length; i < j; i++) {
+                                           r.push(data.instance.get_node(data.selected[i]).id);
+                                       }
+                                       //TODO：赋值到hidden，触发查询事件等
+                                       var child_id = r.join('_')
+                                       ////console.log(r.join('_'));
+
+                                       app.spfl.list.children(child_id);
+                                       //app.search.do_search_shopsp_list();
+
+                                   }
+                               }).on('loaded.jstree', function () {
+                                   if ($('#spfl_list tr td',_).length == 0) {
+                                       app.spfl.list.children(0);
+                                   }
+                                   //
+                                   //$(this).jstree('open_all');
+                               })
+                           }
+                       }, 'json'
+                   );
+                ////console.log(objList);
+            
+            
+        }
+        //fdsfjadfjsa
+        //商品的子类
+        app.spfl.list.children = function (child_id) {
+            app.request($.DHB.U('spfl/GetChildInfo'), { id: child_id }, function (data) {
+                //
+                if (data.Success == true) {
+                    if ($('#spfl_list>table>tbody>tr',_).length > 0) {
+                        $('#spfl_list>table>tbody',_).html('');
+                    }
+                    $('#clicktree',_).val(child_id).attr('xh', data.Data.length);
+                    if (data.Data.length != 0) {
+                        var objList = Enumerable.From(data.Data).OrderBy("x=>x.bm").ToArray();
+                        for (var i = 0; i < objList.length; i++) {
+                            app.spfl.list.htmladd(objList[i]);
+                        }
+                        app.spfl.list.xhset();
+
+                    }
+                } 
+            }, function () {
+
+            });
+        }
+        //表格行添加
+        app.spfl.list.htmladd = function (data) {
+            var obj = app.spfl.list.action_list();
+            ////console.log(obj);
+            var trhtml = '<tr id="' + data.id + ' " id_father="' + data.id_father + '">';
+            trhtml += '<td class="align_center" name="xh"></td>';
+            if (("list" in obj) && !("edit" in  obj)) {
+                trhtml += '<td><input value="' + data.bm + '" type="text" name="bm"  class="form-control user-input" readonly="readonly" onkeyup="app.spfl.list.bmKeyUp(this)"/></td>';
+                trhtml += '<td><input value="' + data.mc + '" type="text" name="mc" class="width200 form-control user-input" readonly="readonly" onkeyup="app.spfl.list.mcKeyUp(this)"/></td>';
+            }
+            if (("edit" in obj)) {
+                trhtml += '<td><input value="' + data.bm + '" type="text" name="bm"  class="form-control user-input"  onkeyup="app.spfl.list.bmKeyUp(this)"/></td>';
+                trhtml += '<td><input value="' + data.mc + '" type="text" name="mc" class="width200 form-control user-input" onkeyup="app.spfl.list.mcKeyUp(this)"/></td>';
+            }
+            trhtml += '<td><div class="look-out1 supernatant position_static" style="width:140px;"><div class="second-height-operate position_static">';
+            if (("add" in obj)||("edit" in obj)) {
+                trhtml +='<a class="bg-state bg-state-info fa fa-floppy-o" title="保存" onclick="app.spfl.list.addpost(this)"></a>';
+            }       
+            if(("delete" in obj)){
+                trhtml += '<a class="bg-state bg-state-info fa fa-trash" title="删除" onclick="app.spfl.list.delspfl(this)"></a>';
+            }            
+            trhtml +='</div></div></td>';
+            trhtml += "</tr>";
+            $('#spfl_list>table>tbody',_).append(trhtml);
+            
+        }
+        //编码输入框按enter键触发事件
+        app.spfl.list.bmKeyUp = function (obj,e) {
+            var $e = e ? e : window.event;
+            if ($e.keyCode == 13) {
+                $(obj).parents('tr').find('input[name=mc]').focus();
+            }
+        }
+        //名称输入框按enter键触发事件
+        app.spfl.list.mcKeyUp = function (obj,e) {
+            var $e = e ? e : window.event;
+            if ($e.keyCode == 13) {
+                debugger;
+                if ($(obj).parents('tr').next().length<=0) {
+                    app.spfl.list.addspfl();
+                }
+                $(obj).parents('tr').next().find('input[name=bm]').focus();
+            }
+        }
+
+        //删除商品分类
+        app.spfl.list.delspfl = function (e) {
+            var id = $(e).parents('tr').attr('id');
+            
+            if (id == " "||id ==undefined) {
+                $(e).parents('tr').remove();
+                app.spfl.list.xhset();
+            }else{
+                $.messager.confirm("提示", "确定删除吗?", function () { 
+                    var options = {
+                        data: {
+                            id: id
+                        },
+                        url: $.DHB.U('/spfl/delete'),
+                        type: "POST",
+                        datatype: 'json',
+                        beforeSend: function () { },
+                        success: function (data, textStatus, jqXHR) {
+                            if (data.status == "success") {
+                                $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                $(e).parents('tr').remove();
+                                app.spfl.list.xhset();
+                                app.spfl.list_tree();
+                            }
+                            else {
+                                $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                            }
+                        },
+                        complete: function (XHR, TS) { }
+                    };
+                    app.httpAjax.post(options)
+
+                });
+            }
+            
+        }
+
+        //新增分类
+        app.spfl.list.addspfl = function () {
+            ////console.log($('#clicktree').val());
+            if ($('#clicktree',_).val() == "" || $('#clicktree',_).val()==undefined) {
+                $.DHB.message({ 'content': "请先选择商品分类" });
+            }else{
+                var htmldata = {};
+                htmldata.id = "";
+                htmldata.id_father = $('#clicktree',_).val();
+                htmldata.bm = "";
+                htmldata.mc = "";
+                app.spfl.list.htmladd(htmldata);
+                app.spfl.list.xhset();
+            }
+            
+
+        }
+
+        //重置序号
+        app.spfl.list.xhset = function () {
+            var xh = 1;
+            $('#spfl_list>table>tbody>tr',_).each(function (i,e) {
+                $(this).find('td[name=xh]').html(xh);
+                xh++;
+            });
+        }
+
+        //点击保存
+        app.spfl.list.addpost = function (e) {
+            var id = $(e).parents('tr').attr('id');
+            //if ($(e).parents('tr').find('input[name=bm]').val() == "" || $(e).parents('tr').find('input[name=mc]').val() == "") {
+            if ($(e).parents('tr').find('input[name=mc]').val() == "") {
+                $.DHB.message({ 'content': '名称不能为空',  'type': 'i' });
+            } else {
+                var url;
+                var smDate = {};
+                smDate.bm = $(e).parents('tr').find('input[name=bm]').val();
+                smDate.mc = $(e).parents('tr').find('input[name=mc]').val();
+                //
+                if (id == " " || id == undefined) {
+                    url = $.DHB.U('spfl/Add');
+                    smDate.parent_id = $(e).parents('tr').attr('id_father');
+                } else {
+                    url = $.DHB.U('spfl/Edit');
+                    smDate.category_id = $(e).parents('tr').attr('id');
+                };
+
+                var options = {
+                    data: smDate,
+                    url: url,
+                    type: "POST",
+                    datatype: 'json',
+                    beforeSend: function () { },
+                    success: function (data, textStatus, jqXHR) {
+                        debugger;
+                        if (data.status == "success") {
+                            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                            $(e).parents('tr').attr('id', data.spfl.id);
+                            app.spfl.list_tree();
+
+                        }
+                        else {
+                            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        }
+                    },
+                    complete: function (XHR, TS) { }
+                };
+                app.httpAjax.post(options)
+            }
+       }
+
+    }
+
+
+</script>

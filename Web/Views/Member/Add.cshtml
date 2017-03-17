@@ -1,0 +1,113 @@
+﻿@{
+    Layout = null;
+}
+<script type="text/javascript">
+    //此处按格式填写 {Controller}/{Action}
+    $(function () {
+        $('div[contentID="member/add"]').attr({ controller: 'member', action: 'add' });
+        app.c.public_data['member/add'] = app.c.public_data['member/add'] || {};
+        app.c.public_data['member/add']['once'] = false;
+        //声明模块对象
+        app.member = app.member || {};
+    });
+</script>
+<input type="hidden" pagesize value="" />
+<input type="hidden" page value="" />
+<!-- 导航 -->
+<div class="contentbox-header">
+    <!-- 导航父地址填写对应Controller、Action、title、id -->
+    <a onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=member&action=list','title':'仓库管理',id:'member/list',nocache:'0'}); ">仓库管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">新增仓库</a>
+</div>
+
+<div class="col">
+    <div class="panel panel-default">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- ajax表单提交地址 -->
+                    <form action="/index.php?module=Manager&controller=member&action=updateStock" id="fm-add-stock" class="validate  m-t-6">
+                        <input name="stock_id" type="hidden" value="" />
+                        <div class="m-l-lg m-t-md m-b-md fixed-input-group">
+                            <div class="input-item-2 clearfix">
+                                <div class="w-full">
+                                    <label class="v-middle"><em class="need">*</em>仓库名称</label>
+                                    <label class="v-middle m-l-xs1  h-auto">
+                                        <input name="stock_name" class="form-control w-400 {required:true,messages:{required:'请输入仓库名称'}}" type="text" value="" placeholder="请填写中文或中文加数字，如：广州仓库、广州1号仓库" />
+                                    </label>
+                                    <label>
+                                        <label class="v-middle m-l-20 ">
+                                            <label class="i-checks m-b-none m-t-none">
+                                                <input type="checkbox" name="is_default" value="T"><i></i>
+                                            </label>设为商品默认仓库
+                                        </label>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-item-2 clearfix">
+                                <div class="w-full">
+                                    <label class="v-middle"><span class="inline m-l-xs w-65 text-right">仓库面积</span></label>
+                                    <label class="v-middle m-l-xs1  h-auto"><input name="acreages" class="form-control w-sm" type="text" value="" placeholder="填写数字" /></label> m²
+                                </div>
+                            </div>
+                            <div class="input-item-2 clearfix">
+                                <div class="w-full">
+                                    <label class="v-middle"><span class="inline m-l-xs w-65 text-right">负责人</span></label>
+                                    <label class="v-middle w-150i m-l-xs1  h-auto">
+                                        <select class="form-control  w-150i select2" name="accounts_id" onchange="document.getElementById('phone').value = this.options[this.selectedIndex].attributes.getNamedItem('dataphone').nodeValue">
+                                            <option>请选择</option>
+                                            <option dataphone="13366668888" value="1000831">张三</option>
+                                            <option dataphone="13438962793" value="1000902">李四</option>
+                                            <option dataphone="12345678911" value="1019067">王五</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <footer class="panel-footer lter need-footer-fixed">
+                            <button type="submit" class="btn w-xs btn-info m-l-none" data-loading-text="提交中..." id="submit-button" name="submit-button">
+                                确定
+                            </button>
+                            <button type="button" class="btn w-xs btn-default" onclick="$.fn.menuTab.load({url:'/?module=Manager&controller=member&action=list','title':'仓库管理',id:'member/list',nocache:'0'}); ">
+                                取消
+                            </button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    app.c.public_data['member/add'] = app.c.public_data['member/add'] || {};
+    if (app.c.public_data['member/add']['once'] === false) {
+        app.c.public_data['member/add']['once'] = true;
+
+        $.DHB.checkForm('fm-add-stock', function () {
+            var base_area = $(_ + '#base_stock_area_id').val();
+
+            if (base_area == '0' || base_area == '') {
+                $.DHB.message({ content: '请选择仓库所在地区', type: 'e' });
+                return false;
+            }
+            else {
+                //以下为表单提交，也可直接使用我方表单提交方式
+                $fm = $(_ + "form#fm-add-stock");
+                var btn = $fm.find('#submit-button').button('loading');
+                $.post($fm.attr('action'),
+                    $fm.serialize(),
+                    function (json) {
+                        $.DHB.message({ content: json.message, type: (json.status == 'success' ? 's' : 'e') });
+                        if (json.status == 'success') {
+                            $.DHB.url('member/list');
+                        } else {
+                            btn.button('reset');
+                        }
+                    }, 'json');
+                return false;
+            }
+        });
+    }
+</script>

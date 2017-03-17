@@ -1,0 +1,187 @@
+﻿@{
+    Layout = null;
+    var id_shop = ViewData["id_shop"] == null ? "" : ViewData["id_shop"].ToString();
+}
+
+
+@*<div class="contentbox-header">
+        <a onclick="$.fn.menuTab.load({ url: '/jh/list', 'title': '进货管理', id: 'jh/list', nocache: '0' }); ">进货管理</a>
+        &gt;
+        <a class="" onclick="$.fn.menuTab.load({ url: '/jh/add', 'title': '进货管理', id: 'jh/list', nocache: '0' }); ">新增进货单</a>
+        &gt;
+        <a class="" onclick="$.DHB.refresh();">导入进货商品</a>
+    </div>*@
+
+
+
+
+<div class="modal fade in" role="dialog">
+    <div class="modal-dialog" style="width:950px;">
+        <div class="modal-header poptitle">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <p class="name">导入</p>
+        </div>
+        <div class="popcontent" style="background:#fff;">
+            <input type="hidden" id="shopsp_table_json" name="shopsp_table_json" value="" />
+            <div class="col m-b-none">
+                <div class="panel panel-default import p-b-none m-b-none o-f">
+                    @*<div class="bar-state clearfix">
+                        <div class="import-file curr-step">
+                            <p class="step"><i>1</i><span>下载Excel模板</span></p>
+                            <div class="bg-img"></div>
+                        </div>
+                        <div class="import-sure">
+                            <p class="step"><i>2</i><span>填写并导入</span></p>
+                        </div>
+                    </div>*@
+                    <div class="import-content">
+                        <div id="step-first" class="step-first" style="display: block">
+                            <h2>1、下载商品资料模板</h2>
+                            <div>
+                                <p class="m-t-sm m-b-sm">模板表格使用说明：</p>
+                                <div class="desc">
+                                    <p>1、文件后缀名必须为：xls 或xlsx （即Excel格式），文件大小不得大于6M</p>
+                                    <p>2、条形码不允许为空，一旦为空，则本行数据不允许导入</p>
+                                    <p>3、商品名称允许为空，若为空，则取本条码对应的名称</p>
+                                    <p>4、数量不允许为空，一旦为空，则本行数据不允许导入</p>
+                                    <p>2、单价允许为空，若为空，则取本条码对应的单价</p>
+                                </div>
+                            </div>
+                            <div class="m-b-sm">
+                                <button class="btn m-t w-xs btn-info box-shawn" type="button" onclick="app.goods_jh.export_import_goods();">下载</button>
+                            </div>
+                            <div class="row1"></div>
+                            <h2>2、导入填写好的商品资料</h2>
+                            <div class="upload m-b">
+                                <div>
+                                    <button onclick="app.goods_jh.import_goods();" id="upload-file" class="btn w-xs btn-info box-shawn" type="button">导入</button>
+
+                                    <span class="desc">（请选择excel文件）</span>
+                                </div>
+
+
+                                <div class="modal-body tab-content " id="div_fail" style="display:none;">
+                                    <table class="debit-note-info">
+                                        <tbody>
+                                            <tr>
+                                                <td width="90" class="text-right">
+                                                    <label class="m-b">
+                                                        <span>导入结果:</span>
+                                                    </label>
+                                                </td>
+                                                <td>
+                                                    <label class="sub-label w-370 m-b m-l-sm1">
+                                                        <span id="ImportResult"></span>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                        <a href="" id="FailPath">点击下载导入结果</a>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!--设置库存预警-->
+            @*<div  id="define-goods_jh-downfailfile" >
+            <div class="modal-dialog" style="width:500px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button data-dismiss="modal" class="close" type="button">×</button>
+                        <h4 class="modal-title">下载导入失败数据</h4>
+                    </div>
+                  <form class="form-horizontal validate f0" method="post" id="">
+                        <div class="modal-body tab-content ">
+                            <table class="debit-note-info">
+                                <tbody>
+                                    <tr>
+                                        <td width="90" class="text-right">
+                                            <label class="m-b">
+                                                <span>导入结果:</span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label class="sub-label w-370 m-b m-l-sm1">
+                                                <span id="ImportResult"></span>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                <a href="" id="FailPath">点击下载失败数据</a>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </form>
+                        </div>
+                    </div>
+                </div>*@
+            <div class="modal-footer popfooter align_center">
+                <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+</div>
+
+
+
+
+
+<script>
+    app.goods_jh = app.goods_jh || {};
+
+
+
+
+    app.goods_jh.export_import_goods = function () {
+        window.location.href = $.DHB.U('/jh/downloadexceltemp');
+    }
+
+    //上传
+    app.goods_jh.import_goods = function () {
+        $.DHB.singleUpload({ 'config': 'excel', 'callback': 'app.goods_jh.verify_import_goods', 'allowed': 'xls,xlsx' });
+    }
+
+
+    //上传回调
+    app.goods_jh.verify_import_goods = function (files) {
+        if (typeof (files) != 'undefined') {
+            $.post('/jh/importin', { filePath: files, id_shop: '@id_shop' },
+            function (json) {
+                if (json.Success) {
+                    if (json.Level == '1') {
+                        $(_ + "#shopsp_table_json").val(json.Data);
+                        setTimeout(function () {
+                            eval('try {if( dialogJHDRCallBack  && typeof(dialogJHDRCallBack)=="function"){@string.Format("{0}(json.Data)", "dialogJHDRCallBack"); }}catch(e){}');
+                            $.DHB.dialog({ id: 'dialog-jhdr-search', action: 'destroy' });
+                        }, 0);
+                    }
+                    else if (json.Level == '3') {
+                        $(_ + "#div_fail").css('display', '');
+                        $(_ + "#ImportResult").html(json.Message);
+                        $(_ + "#FailPath").attr('href', "../" + json.Data);
+                        $(_ + "#define-goods_jh-downfailfile").modal('show');
+                    }
+                } else {
+                    $.DHB.message({ content: json.Message, time: 2500, 'type': 'e' });
+                }
+            }, 'json'
+          );
+
+
+
+
+        }
+    }
+
+
+
+</script>
+
+

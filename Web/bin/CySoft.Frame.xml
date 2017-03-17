@@ -1,0 +1,1709 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CySoft.Frame</name>
+    </assembly>
+    <members>
+        <member name="T:CySoft.Frame.Attributes.TransactionAttribute">
+            <summary>
+            事务特性
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Common.ConvertArray">
+            <summary>
+            数组转换类
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Common.ConvertArray.ToSingleArray(System.String[])">
+            <summary>
+            string[] 转换为 float[]
+            </summary>
+            <param name="strArray">string 类型数组</param>
+        </member>
+        <member name="M:CySoft.Frame.Common.ConvertArray.ToSingleArray(System.Int32[])">
+            <summary>
+            int[] 转换为 float[]
+            </summary>
+            <param name="intArray">int 类型数组</param>
+        </member>
+        <member name="M:CySoft.Frame.Common.ConvertArray.ToInt32Array(System.String[])">
+            <summary>
+            string[] 转换为 int[]
+            </summary>
+            <param name="strArray">string 类型数组</param>
+        </member>
+        <member name="M:CySoft.Frame.Common.ConvertArray.ToInt32Array(System.Single[])">
+            <summary>
+            float[] 转换为 int[]
+            </summary>
+            <param name="floatArray">float 类型数组</param>
+        </member>
+        <member name="M:CySoft.Frame.Common.ConvertArray.ToInt32Array(System.Decimal[])">
+            <summary>
+            float[] 转换为 int[]
+            </summary>
+            <param name="decimalArray">decimal 类型数组</param>
+        </member>
+        <member name="M:CySoft.Frame.Common.ConvertArray.ToDecimalArray(System.String[])">
+            <summary>
+            string[] 转换为 decimal[]
+            </summary>
+            <param name="strArray">string 类型数组</param>
+        </member>
+        <member name="M:CySoft.Frame.Common.ConvertArray.ToDecimalArray(System.Single[])">
+            <summary>
+            float[] 转换为 decimal[]
+            </summary>
+            <param name="floatArray">float 类型数组</param>
+        </member>
+        <member name="M:CySoft.Frame.Common.ConvertArray.ToDecimalArray(System.Int32[])">
+            <summary>
+            int[] 转换为 decimal[]
+            </summary>
+            <param name="intArray">int 类型数组</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Common.DataContainer.DataConvert(System.Data.DataTable)" -->
+        <member name="M:CySoft.Frame.Common.FileManager.FileExists(System.String)">
+            <summary>
+            判断文件是否存在
+            </summary>
+            <param name="FileName">文件名　可带路径</param>
+            <returns>true存在 false不存在</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.FileManager.GetEntireFileName(System.String)">
+            <summary>
+            获取不含路径的文件名
+            </summary>
+            <param name="FileName">文件名</param>
+            <returns>文件名</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.FileManager.GetFileExtend(System.String)">
+            <summary>
+            获取文件后缀名
+            </summary>
+            <param name="FileName">文件名</param>
+            <returns>后缀名</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.LogText.Log2File(System.String,System.String)">
+            <summary>
+            日志
+            </summary>
+            <param name="strFileName">文件完全限定名或相对文件名</param>
+            <param name="strText">日志信息</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.LogText.Log2File(System.String,System.Boolean,System.String)">
+            <summary>
+            日志
+            </summary>
+            <param name="strFileName">文件完全限定名或相对文件名</param>
+            <param name="blnAllWaysNew">是否创建新的文件</param>
+            <param name="strText">日志信息</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.LogText.Log2File(System.String,System.String,System.String)">
+            <summary>
+            日志
+            </summary>
+            <param name="strFileName">文件完全限定名或相对文件名</param>
+            <param name="strText">日志信息</param>
+            <param name="strTime">日志时间</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.LogText.Log2File(System.String,System.Boolean,System.String,System.String)">
+            <summary>
+            日志
+            </summary>
+            <param name="strFileName">文件完全限定名或相对文件名</param>
+            <param name="blnAllWaysNew">是否创建新的文件</param>
+            <param name="strText">日志信息</param>
+            <param name="strTime">日志时间</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.OperationHelper.Digit(System.Decimal,System.Int32)">
+            <summary>
+            浮点数据格式化<para />
+            小数位最少为 0 位,最多为 28 位<para />
+            需要注意，格式化之后将四舍五入
+            </summary>
+            <param name="value">需要格式化的浮点数</param>
+            <param name="length ">保留的小数点位数,小数位最少为 0 位,最多为 28 位</param>
+            <returns>格式化后的值</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.OperationHelper.Digit(System.Nullable{System.Decimal},System.Int32)">
+            <summary>
+            浮点数据格式化<para />
+            小数位最少为 0 位,最多为 28 位<para />
+            需要注意，格式化之后将四舍五入
+            </summary>
+            <param name="value">需要格式化的浮点数</param>
+            <param name="length ">保留的小数点位数,小数位最少为 0 位,最多为 28 位</param>
+            <returns>格式化后的值</returns>
+        </member>
+        <member name="T:CySoft.Frame.Common.Rand">
+            <summary>
+            随机函数
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Common.Rand.RandNum(System.Int32)">
+            <summary>
+            数字随机数
+            </summary>
+            <param name="n">生成长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Rand.RandCode(System.Int32)">
+            <summary>
+            数字和大小写字母随机数
+            </summary>
+            <param name="n">生成长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Rand.RandLetter(System.Int32)">
+            <summary>
+            字母随机数
+            </summary>
+            <param name="n">生成长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Rand.DateRndName">
+            <summary>
+            日期随机函数
+            </summary>
+            <param name="ra">长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Rand.GetGuid">
+            <summary>
+            生成GUID
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Rand.GetUniquelyString(System.String)">
+            <summary>
+            获取一个不重复的文件名
+            </summary>
+            <returns>日期_时间_分秒_毫秒_随机数字</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.StrHelper.StrSingleQuoteFormat(System.String,System.String)">
+            <summary>
+            格式化字符串中的 ' 号
+            </summary>
+            <param name="str">需要格式化</param>
+            <returns>返回格式化后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.StrHelper.ToSQLParamStr(System.String)">
+            <summary>
+            格式化字符串为符合参数格式的
+            </summary>
+            <param name="str">需要格式化</param>
+            <returns>返回格式化后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.StrHelper.StrToHexString(System.String)">
+            <summary>
+            将字符串格式化为16进制的编码，中间以 | 号隔开
+            </summary>
+            <param name="strTextString">需要转化的字符串</param>
+            <returns>返回转化后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.StrHelper.StrToTextString(System.String)">
+            <summary>
+            将格式化的16进制字符串编码转换为字符串
+            </summary>
+            <param name="strHexString">需要转化的字符串</param>
+            <returns>返回转化后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.StrHelper.DateToString(System.DateTime,System.String)">
+            <summary>
+            格式化输出日期字符串，以ch为分隔符，例如：2010/07/07
+            </summary>
+            <param name="date"></param>
+            <param name="ch"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.StrHelper.DateToString(System.DateTime)">
+            <summary>
+            格式化输出日期字符串，默认无分隔符，例如：20100707
+            </summary>
+            <param name="date"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Security.GetMd5String(System.String)">
+            <summary>
+            返回通过MD5加密后的16位字符串
+            </summary>
+            <param name="ConvertString">需要加密转换的字符串</param>
+            <returns>返回加密后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Security.Md5(System.String)">
+            <summary>
+            MD5的32位加密
+            </summary>
+            <param name="str">需要加密的字符串</param>
+            <returns>加密后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Security.Decode(System.String)">
+            <summary>
+            内存流解密
+            </summary>
+            <param name="decryptString">需要解密转换的字符串</param>
+            <returns>返回解密后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Security.Encode(System.String)">
+            <summary>
+            内存流加密
+            </summary>
+            <param name="encryptString">需要加密转换的字符串</param>
+            <returns>返回加密后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Security.DecryptDES(System.String,System.String)">
+            <summary>
+            内存流解密
+            </summary>
+            <param name="decryptString">需要解密转换的字符串</param>
+            <param name="decryptKey">解密的密匙</param>
+            <returns>返回解密后的字符串</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.Security.EncryptDES(System.String,System.String)">
+            <summary>
+            内存流加密
+            </summary>
+            <param name="encryptString">需要加密转换的字符串</param>
+            <param name="encryptKey">加密的密匙</param>
+            <returns>返回加密后的字符串</returns>
+        </member>
+        <member name="T:CySoft.Frame.Common.TextLogHelper">
+            <summary>
+            文本日志帮助类
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Common.TextLogHelper.expLogName">
+            <summary>
+            日志路径
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Common.TextLogHelper.WriterExceptionLog(System.Exception)">
+            <summary>
+            写错误日志
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Common.TextLogHelper.WriterExceptionLog(System.String,System.Object[])">
+            <summary>
+            写错误日志
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Common.TextLogHelper.WriterExceptionLog(System.String)">
+            <summary>
+            写错误日志
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Common.TextLogHelper.ManagerLogFile(System.String)">
+            <summary>
+            管理日志文件
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeCheck.IsInt(System.String)">
+            <summary>
+            判断是否可转为32位整型
+            </summary>
+            <param name="str">str</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeCheck.IsInt64(System.String)">
+            <summary>
+            判断是否可转为64位整型
+            </summary>
+            <param name="str">str</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeCheck.IsDecimal(System.String)">
+            <summary>
+            判断是否可转为decimal型
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeCheck.IsBool(System.String)">
+            <summary>
+            判断是否可转为Boolean型
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeCheck.IsDouble(System.String)">
+            <summary>
+            判断是否可转为double型
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeCheck.IsDatetime(System.String)">
+            <summary>
+            判断是否可转为datetime型
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToString(System.Object,System.String)">
+            <summary>
+            转换为 String,转换过程中出错返回默认值
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <param name="errDefaultValue">转换过程中出错返回的默认值</param>
+            <returns>返回 String</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToString(System.Object)">
+            <summary>
+            转换为 String,转换过程中出错返回null
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <returns>返回 String</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToInt(System.Object,System.Int32)">
+            <summary>
+            转换为 Int32,转换过程中出错返回默认值
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <param name="errDefaultValue">转换过程中出错返回的默认值</param>
+            <returns>返回 Int32</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToInt(System.Object)">
+            <summary>
+            转换为 Int32,转换过程中出错返回0
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <returns>返回 Int32</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToInt64(System.Object,System.Int64)">
+            <summary>
+            转换为 Int64,转换过程中出错返回默认值
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <param name="errDefaultValue">转换过程中出错返回的默认值</param>
+            <returns>返回 Int64</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToInt64(System.Object)">
+            <summary>
+            转换为 Int64,转换过程中出错返回0
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <returns>返回 Int64</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToDecimal(System.Object,System.Decimal)">
+            <summary>
+            转换为 Decimal,转换过程中出错返回默认值
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <param name="errDefaultValue">转换过程中出错返回的默认值</param>
+            <returns>返回 Decimal</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToDecimal(System.Object)">
+            <summary>
+            转换为 Decimal,转换过程中出错返回0
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <returns>返回 Decimal</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToDouble(System.Object,System.Double)">
+            <summary>
+            转换为 Dobule,转换过程中出错返回的默认值
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <param name="errDefaultValue">转换过程中出错返回的默认值</param>
+            <returns>返回 Dobule</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToDouble(System.Object)">
+            <summary>
+            转换为 Dobule,转换过程中出错返回的默认值
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <returns>返回 Dobule</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToBool(System.Object,System.Boolean)">
+            <summary>
+            转换为 Bool,转换过程中出错返回的默认值
+            </summary>
+            <param name="strNum">要转换的值</param>
+            <param name="errDefaultValue">转换过程中出错返回的默认值</param>
+            <returns>返回 Bool</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToDateTime(System.Object,System.DateTime)">
+            <summary>
+            转换为 DateTime,转换过程中出错返回的默认值
+            </summary>
+            <param name="strDateTime">要转换的值</param>
+            <param name="errDefaultValue">转换过程中出错返回的默认值</param>
+            <returns>返回 DateTime</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToDateTime(System.Object)">
+            <summary>
+            转换为 DateTime,转换过程中出错返回null
+            </summary>
+            <param name="strDateTime">要转换的值</param>
+            <returns>返回 DateTime</returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToIntArray(System.String,System.Object,System.Char)">
+            <summary>
+            按分隔字符，将传入值转换为数组，出错则返回默认值
+            </summary>
+            <param name="strVal">传入值</param>
+            <param name="defaultValue">默认值</param>
+            <param name="splitChar">分隔字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Common.TypeConvert.ToList(System.String)">
+            <summary>
+            扩展string转换为IList方法
+            </summary>
+            <param name="str">转换值</param>
+            <returns>结果值</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.#ctor" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetInstance" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.FindType(System.String)" -->
+        <member name="M:CySoft.Frame.Core.BaseEnv.ToLogin">
+            <summary>
+            
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.ToError(System.String)" -->
+        <member name="M:CySoft.Frame.Core.BaseEnv.ToError(System.String,CySoft.Frame.Core.ErrorLevel,CySoft.Frame.Core.ErrorMethod)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="errorLevel"></param>
+            <param name="errorMethod"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetTransValues(System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetLastTransValues" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetTransValue(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetLastTransValue(System.String)" -->
+        <member name="M:CySoft.Frame.Core.BaseEnv.SetTransValues(System.String,System.Collections.Hashtable)">
+            <summary>
+            添加页面参数
+            </summary>
+            <param name="pageName">页面名</param>
+            <param name="values">页面值</param>
+        </member>
+        <member name="M:CySoft.Frame.Core.BaseEnv.SetTransValue(System.String,System.String,System.Object)">
+            <summary>
+            添加页面参数
+            </summary>
+            <param name="pageName">页面名</param>
+            <param name="key">key</param>
+            <param name="value">值</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.DeleteTransValues(System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.DeleteTransValue(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.ClearTransValues" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetInt(System.String,System.Int32,CySoft.Frame.Core.RequestType)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetDouble(System.String,System.Double,CySoft.Frame.Core.RequestType)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetString(System.String,System.String,CySoft.Frame.Core.RequestType)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetDateTime(System.String,System.DateTime,CySoft.Frame.Core.RequestType)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetFloat(System.String,System.Single,CySoft.Frame.Core.RequestType)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetBool(System.String,System.Boolean,CySoft.Frame.Core.RequestType)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetDecimal(System.String,System.Decimal,CySoft.Frame.Core.RequestType)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Core.BaseEnv.GetChar(System.String,System.Char,CySoft.Frame.Core.RequestType)" -->
+        <member name="T:CySoft.Frame.Core.CYSession">
+            <summary>
+            获取和设置回话变量
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.CYSession.Session">
+            <summary>
+            获取和设置Session值 
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Core.CYSession.GetSession(System.String)">
+            <summary>
+            获取回话变量
+            </summary>
+            <param name="key">全局名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Core.CYSession.SetSession(System.String,System.Object)">
+            <summary>
+            设置全局变量
+            </summary>
+            <param name="key">全局名称</param>
+            <param name="obj">设置值</param>
+        </member>
+        <member name="P:CySoft.Frame.Core.CYSession.Item(System.String)">
+            <summary>
+            获取或设置全局变量
+            </summary>
+            <param name="key">全局名称</param>
+            <returns>值</returns>
+        </member>
+        <member name="M:CySoft.Frame.Core.CYSession.SetTime(System.Int32)">
+            <summary>
+            设置Session过期时间，分钟为单位
+            </summary>
+            <param name="key"></param>
+            <param name="minute"></param>
+        </member>
+        <member name="T:CySoft.Frame.Core.CySoftException">
+            <summary>
+            自定义异常
+            通过各种方式构造异常信息，获取信息直接获得BaseResult结果集或PageNavigate结果集
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Core.CySoftException.#ctor">
+            <summary>
+            创建自定义异常
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Core.CySoftException.#ctor(System.String)">
+            <summary>
+            创建自定义异常
+            </summary>
+            <param name="message">异常消息</param>
+        </member>
+        <member name="M:CySoft.Frame.Core.CySoftException.#ctor(System.String,System.Object)">
+            <summary>
+            创建自定义异常
+            </summary>
+            <param name="message">异常消息</param>
+            <param name="data">返回数据</param>
+        </member>
+        <member name="M:CySoft.Frame.Core.CySoftException.#ctor(CySoft.Frame.Core.BaseResult)">
+            <summary>
+            创建自定义异常
+            </summary>
+            <param name="br">错误提示</param>
+        </member>
+        <member name="M:CySoft.Frame.Core.CySoftException.#ctor(System.String,CySoft.Frame.Core.ErrorLevel)">
+            <summary>
+            创建自定义异常
+            </summary>
+            <param name="message">异常消息</param>
+            <param name="level">异常错误级别</param>
+        </member>
+        <member name="P:CySoft.Frame.Core.CySoftException.Message">
+            <summary>
+            自定义异常错误消息
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.CySoftException.Result">
+            <summary>
+            导致当前异常的错误返回结果
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Core.HashtableExtend.Trim(System.Collections.Hashtable,CySoft.Frame.Core.ParamVessel)">
+            <summary>
+            验证和剔除非法字段
+            </summary>
+            <param name="before">原始Hashtable</param>
+            <param name="retain">校验规则</param>
+            <returns>过滤后Hashtable</returns>
+        </member>
+        <member name="T:CySoft.Frame.Core.PageNavigate">
+            <summary>
+            查询翻页返回数据容器
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.PageNavigate.Total">
+            <summary>
+            汇总数据
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.PageNavigate.TotalCount">
+            <summary>
+            数据总记录条数
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.PageNavigate.Data">
+            <summary>
+            返回的数据
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.PageNavigate.Success">
+            <summary>
+            访问返回状态 true 或 false
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.PageNavigate.success">
+            <summary>
+            访问返回状态 true 或 false
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.PageNavigate.Message">
+            <summary>
+            消息
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Core.BaseResult">
+            <summary>
+            数据访问结果类
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.BaseResult.Message">
+            <summary>
+            消息
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.BaseResult.Level">
+            <summary>
+            消息级别
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.BaseResult.Data">
+            <summary>
+            返回数据
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.BaseResult.Success">
+            <summary>
+            访问返回状态 true 或 false
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.BaseResult.success">
+            <summary>
+            访问返回状态 true 或 false
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Core.ClientInfo.GetLanguageType(System.String)">
+            <summary>
+            获取语言版本信息
+            </summary>
+            <param name="A_0"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Core.ClientInfo.GetBrowerType(System.String)">
+            <summary>
+            获取客户端浏览器类型
+            </summary>
+            <param name="A_0">请求主机信息UserAgent</param>
+            <returns>浏览器类型</returns>
+        </member>
+        <member name="M:CySoft.Frame.Core.ClientInfo.GetOSType(System.String)">
+            <summary>
+            获取客户端操作系统类型
+            </summary>
+            <param name="A_0">请求主机信息UserAgent</param>
+            <returns>操作系统类型</returns>
+        </member>
+        <member name="P:CySoft.Frame.Core.ClientInfo.Agent">
+            <summary>
+            获取请求机子信息
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.ClientInfo.Browser">
+            <summary>
+            获取客户端浏览器类型
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.ClientInfo.CookiesKey">
+            <summary>
+            cookies 键
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.ClientInfo.HostName">
+            <summary>
+            客户端主机名
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.ClientInfo.IP">
+            <summary>
+            客户端IP地址
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Core.ClientInfo.OS">
+            <summary>
+            获取客户端操作系统类型
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Core.PageNavigeteQuery">
+            <summary>
+            翻页查询条件容器
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.PageNavigeteQuery.Query">
+            <summary>
+            查询条件
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.PageNavigeteQuery.Limit">
+            <summary>
+            每页取得的记录数量
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.PageNavigeteQuery.StartRecord">
+            <summary>
+            从第几条记录开始获取
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.PageNavigeteQuery.OrderBy">
+            <summary>
+            查询的排序条件容器
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Core.ParamVessel">
+            <summary>
+            参数容器
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Core.ParamVessel.Add(System.String,System.Object,CySoft.Frame.Core.HandleType)">
+            <summary>
+            添加校验规则
+            </summary>
+            <param name="paramName">参数名</param>
+            <param name="defaultValue">默认值（须类型相同）</param>
+            <param name="handeType">处理方式</param>
+        </member>
+        <member name="M:CySoft.Frame.Core.ParamVessel.Add(System.String,System.Object,CySoft.Frame.Core.HandleType,System.Boolean)">
+            <summary>
+            添加校验规则
+            </summary>
+            <param name="paramName">参数名</param>
+            <param name="defaultValue">默认值（须类型相同）</param>
+            <param name="handeType">处理方式</param>
+            <param name="stringMatch">是否前后模糊（左右%）</param>
+        </member>
+        <member name="F:CySoft.Frame.Core.HandleType.Remove">
+            <summary>
+            移除
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.HandleType.DefaultValue">
+            <summary>
+            默认值
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.HandleType.ReturnMsg">
+            <summary>
+            非空
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.HardDiskInfo.ModuleNumber">
+            <summary>
+            型号
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.HardDiskInfo.Firmware">
+            <summary>
+            固件版本
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.HardDiskInfo.SerialNumber">
+            <summary>
+            序列号
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Core.HardDiskInfo.Capacity">
+            <summary>
+            容量,以M为单位
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Core.HardDiskInfo.GetHostName">
+            <summary>
+            取机器名
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.Core.AtapiDevice">
+            <summary>
+            ATAPI驱动器相关
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Core.AtapiDevice.GetHddInfo9x(System.Byte)">
+            <summary>
+            获得硬盘信息
+            </summary>
+            <param name="driveIndex">硬盘序号</param>
+            <returns>硬盘信息</returns>
+            <remarks>
+            参考lu0的文章：http://lu0s1.3322.org/App/2k1103.html
+            by sunmast for everyone
+            thanks lu0 for his great works
+            在Windows 98/ME中,S.M.A.R.T并不缺省安装,请将SMARTVSD.VXD拷贝到%SYSTEM%\IOSUBSYS目录下。
+            在Windows 2000/2003下,需要Administrators组的权限。
+            </remarks>
+            <example>
+            AtapiDevice.GetHddInfo()
+            </example>
+        </member>
+        <member name="T:CySoft.Frame.QuickRegex">
+            <summary>
+            正则表达式类
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Validity">
+            <summary>
+            数值验证类
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Validity.CheckPassWord(System.String,System.Int32,System.Int32)">
+            <summary>
+            验证密码
+            </summary>
+            <param name="passWord">密码字符串</param>
+            <param name="strShort">最少字符数</param>
+            <param name="strLong">最长字符数</param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.CheckBadStr(System.String,System.String,System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.CheckSysCheckCode(System.String)" -->
+        <member name="M:CySoft.Frame.Validity.Limits(System.String,System.Int32,System.Int32)">
+            <summary>
+            检验字符串输入长度
+            </summary>
+            <param name="str"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Validity.MustChecked(System.String,System.Int32,System.Int32)">
+            <summary>
+            验证单、多选按钮组
+            </summary>
+            <param name="str"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.Compare(System.String,System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.DateType(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.Validate(System.String,System.String)" -->
+        <member name="M:CySoft.Frame.Validity.Valid(System.String,System.String,System.String)">
+            <summary>
+            正则验证接口
+            </summary>
+            <param name="str">需要验证字符串</param>
+            <param name="regParam">正则表达式,常用的包装在静态类QuickRegex里面.可以调用</param>
+            <param name="errorMeg">自定义错误提示信息</param>
+            <returns>信息类BaseResult对象</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.Valid(System.String,System.String,System.Int32,System.Int32,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.Valid(System.String,System.String,System.String,System.String,System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.Valid(System.String,System.String,System.String,System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:CySoft.Frame.Validity.Valid(System.String,System.String,System.String,System.String)" -->
+        <member name="M:CySoft.Frame.DEncrypt.Md5Encrypt.Encode(System.Text.Encoding,System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="encoding">编码格式</param>
+            <param name="str"></param>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.File">
+            <summary>
+            文件操作基本类
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.File.GetPostfixStr(System.String)">
+            <summary>
+            取后缀名
+            </summary>
+            <param name="filename">文件名</param>
+            <returns>如.gif格式，如果为null则，参数错误</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.WriteFile(System.String,System.String)">
+            <summary>
+            写文件
+            </summary>
+            <param name="strPath">文件路径</param>
+            <param name="Strings">文件内容</param>
+            <returns>true-成功，false-失败（文件不存在或写入错误）</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.ReadFile(System.String)">
+            <summary>
+            读文件
+            </summary>
+            <param name="Path">文件路径</param>
+            <returns>返回文件gb2312编码内容，如果文件不存在或读取错误，返回null</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.FileAdd(System.String,System.String)">
+            <summary>
+            追加文件
+            </summary>
+            <param name="Path">文件路径</param>
+            <param name="strings">内容</param>
+            <returns>写成功返回true，失败返回false</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.FileCoppy(System.String,System.String)">
+            <summary>
+            拷贝文件
+            </summary>
+            <param name="OrignFile">原始文件</param>
+            <param name="NewFile">新文件路径</param>
+            <returns>成功返回true，原文件不存在或拷贝失败返回false</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.FileDel(System.String)">
+            <summary>
+            删除文件
+            </summary>
+            <param name="Path">路径</param>
+            <returns>删除成功返回true，失败返回false</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.FileMove(System.String,System.String)">
+            <summary>
+            移动文件
+            </summary>
+            <param name="OrignFile">原始路径</param>
+            <param name="NewFile">新路径</param>
+            <returns>成功返回true，原文件不存在、新文件名错误或移动失败返回false</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.FolderCreate(System.String,System.String)">
+            <summary>
+            在当前目录下创建目录
+            </summary>
+            <param name="OrignFolder">当前目录</param>
+            <param name="NewFloder">新目录</param>
+            <returns>成功返回true，文件目录不存在或创建失败返回false</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.FolderCreate(System.String)">
+            <summary>
+            创建文件夹
+            </summary>
+            <param name="Path"></param>
+            <returns>成功返回true，文件目录不存在或创建失败返回false</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.FileCreate(System.String)">
+            <summary>
+            创建文件
+            </summary>
+            <param name="Path">文件路径</param>
+            <returns>true为成功，失败为false</returns>
+        </member>
+        <member name="M:CySoft.Frame.File.DeleteFolder(System.String)">
+            <summary>
+            递归删除文件夹目录及文件
+            </summary>
+            <param name="dir">文件夹</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.File.CopyDir(System.String,System.String)">
+            <summary>
+            指定文件夹下面的所有内容copy到目标文件夹下面
+            </summary>
+            <param name="srcPath">原始路径</param>
+            <param name="aimPath">目标文件夹</param>
+        </member>
+        <member name="M:CySoft.Frame.File.GetFoldAll(System.String)">
+            <summary>
+            获取指定文件夹下所有子目录及文件
+            </summary>
+            <param name="Path">详细路径</param>
+        </member>
+        <member name="M:CySoft.Frame.File.ListTreeShow(System.IO.DirectoryInfo,System.Int32,System.String)">
+            <summary>
+            获取指定文件夹下所有子目录及文件函数
+            </summary>
+            <param name="theDir">指定目录</param>
+            <param name="nLevel">默认起始值,调用时,一般为0</param>
+            <param name="Rn">用于迭加的传入值,一般为空</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.File.GetFoldAll(System.String,System.String,System.String)">
+             <summary>
+             获取指定文件夹下所有子目录及文件(下拉框形)
+             </summary>
+             <param name="Path">详细路径</param>
+            <param name="DropName">下拉列表名称</param>
+            <param name="tplPath">默认选择模板名称</param>
+        </member>
+        <member name="M:CySoft.Frame.File.ListTreeShow(System.IO.DirectoryInfo,System.Int32,System.String,System.String)">
+            <summary>
+            获取指定文件夹下所有子目录及文件函数
+            </summary>
+            <param name="theDir">指定目录</param>
+            <param name="nLevel">默认起始值,调用时,一般为0</param>
+            <param name="Rn">用于迭加的传入值,一般为空</param>
+            <param name="tplPath">默认选择模板名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.File.GetDirectoryLength(System.String)">
+            <summary>
+            获取文件夹大小
+            </summary>
+            <param name="dirPath">文件夹路径</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.File.GetFileAttibe(System.String)">
+            <summary>
+            获取指定文件详细属性
+            </summary>
+            <param name="filePath">文件详细路径</param>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.Utility.FileHelper">
+            <summary>
+            文件操作帮助类
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.MoveDir(System.String,System.String)">
+            <summary>
+            移动文件夹
+            </summary>
+            <param name="sourceDir">源文件夹路径</param>
+            <param name="destDir">目标文件夹路径</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.MoveFile(System.String,System.String)">
+            <summary>
+            移动文件
+            </summary>
+            <param name="sourceFileName">源文件全名</param>
+            <param name="destFileName">目标文件全名</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.GetFiles(System.String)">
+            <summary>
+            指定文件夹，获取文件夹下的所有文件信息
+            </summary>
+            <param name="dir">文件夹路径</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.GetFiles(System.String,System.String)">
+            <summary>
+            指定文件夹，获取文件夹下的所有文件信息
+            </summary>
+            <param name="dir">文件夹路径</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.GetFileInfos(System.String)">
+            <summary>
+            获得文件夹和子文件夹下的所有文件信息
+            </summary>
+            <param name="dir">文件夹路径</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.GetFileInfos(System.Collections.Generic.List{System.IO.FileInfo},System.String)">
+            <summary>
+            获得文件夹和子文件夹下的所有文件信息
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.GetFileNames(System.String)">
+            <summary>
+            获得文件夹和子文件夹下的所有文件名
+            </summary>
+            <param name="dir">文件夹路径</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.GetFileNames(System.Collections.Generic.List{System.String},System.String)">
+            <summary>
+            获得文件夹和子文件夹下的所有文件名
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.FileHelper.DeleteOverdueFiles(System.String,System.TimeSpan)">
+            <summary>
+            删除过期文件
+            </summary>
+            <param name="dir">过期文件所在的文件夹</param>
+            <param name="ts">时间间隔</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ExcelHelper.CreateExcel(System.Collections.IList,System.String,System.String,System.String,System.String)">
+            <summary>
+            根据XML文件模板生成Excel文件
+            </summary>
+            <param name="ls">类型为object[]集合的数据列表</param>
+            <param name="headNote">表头信息</param>
+            <param name="footNote">表尾信息</param>
+            <param name="templateFile">格式为Excel的XML文件模板</param>
+            <param name="showFileName">弹出窗口时显示的文件名前缀</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ExcelHelper.UpLoadExcel(System.String,System.String)">
+            <summary>
+            上传Excel文件到指定路径，并读取某页的所有记录
+            </summary>
+            <param name="saveFilePath">保存路径</param>
+            <param name="sheetName">Excel的页名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ExcelHelper.ReadXls(System.String,System.String)">
+            <summary>
+            描述:获取Excel文件某一分页的所有数据
+            </summary>
+            <param name="File">Excel文件路径</param>
+            <param name="TableName">分页名</param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ExcelHelper.ReadXls(System.String,System.String,System.String)">
+            <summary>
+            描述:获取Excel文件某一分页指定列的所有数据
+            </summary>
+            <param name="selectCol">列名</param>
+            <param name="File">Excel文件路径</param>
+            <param name="TableName">分页名</param>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.Utility.MnemonicCode">
+            <summary>
+            生成汉字助记码
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.MnemonicCode.chinesecap(System.String)">
+            <summary>
+            汉字转换为字母拼音
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.MnemonicCode.Translate(System.Int64)">
+            <summary>
+            把单个的汉字根据其值转换成字母
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Utility.ObjectUtility">
+            <summary>
+            Object 对象帮助类
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ObjectUtility.HasProperty(System.Object,System.String)">
+            <summary>
+            校验是对象否存在指定的属性值
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ObjectUtility.GetValue(System.Object,System.String)">
+            <summary>
+            获取对象指定属性的值
+            成功返回值，失败返回NULL
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ObjectUtility.SetValue(System.Object,System.String,System.Object)">
+            <summary>
+            设置对象指定属性值
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ObjectUtility.CanWrite(System.Object,System.String)">
+            <summary>
+            获取对象属性是否可写入值
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ObjectUtility.CanRead(System.Object,System.String)">
+            <summary>
+            获取对象属性是否可读取值
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Utility.PinYin.strChineseFirstPY">
+             summary>
+            汉字拼音首字母列表 本列表包含了20902个汉字,用于配合 GetChineseSpell 函数使用,本表收录的字符的Unicode编码范围为19968至40869
+             /summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.PinYin.GetChineseSpell(System.String)">
+            <summary>
+            获得字符串的汉语拼音首字母
+            </summary>
+            <param name="strText">字符串</param>
+            <returns>汉语拼音码,该字符串只包含大写的英文字母</returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.PinYin.GetFirstPinyin(System.String)">
+            <summary>
+            获取字符串第一个字的首字母
+            </summary>
+            <param name="strText">字符串</param>
+            <returns>该字符只包含大写的英文字母</returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.PinYin.AddFirstPinyin(System.String)">
+            <summary>
+            获取字符串第一个字的首字母，并添加到字符串最前，返回新字符串
+            </summary>
+            <param name="str">字符串</param>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.Utility.Compress.rar">
+            <summary>
+            rar压缩、解压缩类
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.Compress.rar.Compress(System.String,System.String)">
+            <summary>
+            压缩
+            </summary>
+            <param name="path">被压缩的文件或文件夹路径</param>
+            <param name="rarfilename">生成的压缩文件路径</param>
+            <returns>true-成功，false-失败</returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.Compress.rar.UnCompress(System.String,System.String)">
+            <summary>
+            解压
+            </summary>
+            <param name="path">被解压的文件路径</param>
+            <param name="folder">解压到的文件夹路径</param>
+            <returns>true-成功，false-失败</returns>
+        </member>
+        <member name="T:CySoft.Frame.Utility.PageOperate">
+            <summary>
+            Close 关闭，Location 定位，Reload 刷新
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Utility.PageOperate.Close">
+            <summary>
+            关闭
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Utility.PageOperate.Location">
+            <summary>
+            定位
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Utility.PageOperate.Reload">
+            <summary>
+            刷新
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Utility.UepPageController">
+            <summary>
+            页面脚本
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.UepPageController.GetAlertMsg(System.String)">
+            <summary>
+            显示页面的脚本
+            </summary>
+            <param name="content">输出主要内容</param>
+            <returns>格式化后内容</returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.UepPageController.PageAlert(System.String,System.String,CySoft.Frame.Utility.PageOperate,CySoft.Frame.Utility.PageOperate)">
+            <summary>
+            20081219 ChenYZ AspxGridView.EnabledCallBack=true的情况下使用本函数无效，改为使用弹出异常
+            </summary>
+            <param name="content">要操作页面的内容</param>
+            <param name="url">当前页面URL</param>
+            <param name="selfPage">当前页面操作</param>
+            <param name="parentPage">父页面操作</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.UepPageController.PageAlert(System.String,System.String,CySoft.Frame.Utility.PageOperate)">
+            <summary>
+            
+            </summary>
+            <param name="content">要操作页面的内容</param>
+            <param name="url">当前页面URL</param>
+            <param name="selfPage">当前页面操作</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.UepPageController.PageAlert(System.Web.UI.Page,System.String)">
+            <summary>
+            弹出提示窗口
+            </summary>
+            <param name="page">弹出页面</param>
+            <param name="msg">需要弹出的信息</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.UepPageController.PageAlert(System.String)">
+            <summary>
+            操作页面
+            </summary>
+            <param name="page">当前页面</param>
+            <param name="content">要操作页面的内容</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.UepPageController.GetSelfPageOperate(System.String,CySoft.Frame.Utility.PageOperate)">
+            <summary>
+            当前页面的操作脚本
+            </summary>
+            <param name="url">重定位页面</param>
+            <param name="p">操作类别</param>
+        </member>
+        <member name="M:CySoft.Frame.Utility.UepPageController.GetParentPageOperate(CySoft.Frame.Utility.PageOperate)">
+            <summary>
+            父页面的操作脚本
+            </summary>
+            <param name="p"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.Utility.ValidCode">
+            <summary>
+            验证码生成器
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ValidCode.GetValidateCode(System.String)">
+            <summary>
+            获得和设置验证码
+            </summary>
+            <param name="code">验证码</param>
+            <returns>图片的数据流</returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.ValidCode.GetValidateCode">
+            <summary>
+            获得和设置验证码
+            </summary>
+            <returns>图片的数据流</returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.WebUtils.BuildQuery(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            排序后生成参数字符串
+            </summary>
+            <param name="parameters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Utility.WebUtils.BuildQuery_Sign(System.Collections.Generic.IDictionary{System.String,System.String},System.String)">
+            <summary>
+            排序后生成参数字符串并加入签名
+            </summary>
+            <param name="parameters"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.FileUpload">
+            <summary>
+            文件上传类
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.FileUpload.PostedFile">
+            <summary>
+            上传的文件
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.FileUpload.SavePath">
+            <summary>
+            保存路径
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.FileUpload.MaxLength">
+            <summary>
+            能上传的最大文件大小(单位:KB)，默认最大文件大小，500KB
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.FileUpload.FileType">
+            <summary>
+            允许上传的文件类型(默认值：jpg,jpeg,png,gif,bmp,doc,rar,txt,xls)
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.FileUpload.SaveName">
+            <summary>
+            要保存的文件名(如result.txt,传入result即可,为空则自动文件名)
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.FileUpload.PathToName(System.String)">
+            <summary>
+            获取完整的文件名
+            </summary>
+            <param name="path">完整路径</param>
+            <returns>String</returns>
+        </member>
+        <member name="M:CySoft.Frame.FileUpload.DoUpload">
+            <summary>
+            文件上传
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.FileUpload.UpLoad">
+            <summary>
+            执行文件上传
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.Image.ThumbnailMode">
+             <summary>
+            
+             **生成高质量缩略图程序**
+            
+             File: Thumbnail.cs
+            
+            
+            
+             </summary>
+             
+            缩略图生成模式，Width-指定宽，高按比例，Height -指定高，宽按比例，Both-指定高宽缩放（可能变形），Cut-指定高宽裁减（不变形）
+        </member>
+        <member name="T:CySoft.Frame.Image.Thumbnail">
+            <summary>
+            生成缩略图类
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.Thumbnail.OriginalImage">
+            <summary>
+            源图片文件名，相对路径
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.Thumbnail.ThumbnailMode">
+            <summary>
+            缩略图生成模式，Width-指定宽，高按比例，Height -指定高，宽按比例，Both-指定高宽缩放（可能变形），Cut-指定高宽裁减（不变形）
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.Thumbnail.ThumbnailImage">
+            <summary>
+            缩略图文件名，相对路径
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.Thumbnail.Width">
+            <summary>
+            缩略图宽
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.Thumbnail.Height">
+            <summary>
+            缩略图高
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Image.Thumbnail.Make">
+            <summary>
+            生成缩略图
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Image.MarkType">
+            <summary>
+            水印类型，Text-文字水印，Image-图片水印
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Image.WaterMark">
+            <summary>
+            给图片添加水印的类
+            </summary>
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._markX">
+            水印文字内容        
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._markY">
+            在原图打水印的X坐标，单位为像素
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._transparency">
+            在原图打水印的Y坐标，单位为像素
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._fontFamily">
+            水印的透明度
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._textColor">
+            文字水印的默认字体类型，宋体
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._textbold">
+            文字水印的默认字体颜色，黑色
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark.sizes">
+            文字水印的默认是否加粗，不加粗
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._waterPosition">
+            文字水印的字体大小集合
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._imagePath">
+            图片水印位置 0=不使用 1=左上 2=中上 3=右上 4=左中  9=右下
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._image">
+            需要打水印的原图片文件名，相对地址
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._waterImagePath">
+            需要打水印的原图片
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._waterImage">
+            水印图片路径，相对路径。
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._markedImageFileName">
+            水印图片
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._markedImageFileNameIn">
+            打水印后的图片文件名，相对地址
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._markType">
+            打水印后的图片默认设置文件名，相对地址
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._fileType">
+            水印类型，文字和图片，默认为文字
+        </member>
+        <member name="F:CySoft.Frame.Image.WaterMark._fileTypeVaild">
+            文件后缀名
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.WaterMarkType">
+            <summary>
+            水印类型
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.WaterMarkTypeID">
+            <summary>
+            水印类型，1-文本水印，2-图片水印
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.Text">
+            <summary>
+            文字水印的内容
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.WaterImagePath">
+            <summary>
+            水印图片的路径，相对路径
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.WaterImage">
+            <summary>
+            水印图片，相对路径
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.MarkX">
+            <summary>
+            添加水印位置的横坐标
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.MarkY">
+            <summary>
+            添加水印位置的纵坐标
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.WaterPosition">
+            <summary>
+            图片水印位置 0=不使用 1=左上 2=中上 3=右上 4=左中  9=右下，此属性设置后，MarkX和MarkY设置无效。
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.Transparency">
+            <summary>
+            水印的透明度，1~10之间
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.TextColor">
+            <summary>
+            水印文字的颜色
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.TextFontFamilyStr">
+            <summary>
+            水印文字的字体
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.Bold">
+            <summary>
+            水印文字是否加粗
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.SourceImage">
+            <summary>
+            原图文件名，包含绝对全路径
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.MarkedImage">
+            <summary>
+            加过水印之后的图
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Image.WaterMark.MarkedImageFileName">
+            <summary>
+            打过水印后图片的名称
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Image.WaterMark.Mark">
+            <summary>
+            生成水印图片
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Image.WaterMark.MakeWaterImage">
+            <summary>
+            生成图片水印s
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Image.WaterMark.MakeWaterText">
+            <summary>
+            生成文字水印
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:CySoft.Frame.SendMailType">
+            <summary>
+            邮件发生类型，Local-用本地邮件服务器，SMTP-外部邮件服务器，GMAIL-gmail.com邮件服务器
+            </summary>
+        </member>
+        <member name="T:CySoft.Frame.Mail">
+            <summary>
+            发生邮件类
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.FromMail">
+            <summary>
+            发件人邮箱地址
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.FromName">
+            <summary>
+            发件人姓名
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.Subject">
+            <summary>
+            邮件标题
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.Body">
+            <summary>
+            邮件内容，可以是文本或HTML，需设置isBodyHTML
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.Priority">
+            <summary>
+            邮件发送优先级
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.IsBodyHTML">
+            <summary>
+            邮件内容是否是HTML格式，如果是，设置为true，默认为false
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.BodyText">
+            <summary>
+            邮件内容格式为文本
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.BodyHtml">
+            <summary>
+            邮件内容格式为HTML
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.Host">
+            <summary>
+            邮件服务器地址，域名或IP
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.Port">
+            <summary>
+            邮件服务器发送端口
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.IsSSL">
+            <summary>
+            是否经过ssl加密，默认为false
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.ToMail">
+            <summary>
+            收件人邮箱，多个邮箱以‘,’逗号隔开
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.CCMail">
+            <summary>
+            抄送人邮箱，多个邮箱以‘,’逗号隔开
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.MailUser">
+            <summary>
+            邮件服务器用户名称
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.MailPassword">
+            <summary>
+            邮件服务器用户密码
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.SendTypeStr">
+            <summary>
+            发送方法，输入字符串，有local,smtp,gmail三种，默认为smtp
+            </summary>
+        </member>
+        <member name="P:CySoft.Frame.Mail.SendType">
+            <summary>
+            发送方法，使用枚举类型，默认为SMTP
+            </summary>
+        </member>
+        <member name="M:CySoft.Frame.Mail.Send">
+            <summary>
+            公共调用发送邮件方法
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Mail.SendMail">
+            <summary>
+            私有发送邮件方法
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Mail.SendMailByLocal">
+            <summary>
+            使用本机发邮件，本机上必须有SMTP服务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Mail.SendMailBySMTP">
+            <summary>
+            使用邮件服务器发送邮件，必须有邮箱和密码
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CySoft.Frame.Mail.SendMailByGmail">
+            <summary>
+            通过GMAIL发邮件，必须有GMail邮箱
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

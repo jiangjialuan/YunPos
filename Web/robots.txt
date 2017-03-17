@@ -1,0 +1,15 @@
+﻿User-Agent: *
+Disallow: /Account/
+Disallow: /Admin/
+Disallow: /AdminService/
+Disallow: /Css/
+Disallow: /Images/
+Disallow: /Scripts/
+Disallow: /UpLoad/
+Disallow: /Views/
+Disallow: /Weixin/
+Disallow: /WeixinSns/
+Disallow: /WxAccount/
+Disallow: /WxRepSearch/
+Disallow: /WxRepSet/
+Disallow: /

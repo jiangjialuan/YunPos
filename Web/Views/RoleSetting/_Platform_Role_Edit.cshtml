@@ -1,0 +1,151 @@
+﻿@using CySoft.Model.Tb;
+@{
+    Tb_Role item_edit = ViewData["item_edit"] as Tb_Role;
+    item_edit = item_edit ?? new Tb_Role();
+    string option = ViewData["option"].ToString();
+    SelectList selectList=  ViewData["selectList"] as SelectList;
+}
+<style>
+    .dropdown-menu {
+        max-height: 510px;
+    }
+</style>
+
+<div class="modal fade in" id="dialog-dw" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">编辑角色</h4>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="">
+                <div class="modal-body tab-content ">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>角色名称</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:30,check_categoryname_spfl:true}" placeholder="请输入角色名称" type="text" name="name" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.name)" id="txt_mc">
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>角色名称</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                @Html.DropDownList("flag_type", selectList, new Dictionary<string, object>()
+                                {
+                                    {"class", "form-control {required:true,maxlength:30}"}
+                                })
+                            </label>
+                        </div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                 <span>角色描述</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {maxlength:100}" placeholder="请输入角色描述" type="text" name="role_describe" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.role_describe)" id="txt_role_describe">
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="id" name="id" value="@string.Format("{0}", item_edit == null ? "0" : item_edit.id)" />
+                    <input type="hidden" id="hid_option" value="@option">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button').button('loading');
+
+            //$.post(
+            //    $.DHB.U('rolesetting/' + (Tnum > 0 ? 'savePlatformRoleEdit' : 'savePlatformRoleAdd')),
+            //    $(_ + ".validate").serialize(),
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+            //            $(_ + '#submit-button').text("提交成功！");
+            //            $.DHB.url('rolesetting/list','cache');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //            btn.button('reset');
+            //        }
+            //    }, 'json'
+            //);
+            app.httpAjax.post({
+                data: $(_ + ".validate").serialize(),
+                headers: {},
+                url: $.DHB.U('rolesetting/' + (Tnum > 0 ? 'savePlatformRoleEdit' : 'savePlatformRoleAdd')),
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $(_ + '#submit-button').text("提交成功！");
+                        $.DHB.url('rolesetting/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        btn.button('reset');
+                    }
+                },
+                error: null,
+                complete: null
+            });
+
+            return false;
+        });
+    };
+
+    app.spfl = app.spfl || {};
+
+    jQuery.validator.addMethod("check_categorynum_spfl",
+        function (value, element) {
+            if (!$(_ + '#category_num').val()) {
+                return true;
+            }
+            else {
+                if ($(_ + '#category_id').val()) {
+                    strCheckUrl = $.DHB.U('spfl/saveEdit?ajax=checkCategorynum&category_id=' + $(_ + '#category_id').val() + '&category_num=' + encodeURIComponent($(_ + '#category_num').val()));
+                } else {
+                    strCheckUrl = $.DHB.U('spfl/saveAdd?ajax=checkCategorynum&category_num=' + encodeURIComponent($(_ + '#category_num').val()));
+                }
+                var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                return $.trim(xhr.responseText) == 'true' ? true : false;
+            }
+        }, "商品分类编号不能够重复！"
+    );
+
+    jQuery.validator.addMethod("check_categoryname_spfl",
+            function (value, element) {
+                if (!$(_ + '#category_name').val()) {
+                    return true;
+                } else {
+                    if ($(_ + '#category_id').val()) {
+                        strCheckUrl = $.DHB.U('spfl/saveEdit?ajax=checkCategoryname&parent_id=' + $(_ + '#parent_id').val() + '&category_id=' + $(_ + '#category_id').val() + '&category_name=' + encodeURIComponent($(_ + '#category_name').val()));
+                    } else {
+                        strCheckUrl = $.DHB.U('spfl/saveAdd?ajax=checkCategoryname&parent_id=' + $(_ + '#parent_id').val() + '&category_name=' + encodeURIComponent($(_ + '#category_name').val()));
+                    }
+                    var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                    return $.trim(xhr.responseText) == 'true' ? true : false;
+                }
+            }, "商品分类名称不能重复！"
+        );
+</script>

@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{35946CDE-D42D-465A-AEBA-4183E33E77B0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CySoft.BLL</RootNamespace>
+    <AssemblyName>CySoft.BLL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Web\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Apache.Ibatis.Common, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Apache.Ibatis.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.Ibatis.DataMapper, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\IBatis.Net\Apache.Ibatis.DataMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="CySoft.Frame, Version=1.0.0.18457, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\CySoft\CySoft.Frame.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Aop, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Spring.Net\Spring.Aop.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core, Version=1.3.1.40711, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Spring.Net\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountBLL\AccountBLL.cs" />
+    <Compile Include="AccountBLL\AccountFunctionBLL.cs" />
+    <Compile Include="AdminBLL\FunctionBll.cs" />
+    <Compile Include="AdminBLL\RoleModuleBll.cs" />
+    <Compile Include="AdminBLL\Tb_Pos_Role_ModuleBLL.cs" />
+    <Compile Include="AdminBLL\UserMasterBLL.cs" />
+    <Compile Include="AdvertisBLL\AdvertisBLL.cs" />
+    <Compile Include="AdvertisBLL\AdvertisLogBLL.cs" />
+    <Compile Include="BusinessBLL\BusinessBLL.cs" />
+    <Compile Include="BusinessBLL\Td_Xs_Th_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Xs_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Xs_Dd_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Jh_Dd_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Kc_Kspd_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Fk_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Kc_Sltz_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Sk_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Sk_2BLL.cs" />
+    <Compile Include="BusinessBLL\Tz_Jxc_FlowBLL.cs" />
+    <Compile Include="BusinessBLL\Tz_Yf_Jsc_GxBLL.cs" />
+    <Compile Include="BusinessBLL\Td_Jh_Th_1BLL.cs" />
+    <Compile Include="BusinessBLL\Td_Jh_1BLL.cs" />
+    <Compile Include="BusinessBLL\Tz_YsBLL.cs" />
+    <Compile Include="BusinessBLL\Tz_Ys_FlowBLL.cs" />
+    <Compile Include="BusinessBLL\Tz_Ys_JscBLL.cs" />
+    <Compile Include="FaqBLL\FaqBLL.cs" />
+    <Compile Include="FlagBLL\Ts_FlagBLL.cs" />
+    <Compile Include="FundsBLL\BankAccountBLL.cs" />
+    <Compile Include="FundsBLL\FundsBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsFavoritesBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsRecommendBll.cs" />
+    <Compile Include="GoodsBLL\GoodsServiceBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsTagBll.cs" />
+    <Compile Include="GoodsBLL\Tb_GysBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_DwBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_PayBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_ShopBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_ShopspBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_Shopsp_ExportdataBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_Shopsp_Qc_MdBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_GysflBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_Shop_ShopBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_SpflBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_Sp_FgcfBLL.cs" />
+    <Compile Include="GoodsBLL\Tb_Sp_JgzhBLL.cs" />
+    <Compile Include="InfoBLL\InfoBLL.cs" />
+    <Compile Include="InfoBLL\InfoTypeBLL.cs" />
+    <Compile Include="InfoBLL\InfoUserBLL.cs" />
+    <Compile Include="KHBLL\Tb_KhBLL.cs" />
+    <Compile Include="KHBLL\Tb_KhflBLL.cs" />
+    <Compile Include="LSBLL\Td_Ls_1BLL.cs" />
+    <Compile Include="LSBLL\Td_Ls_2BLL.cs" />
+    <Compile Include="LSBLL\Td_Ls_Jb_1BLL.cs" />
+    <Compile Include="LSBLL\Td_Ls_Jb_2BLL.cs" />
+    <Compile Include="LszdBLL\Ts_LszdBLL.cs" />
+    <Compile Include="MemberBLL\Tb_Hy_CzruleBLL.cs" />
+    <Compile Include="MemberBLL\Tb_Hy_Czrule_ZsspBLL.cs" />
+    <Compile Include="MemberBLL\Tb_Hy_JfruleBLL.cs" />
+    <Compile Include="MemberBLL\Tb_Hy_JfconvertspBLL.cs" />
+    <Compile Include="MemberBLL\Tb_Hy_ShopBLL.cs" />
+    <Compile Include="MemberBLL\Tb_HyflBLL.cs" />
+    <Compile Include="MemberBLL\Tb_HyBLL.cs" />
+    <Compile Include="MemberBLL\Td_Hy_Cz_1BLL.cs" />
+    <Compile Include="MemberBLL\Tz_Hy_JfBLL.cs" />
+    <Compile Include="MemberBLL\Tz_Hy_JeBLL.cs" />
+    <Compile Include="MemberBLL\Tz_Hy_Je_FlowBLL.cs" />
+    <Compile Include="MemberBLL\Td_Hy_Czrule_1BLL.cs" />
+    <Compile Include="ParmBLL\Ts_ParmBLL.cs" />
+    <Compile Include="ParmBLL\Ts_Parm_ShopBLL.cs" />
+    <Compile Include="PayBLL\PayBLL.cs" />
+    <Compile Include="PromoteBLL\Tb_PromoteBLL.cs" />
+    <Compile Include="PromoteBLL\Tb_Promote_LargessBLL.cs" />
+    <Compile Include="PromoteBLL\Tb_Promote_SortBLL.cs" />
+    <Compile Include="PromoteBLL\Td_Promote_1BLL.cs" />
+    <Compile Include="PromoteBLL\Td_Promote_2BLL.cs" />
+    <Compile Include="PromoteBLL\Td_Promote_ShopBLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Cktzd_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Cktzd_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Ck_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Ck_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Dbck_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Dbck_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Dbrk_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Dbrk_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Fpck_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Fpck_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Fprk_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Fprk_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Fpsq_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Fpsq_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Fptzd_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Fptzd_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Rk_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Rk_2BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Sq_1BLL.cs" />
+    <Compile Include="PSBLL\Td_Ps_Sq_2BLL.cs" />
+    <Compile Include="ReportBLL\ReportBLL.cs" />
+    <Compile Include="SaleBLL\SaleOrderBLL.cs" />
+    <Compile Include="SaleBLL\SaleOutBLL.cs" />
+    <Compile Include="SystemBLL\DistrictsBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\PosFunctionBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\PosRoleFuncSettingBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\ProcessBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\ProcessFunBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\RoleSettingBLL.cs" />
+    <Compile Include="Base\BaseBLL.cs" />
+    <Compile Include="Base\BillBLL.cs" />
+    <Compile Include="Base\AbstractBaseBLL.cs" />
+    <Compile Include="Base\TreeBLL.cs" />
+    <Compile Include="BuyerBLL\BuyerBLL.cs" />
+    <Compile Include="BuyerBLL\RecieverAddressBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsCartBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsInventoryBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsSpecBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsTpyeBLL.cs" />
+    <Compile Include="GoodsBLL\GoodsUnitsBLL.cs" />
+    <Compile Include="IndustrieBLL\IndustrieBLL.cs" />
+    <Compile Include="OrderBLL\OrderBLL.cs" />
+    <Compile Include="OrderBLL\OrderLogBLL.cs" />
+    <Compile Include="OrderBLL\OrderServiceBLL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Base\Proxy\ExceptionAdvice.cs" />
+    <Compile Include="Base\Proxy\TransactionAdvice.cs" />
+    <Compile Include="SystemBLL\CodingRuleBLL.cs" />
+    <Compile Include="SystemBLL\ConfigBLL.cs" />
+    <Compile Include="SystemBLL\LogBLL\LogBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\CompanyBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\ParametersBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\SettingBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\SystemBLL.cs" />
+    <Compile Include="SystemBLL\SettingBLL\UserRoleBLL.cs" />
+    <Compile Include="SystemBLL\Tb_Pay_ConfigBLL.cs" />
+    <Compile Include="SystemBLL\Ts_NoticeBLL.cs" />
+    <Compile Include="SystemBLL\Tb_TicketBLL.cs" />
+    <Compile Include="SystemBLL\UtiletyBLL.cs" />
+    <Compile Include="Tools\CodingRule\AbstractCodingRule.cs" />
+    <Compile Include="Tools\CodingRule\CodingRule.cs" />
+    <Compile Include="Tools\CodingRule\ICodingRule.cs" />
+    <Compile Include="Tools\CodingRule\TreeCodingRule.cs" />
+    <Compile Include="Tools\CodingRule\BaseCodingRule.cs" />
+    <Compile Include="Tools\CodingRule\BillCodingRule.cs" />
+    <Compile Include="Tools\DecimalExtension.cs" />
+    <Compile Include="UserBLL\Tb_User_ShopBLL.cs" />
+    <Compile Include="UserBLL\UserAccreditBLL.cs" />
+    <Compile Include="UserBLL\UserCheckInBLL.cs" />
+    <Compile Include="UserBLL\UserPicBLL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CySoft.IBLL\CySoft.IBLL.csproj">
+      <Project>{C6F971E2-F9E0-40B3-BF32-C3EB27088199}</Project>
+      <Name>CySoft.IBLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.IDAL\CySoft.IDAL.csproj">
+      <Project>{76CD450C-470B-4D37-9A56-5B08FB056082}</Project>
+      <Name>CySoft.IDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Model\CySoft.Model.csproj">
+      <Project>{48225337-7E00-43F0-A2AB-E19DB332F6C9}</Project>
+      <Name>CySoft.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CySoft.Utility\CySoft.Utility.csproj">
+      <Project>{26C05CD0-58EE-4721-A3E0-DD0F66F9FDC0}</Project>
+      <Name>CySoft.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Configs\BusinessObjects.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

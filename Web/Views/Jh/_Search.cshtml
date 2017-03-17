@@ -1,0 +1,90 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Td;
+@using CySoft.Utility;
+
+
+
+@{
+    var pageList = ViewData["List"] as PageList<Td_Jh_1_QueryModel>;
+    var digit = ViewData["DigitHashtable"] as System.Collections.Hashtable;//小数点控制
+    
+    
+    string version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    string id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();
+}
+
+
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">
+            </th>
+            <th width="160" class="text-center">开单日期</th>
+            
+            <th>单据编号</th>
+  @if (version == "20")// 10 单店  连锁 20
+            {       
+            <th>门店</th>
+            }
+            <th>供应商名称</th>
+            <th>经办人</th>
+            <th>明细总金额</th>
+            <th>实付金额</th>
+            <th width="100">
+                操作
+            </th>
+        </tr>
+    </thead>
+    <tbody id="dwlist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="@string.Format(version == "20"?"9":"8")" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = 1;
+                    foreach (var item in list)
+                    {
+
+                        <tr id="row-jh-id-@item.id" class="tr-status-finished" onclick="app.jh.select_jh(this);" data-value="@JSON.Serialize(item)" style="cursor:pointer">
+                            <td class="text-center">
+                                @(index++)
+                            </td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.rq)</td>
+
+                            <td>@item.dh</td>
+                  @if (version == "20")// 10 单店  连锁 20
+                                  {           
+                            <td>@item.shop_name</td>
+                                  }
+                            <td>@item.gys_name</td>
+                            <td>@item.jbr_name</td>
+                            <td>@item.je_mxtotal.Digit((int)digit["dj_digit"])</td>
+                            <td>@item.je_sf.Digit((int)digit["dj_digit"])</td>
+                            <td>
+                                <a class="color-b">选择</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript">
+    app.c.public_data['jh/search'] = app.c.public_data['jh/search'] || {};
+    app.c.public_data['jh/search']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['jh/search']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['jh/search']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

@@ -1,0 +1,1216 @@
+﻿Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,463 [7] DEBUG [(null)] - Close Connection "22109184" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,705 [7] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_state]= @param1  and db.[flag_delete]= @param2]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,708 [7] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_state,1], @param2=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,711 [7] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte], @param2=[Byte, System.Byte]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,714 [7] DEBUG [(null)] - Open Connection "35910144" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,777 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,778 [7] DEBUG [(null)] - Close Connection "35910144" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,779 [7] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User.GetItem] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select  db.[id_cyuser],db.[id_masteruser],db.[id],db.[username],db.[password],db.[name],isnull(master.companyname,db.[companyname])companyname,db.[flag_sex],db.[id_father],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[rq_start],db.[rq_stop],db.[flag_state],db.[flag_master],db.[bz],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[version],db.flag_delete,db.[flag_industry],db.[companyno]
+      ,db.id_shop
+      from  [tb_user]
+      as db
+      LEFT JOIN Tb_user master ON db.id_father=master.id
+       where  db.[id]= @param0]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,780 [7] DEBUG [(null)] - Statement Id: [Tb_User.GetItem] Parameters: [@param0=[id,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,782 [7] DEBUG [(null)] - Statement Id: [Tb_User.GetItem] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,783 [7] DEBUG [(null)] - Open Connection "44184087" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,796 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,797 [7] DEBUG [(null)] - Close Connection "44184087" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,799 [7] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User_Role.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id_user],db.[id_role],db.[id_create],db.[rq_create],db.[id_masteruser],db.flag_delete from  [Tb_user_role]
+		  as db
+			 where  db.[id_user]= @param0  and db.[flag_delete]= @param1  order by  db.[id_user] asc,db.[id_role] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,800 [7] DEBUG [(null)] - Statement Id: [Tb_User_Role.QueryList] Parameters: [@param0=[id_user,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,801 [7] DEBUG [(null)] - Statement Id: [Tb_User_Role.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,802 [7] DEBUG [(null)] - Open Connection "48788734" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,824 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,825 [7] DEBUG [(null)] - Close Connection "48788734" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,827 [7] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Function.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id],db.[name],db.[version],db.[flag_type],db.[flag_stop],db.[id_father],db.[path],db.[sort_id],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[controller_name],db.[action_name],db.[icon],db.[tag_name] from  [Tb_function]
+		  as db
+			 where  
+					db.[flag_type] in  (  @param0 ,   @param1 ) and db.[flag_stop]= @param2  and 
+					exists(
+					select 1 from Tb_function as fun
+					where
+					fun.flag_stop = 0
+					 and 
+						exists(select 1 from Tb_role_function as rf where rf.id_function = fun.id and rf.id_role in  (  @param3 ,   @param4 ,   @param5 ) )
+					 
+					and (db.path+'/' like fun.path+'/%' or fun.path+'/' like db.path+'/%')
+					)
+				 order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,828 [7] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Parameters: [@param0=[flag_typeList[0],controller], @param1=[flag_typeList[1],action], @param2=[flag_stop,0], @param3=[id_roleList[0],], @param4=[id_roleList[1],1], @param5=[id_roleList[2],2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,829 [7] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String], @param2=[Int32, System.Int32], @param3=[String, System.String], @param4=[String, System.String], @param5=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,830 [7] DEBUG [(null)] - Open Connection "34561334" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,899 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,901 [7] DEBUG [(null)] - Close Connection "34561334" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,903 [7] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Function.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id],db.[name],db.[version],db.[flag_type],db.[flag_stop],db.[id_father],db.[path],db.[sort_id],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[controller_name],db.[action_name],db.[icon],db.[tag_name] from  [Tb_function]
+		  as db
+			 where  
+          db.[flag_stop]= 0  and
+          db.id in (select id_function from dbo.tb_role_function where id_role in  (  @param0 ,   @param1 ,   @param2 ) )
+         order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,904 [7] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Parameters: [@param0=[rolelist[0],], @param1=[rolelist[1],1], @param2=[rolelist[2],2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,905 [7] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String], @param2=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,907 [7] DEBUG [(null)] - Open Connection "66782207" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,935 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,936 [7] DEBUG [(null)] - Close Connection "66782207" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:04,951 [7] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:04,953 [7] DEBUG [(null)] - Open Connection "56329192" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,956 [7] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [DataTools.GetTable] based off of PreparedStatement: [set transaction isolation level read uncommitted
+     
+      select [object_id] as id,[name],[create_date],[modify_date] from  sys.tables
+       where  [name] =  @param0]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,957 [7] DEBUG [(null)] - Statement Id: [DataTools.GetTable] Parameters: [@param0=[name,ts_log]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,958 [7] DEBUG [(null)] - Statement Id: [DataTools.GetTable] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,975 [7] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [DataTools.ExecuteSql] based off of PreparedStatement: [ 
+      insert into[ts_log](id,id_user,rq,content,IP,flag_from,flag_lx) values ('e0201b94-ff01-40cb-af18-b255fd7c88a1','12c5a6f0-d971-4650-83ba-495a5ef7ffae','2017-02-15 18:01:04.956',N'登录成功！','::1','browser','LogOn')
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:04,978 [7] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [DataTools.ExecuteSql] based off of PreparedStatement: [ 
+      insert into[ts_log](id,id_user,rq,content,IP,flag_from,flag_lx) values ('e0201b94-ff01-40cb-af18-b255fd7c88a1','12c5a6f0-d971-4650-83ba-495a5ef7ffae','2017-02-15 18:01:04.956',N'登录成功！','::1','browser','LogOn')
+    ]
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:04,998 [7] DEBUG [(null)] - Commit transaction
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:05,000 [7] DEBUG [(null)] - Calling AdoTransaction.Dispose()
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,001 [7] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,002 [7] DEBUG [(null)] - Close Connection "56329192" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,053 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User_Role.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id_user],db.[id_role],db.[id_create],db.[rq_create],db.[id_masteruser],db.flag_delete from  [Tb_user_role]
+		  as db
+			 where  db.[id_user]= @param0  and db.[flag_delete]= @param1  order by  db.[id_user] asc,db.[id_role] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,055 [8] DEBUG [(null)] - Statement Id: [Tb_User_Role.QueryList] Parameters: [@param0=[id_user,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,057 [8] DEBUG [(null)] - Statement Id: [Tb_User_Role.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,058 [8] DEBUG [(null)] - Open Connection "3038911" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,069 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,071 [8] DEBUG [(null)] - Close Connection "3038911" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,072 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Function.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id],db.[name],db.[version],db.[flag_type],db.[flag_stop],db.[id_father],db.[path],db.[sort_id],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[controller_name],db.[action_name],db.[icon],db.[tag_name] from  [Tb_function]
+		  as db
+			 where  db.[flag_stop]= @param0  and 
+          db.[flag_stop]= 0  and
+          db.id in (select id_function from dbo.tb_role_function where id_role in  (  @param1 ,   @param2 ,   @param3 ) )
+         order by  
+					db.sort_id
+					   asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,073 [8] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Parameters: [@param0=[flag_stop,0], @param1=[rolelist[0],], @param2=[rolelist[1],1], @param3=[rolelist[2],2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,075 [8] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Types: [@param0=[Int32, System.Int32], @param1=[String, System.String], @param2=[String, System.String], @param3=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,077 [8] DEBUG [(null)] - Open Connection "45330878" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,105 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,107 [8] DEBUG [(null)] - Close Connection "45330878" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,116 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.home_page_data1] based off of PreparedStatement: [ 
+      declare @xse decimal(28,7),@xsbs int,@thje decimal(28,8),@thbs int,@je_ml decimal(28,7)
+      --销售额、销售笔数
+      select @xse=sum(je_ys),@xsbs=sum(num)
+      from
+      (select SUM(je_ys) je_ys,COUNT(1) num
+      from td_ls_1c
+      where id_shop= @param0  and rq between  @param1  and  @param2 
+      union all
+      select SUM(je_ys),COUNT(1)
+      from td_ls_1
+      where id_shop= @param0  and rq between  @param1  and  @param2  )temp
+      --退货金额、退货笔数
+      select @thje=sum(je_mxtotal),@thbs=sum(num)
+      from
+      (select SUM(je_ys) je_mxtotal,COUNT(1) num
+      from td_ls_1
+      where id_shop= @param0  and rq between  @param1  and  @param2  and bm_djlx='LS020'
+      union all
+      select SUM(je_ys) je_mxtotal,COUNT(1) num
+      from td_ls_1c
+      where id_shop= @param0  and rq between  @param1  and  @param2  and bm_djlx='LS020')temp
+      --毛利
+      select @je_ml=SUM(je_ml)
+      from
+      (select SUM(je_ml) je_ml
+      from td_ls_1 ls1,td_ls_2 ls2
+      where ls1.id_masteruser = @param3 --主用户
+      and ls1.id_shop =  @param0 ---登录门店
+      and ls2.id_bill = ls1.id
+      and ls1.rq between  @param1  and  @param2 
+      union all
+      select SUM(je_ml) je_ml
+      from td_ls_1c ls1c,td_ls_2c ls2c
+      where ls1c.id_masteruser = @param3 --主用户
+      and ls1c.id_shop =  @param0 ---登录门店
+      and ls2c.id_bill = ls1c.id
+      and ls1c.rq between  @param1  and  @param2 )temp
+      select @xse xse,@xsbs xsbs,@thje thje,@thbs thbs,@je_ml je_ml
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,117 [8] DEBUG [(null)] - Statement Id: [Td_Ls_1.home_page_data1] Parameters: [@param0=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[lgrq,2017/2/15 0:00:00], @param2=[bgrq,2017/2/15 23:59:59], @param3=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,118 [8] DEBUG [(null)] - Statement Id: [Td_Ls_1.home_page_data1] Types: [@param0=[String, System.String], @param1=[DateTime, System.DateTime], @param2=[DateTime, System.DateTime], @param3=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,120 [8] DEBUG [(null)] - Open Connection "66629781" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,143 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,144 [8] DEBUG [(null)] - Close Connection "66629781" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,146 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.QueryHomePagePays] based off of PreparedStatement: [ 
+      set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select temp.*,p.mc from
+      (
+      select temp1.id_pay,SUM(temp1.je) je from
+      (
+      select lssk.id_pay,SUM(lssk.je) je from td_ls_sk lssk
+      left join td_ls_1 ls1 on lssk.id_bill=ls1.id
+      where ls1.id_shop= @param0  and ls1.rq between  @param1  and  @param2 
+      group by lssk.id_pay
+      union all
+      select lssk.id_pay,SUM(lssk.je) je from td_ls_skc lssk
+      left join td_ls_1c ls1c on lssk.id_bill=ls1c.id
+      where ls1c.id_shop= @param0  and ls1c.rq between  @param1  and  @param2 
+      group by lssk.id_pay
+      )temp1
+      group by temp1.id_pay
+      )temp
+      left join tb_pay p on temp.id_pay=p.id
+      order by p.flag_type
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,147 [8] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePagePays] Parameters: [@param0=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[lgrq,2017/2/15 0:00:00], @param2=[bgrq,2017/2/15 23:59:59]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,149 [8] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePagePays] Types: [@param0=[String, System.String], @param1=[DateTime, System.DateTime], @param2=[DateTime, System.DateTime]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,150 [8] DEBUG [(null)] - Open Connection "49382823" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,164 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,166 [8] DEBUG [(null)] - Close Connection "49382823" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,168 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.QueryHomePageShopKcj] based off of PreparedStatement: [ 
+      set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select SUM(je_qm) as value from tz_sp_kc where id_masteruser= @param0  and id_shop= @param1 
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,169 [8] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePageShopKcj] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,173 [8] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePageShopKcj] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,175 [8] DEBUG [(null)] - Open Connection "15225125" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,191 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,194 [8] DEBUG [(null)] - Close Connection "15225125" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,198 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.QueryHomePageCxsp] based off of PreparedStatement: [ 
+      set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+
+      exec p_query_cxsp  '12c5a6f0-d971-4650-83ba-495a5ef7ffae','ba11c557-1607-4fdd-8f27-5c18d7ed94c2','2017/2/15 0:00:00','2017/2/15 23:59:59'
+
+
+
+    ]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,201 [8] DEBUG [(null)] - Open Connection "26458746" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,235 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,236 [8] DEBUG [(null)] - Close Connection "26458746" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,237 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.QueryHomePageZxsp] based off of PreparedStatement: [ 
+      set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select top 8 a.mc,a.id from tb_shopsp a
+      where a.id_masteruser= @param0 --主用户
+      and a.id_shop=  @param1 ----登录门店
+      and  exists(select 1 from tz_sp_kc b where b.id_masteruser=a.id_masteruser
+      and b.id_shop=a.id_shop
+      and b.id_kcsp=a.id_kcsp
+      and b.sl_qm>0)
+      and not exists(select 1 from td_ls_1c c,td_ls_2c d
+      where c.id=d.id_bill
+      and c.id_masteruser=a.id_masteruser
+      and c.id_shop=a.id_shop
+      and d.id_kcsp=a.id_kcsp
+      and c.rq>DATEADD(MM,-1,GETDATE()) )
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,239 [8] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePageZxsp] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,240 [8] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePageZxsp] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,241 [8] DEBUG [(null)] - Open Connection "39449526" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,255 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,257 [8] DEBUG [(null)] - Close Connection "39449526" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,258 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Function.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id],db.[name],db.[version],db.[flag_type],db.[flag_stop],db.[id_father],db.[path],db.[sort_id],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[controller_name],db.[action_name],db.[icon],db.[tag_name] from  [Tb_function]
+		  as db
+			 where  db.[flag_type]= @param0  and db.[flag_stop]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,260 [8] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Parameters: [@param0=[flag_type,action], @param1=[flag_stop,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,261 [8] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,262 [8] DEBUG [(null)] - Open Connection "50346327" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,285 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,286 [8] DEBUG [(null)] - Close Connection "50346327" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,288 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Notice.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [ts_notice]
+      as db
+       where  db.[flag_delete]= @param0]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,290 [8] DEBUG [(null)] - Statement Id: [Ts_Notice.GetCount] Parameters: [@param0=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,291 [8] DEBUG [(null)] - Statement Id: [Ts_Notice.GetCount] Types: [@param0=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,293 [8] DEBUG [(null)] - Open Connection "50874780" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,313 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,314 [8] DEBUG [(null)] - Close Connection "50874780" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,316 [8] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Notice.QueryPage] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select t.* from (select row_number() over( order by  
+          db.rq_create desc
+           ) as rownumber,db.* from  [ts_notice]
+      as db  where  db.[flag_delete]= @param0  ) as t
+       where  
+          t.rownumber between ( @param1  + 1)
+           and 
+            ( @param1  +  @param2 )]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,317 [8] DEBUG [(null)] - Statement Id: [Ts_Notice.QueryPage] Parameters: [@param0=[flag_delete,0], @param1=[start,0], @param2=[limit,10]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:05,319 [8] DEBUG [(null)] - Statement Id: [Ts_Notice.QueryPage] Types: [@param0=[Int32, System.Int32], @param1=[Int32, System.Int32], @param2=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,320 [8] DEBUG [(null)] - Open Connection "3318699" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,336 [8] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:05,338 [8] DEBUG [(null)] - Close Connection "3318699" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,746 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id_user],db.[id_shop],db.[id_create],s.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_default],s.mc,s.bm from  [tb_user_shop]
+      as db
+      left join dbo.tb_shop s on db.id_shop=s.id
+       where  db.[id_user]= @param0  and db.[id_masteruser]= @param1  order by  db.[id_user] asc,db.[id_shop] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,748 [9] DEBUG [(null)] - Statement Id: [Tb_User_Shop.QueryList] Parameters: [@param0=[id_user,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,749 [9] DEBUG [(null)] - Statement Id: [Tb_User_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,750 [9] DEBUG [(null)] - Open Connection "6225957" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,768 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,769 [9] DEBUG [(null)] - Close Connection "6225957" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,772 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id]= @param0  and db.[id_masteruser]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,773 [9] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,774 [9] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,775 [9] DEBUG [(null)] - Open Connection "63960900" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,790 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,791 [9] DEBUG [(null)] - Close Connection "63960900" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,794 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ps_Sq_1.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [td_ps_sq_1]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,796 [9] DEBUG [(null)] - Statement Id: [Td_Ps_Sq_1.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,797 [9] DEBUG [(null)] - Statement Id: [Td_Ps_Sq_1.GetCount] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,798 [9] DEBUG [(null)] - Open Connection "9874138" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,819 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,821 [9] DEBUG [(null)] - Close Connection "9874138" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,827 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Parm.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[parmcode],db.[parmname],db.[parmvalue],db.[nlast],db.[regex],db.[version],db.[parmdescribe],db.[sort_id],db.[flag_editstyle] from  [ts_parm]
+      as db
+       where  
+
+          (
+          db.[id_masteruser]='0'
+           or  db.[id_masteruser]= @param0   
+          )
+         order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,828 [9] DEBUG [(null)] - Statement Id: [Ts_Parm.QueryList] Parameters: [@param0=[self_id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,830 [9] DEBUG [(null)] - Statement Id: [Ts_Parm.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,832 [9] DEBUG [(null)] - Open Connection "51616471" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,855 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,856 [9] DEBUG [(null)] - Close Connection "51616471" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,869 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_state]= @param1  and db.[flag_delete]= @param2  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,871 [9] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_state,1], @param2=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:07,872 [9] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte], @param2=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,873 [9] DEBUG [(null)] - Open Connection "41441461" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,897 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:07,899 [9] DEBUG [(null)] - Close Connection "41441461" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,937 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id_user],db.[id_shop],db.[id_create],s.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_default],s.mc,s.bm from  [tb_user_shop]
+      as db
+      left join dbo.tb_shop s on db.id_shop=s.id
+       where  db.[id_user]= @param0  and db.[id_masteruser]= @param1  order by  db.[id_user] asc,db.[id_shop] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,939 [3] DEBUG [(null)] - Statement Id: [Tb_User_Shop.QueryList] Parameters: [@param0=[id_user,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,940 [3] DEBUG [(null)] - Statement Id: [Tb_User_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,942 [3] DEBUG [(null)] - Open Connection "10053833" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,957 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,958 [3] DEBUG [(null)] - Close Connection "10053833" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,960 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id]= @param0  and db.[id_masteruser]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,961 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,963 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,964 [3] DEBUG [(null)] - Open Connection "36697443" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,977 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,979 [3] DEBUG [(null)] - Close Connection "36697443" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,980 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_state]= @param1  and db.[flag_delete]= @param2  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,982 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_state,1], @param2=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:09,983 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte], @param2=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,984 [3] DEBUG [(null)] - Open Connection "19876770" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,997 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:09,998 [3] DEBUG [(null)] - Close Connection "19876770" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:10,002 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_cyuser],db.[id_masteruser],db.[id],db.[username],db.[password],db.[name],db.[companyname],db.[flag_sex],db.[id_father],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[rq_start],db.[rq_stop],db.[flag_state],db.[flag_master],db.[bz],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[version],db.id_shop,db.flag_delete,db.[flag_industry],db.[companyno]  from  [tb_user]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_state]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:10,003 [3] DEBUG [(null)] - Statement Id: [Tb_User.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_state,1]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:10,004 [3] DEBUG [(null)] - Statement Id: [Tb_User.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:10,005 [3] DEBUG [(null)] - Open Connection "22298189" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:10,027 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:10,028 [3] DEBUG [(null)] - Close Connection "22298189" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:10,033 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id]= @param0  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:10,035 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id,ba11c557-1607-4fdd-8f27-5c18d7ed94c2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:10,037 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:10,038 [3] DEBUG [(null)] - Open Connection "1725930" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:10,054 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:10,056 [3] DEBUG [(null)] - Close Connection "1725930" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:47,699 [3] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:47,701 [3] DEBUG [(null)] - Open Connection "49998422" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,707 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Account.GetItem] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id],db.[flag_lx],db.[username],db.[id_user],db.[id_edit],db.[rq_edit],db.[id_masteruser] from  [Tb_account]
+		  as db
+			 where  db.[username]= @param0]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,709 [3] DEBUG [(null)] - Statement Id: [Tb_Account.GetItem] Parameters: [@param0=[username,18924308070]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,710 [3] DEBUG [(null)] - Statement Id: [Tb_Account.GetItem] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,723 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User.GetItem] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select  db.[id_cyuser],db.[id_masteruser],db.[id],db.[username],db.[password],db.[name],isnull(master.companyname,db.[companyname])companyname,db.[flag_sex],db.[id_father],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[rq_start],db.[rq_stop],db.[flag_state],db.[flag_master],db.[bz],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[version],db.flag_delete,db.[flag_industry],db.[companyno]
+      ,db.id_shop
+      from  [tb_user]
+      as db
+      LEFT JOIN Tb_user master ON db.id_father=master.id
+       where  db.[id]= @param0]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,725 [3] DEBUG [(null)] - Statement Id: [Tb_User.GetItem] Parameters: [@param0=[id,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,726 [3] DEBUG [(null)] - Statement Id: [Tb_User.GetItem] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,741 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User_Role.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id_user],db.[id_role],db.[id_create],db.[rq_create],db.[id_masteruser],db.flag_delete from  [Tb_user_role]
+		  as db
+			 where  db.[id_user]= @param0  and db.[flag_delete]= @param1  order by  db.[id_user] asc,db.[id_role] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,742 [3] DEBUG [(null)] - Statement Id: [Tb_User_Role.QueryList] Parameters: [@param0=[id_user,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,743 [3] DEBUG [(null)] - Statement Id: [Tb_User_Role.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,770 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id]= @param0  and db.[id_masteruser]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,771 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:47,773 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:47,787 [3] DEBUG [(null)] - Commit transaction
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:47,790 [3] DEBUG [(null)] - Calling AdoTransaction.Dispose()
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:47,791 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:47,793 [3] DEBUG [(null)] - Close Connection "49998422" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,015 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_state]= @param1  and db.[flag_delete]= @param2]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,019 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_state,1], @param2=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,022 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte], @param2=[Byte, System.Byte]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,025 [3] DEBUG [(null)] - Open Connection "44666811" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,058 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,061 [3] DEBUG [(null)] - Close Connection "44666811" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:48,063 [3] DEBUG [(null)] - begin transaction
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,065 [3] DEBUG [(null)] - Open Connection "21138293" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,068 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [DataTools.GetTable] based off of PreparedStatement: [set transaction isolation level read uncommitted
+     
+      select [object_id] as id,[name],[create_date],[modify_date] from  sys.tables
+       where  [name] =  @param0]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,069 [3] DEBUG [(null)] - Statement Id: [DataTools.GetTable] Parameters: [@param0=[name,ts_log]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,071 [3] DEBUG [(null)] - Statement Id: [DataTools.GetTable] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,088 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [DataTools.ExecuteSql] based off of PreparedStatement: [ 
+      insert into[ts_log](id,id_user,rq,content,IP,flag_from,flag_lx) values ('2277c44a-28db-4d75-9ea1-9a5127e132b8','12c5a6f0-d971-4650-83ba-495a5ef7ffae','2017-02-15 18:01:48.068',N'登录成功！','::1','browser','LogOn')
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,089 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [DataTools.ExecuteSql] based off of PreparedStatement: [ 
+      insert into[ts_log](id,id_user,rq,content,IP,flag_from,flag_lx) values ('2277c44a-28db-4d75-9ea1-9a5127e132b8','12c5a6f0-d971-4650-83ba-495a5ef7ffae','2017-02-15 18:01:48.068',N'登录成功！','::1','browser','LogOn')
+    ]
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:48,110 [3] DEBUG [(null)] - Commit transaction
+Apache.Ibatis.DataMapper.Session.Transaction.Ado.AdoTransaction: 2017-02-15 18:01:48,113 [3] DEBUG [(null)] - Calling AdoTransaction.Dispose()
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,114 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,116 [3] DEBUG [(null)] - Close Connection "21138293" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,266 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User_Role.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id_user],db.[id_role],db.[id_create],db.[rq_create],db.[id_masteruser],db.flag_delete from  [Tb_user_role]
+		  as db
+			 where  db.[id_user]= @param0  and db.[flag_delete]= @param1  order by  db.[id_user] asc,db.[id_role] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,267 [9] DEBUG [(null)] - Statement Id: [Tb_User_Role.QueryList] Parameters: [@param0=[id_user,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,269 [9] DEBUG [(null)] - Statement Id: [Tb_User_Role.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,271 [9] DEBUG [(null)] - Open Connection "43328456" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,331 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,332 [9] DEBUG [(null)] - Close Connection "43328456" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,333 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Function.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id],db.[name],db.[version],db.[flag_type],db.[flag_stop],db.[id_father],db.[path],db.[sort_id],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[controller_name],db.[action_name],db.[icon],db.[tag_name] from  [Tb_function]
+		  as db
+			 where  db.[flag_stop]= @param0  and 
+          db.[flag_stop]= 0  and
+          db.id in (select id_function from dbo.tb_role_function where id_role in  (  @param1 ,   @param2 ,   @param3 ) )
+         order by  
+					db.sort_id
+					   asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,334 [9] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Parameters: [@param0=[flag_stop,0], @param1=[rolelist[0],], @param2=[rolelist[1],1], @param3=[rolelist[2],2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,336 [9] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Types: [@param0=[Int32, System.Int32], @param1=[String, System.String], @param2=[String, System.String], @param3=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,338 [9] DEBUG [(null)] - Open Connection "31636261" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,376 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,378 [9] DEBUG [(null)] - Close Connection "31636261" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,387 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.home_page_data1] based off of PreparedStatement: [ 
+      declare @xse decimal(28,7),@xsbs int,@thje decimal(28,8),@thbs int,@je_ml decimal(28,7)
+      --销售额、销售笔数
+      select @xse=sum(je_ys),@xsbs=sum(num)
+      from
+      (select SUM(je_ys) je_ys,COUNT(1) num
+      from td_ls_1c
+      where id_shop= @param0  and rq between  @param1  and  @param2 
+      union all
+      select SUM(je_ys),COUNT(1)
+      from td_ls_1
+      where id_shop= @param0  and rq between  @param1  and  @param2  )temp
+      --退货金额、退货笔数
+      select @thje=sum(je_mxtotal),@thbs=sum(num)
+      from
+      (select SUM(je_ys) je_mxtotal,COUNT(1) num
+      from td_ls_1
+      where id_shop= @param0  and rq between  @param1  and  @param2  and bm_djlx='LS020'
+      union all
+      select SUM(je_ys) je_mxtotal,COUNT(1) num
+      from td_ls_1c
+      where id_shop= @param0  and rq between  @param1  and  @param2  and bm_djlx='LS020')temp
+      --毛利
+      select @je_ml=SUM(je_ml)
+      from
+      (select SUM(je_ml) je_ml
+      from td_ls_1 ls1,td_ls_2 ls2
+      where ls1.id_masteruser = @param3 --主用户
+      and ls1.id_shop =  @param0 ---登录门店
+      and ls2.id_bill = ls1.id
+      and ls1.rq between  @param1  and  @param2 
+      union all
+      select SUM(je_ml) je_ml
+      from td_ls_1c ls1c,td_ls_2c ls2c
+      where ls1c.id_masteruser = @param3 --主用户
+      and ls1c.id_shop =  @param0 ---登录门店
+      and ls2c.id_bill = ls1c.id
+      and ls1c.rq between  @param1  and  @param2 )temp
+      select @xse xse,@xsbs xsbs,@thje thje,@thbs thbs,@je_ml je_ml
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,389 [9] DEBUG [(null)] - Statement Id: [Td_Ls_1.home_page_data1] Parameters: [@param0=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[lgrq,2017/2/15 0:00:00], @param2=[bgrq,2017/2/15 23:59:59], @param3=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,390 [9] DEBUG [(null)] - Statement Id: [Td_Ls_1.home_page_data1] Types: [@param0=[String, System.String], @param1=[DateTime, System.DateTime], @param2=[DateTime, System.DateTime], @param3=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,392 [9] DEBUG [(null)] - Open Connection "22018304" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,405 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,406 [9] DEBUG [(null)] - Close Connection "22018304" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,407 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.QueryHomePagePays] based off of PreparedStatement: [ 
+      set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select temp.*,p.mc from
+      (
+      select temp1.id_pay,SUM(temp1.je) je from
+      (
+      select lssk.id_pay,SUM(lssk.je) je from td_ls_sk lssk
+      left join td_ls_1 ls1 on lssk.id_bill=ls1.id
+      where ls1.id_shop= @param0  and ls1.rq between  @param1  and  @param2 
+      group by lssk.id_pay
+      union all
+      select lssk.id_pay,SUM(lssk.je) je from td_ls_skc lssk
+      left join td_ls_1c ls1c on lssk.id_bill=ls1c.id
+      where ls1c.id_shop= @param0  and ls1c.rq between  @param1  and  @param2 
+      group by lssk.id_pay
+      )temp1
+      group by temp1.id_pay
+      )temp
+      left join tb_pay p on temp.id_pay=p.id
+      order by p.flag_type
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,408 [9] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePagePays] Parameters: [@param0=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[lgrq,2017/2/15 0:00:00], @param2=[bgrq,2017/2/15 23:59:59]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,410 [9] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePagePays] Types: [@param0=[String, System.String], @param1=[DateTime, System.DateTime], @param2=[DateTime, System.DateTime]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,411 [9] DEBUG [(null)] - Open Connection "30335267" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,424 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,426 [9] DEBUG [(null)] - Close Connection "30335267" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,428 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.QueryHomePageShopKcj] based off of PreparedStatement: [ 
+      set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select SUM(je_qm) as value from tz_sp_kc where id_masteruser= @param0  and id_shop= @param1 
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,429 [9] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePageShopKcj] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,430 [9] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePageShopKcj] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,431 [9] DEBUG [(null)] - Open Connection "35786431" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,448 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,450 [9] DEBUG [(null)] - Close Connection "35786431" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,451 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.QueryHomePageCxsp] based off of PreparedStatement: [ 
+      set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+
+      exec p_query_cxsp  '12c5a6f0-d971-4650-83ba-495a5ef7ffae','ba11c557-1607-4fdd-8f27-5c18d7ed94c2','2017/2/15 0:00:00','2017/2/15 23:59:59'
+
+
+
+    ]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,452 [9] DEBUG [(null)] - Open Connection "57957548" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,479 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,480 [9] DEBUG [(null)] - Close Connection "57957548" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,481 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ls_1.QueryHomePageZxsp] based off of PreparedStatement: [ 
+      set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select top 8 a.mc,a.id from tb_shopsp a
+      where a.id_masteruser= @param0 --主用户
+      and a.id_shop=  @param1 ----登录门店
+      and  exists(select 1 from tz_sp_kc b where b.id_masteruser=a.id_masteruser
+      and b.id_shop=a.id_shop
+      and b.id_kcsp=a.id_kcsp
+      and b.sl_qm>0)
+      and not exists(select 1 from td_ls_1c c,td_ls_2c d
+      where c.id=d.id_bill
+      and c.id_masteruser=a.id_masteruser
+      and c.id_shop=a.id_shop
+      and d.id_kcsp=a.id_kcsp
+      and c.rq>DATEADD(MM,-1,GETDATE()) )
+    ]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,483 [9] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePageZxsp] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,484 [9] DEBUG [(null)] - Statement Id: [Td_Ls_1.QueryHomePageZxsp] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,487 [9] DEBUG [(null)] - Open Connection "27449260" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,510 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,514 [9] DEBUG [(null)] - Close Connection "27449260" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,517 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Function.QueryList] based off of PreparedStatement: [set nocount on
+			 
+			set transaction isolation level read uncommitted
+		 
+      select db.[id],db.[name],db.[version],db.[flag_type],db.[flag_stop],db.[id_father],db.[path],db.[sort_id],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[controller_name],db.[action_name],db.[icon],db.[tag_name] from  [Tb_function]
+		  as db
+			 where  db.[flag_type]= @param0  and db.[flag_stop]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,519 [9] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Parameters: [@param0=[flag_type,action], @param1=[flag_stop,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,522 [9] DEBUG [(null)] - Statement Id: [Tb_Function.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,524 [9] DEBUG [(null)] - Open Connection "51677864" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,544 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,546 [9] DEBUG [(null)] - Close Connection "51677864" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,547 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Notice.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [ts_notice]
+      as db
+       where  db.[flag_delete]= @param0]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,549 [9] DEBUG [(null)] - Statement Id: [Ts_Notice.GetCount] Parameters: [@param0=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,550 [9] DEBUG [(null)] - Statement Id: [Ts_Notice.GetCount] Types: [@param0=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,551 [9] DEBUG [(null)] - Open Connection "38417648" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,562 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,564 [9] DEBUG [(null)] - Close Connection "38417648" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,566 [9] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Notice.QueryPage] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select t.* from (select row_number() over( order by  
+          db.rq_create desc
+           ) as rownumber,db.* from  [ts_notice]
+      as db  where  db.[flag_delete]= @param0  ) as t
+       where  
+          t.rownumber between ( @param1  + 1)
+           and 
+            ( @param1  +  @param2 )]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,568 [9] DEBUG [(null)] - Statement Id: [Ts_Notice.QueryPage] Parameters: [@param0=[flag_delete,0], @param1=[start,0], @param2=[limit,10]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:48,570 [9] DEBUG [(null)] - Statement Id: [Ts_Notice.QueryPage] Types: [@param0=[Int32, System.Int32], @param1=[Int32, System.Int32], @param2=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,571 [9] DEBUG [(null)] - Open Connection "31619710" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,594 [9] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:48,595 [9] DEBUG [(null)] - Close Connection "31619710" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,787 [10] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id_user],db.[id_shop],db.[id_create],s.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_default],s.mc,s.bm from  [tb_user_shop]
+      as db
+      left join dbo.tb_shop s on db.id_shop=s.id
+       where  db.[id_user]= @param0  and db.[id_masteruser]= @param1  order by  db.[id_user] asc,db.[id_shop] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,791 [10] DEBUG [(null)] - Statement Id: [Tb_User_Shop.QueryList] Parameters: [@param0=[id_user,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,792 [10] DEBUG [(null)] - Statement Id: [Tb_User_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,795 [10] DEBUG [(null)] - Open Connection "15645912" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,816 [10] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,819 [10] DEBUG [(null)] - Close Connection "15645912" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,824 [10] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id]= @param0  and db.[id_masteruser]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,826 [10] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,827 [10] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,829 [10] DEBUG [(null)] - Open Connection "32977404" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,851 [10] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,852 [10] DEBUG [(null)] - Close Connection "32977404" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,853 [10] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Td_Ps_Sq_1.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [td_ps_sq_1]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,855 [10] DEBUG [(null)] - Statement Id: [Td_Ps_Sq_1.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,856 [10] DEBUG [(null)] - Statement Id: [Td_Ps_Sq_1.GetCount] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,858 [10] DEBUG [(null)] - Open Connection "7588182" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,868 [10] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,871 [10] DEBUG [(null)] - Close Connection "7588182" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,873 [10] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_state]= @param1  and db.[flag_delete]= @param2  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,875 [10] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_state,1], @param2=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:54,876 [10] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte], @param2=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,877 [10] DEBUG [(null)] - Open Connection "5923895" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,889 [10] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:54,890 [10] DEBUG [(null)] - Close Connection "5923895" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,933 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id_user],db.[id_shop],db.[id_create],s.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_default],s.mc,s.bm from  [tb_user_shop]
+      as db
+      left join dbo.tb_shop s on db.id_shop=s.id
+       where  db.[id_user]= @param0  and db.[id_masteruser]= @param1  order by  db.[id_user] asc,db.[id_shop] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,934 [3] DEBUG [(null)] - Statement Id: [Tb_User_Shop.QueryList] Parameters: [@param0=[id_user,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,935 [3] DEBUG [(null)] - Statement Id: [Tb_User_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,936 [3] DEBUG [(null)] - Open Connection "22740642" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,952 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,953 [3] DEBUG [(null)] - Close Connection "22740642" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,954 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id]= @param0  and db.[id_masteruser]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,956 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param1=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,958 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,959 [3] DEBUG [(null)] - Open Connection "51046594" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,972 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,973 [3] DEBUG [(null)] - Close Connection "51046594" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,975 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[lxr],db.[rq_start],db.[zipcode],db.[address],db.[flag_state],db.[bz],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[nlast],db.id_cloneshop,db.yzm,db.pic_path,db.id [id_shop],db.[discern_no]  from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_state]= @param1  and db.[flag_delete]= @param2  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,976 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_state,1], @param2=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,977 [3] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte], @param2=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,979 [3] DEBUG [(null)] - Open Connection "62485743" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,993 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:55,995 [3] DEBUG [(null)] - Close Connection "62485743" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,996 [3] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_User.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_cyuser],db.[id_masteruser],db.[id],db.[username],db.[password],db.[name],db.[companyname],db.[flag_sex],db.[id_father],db.[job],db.[qq],db.[email],db.[phone],db.[tel],db.[fax],db.[rq_start],db.[rq_stop],db.[flag_state],db.[flag_master],db.[bz],db.[id_province],db.[id_city],db.[id_county],db.[zipcode],db.[address],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[version],db.id_shop,db.flag_delete,db.[flag_industry],db.[companyno]  from  [tb_user]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_state]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,997 [3] DEBUG [(null)] - Statement Id: [Tb_User.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_state,1]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:01:55,998 [3] DEBUG [(null)] - Statement Id: [Tb_User.QueryList] Types: [@param0=[String, System.String], @param1=[Byte, System.Byte]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:56,000 [3] DEBUG [(null)] - Open Connection "55624685" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:56,022 [3] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:01:56,024 [3] DEBUG [(null)] - Close Connection "55624685" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,726 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Flag.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id],db.[listcode],db.[listname],db.[listdata],db.[listdisplay],db.[listsort],db.[id_father] from  [ts_flag]
+      as db
+       where  db.[listcode]= @param0  order by  
+          db.listsort
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,728 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Parameters: [@param0=[listcode,spstate]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,733 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,735 [45] DEBUG [(null)] - Open Connection "19530126" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,784 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,785 [45] DEBUG [(null)] - Close Connection "19530126" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,790 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Flag.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id],db.[listcode],db.[listname],db.[listdata],db.[listdisplay],db.[listsort],db.[id_father] from  [ts_flag]
+      as db
+       where  db.[listcode]= @param0  order by  
+          db.listsort
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,799 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Parameters: [@param0=[listcode,spczfs]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,802 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,804 [45] DEBUG [(null)] - Open Connection "40675510" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,817 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,818 [45] DEBUG [(null)] - Close Connection "40675510" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,823 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Spfl.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[path],db.[id_father],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[sort_id] from  [tb_spfl]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  order by  
+          db.sort_id
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,825 [45] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,827 [45] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,829 [45] DEBUG [(null)] - Open Connection "37427593" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,854 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,856 [45] DEBUG [(null)] - Close Connection "37427593" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,866 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,870 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,872 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,873 [45] DEBUG [(null)] - Open Connection "16664906" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,888 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,889 [45] DEBUG [(null)] - Close Connection "16664906" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,891 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryPage] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select t.* from (select row_number() over( order by  db.[id] asc ) as rownumber,db.* from  [tb_shop]
+      as db  where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  ) as t]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,893 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryPage] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,895 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryPage] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,897 [45] DEBUG [(null)] - Open Connection "63108756" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.MappedStatements.ReaderAutoMapper: 2017-02-15 18:23:24,909 [45] ERROR [(null)] - The column [rownumber] could not be auto mapped to a property on [CySoft.Model.Tb.Tb_Shop]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,910 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,912 [45] DEBUG [(null)] - Close Connection "63108756" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,924 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shopsp.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [tb_shopsp]
+      as db
+      left join tb_spfl fl on fl.id=db.id_spfl
+      left join tb_shop shop on shop.id=db.id_shop
+      left join tz_sp_kc kc on kc.id_kcsp=db.id_kcsp and kc.id_shop=db.[id_shop]
+      
+       where  db.[id_masteruser]= @param0  and db.[id_shop]= @param1  and db.[flag_delete]= @param2]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,926 [45] DEBUG [(null)] - Statement Id: [Tb_Shopsp.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param2=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,927 [45] DEBUG [(null)] - Statement Id: [Tb_Shopsp.GetCount] Types: [@param0=[String, System.String], @param1=[String, System.String], @param2=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,929 [45] DEBUG [(null)] - Open Connection "48406834" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,945 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,946 [45] DEBUG [(null)] - Close Connection "48406834" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,947 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shopsp.QueryPage] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select t.* from (select row_number() over( order by  
+          db.rq_create
+             desc ) as rownumber,db.*
+      ,fl.mc as spfl_mc
+      ,shop.mc as shop_mc
+      ,( SELECT isnull(SUM(sl_qm),0) sl_qm FROM (
+      SELECT  id_kcsp id_shopsp,isnull(sl_qm,0) sl_qm
+      FROM  tz_sp_kc
+      WHERE id_shop=db.id_shop
+      and id_kcsp=db.id_kcsp
+      UNION ALL
+      SELECT  l2.id_kcsp  id_shopsp,(-1)*isnull(sl_total,0) sl_qm
+      FROM  td_ls_2 l2
+      left join td_ls_1 l1 on l2.id_bill=l1.id
+      WHERE  l2.id_kcsp=db.id_kcsp and l1.id_shop=db.id_shop
+      and not exists(select 1 from td_ls_2c c2 where c2.id=l2.id)
+      ) AS Tmp
+      GROUP BY  id_shopsp ) sl_qm
+      ,isnull(kc.je_qm,0) je_qm
+      ,isnull(kc.dj_cb,0) dj_cb
+      from
+       [tb_shopsp]
+      as db
+      left join tb_spfl fl on fl.id=db.id_spfl
+      left join tb_shop shop on shop.id=db.id_shop
+      left join tz_sp_kc kc on kc.id_kcsp=db.id_kcsp and kc.id_shop=db.[id_shop]
+
+       where  db.[id_masteruser]= @param0  and db.[id_shop]= @param1  and db.[flag_delete]= @param2  
+
+      ) as t
+       where  
+          t.rownumber between ( @param3  + 1)
+           and 
+            ( @param3  +  @param4 )]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,949 [45] DEBUG [(null)] - Statement Id: [Tb_Shopsp.QueryPage] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param2=[flag_delete,0], @param3=[start,0], @param4=[limit,10]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:24,950 [45] DEBUG [(null)] - Statement Id: [Tb_Shopsp.QueryPage] Types: [@param0=[String, System.String], @param1=[String, System.String], @param2=[Int32, System.Int32], @param3=[Int32, System.Int32], @param4=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:24,951 [45] DEBUG [(null)] - Open Connection "29785435" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.MappedStatements.ReaderAutoMapper: 2017-02-15 18:23:24,995 [45] ERROR [(null)] - The column [rownumber] could not be auto mapped to a property on [CySoft.Model.Tb.Tb_Shopsp_Query]
+Apache.Ibatis.DataMapper.MappedStatements.ReaderAutoMapper: 2017-02-15 18:23:24,997 [45] ERROR [(null)] - The column [nlast] could not be auto mapped to a property on [CySoft.Model.Tb.Tb_Shopsp_Query]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:25,015 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:25,018 [45] DEBUG [(null)] - Close Connection "29785435" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:27,617 [46] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Spfl.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[path],db.[id_father],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[sort_id] from  [tb_spfl]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  order by  
+          db.sort_id asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:27,618 [46] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:27,620 [46] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:27,621 [46] DEBUG [(null)] - Open Connection "26784572" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:27,647 [46] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:27,648 [46] DEBUG [(null)] - Close Connection "26784572" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,597 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Flag.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id],db.[listcode],db.[listname],db.[listdata],db.[listdisplay],db.[listsort],db.[id_father] from  [ts_flag]
+      as db
+       where  db.[listcode]= @param0  order by  
+          db.listsort
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,599 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Parameters: [@param0=[listcode,spstate]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,600 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,602 [45] DEBUG [(null)] - Open Connection "29593751" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,620 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,621 [45] DEBUG [(null)] - Close Connection "29593751" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,624 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Flag.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id],db.[listcode],db.[listname],db.[listdata],db.[listdisplay],db.[listsort],db.[id_father] from  [ts_flag]
+      as db
+       where  db.[listcode]= @param0  order by  
+          db.listsort
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,625 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Parameters: [@param0=[listcode,spczfs]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,630 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,632 [45] DEBUG [(null)] - Open Connection "14226884" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,649 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,650 [45] DEBUG [(null)] - Close Connection "14226884" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,662 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Dw.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[dw],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete] from  [tb_dw]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,663 [45] DEBUG [(null)] - Statement Id: [Tb_Dw.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,665 [45] DEBUG [(null)] - Statement Id: [Tb_Dw.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,667 [45] DEBUG [(null)] - Open Connection "25444072" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,719 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,720 [45] DEBUG [(null)] - Close Connection "25444072" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,722 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Spfl.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[path],db.[id_father],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[sort_id] from  [tb_spfl]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  order by  
+          db.sort_id
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,723 [45] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,725 [45] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,726 [45] DEBUG [(null)] - Open Connection "57045692" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,752 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,753 [45] DEBUG [(null)] - Close Connection "57045692" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,758 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,761 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,762 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,763 [45] DEBUG [(null)] - Open Connection "52987212" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,784 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,786 [45] DEBUG [(null)] - Close Connection "52987212" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,787 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryPage] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select t.* from (select row_number() over( order by  db.[id] asc ) as rownumber,db.* from  [tb_shop]
+      as db  where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  ) as t]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,788 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryPage] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:28,789 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryPage] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,790 [45] DEBUG [(null)] - Open Connection "4740122" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,803 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:28,804 [45] DEBUG [(null)] - Close Connection "4740122" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,695 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Flag.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id],db.[listcode],db.[listname],db.[listdata],db.[listdisplay],db.[listsort],db.[id_father] from  [ts_flag]
+      as db
+       where  db.[listcode]= @param0  order by  
+          db.listsort
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,697 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Parameters: [@param0=[listcode,spstate]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,699 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,705 [45] DEBUG [(null)] - Open Connection "3792207" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,720 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,721 [45] DEBUG [(null)] - Close Connection "3792207" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,724 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Flag.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id],db.[listcode],db.[listname],db.[listdata],db.[listdisplay],db.[listsort],db.[id_father] from  [ts_flag]
+      as db
+       where  db.[listcode]= @param0  order by  
+          db.listsort
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,725 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Parameters: [@param0=[listcode,spczfs]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,726 [45] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,728 [45] DEBUG [(null)] - Open Connection "30469819" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,751 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,752 [45] DEBUG [(null)] - Close Connection "30469819" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,754 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Spfl.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[path],db.[id_father],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[sort_id] from  [tb_spfl]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  order by  
+          db.sort_id
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,756 [45] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,757 [45] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,760 [45] DEBUG [(null)] - Open Connection "66880947" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,781 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,782 [45] DEBUG [(null)] - Close Connection "66880947" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,786 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,788 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,790 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,791 [45] DEBUG [(null)] - Open Connection "37723050" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,804 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,806 [45] DEBUG [(null)] - Close Connection "37723050" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,807 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryPage] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select t.* from (select row_number() over( order by  db.[id] asc ) as rownumber,db.* from  [tb_shop]
+      as db  where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  ) as t]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,808 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryPage] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,810 [45] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryPage] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,811 [45] DEBUG [(null)] - Open Connection "66551304" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,830 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,831 [45] DEBUG [(null)] - Close Connection "66551304" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,833 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shopsp.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [tb_shopsp]
+      as db
+      left join tb_spfl fl on fl.id=db.id_spfl
+      left join tb_shop shop on shop.id=db.id_shop
+      left join tz_sp_kc kc on kc.id_kcsp=db.id_kcsp and kc.id_shop=db.[id_shop]
+      
+       where  db.[id_masteruser]= @param0  and db.[id_shop]= @param1  and db.[flag_delete]= @param2]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,834 [45] DEBUG [(null)] - Statement Id: [Tb_Shopsp.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param2=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,836 [45] DEBUG [(null)] - Statement Id: [Tb_Shopsp.GetCount] Types: [@param0=[String, System.String], @param1=[String, System.String], @param2=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,838 [45] DEBUG [(null)] - Open Connection "31069177" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,853 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,854 [45] DEBUG [(null)] - Close Connection "31069177" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,855 [45] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shopsp.QueryPage] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select t.* from (select row_number() over( order by  
+          db.rq_create
+             desc ) as rownumber,db.*
+      ,fl.mc as spfl_mc
+      ,shop.mc as shop_mc
+      ,( SELECT isnull(SUM(sl_qm),0) sl_qm FROM (
+      SELECT  id_kcsp id_shopsp,isnull(sl_qm,0) sl_qm
+      FROM  tz_sp_kc
+      WHERE id_shop=db.id_shop
+      and id_kcsp=db.id_kcsp
+      UNION ALL
+      SELECT  l2.id_kcsp  id_shopsp,(-1)*isnull(sl_total,0) sl_qm
+      FROM  td_ls_2 l2
+      left join td_ls_1 l1 on l2.id_bill=l1.id
+      WHERE  l2.id_kcsp=db.id_kcsp and l1.id_shop=db.id_shop
+      and not exists(select 1 from td_ls_2c c2 where c2.id=l2.id)
+      ) AS Tmp
+      GROUP BY  id_shopsp ) sl_qm
+      ,isnull(kc.je_qm,0) je_qm
+      ,isnull(kc.dj_cb,0) dj_cb
+      from
+       [tb_shopsp]
+      as db
+      left join tb_spfl fl on fl.id=db.id_spfl
+      left join tb_shop shop on shop.id=db.id_shop
+      left join tz_sp_kc kc on kc.id_kcsp=db.id_kcsp and kc.id_shop=db.[id_shop]
+
+       where  db.[id_masteruser]= @param0  and db.[id_shop]= @param1  and db.[flag_delete]= @param2  
+
+      ) as t
+       where  
+          t.rownumber between ( @param3  + 1)
+           and 
+            ( @param3  +  @param4 )]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,856 [45] DEBUG [(null)] - Statement Id: [Tb_Shopsp.QueryPage] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[id_shop,ba11c557-1607-4fdd-8f27-5c18d7ed94c2], @param2=[flag_delete,0], @param3=[start,0], @param4=[limit,10]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:51,858 [45] DEBUG [(null)] - Statement Id: [Tb_Shopsp.QueryPage] Types: [@param0=[String, System.String], @param1=[String, System.String], @param2=[Int32, System.Int32], @param3=[Int32, System.Int32], @param4=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,859 [45] DEBUG [(null)] - Open Connection "43544333" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,881 [45] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:51,887 [45] DEBUG [(null)] - Close Connection "43544333" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:52,564 [46] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Spfl.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[path],db.[id_father],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[sort_id] from  [tb_spfl]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  order by  
+          db.sort_id asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:52,566 [46] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:52,569 [46] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:52,570 [46] DEBUG [(null)] - Open Connection "33131092" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:52,596 [46] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:52,599 [46] DEBUG [(null)] - Close Connection "33131092" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,214 [44] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Flag.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id],db.[listcode],db.[listname],db.[listdata],db.[listdisplay],db.[listsort],db.[id_father] from  [ts_flag]
+      as db
+       where  db.[listcode]= @param0  order by  
+          db.listsort
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,217 [44] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Parameters: [@param0=[listcode,spstate]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,223 [44] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,227 [44] DEBUG [(null)] - Open Connection "2474735" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,250 [44] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,251 [44] DEBUG [(null)] - Close Connection "2474735" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,253 [44] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Ts_Flag.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id],db.[listcode],db.[listname],db.[listdata],db.[listdisplay],db.[listsort],db.[id_father] from  [ts_flag]
+      as db
+       where  db.[listcode]= @param0  order by  
+          db.listsort
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,254 [44] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Parameters: [@param0=[listcode,spczfs]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,255 [44] DEBUG [(null)] - Statement Id: [Ts_Flag.QueryList] Types: [@param0=[String, System.String]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,256 [44] DEBUG [(null)] - Open Connection "45273938" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,268 [44] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,270 [44] DEBUG [(null)] - Close Connection "45273938" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,271 [44] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Dw.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[dw],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete] from  [tb_dw]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  order by  db.[id] asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,273 [44] DEBUG [(null)] - Statement Id: [Tb_Dw.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,274 [44] DEBUG [(null)] - Statement Id: [Tb_Dw.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,275 [44] DEBUG [(null)] - Open Connection "7301494" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,290 [44] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,291 [44] DEBUG [(null)] - Close Connection "7301494" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,292 [44] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Spfl.QueryList] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select db.[id_masteruser],db.[id],db.[bm],db.[mc],db.[path],db.[id_father],db.[id_create],db.[rq_create],db.[id_edit],db.[rq_edit],db.[flag_delete],db.[sort_id] from  [tb_spfl]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  order by  
+          db.sort_id
+             asc]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,293 [44] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,295 [44] DEBUG [(null)] - Statement Id: [Tb_Spfl.QueryList] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,296 [44] DEBUG [(null)] - Open Connection "46502080" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,328 [44] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,330 [44] DEBUG [(null)] - Close Connection "46502080" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,334 [44] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.GetCount] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select count(1) as value from  [tb_shop]
+      as db
+       where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,336 [44] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,337 [44] DEBUG [(null)] - Statement Id: [Tb_Shop.GetCount] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,338 [44] DEBUG [(null)] - Open Connection "3186666" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,351 [44] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,352 [44] DEBUG [(null)] - Close Connection "3186666" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,354 [44] DEBUG [(null)] - Preparing to apply parameter information to Statement Id: [Tb_Shop.QueryPage] based off of PreparedStatement: [set nocount on
+       
+      set transaction isolation level read uncommitted
+     
+      select t.* from (select row_number() over( order by  db.[id] asc ) as rownumber,db.* from  [tb_shop]
+      as db  where  db.[id_masteruser]= @param0  and db.[flag_delete]= @param1  ) as t]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,355 [44] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryPage] Parameters: [@param0=[id_masteruser,12c5a6f0-d971-4650-83ba-495a5ef7ffae], @param1=[flag_delete,0]]
+Apache.Ibatis.DataMapper.Data.DefaultPreparedCommand: 2017-02-15 18:23:53,356 [44] DEBUG [(null)] - Statement Id: [Tb_Shop.QueryPage] Types: [@param0=[String, System.String], @param1=[Int32, System.Int32]]
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,358 [44] DEBUG [(null)] - Open Connection "39915653" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,370 [44] DEBUG [(null)] - Closing session
+Apache.Ibatis.DataMapper.Session.DataMapperSession: 2017-02-15 18:23:53,371 [44] DEBUG [(null)] - Close Connection "39915653" to "Microsoft SQL Server, provider V4.0.0.0 in .NET Framework V4.0".

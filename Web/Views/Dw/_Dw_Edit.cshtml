@@ -1,0 +1,135 @@
+﻿@using CySoft.Model.Tb;
+@{
+    Tb_Dw item_edit = ViewData["item_edit"] as Tb_Dw;
+    item_edit = item_edit ?? new Tb_Dw();
+    string option = ViewData["option"].ToString();
+    string other_add = ViewData["other_add"] == null ? "0" : ViewData["other_add"].ToString();
+}
+<style>
+    .dropdown-menu { max-height: 510px; }
+</style>
+
+<div class="modal fade in" id="dialog-dw" role="dialog">
+    <div class="modal-dialog" style="width:520px;">
+        <div class="modal-content">
+            <div class="modal-header poptitle">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <p class="name">@Html.Raw(option == "edit" ? "编辑单位" : "新增单位")   </p>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="">
+                <div class="modal-body tab-content  popcontent" style="padding:20px;">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <em class="tag">* </em><span>单位名称</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+                                <input class="form-control {required:true,maxlength:10}" placeholder="请输入单位名称" type="text" name="dw" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.dw)" id="txt_mc">
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="id" name="id" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.id)" />
+                    <input type="hidden" id="hid_option" value="@option">
+                </div>
+                <div class="modal-footer  popfooter align_center">
+                    <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs" @*onclick="app.dw.add(this)"*@>确定</button>
+                    @*<button type="button" id="submit-button2" data-confirm="confirm" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>*@
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    app.dw = app.dw || {};
+   
+    $.DHB._ = function () {
+        
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button').button('loading');
+            var other_add = '@other_add';
+            var dw = $(_ + ".validate").find("input[name='dw']").val();
+            var options = {
+                url: $.DHB.U('dw/' + (Tnum > 0 ? 'Edit' : 'Add')),
+                data: $(_ + ".validate").serialize(),
+                dataType: 'json',
+                type:"post",
+                success: function (data) {
+                    
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $(_ + '#submit-button').text("提交成功！");
+                        if (other_add != '1') {
+                            $.DHB.url('dw/list', 'cache');
+                        } else {
+                            if ($.cookie("add_dw") == 'dbz') {
+                                $.cookie("add_dw", null);
+                            } else {
+                                var objDW = $(_ + 'select[name="dw"]').prev();
+                                var max_index = parseInt(objDW.find('ul li').last().attr('data-original-index')) + 1;
+                                objDW.find('ul li').removeAttr("class");
+
+                                objDW.find('ul').append('<li data-original-index="' + max_index + '"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">' + dw + '</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li>');
+                                $(_ + "#dw").append('<option value="' + dw + '">' + dw + '</option>');
+
+                                objDW.find('ul li').last().find('a').click();
+                            }
+
+
+                            $.DHB.dialog({ id: 'dialog-dw', action: 'destroy' });
+                        }
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        btn.button('reset');
+                    }
+                }
+            }
+            app.httpAjax.post(options);
+            return false;
+        });
+    };
+
+    app.spfl = app.spfl || {};
+
+    jQuery.validator.addMethod("check_categorynum_spfl",
+        function (value, element) {
+            if (!$(_ + '#category_num').val()) {
+                return true;
+            }
+            else {
+                if ($(_ + '#category_id').val()) {
+                    strCheckUrl = $.DHB.U('spfl/saveEdit?ajax=checkCategorynum&category_id=' + $(_ + '#category_id').val() + '&category_num=' + encodeURIComponent($(_ + '#category_num').val()));
+                } else {
+                    strCheckUrl = $.DHB.U('spfl/saveAdd?ajax=checkCategorynum&category_num=' + encodeURIComponent($(_ + '#category_num').val()));
+                }
+                var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                return $.trim(xhr.responseText) == 'true' ? true : false;
+            }
+        }, "商品分类编号不能够重复！"
+    );
+
+    jQuery.validator.addMethod("check_categoryname_spfl",
+            function (value, element) {
+                if (!$(_ + '#category_name').val()) {
+                    return true;
+                } else {
+                    if ($(_ + '#category_id').val()) {
+                        strCheckUrl = $.DHB.U('spfl/saveEdit?ajax=checkCategoryname&parent_id=' + $(_ + '#parent_id').val() + '&category_id=' + $(_ + '#category_id').val() + '&category_name=' + encodeURIComponent($(_ + '#category_name').val()));
+                    } else {
+                        strCheckUrl = $.DHB.U('spfl/saveAdd?ajax=checkCategoryname&parent_id=' + $(_ + '#parent_id').val() + '&category_name=' + encodeURIComponent($(_ + '#category_name').val()));
+                    }
+                    var xhr = $.ajax({ url: strCheckUrl, async: false, cache: false, dataType: 'html' });
+                    return $.trim(xhr.responseText) == 'true' ? true : false;
+                }
+            }, "商品分类名称不能重复！"
+        );
+</script>

@@ -1,0 +1,469 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Utility;
+@{
+    string option = ViewData["option"].ToString();
+    var selectListShop = (ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>) ?? new List<Tb_User_ShopWithShopMc>();
+    var hyflList = (ViewData["hyflList"] as List<Tb_Hyfl>) ?? new List<Tb_Hyfl>();
+    var version = ViewData["version"] == null ? "" : ViewData["version"].ToString();
+}
+
+<style>
+    .dropdown-menu {
+        max-height: 510px;
+    }
+</style>
+
+
+<!--<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/hy/list', 'title': '会员管理', id: 'hy/list', nocache: '0' }); ">会员管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">@Html.Raw(option == "add" ? "新增会员" : "编辑会员")</a>
+</div>-->
+
+<div class="col">
+    <div class="row">
+    	
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="main-content">
+
+                    <form class="form-horizontal validate f0" method="post" id="fm-add">
+                        <div class="modal-body tab-content ">
+
+                            <div class="page-header">
+                             <h2>
+                             	新增客户资料：
+                             </h2>
+                              </div>
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                         <em class="tag">* </em><span>客户名称：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {maxlength:50}" placeholder="请输入客户名称" type="text" name="membercard" value="" id="membercard">
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <em class="tag">* </em><span>姓名：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {required:true,messages:{required:&#39;请输入姓名&#39;}}" placeholder="请输入姓名" type="text" name="name" value="" id="name">
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <em class="tag">* </em><span>手机：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {required:true,isPhone:true}" placeholder="请输入手机" type="text" name="phone" value="" id="phone">
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!--@if (version != "10")
+                            {
+                                <div>
+                                    <div class="m-b">
+                                        <label class="l-h-30 text-right" style="width: 70px">
+                                            <em class="tag">* </em><span>门店：</span>
+                                        </label>
+                                        <label class="sub-label w-340 m-l-xs">
+
+                                            <select id="id_shop_create" name="id_shop_create" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择门店&#39;}} valid" style="width:340px;">
+                                                <option value="">门店</option>
+                                                @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                {
+                                                    <option value="@item.id_shop">@item.mc</option>
+                                                }
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <em class="tag">* </em><span>会员类别：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+
+                                        <select id="id_hyfl" name="id_hyfl" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择会员类别&#39;}} valid" style="width:340px;">
+                                            <option value="">会员类别</option>
+                                            @foreach (var item in hyflList.OrderBy(d => d.sort_id))
+                                            {
+                                                <option value="@item.id">@item.mc</option>
+                                            }
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <em class="tag">* </em><span>折扣(%)：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {required:true}" min="0" max="100" placeholder="请输入折扣" type="text" name="zk" value="100.00" id="zk" onkeyup="check_digit(this,'2')" onafterpaste="check_digit(this,'2')" old-data="0.00">
+                                    </label>
+                                </div>
+                            </div>-->
+
+
+
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <em class="tag">* </em><span>有效时期：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <div class="pull-left m-r-sm" style="margin-top:7px">
+                                            <div class="btn-group">
+
+
+
+
+
+                                                <input type="hidden" name="rq_b" id="rq_b" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+
+                                                <button type="button" class="btn btn-default btn-sm m-l-none text-left " onclick="app.hy.wdatepicker_hy_list(this);" title="开始时间" data-title="开始时间" data-field="rq_b" data-type="start" style="width:80px;">@DateTime.Now.ToString("yyyy-MM-dd")</button>
+
+                                                <button type="button" class="btn btn-default disabled btn-sm"><i class="glyphicon glyphicon-calendar" style="min-width: 7%;"></i></button>
+
+                                                <button type="button" class="btn btn-default btn-sm text-left" onclick="app.hy.wdatepicker_hy_list(this);" data-field="rq_b" data-type="end" data-position="" style="width:80px;" title="结束时间">@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")</button>
+
+                                                <input type="hidden" name="rq_b_end" id="rq_b_end" value="@DateTime.Now.AddYears(1).ToString("yyyy-MM-dd")">
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <span>QQ：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {isQQ:true}" placeholder="请输入QQ" type="text" name="qq" value="" id="qq">
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <span>Email：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {email:true}" placeholder="请输入Email" type="text" name="email" value="" id="email">
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <span>电话：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {}" placeholder="请输入电话" type="text" name="tel" value="" id="tel">
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <span>地址：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {}" placeholder="请输入地址" type="text" name="address" value="" id="address">
+                                    </label>
+                                </div>
+                            </div>
+
+
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <span>微信号：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {}" placeholder="请输入微信号" type="text" name="MMno" value="" id="MMno">
+                                    </label>
+                                </div>
+                            </div>
+
+
+
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <span>邮编：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <input class="form-control {}" placeholder="请输入邮编" type="text" name="zipcode" value="" id="zipcode">
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <span>生日：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <select id="birth_month" name="birth_month" onchange="app.hy.birth_month_onchange(this);" style="width:55px;"><option selected="selected" value="0">--</option></select> 月
+                                        <select class="sel_day" id="birth_day" name="birth_day" style="width:55px;"><option selected="selected" value="0">--</option></select> 日 &nbsp;&nbsp;&nbsp;
+                                        <label class="i-checks">
+                                            <input id="flag_nl" name="flag_nl" value="1" type="checkbox" />
+                                            <i></i>&nbsp;农历
+                                        </label>
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <div class="m-b">
+                                    <label class="l-h-30 text-right" style="width: 70px">
+                                        <span>出生日期：</span>
+                                    </label>
+                                    <label class="sub-label w-340 m-l-xs">
+                                        <div class="input-group">
+                                            <input name="birthday" id="birthday" class="form-control input-sm {messages:{required:&#39;请输入出生日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'birthday' ,onpicked:function (el) { setbirthinfo(el,'0'); }  ,oncleared:function (el) { setbirthinfo(el,'1'); }  })" readonly="readonly" value="" style="width:100px;">
+
+                                            <span class="input-group-btn" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'birthday', onpicked: function (el) { setbirthinfo(el,'0'); }, oncleared: function (el) { setbirthinfo(el,'1'); } });">
+                                                <button type="button" class="btn btn-default btn-sm btn-none g-h-34">
+                                                    <i class="glyphicon glyphicon-calendar"> </i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <input type="hidden" id="id" name="id" value="" />
+                            <input type="hidden" id="hid_option" value="@option">
+                        </div>
+                        <!-- end main-content -->
+                        <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+                            <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                            <button type="submit" class="btn w-138 btn-info" onclick="$(_ + '#is_need_new').val('');" id="btn-add1" data-loading-text="保存中...">保存回到列表页</button>&nbsp;&nbsp;
+                            <button type="submit" class="btn w-138 btn-info" onclick="$(_ + '#is_need_new').val('1');" id="btn-add2" data-loading-text="保存中...">保存并继续新增</button>&nbsp;&nbsp;
+                            <button type="button" class="btn w-xs btn-default" title="会员管理" onclick="$.fn.menuTab.load({ url: '/Gys/list', 'title': '会员管理', id: 'hy/list', nocache: '0' }); ">返回</button>
+                        </footer>
+
+                    </form>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            var rq_b = $(_ + "#rq_b").val();
+            var rq_b_end = $(_ + "#rq_b_end").val();
+            if (rq_b == '' || rq_b_end == '') {
+                $.DHB.message({ 'content': '请选择有效时间！', 'time': 0, 'type': 'e' });
+                return false;
+            }
+
+            var zk = $(_ + "#zk").val();
+           
+            if (parseFloat(zk) == 0) {
+                $.DHB.message({ 'content': '折扣必须大于0！', 'time': 4000, 'type': 'e' });
+                return false;
+            }
+
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn1 = $(_ + '#btn-add1').button('loading');
+            var btn2 = $(_ + '#btn-add2').button('loading');
+            $.post(
+                $.DHB.U('hy/' + (Tnum > 0 ? 'Edit' : 'Add')),
+                $(_ + ".validate").serialize(),
+                function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+
+                        if ($(_ + '#is_need_new').val() != '1') {
+                            $.DHB.url('hy/list', 'cache');
+                            btn1.button('reset');
+                        }
+                        else {
+                            $.fn.menuTab.deleteMenu('hy/list');
+                            $.fn.menuTab.load({ url: '/hy/add', 'title': '新增会员', id: 'hy/list', nocache: '0' });
+                        }
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        btn1.button('reset');
+                        btn2.button('reset');
+                    }
+                }, 'json'
+            );
+
+            return false;
+        });
+    };
+
+    app.hy = app.hy || {};
+
+    jQuery.validator.addMethod("check_phone_membercard",
+            function (value, element) {
+                var phone = $(_ + "#phone").val();
+                var membercard = $(_ + "#membercard").val();
+                //debugger;undefined
+                if (phone == '' && membercard == '') {
+                    return false;
+                } else {
+                    return true;
+                }
+            }, "会员卡号和手机号必须填写一个！"
+        );
+
+    //时间下拉
+    app.hy.wdatepicker_hy_list = function (el) {
+        var booStart = $(el).data('type') == 'start';
+        var option = {};
+        option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+        option['onpicked'] = function () {
+            $(el)
+                .text($dp.cal.getP('y') +
+                    '-' +
+                    $dp.cal.getP('M') +
+                    '-' +
+                    $dp.cal.getP('d'));
+            if (booStart) {
+                setTimeout(function () {
+                    $(el)
+                        .parent()
+                        .find('[data-type="end"]')
+                        .data('position', '1')
+                        .click();
+                },
+                    5000);
+            }
+        };
+        if (booStart) {
+            option['maxDate'] =
+                '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+        } else {
+            option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+            if ($(el).data('position') == '1') {
+            }
+        }
+        option['oncleared'] = function () {
+            $(el).html(booStart ? $(el).data('title') : '截至日期');
+        };
+        WdatePicker(option);
+    }
+
+
+    //生日月改变事件
+    app.hy.birth_month_onchange = function (e) {
+        var month = parseInt($(_ + "#birth_month").val());
+        var dayCount = 0;
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                dayCount = 31;
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                dayCount = 30;
+                break;
+            case 2:
+                dayCount = 29;
+                break;
+            default:
+                break;
+        }
+        var str = "<option value=\"0\">--</option>";
+        $(_ + "#birth_day").html(str);
+        for (var i = 1; i <= dayCount; i++) {
+            var sed = i == 0 ? "selected" : "";
+            var dayStr = "<option value=\"" + i + "\" " + sed + ">" + i + "</option>";
+            $(_ + "#birth_day").append(dayStr);
+        }
+    };
+
+    function setbirthinfo(el, isclear) {
+        if (isclear == '1') {
+            $("#birth_month").removeAttr("disabled");
+            $("#birth_day").removeAttr("disabled");
+        } else {
+            var birthday = el.cal.getNewDateStr();
+            if (birthday != "") {
+                initmonthsel();
+                $("#birth_month").attr("disabled", "disabled");
+                $(_ + "#birth_month").find('option[value="' + el.cal.newdate.M + '"]').attr("selected", true);
+                $("#birth_day").attr("disabled", "disabled");
+                app.hy.birth_month_onchange();
+                $(_ + "#birth_day").find('option[value="' + el.cal.newdate.d + '"]').attr("selected", true);
+            } else {
+                $("#birth_month").removeAttr("disabled");
+                $("#birth_day").removeAttr("disabled");
+            }
+        }
+    }
+
+    //初始化生日下拉
+    function initmonthsel() {
+        // 月份列表
+        var monthSel = $(_ + "#birth_month");
+        var str = "<option value=\"0\">--</option>";
+        monthSel.html(str);
+        for (var i = 1; i <= 12; i++) {
+            var sed = monthSel == 0 ? "selected" : "";
+            var monthStr = "<option value=\"" + i + "\" " + sed + ">" + i + "</option>";
+            monthSel.append(monthStr);
+        }
+    }
+
+    //默认执行事件
+    app.hy.ready = function () {
+        initmonthsel();
+    }
+    //默认执行事件
+    app.hy.ready();
+
+</script>

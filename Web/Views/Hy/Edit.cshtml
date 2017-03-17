@@ -1,0 +1,577 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts;
+@using CySoft.Utility;
+
+@{
+    var item_edit = (ViewData["item_edit"] as Tb_Hy_Shop_Query) ?? new Tb_Hy_Shop_Query();
+    string option = ViewData["option"].ToString();
+    var selectListShop = (ViewData["userShopList"] as List<Tb_User_ShopWithShopMc>) ?? new List<Tb_User_ShopWithShopMc>();
+    var hyflList = (ViewData["hyflList"] as List<Tb_Hyfl>) ?? new List<Tb_Hyfl>();
+    var version = ViewData["version"] == null ? "" : ViewData["version"].ToString();
+    var yhlxSelect = ViewData["YHLXSelect"] as List<Ts_Flag>;
+    yhlxSelect = yhlxSelect ?? new List<Ts_Flag>();
+    string zkdis = string.Format(item_edit.flag_yhlx == 2 ? " disabled=\"disabled\" " : "");
+}
+<style>
+    .dropdown-menu {
+        max-height: 510px;
+    }
+</style>
+
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/hy/list', 'title': '会员管理', id: 'hy/list', nocache: '0' }); ">会员管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">编辑会员</a>
+</div>
+
+<div class="col">
+    <div class="row">
+        <div class="col-xs-12 comform common-no">
+            <div class="panel panel-default">
+                <div class="main-content">
+
+                    <form class="form-horizontal validate f0" method="post" id="fm-add">
+                        <div class="modal-body tab-content ">
+
+                            <div class="fixed-input-group">
+                                <h2 class="form_title"><span>基本信息</span></h2>
+                                <div class="col-sm-12 form_content">
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right" style="width: 80px">
+                                                <span>会员卡号：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+                                                <input class="form-control {maxlength:50}" placeholder="请输入会员卡号" type="text" name="membercard" value="@string.Format("{0}", item_edit.membercard == null ? string.Empty : item_edit.membercard)" id="membercard">
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right" style="width: 80px">
+                                                <em class="tag">* </em><span>姓名：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+                                                <input class="form-control {required:true,messages:{required:&#39;请输入姓名&#39;}}" placeholder="请输入姓名" type="text" name="name" value="@string.Format("{0}", item_edit.hy_name == null ? string.Empty : item_edit.hy_name)" id="name">
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right" style="width: 80px">
+                                                <em class="tag">* </em><span>手机：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+                                                <input class="form-control {required:true,isPhone:true}" placeholder="请输入手机" type="text" name="phone" value="@string.Format("{0}", item_edit.phone == null ? string.Empty : item_edit.phone)" id="phone">
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right lab-w80">
+                                                <span>支付密码：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+                                                <input class="form-control {maxlength:40,ints:true,messages:{ints:&#39;只允许输入数字&#39;}}" placeholder="请输入支付密码" type="password" name="password" value="" id="password">
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right" style="width: 80px">
+                                                <span>出生日期：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+                                                <div class="input-group">
+                                                    <input name="birthday" id="birthday" class="form-control input-sm {messages:{required:&#39;请输入出生日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'birthday' ,onpicked:function (el) { setbirthinfo(el,'0'); }  ,oncleared:function (el) { setbirthinfo(el,'1'); }  })" readonly="readonly" value="@string.Format("{0}", item_edit.hy_birthday == DateTime.Parse("1900-01-01") ? "" : ((DateTime)item_edit.hy_birthday).ToString("yyyy-MM-dd"))" style="width:100px;">
+
+                                                    <span class="input-group-btn" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd', el: 'birthday', onpicked: function (el) { setbirthinfo(el,'0'); }, oncleared: function (el) { setbirthinfo(el,'1'); } });">
+                                                        <button type="button" class="btn btn-default btn-sm btn-none g-h-34">
+                                                            <i class="glyphicon glyphicon-calendar"> </i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right pad-t7" style="width: 80px">
+                                                <span>生日：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs sel-hei">
+                                                <select id="birth_month" name="birth_month" onchange="app.hy.birth_month_onchange(this);" style="width:55px;"><option selected="selected" value="0">--</option></select> 月
+                                                <select class="sel_day" id="birth_day" name="birth_day" style="width:55px;"><option selected="selected" value="0">--</option></select> 日 &nbsp;&nbsp;&nbsp;
+                                                <label class="i-checks">
+                                                    <input id="flag_nl" name="flag_nl" value="1" type="checkbox" @Html.Raw(item_edit.hy_flag_nl == 1 ? "checked=\"checked\"" : "") />
+                                                    <i></i>&nbsp;农历
+                                                </label>
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    @if (version != "10")
+                                    {
+                                        <div>
+                                            <div class="m-b">
+                                                <label class="l-h-30 text-right" style="width: 80px">
+                                                    <em class="tag">* </em><span>门店：</span>
+                                                </label>
+                                                <label class="sub-label w-340 m-l-xs">
+
+                                                    <select id="id_shop_create" name="id_shop_create" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择门店&#39;}} valid" style="width:340px;">
+                                                        @foreach (var item in selectListShop.OrderBy(d => d.rq_create))
+                                                        {
+                                                            var shopChecked = item_edit.hy_id_shop_create == item.id_shop ? "selected=\"selected\"" : "";
+                                                            <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                                                        }
+                                                    </select>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right" style="width: 80px">
+                                                <em class="tag">* </em><span>会员类别：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+
+                                                <select id="id_hyfl" name="id_hyfl" onchange="app.hy.hyfl_onchange(this)" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择会员类别&#39;}} valid" style="width:340px;">
+                                                    <option value="">会员类别</option>
+                                                    @foreach (var item in hyflList.OrderBy(d => d.sort_id))
+                                                    {
+                                                        var hyflChecked = item_edit.id_hyfl == item.id ? "selected=\"selected\"" : "";
+                                                        @*<option value="@item.id" @hyflChecked>@item.mc</option>*@
+                                                        <option value="@item.id" data-zk="@item.zk" data-yhlx="@item.flag_yhlx" @hyflChecked>@item.mc</option>
+                                                    }
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right" style="width: 80px">
+                                                <em class="tag">* </em><span>会员性别：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+
+                                                <select id="flag_sex" name="flag_sex" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择会员性别&#39;}} valid" style="width:340px;">
+                                                    <option value="1" @string.Format(item_edit.hy_flag_sex == 1 ? "selected=\"selected\"" : "")>男</option>
+                                                    <option value="2" @string.Format(item_edit.hy_flag_sex == 2 ? "selected=\"selected\"" : "")>女</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right lab-w80">
+                                                <em class="tag">* </em><span>优惠类型：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+
+                                                <select id="flag_yhlx" name="flag_yhlx" onchange="app.hy.yhlx_edit_onchange(this)" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择优惠类型&#39;}} valid" style="width:340px;">
+                                                    @foreach (var item in yhlxSelect.OrderBy(d => d.listsort))
+                                                    {
+                                                        var stateChecked = item_edit.flag_yhlx == item.listdata ? "selected=\"selected\"" : "";
+                                                        <option value="@item.listdata" @stateChecked>@item.listdisplay</option>
+                                                    }
+                                                </select>
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right" style="width: 80px">
+                                                <em class="tag">* </em><span>折扣：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+                                                <input class="form-control {required:true}"  @zkdis  placeholder="请输入折扣" min="0" max="100" type="text" name="zk" id="zk"  value="@string.Format("{0}", item_edit.zk == null ? "100.00" : item_edit.zk.Digit(2).ToString())" onkeyup="check_digit(this,'2')" onafterpaste="check_digit(this,'2')" old-data="@string.Format("{0}", item_edit.zk == null ? "0" : item_edit.zk.Digit(2).ToString())">
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div>
+                                        <div class="m-b">
+                                            <label class="l-h-30 text-right pad-t7" style="width: 80px">
+                                                <em class="tag">* </em><span>有效时期：</span>
+                                            </label>
+                                            <label class="sub-label w-340 m-l-xs">
+                                                <div class="pull-left m-r-sm" style="margin-top:7px">
+                                                    <div class="btn-group">
+                                                        <input type="hidden" name="rq_b" id="rq_b" value="@string.Format("{0}", item_edit.rq_b == DateTime.Parse("1900-01-01") ? "" : ((DateTime)item_edit.rq_b).ToString("yyyy-MM-dd"))">
+                                                        <button type="button" class="btn btn-default btn-sm m-l-none text-left " onclick="app.hy.wdatepicker_hy_list(this);" title="开始时间" data-title="开始时间" data-field="rq_b" data-type="start" style="width:80px;">@string.Format("{0}", (DateTime)item_edit.rq_b == DateTime.Parse("1900-01-01") ? "开始时间" : ((DateTime)item_edit.rq_b).ToString("yyyy-MM-dd"))</button>
+                                                        <button type="button" class="btn btn-default disabled btn-sm"><i class="glyphicon glyphicon-calendar" style="min-width: 7%;"></i></button>
+                                                        <button type="button" class="btn btn-default btn-sm text-left" onclick="app.hy.wdatepicker_hy_list(this);" data-field="rq_b" data-type="end" data-position="" style="width:80px;" title="结束时间">@string.Format("{0}", (DateTime)item_edit.rq_e == DateTime.Parse("1900-01-01") ? "结束时间" : ((DateTime)item_edit.rq_e).ToString("yyyy-MM-dd"))</button>
+                                                        <input type="hidden" name="rq_b_end" id="rq_b_end" value="@string.Format("{0}", item_edit.rq_e == DateTime.Parse("1900-01-01") ? "" : ((DateTime)item_edit.rq_e).ToString("yyyy-MM-dd"))">
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                           
+
+
+                                    <div class="fixed-input-group">
+                                        <h2 class="form_title"><span>更多资料</span></h2>
+                                        <div class="col-sm-12 form_content">
+
+                                            <div  class="mar-t30">
+                                                <div class="m-b">
+                                                    <label class="l-h-30 text-right" style="width:80px">
+                                                        <span>QQ：</span>
+                                                    </label>
+                                                    <label class="sub-label w-340 m-l-xs">
+                                                        <input class="form-control {isQQ:true}" placeholder="请输入QQ" type="text" name="qq" value="@string.Format("{0}", item_edit.hy_qq == null ? string.Empty : item_edit.hy_qq)" id="qq">
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+                                            <div>
+                                                <div class="m-b">
+                                                    <label class="l-h-30 text-right" style="width: 80px">
+                                                        <span>Email：</span>
+                                                    </label>
+                                                    <label class="sub-label w-340 m-l-xs">
+                                                        <input class="form-control {email:true}" placeholder="请输入Email" type="text" name="email" value="@string.Format("{0}", item_edit.hy_email == null ? string.Empty : item_edit.hy_email)" id="email">
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+                                            <div>
+                                                <div class="m-b">
+                                                    <label class="l-h-30 text-right" style="width: 80px">
+                                                        <span>电话：</span>
+                                                    </label>
+                                                    <label class="sub-label w-340 m-l-xs">
+                                                        <input class="form-control {}" placeholder="请输入电话" type="text" name="tel" value="@string.Format("{0}", item_edit.hy_tel == null ? string.Empty : item_edit.hy_tel)" id="tel">
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+                                            <div>
+                                                <div class="m-b">
+                                                    <label class="l-h-30 text-right" style="width: 80px">
+                                                        <span>地址：</span>
+                                                    </label>
+                                                    <label class="sub-label w-340 m-l-xs">
+                                                        <input class="form-control {}" placeholder="请输入地址" type="text" name="address" value="@string.Format("{0}", item_edit.hy_address == null ? string.Empty : item_edit.hy_address)" id="address">
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div>
+                                                <div class="m-b">
+                                                    <label class="l-h-30 text-right" style="width: 80px">
+                                                        <span>微信号：</span>
+                                                    </label>
+                                                    <label class="sub-label w-340 m-l-xs">
+                                                        <input class="form-control {}" placeholder="请输入微信号" type="text" name="MMno" value="@string.Format("{0}", item_edit.hy_MMno == null ? string.Empty : item_edit.hy_MMno)" id="MMno">
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <div>
+                                                <div class="m-b">
+                                                    <label class="l-h-30 text-right" style="width: 80px">
+                                                        <span>邮编：</span>
+                                                    </label>
+                                                    <label class="sub-label w-340 m-l-xs">
+                                                        <input class="form-control {}" placeholder="请输入邮编" type="text" name="zipcode" value="@string.Format("{0}", item_edit.hy_zipcode == null ? string.Empty : item_edit.hy_zipcode)" id="zipcode">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+                                    <input type="hidden" id="id" name="id" value="@string.Format("{0}", item_edit.id == null ? string.Empty : item_edit.id)" />
+                                    <input type="hidden" id="hid_option" value="@option">
+                                </div>
+                                <!-- end main-content -->
+                                <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+                                    <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                                    <button type="submit" class="btn w-138 btn-info" onclick="" id="btn-add1" data-loading-text="保存中...">保存</button>&nbsp;&nbsp;
+                                    <button type="button" class="btn w-xs btn-default" title="会员管理" onclick="$.fn.menuTab.load({ url: '/hy/list', 'title': '会员管理', id: 'hy/list', nocache: '0' }); ">返回</button>
+                                </footer>
+
+</form>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            //$(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            var rq_b = $(_ + "#rq_b").val();
+            var rq_b_end = $(_ + "#rq_b_end").val();
+            if (rq_b == '' || rq_b_end == '') {
+                $.DHB.message({ 'content': '请选择有效时间！', 'time': 0, 'type': 'e' });
+                return false;
+            }
+
+            var zk = $(_ + "#zk").val();
+            if (parseFloat(zk) == 0) {
+                $.DHB.message({ 'content': '折扣必须大于0！', 'time': 4000, 'type': 'e' });
+                return false;
+            }
+
+            var btn1 = $(_ + '#btn-add1').button('loading');
+            
+
+            var post_data = $(_ + ".validate").serialize();
+            var zkdis = $(_ + "#zk").attr('disabled');
+            if (zkdis == 'disabled') {
+                post_data = post_data + '&zk=' + zk;
+            }
+
+
+            var options = {
+                data: post_data,
+                url: $.DHB.U('hy/edit'),
+                type: "POST",
+                datatype: 'json',
+                beforeSend: function () { },
+                success: function (data, textStatus, jqXHR) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $.DHB.url('hy/list', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        btn1.button('reset');
+                    }
+                },
+                complete: function (XHR, TS) { btn1.button('reset'); }
+            };
+            app.httpAjax.post(options)
+
+
+
+
+            return false;
+        });
+    };
+
+    app.hy = app.hy || {};
+
+    jQuery.validator.addMethod("check_phone_membercard",
+            function (value, element) {
+                var phone = $(_ + "#phone").val();
+                var membercard = $(_ + "#membercard").val();
+                //undefined
+                if (phone == '' && membercard == '') {
+                    return false;
+                } else {
+                    return true;
+                }
+            }, "会员卡号和手机号必须填写一个！"
+        );
+
+    //时间下拉
+    app.hy.wdatepicker_hy_list = function (el) {
+        var booStart = $(el).data('type') == 'start';
+        var option = {};
+        option['el'] = $(el).data('field') + (!booStart ? '_end' : '');
+        option['onpicked'] = function () {
+            $(el)
+                .text($dp.cal.getP('y') +
+                    '-' +
+                    $dp.cal.getP('M') +
+                    '-' +
+                    $dp.cal.getP('d'));
+            if (booStart) {
+                setTimeout(function () {
+                    $(el)
+                        .parent()
+                        .find('[data-type="end"]')
+                        .data('position', '1')
+                        .click();
+                },
+                    5000);
+            }
+        };
+        if (booStart) {
+            option['maxDate'] =
+                '#F{ $dp.$D(\'' + $(el).data('field') + '_end\') }';
+        } else {
+            option['minDate'] = '#F{ $dp.$D(\'' + $(el).data('field') + '\') }';
+            if ($(el).data('position') == '1') {
+            }
+        }
+        option['oncleared'] = function () {
+            $(el).html(booStart ? $(el).data('title') : '截至日期');
+        };
+        WdatePicker(option);
+    }
+
+
+    //生日月改变事件
+    app.hy.birth_month_onchange = function (e) {
+        var month = parseInt($(_ + "#birth_month").val());
+        var dayCount = 0;
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                dayCount = 31;
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                dayCount = 30;
+                break;
+            case 2:
+                dayCount = 29;
+                break;
+            default:
+                break;
+        }
+        var str = "<option value=\"0\">--</option>";
+        $(_ + "#birth_day").html(str);
+        for (var i = 1; i <= dayCount; i++) {
+            var sed = i == 0 ? "selected" : "";
+            var dayStr = "<option value=\"" + i + "\" " + sed + ">" + i + "</option>";
+            $(_ + "#birth_day").append(dayStr);
+        }
+    };
+
+    function setbirthinfo(el, isclear) {
+        if (isclear == '1') {
+            $("#birth_month").removeAttr("disabled");
+            $("#birth_day").removeAttr("disabled");
+        } else {
+            var birthday = el.cal.getNewDateStr();
+            if (birthday != "") {
+                initmonthsel();
+                $("#birth_month").attr("disabled", "disabled");
+                $(_ + "#birth_month").find('option[value="' + el.cal.newdate.M + '"]').attr("selected", true);
+                $("#birth_day").attr("disabled", "disabled");
+                app.hy.birth_month_onchange();
+                $(_ + "#birth_day").find('option[value="' + el.cal.newdate.d + '"]').attr("selected", true);
+            } else {
+                $("#birth_month").removeAttr("disabled");
+                $("#birth_day").removeAttr("disabled");
+            }
+        }
+    }
+
+    //初始化生日下拉
+    function initmonthsel() {
+        // 月份列表
+        var monthSel = $(_ + "#birth_month");
+        var str = "<option value=\"0\">--</option>";
+        monthSel.html(str);
+        for (var i = 1; i <= 12; i++) {
+            var sed = monthSel == 0 ? "selected" : "";
+            var monthStr = "<option value=\"" + i + "\" " + sed + ">" + i + "</option>";
+            monthSel.append(monthStr);
+        }
+    }
+
+    //初始生日选中
+    function initmonthselselect() {
+        var hy_hysr = '@item_edit.hy_hysr';
+        if (hy_hysr != "" && hy_hysr.length == 4) {
+            var month = hy_hysr.substr(0, 2);
+            var day = hy_hysr.substr(2, 2);
+            var monthInt = parseInt(month);
+            var dayInt = parseInt(day);
+            $(_ + "#birth_month").find('option[value="' + monthInt + '"]').attr("selected", true);
+            app.hy.birth_month_onchange();
+            $(_ + "#birth_day").find('option[value="' + dayInt + '"]').attr("selected", true);
+
+            if ($(_ + "#birthday").val() != '') {
+                $("#birth_month").attr("disabled", "disabled");
+                $("#birth_day").attr("disabled", "disabled");
+            }
+        }
+    }
+
+    //默认执行事件
+    app.hy.ready = function () {
+        initmonthsel();
+        initmonthselselect();
+    }
+    //默认执行事件
+    app.hy.ready();
+
+    app.hy.hyfl_onchange = function (e) {
+        var yhlx = $(e).find('option:selected').attr('data-yhlx');
+        var zk = $(e).find('option:selected').attr('data-zk');
+
+        $(_ + "#zk").val(zk);
+
+        var index = $('#flag_yhlx', _).find('option[value="' + yhlx + '"]').index();
+        var objYhlx = $(_ + 'select[name="flag_yhlx"]').prev();
+        objYhlx.find('ul li').removeAttr("class");
+        $(objYhlx.find('ul li')[index]).find('a').click();
+
+    };
+
+    //优惠类型改变
+    app.hy.yhlx_edit_onchange = function (e) {
+        var yhlx = $(e).find('option:selected').val();
+        //如果为折扣
+        if (yhlx == '2') {
+            $(_ + "#zk").attr("disabled", "disabled");
+            $(_ + "#zk").val('1');
+        } else {
+            $(_ + "#zk").removeAttr("disabled");
+        }
+    };
+
+</script>

@@ -1,0 +1,85 @@
+﻿@using CySoft.Model.Tb;
+@{
+    Layout = null;
+    List<Tb_Gysfl_Tree> list_tree = ViewData["list_tree"] as List<Tb_Gysfl_Tree>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isAdd = actionlist.Any(l => l.ToLower() == "add");
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var isImport = actionlist.Any(l => l.ToLower() == "importin");
+}
+
+<div class="col">
+    <div class="panel panel-default m-b-none" id="gysflList">
+        <div class="main-content">
+            <!-- 商品分类 -->
+            <div class="m-b-md">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="nestable-menu" style="padding: 0; margin: 12px 0 0 15px;">
+                            @if (isAdd)
+                            {
+                                <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="app.gysfl.add_Gysfl()">新增分类</button>
+                            }
+                            @if (isImport)
+                            {
+                                <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="$.DHB.dialog({ 'title': '导入分类', 'url': $.DHB.U('/gysfl/ImportIn'), 'id': 'dialog-gysfl-importIn' });">导入分类</button>
+                            }
+                        </div>
+                        <div class="shopsp_cont" style="margin-top: 20px;">
+                            <!--左侧树-->
+                            <div class="p-l-r-none tree_left col-xs-2" id="spfl">
+                                <div class="l-tree_head">
+                                    <ul>
+                                        <li>供应商分类</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div id="tree_left" class="p-b-30" style="height: 600px; overflow: auto;"></div>
+                                </div>
+                            </div>
+                            <!--右侧-->
+                            <div class="right_table col-xs-10">
+                                <div id="spfl_list" class="p-l-r-none table_list table_max_h">
+                                    <input type="hidden" xh="" value="" id="clicktree" />
+                                    <table class="table m-b-none row1 selectAll-table sptable">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">序号</th>
+                                                <th width="15%">编码</th>
+                                                <th>名称</th>
+                                                <th width="10%">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr :id="item.id" :id_father="item.id_farther"  v-for="(item,index) in gysfl_chirld_data">
+                                                <td class="align_center" name="xh">{{++index}}</td>
+                                                <td><input v-model='item.bm' type="text" name="bm" class="form-control user-input"  onkeyup="app.gysfl.list.bmKeyUp(this)" /></td>
+                                                <td><input v-model='item.mc' type="text" name="mc" class="width200 form-control user-input"  onkeyup="app.gysfl.list.mcKeyUp(this)" /></td>
+                                                <td>
+                                                   <div class="look-out1 supernatant position_static" style="width:140px;">
+                                                         <div class="second-height-operate position_static">
+                                                              <a class="bg-state bg-state-info fa fa-floppy-o" title="保存" onclick="app.gysfl.list.addpost(this)"></a>
+                                                              <a class="bg-state bg-state-info fa fa-trash" title="删除" onclick="app.gysfl.list.delspfl(this)"></a>
+                                                         </div>
+                                                   </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                    </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/static/js/gysfl/gysflList.js"></script>

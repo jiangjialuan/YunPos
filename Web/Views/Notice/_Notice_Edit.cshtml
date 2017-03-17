@@ -1,0 +1,246 @@
+﻿@using CySoft.Model.Ts;
+
+@{
+    Layout = null;
+
+    Ts_Notice item_edit = ViewData["item_edit"] as Ts_Notice;
+    item_edit = item_edit ?? new Ts_Notice();
+    string option = ViewData["option"].ToString();
+
+
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="notice/add"]').attr({ controller: 'notice', action: 'add' });
+        app.c.public_data['notice/add'] = app.c.public_data['notice/add'] || {};
+        app.c.public_data['notice/add']['once'] = false;
+        app.notice = app.notice || {};
+    });
+</script>
+
+<link href="~/static/js/kindeditor/themes/default/default.css" rel="stylesheet" />
+<link href="~/static/js/kindeditor/themes/simple/simple.css" rel="stylesheet" />
+<script charset="utf-8" src="~/static/js/kindeditor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="~/static/js/kindeditor/lang/zh-CN.js"></script>
+
+<form class="form-horizontal validate f0" method="post" id="form_notice">
+
+    <div class="input-item-2 clearfix add-client form_line">
+        <div>
+            <label class="item-2-label">
+                <em class="tag">* </em><span>公告类型：</span>
+            </label>
+            <label class="m-l-xs1">
+                <br />
+                <select id="flag_type" name="flag_type" onchange="app.notice.type_change(this);" class="btn-group bootstrap-select user-input input-sm {required:true,messages:{required:&#39;请选择公告类型&#39;}} valid ">
+                    <option value="1">系统公告</option>
+                    @*<option value="2">门店公告</option>
+                    <option value="3">个人公告</option>*@
+                    @*@foreach (var item in aaaa.OrderBy(d => d.dw))
+                        {
+                            var dwChecked = copySP.ShopSP.dw == item.dw ? "selected=\"selected\"" : "";
+                            <option value="@item.dw" @dwChecked>@item.dw</option>
+                        }*@
+                </select>
+                <br />
+            </label>
+        </div>
+    </div>
+
+    <div id="div_id_shop" style="display:none;">
+        <div class="input-item-2 clearfix add-client form_line">
+            <div>
+                <label class="item-2-label">
+                    <em class="tag">* </em><span>公告门店：</span>
+                </label>
+                <label class="m-l-xs1">
+                    <br />
+                    <select id="id_shop_target" name="id_shop_target" class="btn-group bootstrap-select user-input valid ">
+                        <option value="0">所有门店</option>
+                        <option value="1">门店1</option>
+                        <option value="2">门店2</option>
+                    </select>
+                    <br />
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="div_id_user" style="display:none;">
+        <div class="input-item-2 clearfix add-client form_line">
+            <div>
+                <label class="item-2-label">
+                    <em class="tag">* </em><span>公告个人：</span>
+                </label>
+                <label class="m-l-xs1">
+                    <br />
+                    <select id="id_user_target" name="id_user_target" class="btn-group bootstrap-select user-input valid ">
+                        <option value="0">所有人</option>
+                        <option value="1">人员1</option>
+                        <option value="2">人员2</option>
+                    </select>
+                    <br />
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-item-2 clearfix add-client form_line">
+        <div>
+            <label class="item-2-label">
+                <em class="tag">* </em><span>公告标题：</span>
+            </label>
+            <label class="m-l-xs1">
+                <br />
+                <input class="form-control user-input {required:true}" style="width:700px;" id="title" name="title" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.title)" placeholder="请输入公告标题" type="text">
+                <br />
+            </label>
+        </div>
+    </div>
+
+    <div class="input-item-2 clearfix add-client form_line">
+        <div>
+            <label class="item-2-label">
+                <span></span>
+            </label>
+            <label class="m-l-xs1">
+                <textarea name="content" id="content" style="visibility:hidden;">@string.Format("{0}", item_edit == null ? string.Empty : item_edit.content)</textarea>
+            </label>
+        </div>
+    </div>
+
+    <input type="hidden" id="id" name="id" value="@string.Format("{0}", item_edit == null ? string.Empty : item_edit.id)" />
+
+</form>
+
+<footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+    <button type="submit" class="btn w-138 btn-info" onclick="app.notice.save(this);" id="btn-notice-save">保存</button>
+    <button type="button" class="btn w-xs btn-default" title="系统公告" onclick="app.notice.list(this)">返回</button>
+</footer>
+
+
+
+
+
+@*<p>
+        <input type="button" name="getHtml" value="取得HTML" />
+        <input type="button" name="isEmpty" value="判断是否为空" />
+        <input type="button" name="getText" value="取得文本(包含img,embed)" />
+        <input type="button" name="selectedHtml" value="取得选中HTML" />
+        <br />
+        <br />
+        <input type="button" name="setHtml" value="设置HTML" />
+        <input type="button" name="setText" value="设置文本" />
+        <input type="button" name="insertHtml" value="插入HTML" />
+        <input type="button" name="appendHtml" value="添加HTML" />
+        <input type="button" name="clear" value="清空内容" />
+        <input type="reset" name="reset" value="Reset" />
+    </p>*@
+
+
+
+<script type="text/javascript">
+    app.notice = app.notice || {};
+
+    //内页加载完成
+    app.notice.add_ready = function () {
+
+
+
+    };
+
+    //保存公告
+    app.notice.save = function (obj) {
+        if ($(_ + "#title").val() == '') {
+            $.DHB.message({ 'content': '请填写标题先', 'time': 0, 'type': 'e' });
+            return;
+        }
+        if (editor.isEmpty().toString() == 'true') {
+            $.DHB.message({ 'content': '请填写内容先', 'time': 0, 'type': 'e' });
+            return;
+        }
+        var Tnum = '@option.ToLower()' == 'edit' ? '1' : '0';
+        $.post(
+            $.DHB.U('Notice/' + (Tnum > 0 ? 'Edit' : 'Add')),
+            $(_ + "#form_notice").serialize(),
+            function (data) {
+                if (data.status == "success") {
+                    $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                    $.fn.menuTab.load({ url: '/notice/list', 'title': '系统公告', id: 'notice/list', nocache: '1' });
+                }
+                else {
+                    $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                }
+            }, 'json'
+        );
+    };
+
+    //系统公告
+    app.notice.list = function (obj) {
+        $.fn.menuTab.load({ url: '/notice/list', 'title': '系统公告', id: 'notice/list', nocache: '0' });
+    };
+
+    //类型改变时
+    app.notice.type_change = function (obj) {
+        var type = $(_ + "#flag_type").val();
+        if (type == "2") {
+            $(_ + "#div_id_shop").css('display', 'block');
+            $(_ + "#div_id_user").css('display', 'none');
+        } else if (type == "3") {
+            $(_ + "#div_id_user").css('display', 'block');
+            $(_ + "#div_id_shop").css('display', 'none');
+        } else {
+            $(_ + "#div_id_user").css('display', 'none');
+            $(_ + "#div_id_shop").css('display', 'none');
+        }
+    };
+
+    //初始化编辑器
+    var editor;
+    var item = ['formatblock', 'fontname', 'fontsize', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'image', 'link', 'unlink', 'plainpaste', 'wordpaste', 'insertorderedlist', 'insertunorderedlist', 'table', 'fullscreen', 'cyshowmore', '/', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'subscript', 'superscript', 'clearhtml', 'removeformat', , 'preview', 'source'];
+    editor = KindEditor.create('#content', {
+        width: '1024px',
+        height: '700px',
+        items: item,
+        resizeType: 1,
+        allowPreviewEmoticons: false,
+        allowImageUpload: true,//允许上传图片
+        allowFileManager: true, //允许对上传图片进行管理
+        uploadJson: '/Utility/UploadImages', //上传图片的代码
+        fileManagerJson: '/Utility/UploadQualification',
+        afterUpload: function () { this.sync(); }, //图片上传后，将上传内容同步到textarea中
+        afterBlur: function () { this.sync(); },   ////失去焦点时，将上传内容同步到textarea中
+        allowFileManager: true
+    });
+
+    //KindEditor('input[name=getHtml]').click(function (e) {
+    //    alert(editor.html());
+    //});
+    //KindEditor('input[name=isEmpty]').click(function (e) {
+    //    alert(editor.isEmpty());
+    //});
+    //KindEditor('input[name=getText]').click(function (e) {
+    //    alert(editor.text());
+    //});
+    //KindEditor('input[name=selectedHtml]').click(function (e) {
+    //    alert(editor.selectedHtml());
+    //});
+    //KindEditor('input[name=setHtml]').click(function (e) {
+    //    editor.html('<h3>Hello KindEditor</h3>');
+    //});
+    //KindEditor('input[name=setText]').click(function (e) {
+    //    editor.text('<h3>Hello KindEditor</h3>');
+    //});
+    //KindEditor('input[name=insertHtml]').click(function (e) {
+    //    editor.insertHtml('<strong>插入HTML</strong>');
+    //});
+    //KindEditor('input[name=appendHtml]').click(function (e) {
+    //    editor.appendHtml('<strong>添加HTML</strong>');
+    //});
+    //KindEditor('input[name=clear]').click(function (e) {
+    //    editor.html('');
+    //});
+
+
+</script>

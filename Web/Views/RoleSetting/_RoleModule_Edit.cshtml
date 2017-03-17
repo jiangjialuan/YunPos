@@ -1,0 +1,114 @@
+﻿@using CySoft.Model.Tb;
+@{
+    List<Tb_Role_Module> item_edit = ViewData["item_edit"] as List<Tb_Role_Module>;
+    item_edit = item_edit ?? new List<Tb_Role_Module>();
+    string option = ViewData["option"].ToString();
+    List<Tb_Role_Function> roleFunList = ViewData["roleFunList"] as List<Tb_Role_Function>;
+    roleFunList = roleFunList ?? new List<Tb_Role_Function>();
+}
+<style>
+    .dropdown-menu {
+        max-height: 800px;
+        min-height: 200px;
+    }
+</style>
+
+
+
+<div class="modal fade in" id="dialog-dw" role="dialog">
+    <div class="modal-dialog" style="width:700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">编辑角色权限</h4>
+            </div>
+            <form class="form-horizontal validate f0" method="post" id="">
+                <div class="modal-body tab-content ">
+                    <div>
+                        <div class="m-b">
+                            <label class="l-h-30 text-right" style="width: 70px">
+                                <span>权限详细</span>
+                            </label>
+                            <label class="sub-label w-340 m-l-xs">
+
+                            </label>
+                        </div>
+                    </div>
+                    <input type="hidden" id="hid_option" value="@option">
+                    <input type="hidden" name="roleId" id="roleId" value="@ViewData["roleId"]"/>
+                </div>
+                <div>
+
+                  
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="submit" id="submit-button" data-loading-text="提交中..." class="btn btn-info w-xs">确定</button>
+                    <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $.DHB._ = function () {
+        jQuery(function ($) {
+            $(_ + '#submit-button').removeAttr('disabled');
+        });
+
+        $.DHB.checkForm(function () {
+            //分类Id
+            var Tnum = $.trim($(_ + '#hid_option').val()) == 'edit' ? '1' : '0';
+            var btn = $(_ + '#submit-button').button('loading');
+
+            //$.post(
+            //    $.DHB.U('rolesetting/' + (Tnum > 0 ? 'saveRoleModule' : 'saveAdd')),
+            //    $(_ + ".validate").serialize(),
+            //    function (data) {
+            //        if (data.status == "success") {
+            //            $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+            //            $(_ + '#submit-button').text("提交成功！");
+            //            $.DHB.url('rolesetting/rolelist', 'cache');
+            //        }
+            //        else {
+            //            $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+            //            btn.button('reset');
+            //        }
+            //    }, 'json'
+            //);
+            app.httpAjax.post({
+                data: $(_ + ".validate").serialize(),
+                headers: {},
+                url: $.DHB.U('rolesetting/' + (Tnum > 0 ? 'saveRoleModule' : 'saveAdd')),
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) {
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        $(_ + '#submit-button').text("提交成功！");
+                        $.DHB.url('rolesetting/rolelist', 'cache');
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                        btn.button('reset');
+                    }
+                },
+                error: null,
+                complete: null
+            });
+
+            return false;
+        });
+    };
+
+    app.spfl = app.spfl || {};
+
+
+
+
+</script>

@@ -1,0 +1,360 @@
+﻿@using CySoft.Model.Tb;
+@using CySoft.Model.Ts
+
+@using CySoft.Utility;
+@{
+    Layout = null;
+    IList<Tb_Function_Tree> list = ViewData["list"] as IList<Tb_Function_Tree>;
+    var listStr= JSON.Serialize(list);
+    var versionList= ViewData["versionList"] as List<Ts_Flag>;
+    versionList = versionList ?? new List<Ts_Flag>();
+    var versionStr = JSON.Serialize(versionList);  
+}
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="functionmanage/list"]').attr({ controller: 'functionmanage', action: 'list' });
+        app.c.public_data['functionmanage/list'] = app.c.public_data['functionmanage/list'] || {};
+        app.c.public_data['functionmanage/list']['once'] = false;
+        app.functionmanage = app.functionmanage || {};
+    });
+
+
+</script>
+
+
+<div class="col" ng-app="myApp">
+    <input type="hidden" value="@versionStr" id="version"/>
+    <div class="panel panel-default m-b-none">
+        <div class="main-content">
+            <div class="m-b-md">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="nestable-menu" style="padding: 0; margin: 12px 0 0 15px;">
+                            <button id="CButton" class="btn m-b-xs btn-info m-b-none btn-sm w-xs" style="margin-left: 0;" onclick="app.functionmanage.list.addspfl()">新增功能</button>
+                        </div>
+                        <div class="shopsp_cont" style="margin-top: 20px;">
+                            <!--左侧树-->
+                            <div class="p-l-r-none tree_left col-xs-2">
+                                <div class="l-tree_head">
+                                    <ul>
+                                        <li>功能管理</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div id="tree_left" class="p-b-30" style="height: 600px; overflow: auto;"></div>
+                                </div>
+                            </div>
+                            <!--右侧表格-->
+                            <div class="right_table col-xs-10">
+                                <input type="hidden" xh="" value="" id="clicktree"/>
+                                <div id="spfl_list" class="p-l-r-none table_list table_max_h" style="height:600px;">
+                                    <table class="table m-b-none row1 selectAll-table table_layout sptable">
+                                        <thead>
+                                        <tr>
+                                            <th width="40">序号</th>
+                                            <th width="150">名称</th>
+                                            <th width="100">模块类型</th>
+                                            <th width="100">控制器</th>
+                                            <th width="100">行为</th>
+                                            <th width="150">图标名</th>
+                                            <th width="120">分组名</th>
+                                            <th width="100">排序号</th>
+                                            <th width="160">版本</th>
+                                            <th width="100">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    app.functionmanage = app.functionmanage || {};
+    app.functionmanage.list = app.functionmanage.list || {};
+    app.functionmanage.list_ready = function () {
+
+        
+
+        $('.right_table', _).height($('.tree_left').height());
+        $.DHB.loadJs([{ id: 'jstree', url: '/static/js/jstree/jstree.js' }], function () {
+            app.functionmanage.list_tree();
+        });
+
+        //功能模块接口
+        app.functionmanage.list_tree = function () {
+            var tree_selector = '#tree_left';
+
+            $(_ + tree_selector)
+                .jstree("destroy")
+                .jstree({
+                    'plugins': ["dnd"],
+                    'core': {
+                        'data': {
+                            'url': function (obj) {
+                                var type = $.trim($('#hid_type').val());
+                                return '/functionmanage/querytree?rd=' + new Date().getTime() + '&type=' + type;
+                            }
+                        },
+                        "themes": {
+                            "theme": "proton",
+                            "dots": true,
+                            "icons": true,
+                        },
+
+                    },
+
+                })
+                .on('ready.jstree', function (e, obj) {
+                    //console.log(obj);
+                    //console.log(e);
+                    obj.instance.select_node({ "id": "0" }, true, false);
+                    obj.instance.open_node({ "id": "0" });
+                })
+                .on("changed.jstree", function (e, data) {
+                    if (data.selected && data.selected.length) {
+                        var i, j, r = [];
+                        for (i = 0, j = data.selected.length; i < j; i++) {
+                            r.push(data.instance.get_node(data.selected[i]).id);
+                        }
+                        //TODO：赋值到hidden，触发查询事件等
+                        var child_id = r.join('_')
+                        //console.log(r.join('_'));
+
+                        app.functionmanage.list.children(child_id);
+                        //app.search.do_search_shopsp_list();
+
+                    }
+                }).on('loaded.jstree', function () {
+                    app.functionmanage.list.children(0);
+                    //$(this).jstree('open_all');
+                }).on('move_node.jstree', function (e, data) {
+                    //console.log(data);
+                    var smDate = {};
+                    smDate.id = data.node.id;
+                    smDate.id_father = data.parent;
+                    $.post($.DHB.U('functionmanage/MoveNode'), smDate, function (ret) {
+
+                        if (ret.Success == true) {
+                            $.DHB.message({ "content": "移动成功！" });
+                        } else {
+                            $.DHB.message({ "content": ret.Message });
+                            data.instance.refresh();
+
+                        }
+                    }, 'json');
+
+                });
+        }
+        //商品的子类
+        app.functionmanage.list.children = function (child_id) {
+            app.request($.DHB.U('functionmanage/QuerySubList'), { id: child_id }, function (data) {
+                if (data.Success == true) {
+                    if ($('#spfl_list>table>tbody>tr',_).length > 0) {
+                        $('#spfl_list>table>tbody',_).html('');
+                    }
+                    
+                    $('#clicktree',_).val(child_id).attr('xh', data.Data.length);
+                    if (data.Data.length != 0) {
+                        for (var i = 0; i < data.Data.length; i++) {
+                            app.functionmanage.list.htmladd(data.Data[i]);
+                            $('.select2', _).selectpicker();
+                        }
+                        app.functionmanage.list.xhset();
+                    }
+                }
+                //console.log(data);
+            }, function () {
+
+            });
+        }
+        //表格行添加
+        app.functionmanage.list.htmladd = function (data) {
+            var trhtml = '<tr  id="' + data.id + ' " id_father="' + data.id_father + '">';
+            trhtml += '<td class="align_center" name="xh"></td>';
+            trhtml += '<td><input value="' + data.name + '" type="text" name="name" class="type-name form-control user-input"/></td>';
+            if (data.flag_type == "module") {
+                trhtml += '<td class="align_center"><select class="w-89 bar-state select2" name="flag_type"><option value="module" selected="true">模块</option><option value="controller">控制器</option><option value="action">方法</option></select></td>';
+            } else if (data.flag_type == "controller") {
+                trhtml += '<td class="align_center"><select class="w-89 bar-state select2" name="flag_type"><option value="module">模块</option><option value="controller" selected="true">控制器</option><option value="action">方法</option></select></td>';
+            } else if (data.flag_type == "action") {
+                trhtml += '<td class="align_center"><select class="w-89 bar-state select2" name="flag_type"><option value="module">模块</option><option value="controller">控制器</option><option value="action" selected="true">方法</option></select></td>';
+            } else {
+                trhtml += '<td class="align_center"><select class="w-89 bar-state select2" name="flag_type"><option value="module">模块</option><option value="controller">控制器</option><option value="action">方法</option></select></td>';
+            }
+
+            trhtml += '<td><input value="' + data.controller_name + '" type="text" name="controller_name" class="w-89 form-control user-input"/></td>';
+            trhtml += '<td><input value="' + data.action_name + '" type="text" name="action_name" class="w-89 form-control user-input"/></td>';
+            trhtml += '<td><input value="' + data.icon + '" type="text" name="icon" class="type-name form-control user-input"/></td>';
+            trhtml += '<td><input value="' + data.tag_name + '" type="text" name="tag_name" class="type-name form-control user-input"/></td>';
+            trhtml += '<td><input value="' + data.sort_id + '" type="text" name="sort_id" class="type-name form-control user-input"/></td>';
+            
+            
+
+            trhtml += '<td class="align_center"><div class="versionUl"><div class="versionUL_title">查看选择版本<i class="fa fa-caret-down"></i></div><ul class="versionUl_content" >';
+            var versionArr = data.version.split(",");
+            //版本资料
+            var versionList = JSON.parse($('#version').val());
+            for (var item in versionList)
+            {
+                var ischeck = '';
+                if ($.inArray(versionList[item].listdata.toString(), versionArr) >= 0) {
+                    ischeck = "checked='checked'";
+                };
+                trhtml += '<li><label class="i-checks mr10"><input name="version" type="checkbox" ' + ischeck + ' value="' + versionList[item].listdata + '"><i></i>' + versionList[item].listdisplay + '</label></li>';
+            }
+            trhtml += '</ul></div></td>';
+            
+            trhtml += '<td><div class="look-out1 supernatant position_static" style="width:100px;"><div class="second-height-operate position_static">' +
+                '<a class="bg-state bg-state-info fa fa-floppy-o" title="保存" onclick="app.functionmanage.list.addpost(this)"></a>' +
+                //'<a class="bg-state bg-state-info fa fa-pencil" title="编辑" onclick="app.functionmanage.list.editpost(this,\'' + data.id + '\')"></a>' +
+                '<a class="bg-state bg-state-info fa fa-trash" title="删除" onclick="app.functionmanage.list.delspfl(this)"></a>' +
+                '</div></div></td>';
+            trhtml += "</tr>";
+            $('#spfl_list>table>tbody',_).append(trhtml);
+        }
+        //版本绑定
+        $('#spfl_list', _).on('click', '.versionUL_title', function () {
+            var stand = 600 - ($(this).offset().top - $(".right_table", _).offset().top);
+            if (stand > 220) {
+                $(this).next('.versionUl_content').show();
+            } else {
+                $(this).next('.versionUl_content').show().css({ "top": "auto", "bottom": "30px" });
+            }
+            
+        });
+        
+        $('#spfl_list', _).on('mouseleave', '.versionUl', function () {
+            // 
+            $(this).find('ul').hide();
+        });
+        //删除商品分类
+        app.functionmanage.list.delspfl = function (e) {
+
+            $.messager.confirm("提示", "确定删除吗?", function () {
+
+                var id = $(e).parents('tr').attr('id');
+                if (id == " "||id ==undefined) {
+                    $(e).parents('tr').remove();
+                    app.spfl.list.xhset();
+                } else {
+
+                    app.httpAjax.post({
+                        data: { id: id },
+                        headers: {},
+                        url: $.DHB.U('functionmanage/delete'),
+                        type: "POST",
+                        dataType: 'json',
+                        beforeSend: null,
+                        success: function (data) {
+                            if (data.status == "success") {
+                                $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                                $(e).parents('tr').remove();
+                                app.functionmanage.list.xhset();
+                                app.functionmanage.list_tree();
+                            }
+                            else {
+                                $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                            }
+                        },
+                        error: null,
+                        complete: null
+                    });
+                }
+
+            });
+        }
+
+        
+
+        //新增分类
+        app.functionmanage.list.addspfl = function () {
+            //console.log($('#clicktree',_).val());
+            if ($('#clicktree',_).val() == "" || $('#clicktree').val() == undefined) {
+                $.DHB.message({ 'content': "请先选功能" });
+            } else {
+                var htmldata = {};
+                htmldata.id = "";
+                htmldata.id_father = $('#clicktree').val();
+                htmldata.name = "";
+                htmldata.controller_name = "";
+                htmldata.action_name = "";
+                htmldata.icon = "";
+                htmldata.tag_name = "";
+                htmldata.sort_id = "";
+                htmldata.version = "";
+                htmldata.flag_type = "";
+                app.functionmanage.list.htmladd(htmldata);
+                $('.select2', _).selectpicker();
+                app.functionmanage.list.xhset();
+            }
+        }
+        //重置序号
+        app.functionmanage.list.xhset = function () {
+            var xh = 1;
+            $('#spfl_list>table>tbody>tr',_).each(function (i, e) {
+                $(this).find('td[name=xh]').html(xh);
+                xh++;
+            });
+        }
+        //点击保存
+        app.functionmanage.list.addpost = function (e) {
+            
+            var id = $(e).parents('tr').attr('id');
+            //console.log(id);
+
+            var url;
+            var smDate = {};
+            smDate.name = $(e).parents('tr').find('input[name=name]').val();
+            smDate.flag_type = $(e).parents('tr').find('select[name=flag_type]').val();
+            smDate.controller_name = $(e).parents('tr').find('input[name=controller_name]').val();
+            smDate.action_name = $(e).parents('tr').find('input[name=action_name]').val();
+            smDate.icon = $(e).parents('tr').find('input[name=icon]').val();
+            smDate.tag_name = $(e).parents('tr').find('input[name=tag_name]').val();
+            smDate.sort_id = $(e).parents('tr').find('input[name=sort_id]').val();
+            $(e).parents('tr').find('input[name=version]:checked').each(function (i, e) {
+                if(i==0){
+                    smDate.version = $(this).val();
+                } else {
+                    smDate.version += ","+$(this).val();
+                }
+            });
+            
+            
+            if (id == " " || id == undefined) {
+                url = $.DHB.U('functionmanage/saveAdd');
+                smDate.id = $(e).parents('tr').attr('id_father');
+            } else {
+                url = $.DHB.U('functionmanage/saveEdit');
+                smDate.id = $(e).parents('tr').attr('id');
+            };
+
+            app.httpAjax.post({
+                data: smDate,
+                headers: {},
+                url: url,
+                type: "POST",
+                dataType: 'json',
+                beforeSend: null,
+                success: function (data) { 
+                    if (data.status == "success") {
+                        $.DHB.message({ 'content': data.message, 'time': 1000, 'type': 's' });
+                        app.functionmanage.list_tree(); 
+                    }
+                    else {
+                        $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' }); 
+                    }
+                },
+                error: null,
+                complete: null
+            });
+        }
+
+    }
+</script>

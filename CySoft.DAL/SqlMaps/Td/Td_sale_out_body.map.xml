@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Td_Sale_Out_Body"  xmlns="http://ibatis.apache.org/mapping"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alias>
+    <typeAlias alias="Td_Sale_Out_Body" type="CySoft.Model.Td.Td_Sale_Out_Body,CySoft.Model" />
+    <typeAlias alias="Td_Sale_Out_Body_Query" type="CySoft.Model.Td.Td_Sale_Out_Body_Query,CySoft.Model" />
+  </alias>
+  <statements>
+    <sql id="Where">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="dhList">
+          db.[dh] in <iterate property="dhList" conjunction="," open="(" close=")">#dhList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="dh_orderList">
+          db.[dh_order] in <iterate property="dh_orderList" conjunction="," open="(" close=")">#dh_orderList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="dh">db.[dh]=#dh#</isNotNull>
+        <isNotNull prepend="and" property="not_dh">db.[dh] <![CDATA[ <> ]]> #not_dh#</isNotNull>
+        <isNotNull prepend="and" property="xhList">
+          db.[xh] in <iterate property="xhList" conjunction="," open="(" close=")">#xhList[]#</iterate>
+        </isNotNull>
+        <isNotNull prepend="and" property="xh">db.[xh]=#xh#</isNotNull>
+        <isNotNull prepend="and" property="not_xh">db.[xh] <![CDATA[ <> ]]> #not_xh#</isNotNull>
+        <isNotNull prepend="and" property="dh_order">db.[dh_order]=#dh_order#</isNotNull>
+        <isNotNull prepend="and" property="xh_order">db.[xh_order]=#xh_order#</isNotNull>
+        <isNotNull prepend="and" property="id_sku">db.[id_sku]=#id_sku#</isNotNull>
+        <isNotNull prepend="and" property="unit">db.[unit]=#unit#</isNotNull>
+        <isNotNull prepend="and" property="zhl">db.[zhl]=#zhl#</isNotNull>
+        <isNotNull prepend="and" property="sl">db.[sl]=#sl#</isNotNull>
+        <isNotNull prepend="and" property="sl_ck">db.[sl_ck]=#sl_ck#</isNotNull>
+        <isNotNull prepend="and" property="sl_fh">db.[sl_fh]=#sl_fh#</isNotNull>
+        <isNotNull prepend="and" property="remark">db.[remark]=#remark#</isNotNull>
+        <isNotNull prepend="and" property="id_gys">db.id_gys=#id_gys#</isNotNull>
+      </dynamic>
+    </sql>
+
+
+    <sql id="Order">
+      <dynamic prepend="order by">
+        <isNull property="sort">db.[dh] asc,db.[xh] asc</isNull>
+        <isNotNull property="sort">
+          db.$sort$
+          <isNotNull property="dir">
+            <isEqual compareValue="asc" property="dir">asc</isEqual>
+            <isEqual compareValue="desc" property="dir">desc</isEqual>
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Set">
+      <dynamic prepend="set">
+        <isNotNull prepend="," property="new_dh_order">db.[dh_order]=#new_dh_order#</isNotNull>
+        <isNotNull prepend="," property="new_xh_order">db.[xh_order]=#new_xh_order#</isNotNull>
+        <isNotNull prepend="," property="new_id_sku">db.[id_sku]=#new_id_sku#</isNotNull>
+        <isNotNull prepend="," property="new_unit">db.[unit]=#new_unit#</isNotNull>
+        <isNotNull prepend="," property="new_zhl">db.[zhl]=#new_zhl#</isNotNull>
+        <isNotNull prepend="," property="new_sl">db.[sl]=#new_sl#</isNotNull>
+        <isNotNull prepend="," property="new_sl_ck">db.[sl_ck]=#new_sl_ck#</isNotNull>
+        <isNotNull prepend="," property="new_sl_fh">db.[sl_fh]=#new_sl_fh#</isNotNull>
+        <isNotNull prepend="," property="new_remark">db.[remark]=#new_remark#</isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="RowBetween">
+      <dynamic prepend="where">
+        <isNotNull prepend="and" property="start">
+          t.rownumber between (#start# + 1)
+          <isNotNull prepend="and" property="limit">
+            (#start# + #limit#)
+          </isNotNull>
+        </isNotNull>
+      </dynamic>
+    </sql>
+
+    <sql id="Table">
+      <isNotNull property="database">[$database$]..</isNotNull>[Td_sale_out_body]
+    </sql>
+
+    <sql id="NoLock">
+      set transaction isolation level read uncommitted
+    </sql>
+
+    <delete id="Delete" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      delete db from <include refid="Table"/> as db <include refid="Where"/>
+    </delete>
+
+    <update id="UpdatePart" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update db <include refid="Set"/> from <include refid="Table"/> as db <include refid="Where"/>
+    </update>
+
+    <update id="UpdateBody" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      <!--update db set db.sl_ck=isnull(ck.sl_sum,0) from Td_sale_order_body as db left join
+      (select td.dh_order,sum(td.sl_sum) as sl_sum from Td_sale_out_head td where dh_order=#dh_order#
+      and flag_delete!=1 and flag_state!=0 group by td.dh_order)
+      as ck on db.dh=ck.dh_order
+      where db.dh=#dh_order#-->
+      <!--update db set db.sl_ck=isnull(ck.sl,0) from Td_sale_order_body as db left join
+      (select td.dh_order,td.id_sku,head.flag_state,sum(td.sl) as sl from Td_sale_out_body td left join td_sale_out_head head on head.dh=td.dh where td.dh_order=#dh_order#
+      group by td.dh_order,id_sku,head.flag_state having head.flag_state!=#flag_state#  ) as ck on db.dh=ck.dh_order and db.id_sku=ck.id_sku
+      where db.dh=#dh_order#-->
+
+      update db set db.sl_ck=isnull(ck.sl,0) from Td_sale_order_body as db left join
+      (select td.id_sku,sum(td.sl) as sl from Td_sale_out_body td left join td_sale_out_head head on head.dh=td.dh where td.dh_order=#dh_order# and head.flag_state!=0
+      group by id_sku  ) as ck on db.id_sku=ck.id_sku and db.id_sku=ck.id_sku
+      where db.dh=#dh_order#
+
+      <!--update td set td.sl_fh=isnull(ck.sl_fh,0) from Td_sale_order_body as td left join
+      (select td.dh_order,id_sku,sum(td.sl_fh) as sl_fh from Td_sale_out_body td left join td_sale_out_head head on head.dh=td.dh  where td.dh_order=#dh_order# and head.flag_state!=0 group by td.dh_order,id_sku  ) as ck on td.dh=ck.dh_order and td.id_sku=ck.id_sku
+      where td.dh=#dh_order#-->
+
+      update db set sl_kc=(sl_kc-out_db.sl) from Tb_gys_sp db left join Td_sale_out_body out_db on out_db.id_sku=db.id_sku where out_db.dh=#dh#
+
+      update db set db.flag_state=CASE  WHEN ck.ck_sl=0 THEN 30
+      WHEN ck.ck_sl <![CDATA[ < ]]> ck.sl THEN 40
+      ELSE 50 END,
+	     db.flag_out=CASE
+      WHEN ck.ck_sl=0 THEN 0
+      WHEN ck.ck_sl <![CDATA[ < ]]> ck.sl THEN 1
+      ELSE 2 END  from Td_sale_order_head as db left join (select td.dh,sum(td.sl) sl,sum(td.sl_ck) as
+      ck_sl from Td_sale_order_body td where td.dh=#dh_order# group by td.dh) ck on ck.dh=db.dh where db.dh=#dh_order# 
+    </update>
+    <update id="UpdateBatchConfirm" parameterClass="System.Collections.IDictionary">
+      update db set flag_state=80
+      from Td_sale_out_head db
+      where db.id_gys=#id_gys# and flag_state=70
+
+      update db set flag_state=80
+      from Td_sale_order_head db
+      where db.id_gys=#id_gys# and db.flag_state=70
+    </update>
+    <update id="Updatefh" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update dt set dt.sl_fh=dt.sl from Td_sale_out_body as dt where dt.dh=#dh#
+      
+
+      update Td_sale_out_head set sl_sum=(select sum(sl_fh) from Td_sale_out_body where dh=#dh#) where dh=#dh#
+
+      update td set td.sl_fh=isnull(ck.sl_fh,0) from Td_sale_order_body as td left join
+      (select td.dh_order,id_sku,sum(td.sl_fh) as sl_fh from Td_sale_out_body td left join td_sale_out_head head on head.dh=td.dh  where td.dh_order=#dh_order# and head.flag_state!=0 group by td.dh_order,id_sku  ) as ck on td.dh=ck.dh_order and td.id_sku=ck.id_sku
+      where td.dh=#dh_order#
+
+      update db set db.flag_state=
+        CASE  WHEN ck.sl_fh=0 and flag_out=2 THEN 50
+        WHEN ck.sl_fh=ck.sl_ck and flag_out!=2 THEN 40
+        WHEN ck.sl_fh <![CDATA[ < ]]> ck.sl THEN 60
+        WHEN ck.sl=fh.fh_sl THEN 80
+        WHEN ck.sl_fh=ck.sl THEN 70 END,    <!--and db.flag_out=2-->
+        db.flag_fh=CASE
+        WHEN ck.sl_fh=0 THEN 0
+        WHEN ck.sl_fh <![CDATA[ < ]]> ck.sl THEN 1
+        ELSE 2 END
+      from Td_sale_order_head as db left join (select td.dh,sum(td.sl) sl,sum(td.sl_fh) as
+      sl_fh,sum(td.sl_ck) as sl_ck from Td_sale_order_body td where td.dh=#dh_order# group by td.dh) ck on ck.dh=db.dh
+      left join (select count(dh) as fh_sl,dh_order from Td_sale_out_head where dh_order=#dh_order# and flag_state=80
+      group by dh_order) fh on fh.dh_order=db.dh
+      where db.dh=#dh_order#
+
+    </update>
+
+    <update id="UpdatefhCrossingck" parameterClass="System.Collections.IDictionary">
+      set nocount on
+      update dt set dt.sl_fh=dt.sl from Td_sale_out_body as dt where dt.dh=#dh#
+
+      update Td_sale_out_head set sl_sum=(select sum(sl_fh) from Td_sale_out_body where dh=#dh#) where dh=#dh#
+
+      update td set td.sl_fh=isnull(ck.sl_fh,0) from Td_sale_order_body as td left join
+      (select td.dh_order,id_sku,sum(td.sl_fh) as sl_fh from Td_sale_out_body td left join td_sale_out_head head on head.dh=td.dh  where td.dh_order=#dh_order# and head.flag_state!=0 group by td.dh_order,id_sku  ) as ck on td.dh=ck.dh_order and td.id_sku=ck.id_sku
+      where td.dh=#dh_order#
+
+      update db set db.flag_state=CASE  WHEN ck.sl_fh=0 and flag_out=2 THEN 50
+      WHEN ck.sl_fh=ck.sl_ck and flag_out!=2 THEN 60
+      WHEN ck.sl_fh <![CDATA[ < ]]> ck.sl THEN 60
+      WHEN ck.sl=fh.fh_sl THEN 80
+      WHEN ck.sl_fh=ck.sl THEN 70 END,    <!--and db.flag_out=2-->
+      db.flag_fh=CASE
+      WHEN ck.sl_fh=0 THEN 0
+      WHEN ck.sl_fh <![CDATA[ < ]]> ck.sl THEN 1
+      ELSE 2 END  from Td_sale_order_head as db left join (select td.dh,sum(td.sl) sl,sum(td.sl_fh) as
+      sl_fh,sum(td.sl_ck) as sl_ck from Td_sale_order_body td where td.dh=#dh_order# group by td.dh) ck on ck.dh=db.dh
+      left join (select count(dh) as fh_sl,dh_order from Td_sale_out_head where dh_order=#dh_order# and flag_state=80
+      group by dh_order) fh on fh.dh_order=db.dh
+      where db.dh=#dh_order#
+
+    </update>
+
+    <update id="Updatezf" parameterClass="System.Collections.IDictionary">
+      update db set db.sl_ck=isnull(ck.sl,0) from Td_sale_order_body as db left join
+      (select td.id_sku,sum(td.sl) as sl from Td_sale_out_body td left join td_sale_out_head head on head.dh=td.dh where td.dh_order=#dh_order# and head.flag_state!=0
+      group by id_sku  ) as ck on db.id_sku=ck.id_sku and db.id_sku=ck.id_sku
+      where db.dh=#dh_order#
+
+      update db set db.sl_fh=isnull(ck.sl,0) from Td_sale_order_body as db left join
+      (select td.id_sku,sum(td.sl) as sl from Td_sale_out_body td left join td_sale_out_head head on head.dh=td.dh where td.dh_order=#dh_order# and head.flag_state!=0 and head.flag_state=70
+      group by id_sku  ) as ck on db.id_sku=ck.id_sku and db.id_sku=ck.id_sku
+      where db.dh=#dh_order#
+
+      update  db set db.flag_fh=CASE
+      WHEN ck.sl_fh=0 THEN 0
+      WHEN ck.sl_fh <![CDATA[ < ]]> ck.sl THEN 1
+      ELSE 2 END,db.flag_out=CASE
+      WHEN ck.sl_ck=0 THEN 0
+      WHEN ck.sl_ck <![CDATA[ < ]]> ck.sl THEN 1
+      ELSE 2 END,<isNotNull property="flag_state">db.flag_state=#flag_state#</isNotNull> from Td_sale_order_head as db left join (select td.dh,sum(td.sl) sl,sum(td.sl_fh) as
+      sl_fh,sum(td.sl_ck) as sl_ck from Td_sale_order_body td where td.dh=#dh_order# group by td.dh) ck on ck.dh=db.dh where db.dh=#dh_order#
+    </update>    
+    
+    <select id="QueryList" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Out_Body_Query">
+      set nocount on
+      <include refid="NoLock" />
+      select salebody.sl_fh as fhsl,salebody.sl as dgsl,stuff(( select  ','+skuTemp.mc+':'+skuTemp.val  from (select expt.*,temp.mc from [dbo].[Tb_sp_expand] expt left join [dbo].[Tb_sp_expand_template] temp on temp.id=expt.id_sp_expand_template)as skuTemp
+      where skuTemp.id_sku=db.id_sku
+      for xml path('')),1,1,'') as formatname,sp.mc as GoodsName,gyssp.bm_Interface as GoodsBm,db.[dh],db.[xh],db.[dh_order],db.[xh_order],db.[id_sku],db.[unit],db.[zhl],db.[sl],db.[sl_ck],db.[sl_fh],db.[remark] from <include refid="Table"/> as db
+      left join Td_sale_out_head saleouthead on saleouthead.dh=db.dh
+      left join (select dh,id_sku,sum(sl_fh) as sl_fh,sum(sl) as sl from Td_sale_order_body where dh=#dh_order# group by dh,id_sku ) salebody on salebody.id_sku=db.id_sku
+      left join Tb_sp_sku spsku on spsku.id=db.id_sku
+      left join Tb_sp sp on sp.id=spsku.id_sp
+      left join Td_sale_out_head tsoh on db.dh=tsoh.dh
+      left join Tb_gys_sp gyssp ON gyssp.id_sku = db.id_sku and tsoh.id_gys= gyssp.id_gys
+      <include refid="Where"/>
+      <include refid="Order"/>
+    </select>
+
+    <select id="QueryPage" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Out_Body">
+      set nocount on
+      <include refid="NoLock" />
+      select t.* from (select row_number() over(<include refid="Order" />) as rownumber,db.* from <include refid="Table"/> as db <include refid="Where"/>) as t
+      <include refid="RowBetween" />
+    </select>
+
+    <select id="GetCount" parameterClass="System.Collections.IDictionary" resultClass="int">
+      set nocount on
+      <include refid="NoLock" />
+      select count(1) as value from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+    <select id="GetItem" parameterClass="System.Collections.IDictionary" resultClass="Td_Sale_Out_Body">
+      set nocount on
+      <include refid="NoLock" />
+      select db.[dh],db.[xh],db.[dh_order],db.[xh_order],db.[id_sku],db.[unit],db.[zhl],db.[sl],db.[sl_ck],db.[sl_fh],db.[remark] from <include refid="Table"/> as db
+      <include refid="Where"/>
+    </select>
+
+  </statements>
+</sqlMap>
+

@@ -1,0 +1,23 @@
+﻿[
+    {
+        "id": "0",
+        "text": "全部",
+        "state": { "selected": false },
+        "children": [
+            {
+                "id": 1,
+                "text": "节点 1",
+                "children": [
+                    {
+                        "id": 3,
+                        "text": "节点 1-1"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "text": "节点 2"
+            }
+        ]
+    }
+]

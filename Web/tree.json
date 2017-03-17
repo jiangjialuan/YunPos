@@ -1,0 +1,22 @@
+﻿[
+    {
+        "id": "0",
+        "parent": "#",
+        "text": "全部"
+    },
+    {
+        "id": "41fdee3d-b15c-4237-add0-006d21643f32",
+        "parent": "0",
+        "text": "分类1"
+    },
+    {
+        "id": "445930a2-fc11-43b1-befc-8dde08a6e57f",
+        "parent": "41fdee3d-b15c-4237-add0-006d21643f32",
+        "text": "分类1_1"
+    },
+    {
+        "id": "88c456af-f18a-4ffd-b1b4-061cbcfd8a2b",
+        "parent": "0",
+        "text": "分类2"
+    }
+]

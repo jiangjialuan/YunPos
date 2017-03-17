@@ -1,0 +1,406 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Model.Ts
+@using CySoft.Model.Tz
+@using CySoft.Utility;
+
+@{
+    Layout = null;
+    var digit = ViewData["DigitHashtable"] as Hashtable;//小数点控制
+    digit = digit ?? new Hashtable();
+    var id_shop = ViewData["id_shop"] ?? "";
+    var selectListShopShop = ViewData["shopList"] as List<Tb_User_ShopWithShopMc>;
+    selectListShopShop = selectListShopShop ?? new List<Tb_User_ShopWithShopMc>();
+    var selectListDigitlx = ViewData["digitlx"] as List<Ts_Flag>;
+    selectListDigitlx = selectListDigitlx ?? new List<Ts_Flag>();
+    var hyfls = ViewData["hyfls"] as List<Tb_Hyfl>;
+    hyfls = hyfls ?? new List<Tb_Hyfl>();
+
+    //门店
+    var optinShopList = " <option value=\"0\">All-所有门店</option> ";
+    foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+    { optinShopList += Html.Raw("<option value=\"" + item.id_shop + "\">" + item.mc + "</option>"); }
+    //会员类型
+    var optinHyflList = "  <option value=\"0\">All-所有会员卡类别</option>";
+    foreach (var item in hyfls.OrderBy(d => d.rq_create))
+    { optinHyflList += Html.Raw("<option value=\"" + item.id + "\">" + item.mc + "</option>"); }
+    //截取小数类型
+    var optinJqxslxList = "";
+    foreach (var item in selectListDigitlx.OrderBy(d => d.listsort))
+    { optinJqxslxList += Html.Raw("<option value=\"" + item.listdata + "\">" + item.listdisplay + "</option>"); }
+
+    var version = ViewData["version"] == null ? "10" : ViewData["version"].ToString();
+    var is_master = ViewData["is_master"] == null ? "false" : ViewData["is_master"].ToString().ToLower();
+    var type = ViewData["type"] == null ? "add" : ViewData["type"].ToString();
+
+    var db_data = ViewData["db_data"] as Tb_Hy_Czrule_Query_DetailModel;
+    if (db_data == null)
+    {
+        db_data = new Tb_Hy_Czrule_Query_DetailModel();
+        db_data.head = new Tb_Hy_Czrule_Query();
+        db_data.body = new List<Tb_Hy_Czrule_Zssp_Query>();
+        db_data.head.day_b = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd"));
+        db_data.head.day_e = DateTime.Parse(DateTime.Now.AddMonths(1).ToString("yyyy-MM-dd"));
+    }
+
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="hyczrule/add"]').attr({ controller: 'hyczrule', action: 'add' });
+        app.c.public_data['hyczrule/add'] = app.c.public_data['hyczrule/add'] || {};
+        app.c.public_data['hyczrule/add']['once'] = false;
+
+    });
+</script>
+<div class="modal fade in" role="dialog" id="czruleset_add">
+    <div class="modal-dialog popshop">
+        <div class="modal-header poptitle">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <p class="name">新增充值规则</p>
+        </div>
+        <form id="czruleset_add_form">
+            <div class="modal-body tab-content popcontent">
+                <input type="hidden" name="id" value="@db_data.head.id">
+                <input type="hidden" name="type" value="@type">
+
+                <div data-group="_jfgz_new" data-name="db_new" class="comform" style="min-height:300px;">
+                    <div class="m-b">
+                        <label class="f-l">门店：</label>
+
+
+
+                        <select name="id_shop" style="width:130px;" class="btn-group bootstrap-select user-input  select22_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+
+                            @if (is_master == "true")
+                            {
+                                <option value="0">All-所有门店</option>
+                            }
+
+                            @foreach (var item in selectListShopShop.OrderBy(d => d.rq_create))
+                            {
+                                var shopChecked = db_data.head.id_shop == item.id_shop ? "selected=\"selected\"" : "";
+                                <option value="@item.id_shop" @shopChecked>@item.mc</option>
+                            }
+                        </select>
+
+
+
+
+                        @*<select name="id_shop" style="width:130px;" class="btn-group bootstrap-select user-input  select2_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">
+                                @Html.Raw(optinShopList)
+                            </select>*@
+
+
+
+                    </div>
+                    <div class="m-b">
+                        <label>指定会员卡类别：</label>
+                        <select name="id_hyfl" style="width:130px;" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">
+
+                            <option value="0">All-所有会员卡类别</option>
+                            
+                            @foreach (var item in hyfls.OrderBy(d => d.mc))
+                            {
+                                var hyflChecked = db_data.head.id_hyfl == item.id ? "selected=\"selected\"" : "";
+                                <option value="@item.id" @hyflChecked>@item.mc</option>
+                            }
+
+
+
+                        </select>
+                    </div>
+                    <div class="m-b">
+                        <label class="f-l">日期：</label>
+                        <input name="day_b" id="day_b" class="form-control input-sm {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd'})" value="@(((DateTime)db_data.head.day_b).ToString("yyyy-MM-dd"))" style="width:85px;">
+                        <label>至</label>
+                        <input name="day_e" id="day_e" class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: 'yyyy-MM-dd'})" value="@(((DateTime)db_data.head.day_e).ToString("yyyy-MM-dd"))" style="width:85px;">
+                    </div>
+
+                    <div class="m-b">
+                        <label class="f-l">充值金额：</label>
+                        <input type="text" name="je_cz" class="w-65" style="text-align:right;" value="@db_data.head.je_cz.Digit((int)digit["je_digit"])" onkeyup="check_digit(this, 2)">
+                    </div>
+                    <div class="m-b">
+                        <label class="f-l">赠送金额：</label>
+                        <input type="text" name="je_cz_zs" class="w-65" style="text-align:right;" value="@db_data.head.je_cz_zs.Digit((int)digit["je_digit"])" onkeyup="check_digit(this, 2)">
+                    </div>
+                    <div class="m-b">
+                        <label class="f-l">备注：</label>
+                        <input type="text" name="bz" class="w-65" style="text-align:right;" value="">
+                    </div>
+
+                    <div class="padding20">
+                        <label class="f-l">赠送商品：</label>
+                        <a class="btn btn-info f-l" href="javascript:;" onclick="app.hyczrule.czruleset.add.showshopsp()">选择商品</a>
+
+                    </div>
+                    <div id="zs_sp" class="table_list clear padding20">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="55">序号</th>
+                                    <th>名称</th>
+                                    <th width="8%">数量</th>
+                                    <th width="8%">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in db_data.body)
+                                {
+                                    <tr>
+                                        <td class="align_center"><div name="xh"></div></td>
+                                        <td>
+                                            <span name="sp_mc">@item.mc</span>
+                                            <input type="hidden" name="id_sp" value="@item.id_sp" />
+                                        </td>
+                                        <td class="table_input" type="text"><input name="sl" style="width:40px;" value="@item.sl.Digit((int)digit["je_digit"])" type="text"></td>
+                                        <td><a onclick="app.hyczrule.czruleset.add.choice_sp_del(this);" class="bg-state bg-state-info fa fa-trash" title="删除"></a></td>
+                                    </tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+        <div class="modal-footer popfooter align_center">
+
+            <button type="button" id="submit-button" data-loading-text="提交中..." data-confirm="confirm" onclick="app.hyczrule.czruleset.add.save(this)" class="btn btn-info w-xs">确定</button>
+            <button type="button" class="btn btn-default w-xs" data-dismiss="modal">取消</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //定义全局容器
+    $.DHB._ = function () {
+        app.c.public_data['hyczrule/add'] = app.c.public_data['hyczrule/add'] || {};
+        if (app.c.public_data['hyczrule/add']['once'] === false) {
+            app.c.public_data['hyczrule/add']['once'] = true;
+            $.DHB.checkForm(function () {
+                return false;
+            });
+        }
+    };
+    app.hyczrule = app.hyczrule || {};
+    app.hyczrule.czruleset = app.hyczrule.czruleset || {};
+    app.hyczrule.czruleset.add = app.hyczrule.czruleset.add || {};
+
+
+    //新增----选择商品
+    app.hyczrule.czruleset.add.showshopsp = function () {
+        //$(_ + "#addspid").val('id_xz_' + id);
+        $.DHB.dialog({ 'title': '选择商品', 'url': $.DHB.U('shopsp/search?id_shop=' + '@id_shop'), 'id': 'dialog-shopsp-search', 'confirm': app.hyczrule.czruleset.add.dialogCallBackShopsp });
+    };
+    //新增----选择商品回调函数
+    app.hyczrule.czruleset.add.dialogCallBackShopsp = function (array) {
+        var jsonStr = $('#shopsp_table_json').val();
+        app.hyczrule.czruleset.add.add_sp_info(jsonStr);
+        app.hyczrule.czruleset.add.reset_xh('zs_sp');
+        $.DHB.dialog({ 'id': 'dialog-shopsp-search', 'action': 'destroy' });
+    }
+    //新增----保存商品数量
+    app.hyczrule.czruleset.add.add_sp_info = function (jsonStr) {
+        var objList = jQuery.parseJSON(jsonStr);
+        $(objList).each(function (index, obj) {
+            var resultHtml = '  <tr><td class="align_center"><div name="xh"></div></td><td><span name="sp_mc">' + obj.mc + '</span> <input type="hidden" name="id_sp" value="' + obj.id_sp + '"/>   </td><td class="table_input" ><input name="sl" style="width:40px;" value="1" type="text"></td>  <td><a onclick="app.hyczrule.czruleset.add.choice_sp_del(this);" class="bg-state bg-state-info fa fa-trash" title="删除"></a></td>   </tr>';
+            $('#zs_sp>table>tbody').append(resultHtml);
+        });
+    };
+    //新增----重置table序号
+    app.hyczrule.czruleset.add.reset_xh = function (id) {
+        var xh = 1;
+        var strid = "#" + id + " tbody";
+        //
+        $(strid, _).find('tr').each(function () {
+            $(this).find('div[name="xh"]').text(xh);
+            xh++;
+        });
+    }
+    //商品----删除行(商品)
+    app.hyczrule.czruleset.add.choice_sp_del = function (el) {
+        $(el).parents('tr:first()').remove();
+        app.hyczrule.czruleset.add.reset_xh('zs_sp');
+    }
+    //点击保存按钮
+    app.hyczrule.czruleset.add.save = function () {
+        var obj = {}, flag = false;
+        obj = $('#czruleset_add_form').serializeJson();
+
+        if (parseFloat($('input[name=je_cz]').val()) <= 0) {
+            $('input[name=je_cz]').val('0.0');
+            $.DHB.message({ 'content': '充值金额必须大于0', 'time': 1000 });
+        } else if (parseFloat($('input[name=je_cz_zs]').val()) < 0) {
+            $('input[name=je_cz_zs]').val('0.0');
+            $.DHB.message({ 'content': '赠送金额不能小于0', 'time': 1000 });
+        } else if (parseFloat($('input[name=je_cz_zs]').val()) == 0) {
+            if (obj.id_sp == undefined) {
+                $.DHB.message({ 'content': '赠送金额为0时，必须选择赠送商品', 'time': 1000 });
+            } else {
+                flag = true;
+            }
+        } else {
+            flag = true;
+        }
+        var smData = {};
+        var sp_list = [];
+        if (obj.id_sp instanceof Array) {
+            for (var i = 0; i < obj.id_sp.length; i++) {
+                sp_list[i] = {};
+                sp_list[i].id_sp = obj.id_sp[i];
+                sp_list[i].sl = obj.sl[i];
+            }
+        } else if (obj.id_sp == undefined) {
+
+        } else {
+            sp_list[0] = {};
+            sp_list[0].id_sp = obj.id_sp;
+            sp_list[0].sl = obj.sl;
+        }
+
+        obj.sp_list = JSON.stringify(sp_list);
+        obj.id_shop_cz = obj.id_shop;
+        delete obj.id_shop;
+        delete obj.id_sp;
+        delete obj.sl;
+        delete obj.type;
+        var table_info = [];
+        table_info.push(obj);
+        smData.table_info = JSON.stringify(table_info);
+        smData.type = '@type';
+        ////console.log(smData);
+
+        if (flag) {
+            var message_str;
+            if ('@db_data.head.id' != '') {
+                message_str = '确定修改规则吗？';
+            } else {
+                message_str = '确定新增的规则吗?';
+            }
+            $.messager.confirm("提示", message_str, function () {
+
+
+                    var options = {
+                        data: smData,
+                        url: $.DHB.U('hyczrule/czruleset'),
+                        type: "POST",
+                        datatype: 'json',
+                        beforeSend: function () { },
+                        success: function (data, textStatus, jqXHR) {
+                            if (data.status == "success") {
+                                $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+
+                                $.DHB.url('hyczrule/czruleset', 'cache');
+                                $.DHB.dialog({ 'id': 'dialog-hyczrule-add', 'action': 'destroy' });
+                            } else {
+                                $.DHB.message({ 'content': data.message, 'time': 0, 'type': 'e' });
+                            }
+                        },
+                        complete: function (XHR, TS) { }
+                    };
+                    app.httpAjax.post(options);
+
+
+
+                });
+        }
+
+
+    }
+
+    ////新增----增加行
+    //app.hyczrule.czruleset.add.add_row = function (obj) {
+    //    app.hyczrule.czruleset.add.addtr();
+    //    app.hyczrule.czruleset.add.reset_xh();
+    //};
+
+    ////新增----增加行实现方法
+    //app.hyczrule.czruleset.add.addtr = function (obj) {
+    //    var dp = [];
+    //    var dp_e = {};
+    //    dp_e.id_shopsp = "";
+    //    dp_e.mc = "";
+    //    dp.push(dp_e);
+    //    var jsonStr = JSON.stringify(dp);
+    //    app.hyczrule.czruleset.add.callbackwork_db_new(jsonStr);
+    //}
+    //新增----回调
+    //app.hyczrule.czruleset.add.callbackwork_db_new = function (jsonStr) {
+    //    var data_item_last = '';
+    //    var objList = jQuery.parseJSON(jsonStr);
+    //    $(objList).each(function (index, obj) {
+    //        //
+    //        var resultHtml = app.hyczrule.czruleset.add.GetResultHtml('xz', obj, '');
+    //        $(_ + "#table_hyczrule_czruleset_db_new>tbody").append(resultHtml);
+    //        data_item_last = obj.id_shopsp;
+    //    });
+    //}
+    @*//获取插入表格的HTML方法
+                app.hyczrule.czruleset.add.GetResultHtml = function (tab, obj, guid) {
+                    if (guid == '') {
+                        guid = NewGuid();
+                    }
+                    var option = '';
+                    var resultHtml = '';
+                    var optinShopList = '@Html.Raw(optinShopList)';
+                    var optinHyflList = '@Html.Raw(optinHyflList)';
+                    var optinJqxslxList = '@Html.Raw(optinJqxslxList)';
+
+                    resultHtml += '<tr data-item="id_' + tab + '_' + guid + '">';
+                    resultHtml += '<td class="align_center">';
+                    resultHtml += '   <div name="xh">1</div>   <input type="hidden" name="id" value="">';
+                    resultHtml += '</td>';
+
+                    resultHtml += '<td class="align_center">';
+                    resultHtml += '    <select  name="id_shop" style="width:130px;" class="btn-group bootstrap-select user-input  select2_ form-control input-sm {required:true,messages:{required:&#39;请选择门店&#39;}} valid ">';
+                    resultHtml += optinShopList;
+                    resultHtml += '    </select>';
+                    resultHtml += '</td>';
+
+                    resultHtml += '<td class="align_center"><input name="day_b" id="day_b_' + guid + '"  class="form-control input-sm {required:true,messages:{required:&#39;开始日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: \'yyyy-MM-dd\', el: \'day_b_' + guid + '\' })"  value="@defaultStarTime"  style="width:85px;"></td>';
+                    resultHtml += '<td class="align_center"><input name="day_e" id="day_e_' + guid + '"  class="form-control input-sm {required:true,messages:{required:&#39;结束日期&#39;}}" type="text" onclick="WdatePicker({ dateFmt: \'yyyy-MM-dd\', el: \'day_e_' + guid + '\' })" value="@defaultEndTime" style="width:85px;"></td>';
+
+                    resultHtml += '<td class="align_center">';
+                    resultHtml += '    <select name="id_hyfl" style="width:100px;" class="form-control input-sm box-shawn user-input search-result select2 {required:true,messages:{required:&#39;请选择商品会员类别&#39;}} valid ">';
+                    resultHtml += optinHyflList;
+                    resultHtml += '    </select>';
+                    resultHtml += '</td>';
+
+                    resultHtml += '<td class="align_center"><input type="text" name="je_cz" class="w-65" style="text-align:right;"  value="0.00"></td>';
+                    resultHtml += '<td class="align_center"><input type="text" name="je_cz_zs" class="w-65" style="text-align:right;"  value="0.00"></td>';
+
+
+
+                    resultHtml += '<td class="align_center" style="width:280px;"><span class="inline lineheight-30" name="lb">';
+
+                    resultHtml += ' <table name="sp_info">';
+                    resultHtml += '   <tbody> ';
+                    resultHtml += '   <tr><td>名称<input type="hidden" name="id_sp" value=""/></td><td>数量</td><td>操作</td></tr>';
+                    resultHtml += '   </tbody>';
+                    resultHtml += ' </table>';
+
+                    resultHtml += '</span><a class="btn btn-info f-r" onclick="app.hyczrule.czruleset.showshopsp(\'' + guid + '\')">选择商品</a></td>';
+
+
+                    resultHtml += '<td class="align_center"><input type="text" name="bz" class="w-65" style="text-align:right;"  value=""></td>';
+                    resultHtml += '<td class="align_center"><div name="czlx">新增数据</div></td>';
+                    resultHtml += '<td class="align_center"><a onclick="app.hyczrule.czruleset.choice_del(this);" class="bg-state bg-state-info blockbtn fa fa-trash" title="删除"></a></td>';
+
+                    resultHtml += '</tr>';
+
+                    return resultHtml;
+                }*@
+
+
+
+
+</script>
+

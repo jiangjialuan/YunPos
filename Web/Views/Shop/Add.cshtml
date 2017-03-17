@@ -1,0 +1,631 @@
+﻿@using System.Collections
+@using CySoft.Model.Other
+@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+@using CySoft.Model.Enums
+
+@{
+    Layout = null;
+    //var selectListUserShopList = ViewData["UserShopList"] as List<CySoft.Model.Tb.Tb_Shop>;
+    //selectListUserShopList = selectListUserShopList ?? new List<CySoft.Model.Tb.Tb_Shop>();
+    var copyShopModel = ViewData["CopyShopModel"] as CySoft.Model.Tb.Tb_Shop;
+    copyShopModel = copyShopModel ?? new CySoft.Model.Tb.Tb_Shop();
+    var shopList = ViewData["shopList"] as IList<ShopSelectModel>;
+    shopList = shopList ?? new List<ShopSelectModel>();
+    var userShopList = ViewData["userShopList"] as IList<Tb_User_ShopWithShopMc>;
+    userShopList = userShopList ?? new List<Tb_User_ShopWithShopMc>();
+    var shopMaster = ViewData["ShopMaster"] as CySoft.Model.Tb.Tb_Shop;
+    shopMaster = shopMaster ?? new CySoft.Model.Tb.Tb_Shop();
+    var fromType = ViewData["fromType"] == null ? "0" : ViewData["fromType"].ToString();
+    var selectListTYPE = (ViewData["selectListTYPE"] as List<Ts_Flag>) ?? new List<Ts_Flag>();//门店类型 下拉值
+    var flagTypeShop = ViewData["flagTypeShop"] == null ? "4" : ViewData["flagTypeShop"].ToString();//登录用户所属门店类型
+    var selectListPSZX = (ViewData["selectListPSZX"] as List<Tb_User_ShopWithShopMc>) ?? new List<Tb_User_ShopWithShopMc>();//配送中心 下拉值
+    var version=ViewData["version"] == null ? "10" : ViewData["version"].ToString();//门店版本类型
+    var id_shop = ViewData["loginInfo.id_shop"] == null ? "" : ViewData["loginInfo.id_shop"].ToString();//登陆者门店
+    
+
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('div[contentID="shop/add"]').attr({ controller: 'shop', action: 'add' });
+        app.c.public_data['shop/add'] = app.c.public_data['shop/add'] || {};
+        app.c.public_data['shop/add']['once'] = false;
+        app.shop = app.shop || {};
+    });
+</script>
+
+<div class="contentbox-header">
+    <a onclick="$.fn.menuTab.load({ url: '/shop/list', 'title': '门店管理', id: 'shop/list', nocache: '0' });">门店管理</a>
+    &gt;
+    <a class="" onclick="$.DHB.refresh();">新增门店</a>
+</div>
+
+
+<div class="col" style="min-width: 1110px;">
+    <div class="panel panel-default comform pad-l15">
+        <form novalidate="novalidate" action="/shop/add" id="fm-shop-add">
+            <!-- start main-content -->
+            <div id="goods-main" class="main-content" tabcontent="goods-tab">
+                <!-- 基础 -->
+                <div class="m-b pad-t10">
+                    <!--基本信息-->
+                    <div class="fixed-input-group">
+                        <h2 class="form_title"><span>基本信息</span></h2>
+                        <div class="col-sm-12 form_content">
+
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label" style="width:94px !important">
+                                        <span>克隆门店：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <select id="id_cloneshop" name="id_cloneshop" class="form-control input-sm box-shawn user-input search-result select2 col-sm-4">
+                                            <option value="">请选择克隆门店</option>
+
+                                            @if (userShopList.Any())
+                                            {
+                                                var selfModel = shopList.Where(d => d.id == id_shop).FirstOrDefault();
+                                                if (selfModel != null && !string.IsNullOrEmpty(selfModel.id))
+                                                {
+                                                    <option value="@selfModel.id" selected="selected">@selfModel.mc</option>
+                                                }
+                                                foreach (var item in shopList.OrderBy(d=>d.mc))
+                                                {
+                                                    if (userShopList.Any(a => a.id_shop == item.id && a.id_shop != selfModel.id))
+                                                    {
+                                                        <option value="@item.id">@item.mc</option>
+                                                    }
+                                                }
+                                            }
+
+                                        </select>
+                                        
+                                    </label>
+
+                                    <label class="copy d-i-b l-h-30 m-l-none" id="copy" style="position: relative">
+                                        <a class="icon-question tool" style="position: relative;left: 3px;"></a>
+                                        <div class="popover fade bottom in tool-box" style="left: -20px; width: auto; display: none;">
+                                            <div class="arrow" style="left: 36px;"></div>
+                                            <div class="popover-content">
+                                                <p style="width: 644px;">复制此门店的资料信息</p>
+                                            </div>
+                                        </div>
+                                    </label>
+
+
+                                </div>
+
+                            </div>
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label" style="width:94px !important">
+                                        <em class="tag">* </em><span>门店验证码：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {maxlength:80,required:true,stringCheckTwo:true,messages:{required:&#39;请输入门店验证码最多80个字,且只能包括英文字母、数字和下划线&#39;}} valid" name="yzm" id="yzm" maxlength="80" value="" placeholder="用于门店POS第一次登录时验证" type="text">
+                                    </label>
+
+                                    <label class="copy d-i-b l-h-30 m-l-none" id="copy" style="position: relative">
+                                        <a class="icon-question tool" style="position: relative;left: 3px;"></a>
+                                        <div class="popover fade bottom in tool-box" style="left: -20px; width: auto; display: none;">
+                                            <div class="arrow" style="left: 36px;"></div>
+                                            <div class="popover-content">
+                                                <p style="width: 644px;">(1) 此验证码用于门店POS第一次登录时验证</p>
+                                                <p style="width: 644px;">(2) 门店验证码不允许重复</p>
+                                                
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label" style="width:94px !important">
+                                        <em class="tag">* </em><span>门店编码：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {maxlength:16,required:true,messages:{required:&#39;请输入门店编码最多16个字&#39;}} valid" name="bm" id="bm" maxlength="16" value="@copyShopModel.bm" placeholder="请输入编码" type="text">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label" style="width:94px !important">
+                                        <em class="tag">* </em><span>门店名称：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {maxlength:60,required:true,messages:{required:&#39;请输入门店名称最多60个字&#39;}} valid" maxlength="60" name="mc" placeholder="请输入门店名称最多60个字" type="text" value="@copyShopModel.mc">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label" style="width:94px !important">
+                                        <em class="tag">* </em><span>门店状态：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+
+                                        <select id="flag_state" name="flag_state" class="form-control input-sm box-shawn user-input search-result select2  {required:true,messages:{required:&#39;请选择门店状态&#39;}} valid">
+                                            <option value="1">正常</option>
+                                            <option value="0">停用</option>
+                                        </select>
+
+
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label" style="width:94px !important">
+                                        <em class="tag">* </em><span>门店类型：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+
+                                        <select id="flag_type" name="flag_type" onchange="app.shop.flag_type_onchange(this)" class="form-control input-sm box-shawn user-input search-result select2  {required:true,messages:{required:&#39;请选择门店类型&#39;}} valid">
+                                            @foreach (var item in selectListTYPE.Where(d => d.listdata != 1).OrderBy(d => d.listsort))
+                                            {
+                                                if (version == ((int)Enums.ShopVersion.jtb).ToString())
+                                                {
+                                                    if (flagTypeShop == "1")
+                                                    {
+                                                    <option value="@item.listdata" @Html.Raw(copyShopModel.flag_type == item.listdata ? "selected=\"selected\"" : "")>@item.listdisplay</option>
+                                                    }
+                                                    else if (flagTypeShop == "2" && item.listdata != 2)
+                                                    {
+                                                    <option value="@item.listdata" @Html.Raw(copyShopModel.flag_type == item.listdata ? "selected=\"selected\"" : "")> @item.listdisplay </option>
+                                                    }
+                                                    else
+                                                    { }
+                                                }
+                                                else if (version == ((int)Enums.ShopVersion.lsb).ToString())
+                                                {
+                                                    if (flagTypeShop == "1" && item.listdata != 2)
+                                                    {
+                                                        <option value="@item.listdata" @Html.Raw(copyShopModel.flag_type == item.listdata ? "selected=\"selected\"" : "")>@item.listdisplay</option>
+                                                    }
+                                                    else
+                                                    { }
+                                                }
+                                            }
+                                        </select>
+
+
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="input-item-2 clearfix add-client">
+                                <div>
+                                    <label class="item-2-label" style="width:94px !important">
+                                        <em class="tag">* </em><span>配送中心：</span>
+                                    </label>
+                                    <label class="m-l-xs1">
+
+                                        <select id="id_shop_ps" name="id_shop_ps" class="form-control input-sm box-shawn user-input search-result select2  {required:true,messages:{required:&#39;请选择配送中心&#39;}} valid">
+                                            @foreach (var item in selectListPSZX)
+                                            {
+                                                <option value="@item.id_shop" @Html.Raw(copyShopModel.id_shop_ps == item.id_shop ? "selected=\"selected\"" : "")>@item.mc</option>
+                                            }
+                                        </select>
+
+
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            @*<div class="pull-left m-r-sm" style="margin-top:7px">
+                                <label class="clear-padding control-label f-l l-h-30 p-t-none w-89">
+                                    <span class="inline  text-left">
+                                        绑定客户：
+                                    </span>
+                                </label>
+                                <div class="clear-padding f-l">
+                                    <div class="input-group" style="width:150px;position:relative;">
+                                        <input placeholder="" readonly type="text" value="" autoc autocomplete="off"
+                                               id="kh_name" class="form-control btn-none {}" data-toggle="dropdown" data-dialog_title=""
+                                               data-name="kh_name"
+                                               data-id="kh_id"
+                                               data-callback="app.dh.add_gys_callback" data-init="0" data-initenter="0" data-initkeydown="0" data-client_type=""
+                                               onclick="app.shop.kh_onclick(this);">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-sm f-h-30 m-l-none btn-none" type="button" onclick="app.shop.kh_onclick(this);">
+                                                <i class="icon-users"></i>
+                                            </button>
+                                        </span>
+                                        <input type="hidden" name="kh_id" id="kh_id" value="">
+                                    </div>
+                                </div>
+
+                                <label class="copy " style="position: absolute;top:0px;margin-left: 5px">
+                                    <a class="icon-question tool iconImg" style="position: relative; visibility: hidden;"></a>
+                                    <div class="popover fade bottom in tool-box">
+                                        <div class="arrow"></div>
+                                        <div class="popover-content">
+                                            <p>请选择客户。</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>*@
+
+
+                            
+                            
+
+
+                        </div>
+
+
+                        <!-- 门店图片 -->
+                        <div class="fixed-input-group dis-table">
+                            <h2 class="form_title"><span>门店图片</span><em>（建议图片尺寸819*306px，大小≤6MB，支持JPG、PNG、JPEG）</em></h2>
+                            <div class="col-sm-12 form_content">
+
+                                <div class="input-item-1 clearfix">
+                                    <div class="add-img">
+                                        <ol id="img-list" class="clearfix m-l-xxl m-b-none">
+                                            <li style="opacity: 1; z-index: auto; top: 0px; left: 0px;" id="img-list-1" class="cover">
+                                                <div class="wrap-img">
+                                                    <img id="img_pic_path" name="img_pic_path" style="width:340px;height:135px;" src="@Html.Raw(string.IsNullOrEmpty(copyShopModel.pic_path) ? "/static/images/default10.png" : copyShopModel.pic_path)" alt="">
+                                                </div>
+                                            </li>
+                                            <li id_="ignore-add-img" class="add-img-icon" onclick="app.shop.single_uploadimage();">
+                                                <i class="fa fa-cloud-upload"></i><span>添加图片</span>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <input name="pic_path" id="pic_path" type="hidden" autocomplete="off" value="@Html.Raw(string.IsNullOrEmpty(copyShopModel.pic_path) ? "/static/images/default10.png" : copyShopModel.pic_path)">
+
+
+                            </div>
+                        </div>
+
+                        <!-- 联系信息 -->
+                        <div class="fixed-input-group">
+                            <h2 class="form_title"><span>联系信息</span></h2>
+                            <div class="col-sm-12 form_content">
+
+                                <div class="input-item-2 clearfix add-client">
+
+                                    <!-- 联系人 -->
+                                    <div class="input-item-2 clearfix add-client pad-b15">
+                                        <label class="item-2-label">
+                                            <span>联系人：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {maxlength:30,messages:{required:&#39;请输入联系人最多30个字&#39;}} valid" maxlength="30" name="lxr" placeholder="请输入联系人最多30个字" type="text" value="@copyShopModel.lxr">
+                                        </label>
+                                    </div>
+
+                                    <!-- 移动电话 -->
+                                    <div class="input-item-2 clearfix add-client pad-b15">
+                                        <label class="item-2-label">
+                                            <span>手机号码：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {maxlength:20,messages:{required:&#39;请输入手机号码&#39;}} valid" maxlength="20" name="phone" placeholder="请输入移动电话" type="tel" value="@copyShopModel.phone">
+                                        </label>
+                                    </div>
+
+                                    <!-- 座机电话 -->
+                                    <div class="input-item-2 clearfix add-client pad-b15">
+                                        <label class="item-2-label">
+                                            <span>电话号码：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {maxlength:80 valid" maxlength="11" name="tel" placeholder="请输入座机电话最多80个字" type="tel" value="@copyShopModel.tel">
+                                        </label>
+                                    </div>
+
+                                    <!-- QQ -->
+                                    <div class="input-item-2 clearfix add-client pad-b15">
+                                        <label class="item-2-label">
+                                            <span>QQ：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input  {maxlength:20} valid" name="qq" placeholder="请输入QQ" maxlength="20" type="text" value="@copyShopModel.qq">
+                                        </label>
+                                    </div>
+
+
+                                    <!-- email -->
+                                    <div class="input-item-2 clearfix add-client pad-b15">
+                                        <label class="item-2-label">
+                                            <span>电子邮箱：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {maxlength:100,messages:{required:&#39;请输入电子邮箱最多100个字&#39;}} valid" name="email" placeholder="输入电子邮箱地址" maxlength="100" type="email" value="@copyShopModel.email">
+                                        </label>
+                                    </div>
+
+                                    <!-- 传真  -->
+                                    <div class="input-item-2 clearfix add-client pad-b15">
+                                        <label class="item-2-label">
+                                            <span>传真：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {maxlength:20} valid" name="fax" placeholder="输入传真号码" maxlength="20" type="text" value="@copyShopModel.fax">
+                                        </label>
+                                    </div>
+
+                                    <!-- 邮编  -->
+                                    <div class="input-item-2 clearfix add-client pad-b15">
+                                        <label class="item-2-label">
+                                            <span>邮编：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {maxlength:8} valid" name="zipcode" placeholder="输入邮编地址" maxlength="8" type="text" value="@copyShopModel.zipcode">
+                                        </label>
+                                    </div>
+
+
+
+                                    <!-- 地址  -->
+                                    <div class="input-item-2 clearfix add-client pad-b15">
+                                        <label class="item-2-label">
+                                            <span>地址：</span>
+                                        </label>
+                                        <label class="m-l-xs1">
+                                            <input class="form-control user-input {maxlength:300} valid" name="address" placeholder="输入常用地址" maxlength="300" type="text" value="@copyShopModel.address">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 其它信息 -->
+                        <div class="fixed-input-group">
+                            <h2 class="form_title"><span>其它信息</span></h2>
+                            <div class="col-sm-12 form_content">
+
+                                <!-- 备注  -->
+                                <div class="input-item-2 clearfix add-client">
+                                    <label class="item-2-label">
+                                        <em class="tag">&nbsp; </em><span>备注：</span>
+
+                                    </label>
+                                    <label class="m-l-xs1">
+                                        <input class="form-control user-input {maxlength:200} valid" name="bz" placeholder="输入备注信息" maxlength="200" type="text" value="@copyShopModel.bz">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="fixed-input-group">
+                            <h2></h2>
+                            <div class="input-item-2 clearfix add-client">
+                                <label class="item-2-label">
+                                </label>
+                                <label class="m-l-xs1">
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- end main-content -->
+                <footer class="panel-footer text-left lter need-footer-fixed need-footer-fixed-box">
+                    <input id="is_need_new" value="" autocomplete="off" type="hidden">
+                    <button type="submit" class="btn w-138 btn-info" onclick="$(_ + '#is_need_new').val(''); app.shop.check_goods_yes('btn-shop-add1');" id="btn-shop-add1" data-loading-text="保存中...">保存回到列表页</button>&nbsp;&nbsp;
+                    <button type="submit" class="btn w-138 btn-info" onclick="$(_ + '#is_need_new').val('1'); app.shop.check_goods_yes('btn-shop-add2');" id="btn-shop-add2" data-loading-text="保存中...">保存并继续新增</button>&nbsp;&nbsp;
+                    <button type="button" class="btn w-xs btn-default" title="全部门店" onclick="$.fn.menuTab.load({ url: '/shop/list?fromType=@fromType', 'title': '门店管理', id: 'shop/list', nocache: '0' }); $.DHB.close('shop/add');">返回</button>
+                </footer>
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+    .test {
+        width: 30px;
+    }
+</style>
+
+
+<script type="text/javascript">
+    var spflTree, treeData;
+
+    $.DHB._ = function () {
+        app.c.public_data['shop/add'] = app.c.public_data['shop/add'] || {};
+        if (app.c.public_data['shop/add']['once'] === false) {
+            app.c.public_data['shop/add']['once'] = true;
+        }
+    };
+
+    app.shop = app.shop || {};
+
+
+
+
+    //生成条码
+    app.shop.createbarcode = function (obj, name) {
+        $.post(
+            "/shop/createbarcode",
+            {},
+            function (json) {
+                if (json.Success) {
+                    $(_ + "#" + name).val(json.Data);
+                }
+            }, 'json');
+    }
+
+
+    app.shop.createbarcode(null, 'bm');
+
+    //上传图片
+    app.shop.single_uploadimage = function () {
+        $.DHB.singleUpload({ 'config': 'excel', 'callback': 'app.shop.verify_single_uploadimage', 'allowed': 'jpg,png,jpeg' });
+    }
+
+    //上传图片回调
+    app.shop.verify_single_uploadimage = function (files) {
+        if (typeof (files) != 'undefined') {
+            $(_ + '#pic_path').val(files);
+            $(_ + '#img_pic_path').attr("src", files);
+        }
+    }
+
+
+    //表单提交
+    app.shop.check_goods_yes = function (btn) {
+        $.DHB.checkForm("fm-shop-add", function () { });
+        setTimeout(function () {
+            if ($(_ + "form#fm-shop-add .error").length > 0) {
+                $.DHB.message({ content: "请完善您的门店信息！", type: 'i' });
+            } else {
+                //$("#" + btn, _).button("loading");
+                $("#btn-shop-add1", _).button("loading");
+                $("#btn-shop-add2", _).button("loading");
+                submitForm($("#fm-shop-add", _), $("#" + btn, _));
+            }
+        }, 400);
+    }
+
+    //排除浏览器缓存 --表单提交
+    function submitForm($fm, $btn) {
+
+
+        //$.post(
+        //   $fm.attr('action'),
+        //   $fm.serialize(),
+        //   function (data) {
+        //       $btn.button("reset");
+        //       if (data.status == "success") {
+        //           $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+
+        //           if ($(_ + '#is_need_new').val() != '1') {
+        //               $.fn.menuTab.deleteMenu('shop/add');
+        //               $.fn.menuTab.load({ url: '/shop/list', 'title': '门店管理', id: 'shop/list', nocache: '1' });
+        //           }
+        //           else {
+        //               $.fn.menuTab.deleteMenu('shop/list');
+        //               $.fn.menuTab.load({ url: '/shop/add', 'title': '注册新门店', id: 'shop/add', nocache: '1' });
+        //           }
+        //       }
+        //       else {
+
+        //           if ((data.message.toString().indexOf("您还未购买服务信息或购买信息已经失效") >= 0 || data.message.toString().indexOf("已经超过试用期") >= 0 || data.message.toString().indexOf("已经达到购买服务的数量") >= 0) && data.level.toString() == '3' && data.url != '') {
+        //               $btn.button('reset');
+        //               $.DHB.dialog({ 'title': '购买服务', 'url': $.DHB.U('iframe/ShowA?url=' + data.url + '&msg=' + data.message.toString()), 'id': 'dialog-showa' });
+        //           }else{
+        //                $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+        //                $btn.button('reset');
+        //           }
+
+        //       }
+        //   }, 'json');
+
+
+        var options = {
+            data: $fm.serialize(),
+            url: $fm.attr('action'),
+            type: "POST",
+            datatype: 'json',
+            beforeSend: function () { },
+            success: function (data, textStatus, jqXHR) {
+
+                //$btn.button("reset");
+
+                $("#btn-shop-add1", _).button("reset");
+                $("#btn-shop-add2", _).button("reset");
+
+                if (data.status == "success") {
+                    $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 's' });
+                    if ($(_ + '#is_need_new').val() != '1') {
+                        $.fn.menuTab.deleteMenu('shop/add');
+                        $.fn.menuTab.load({ url: '/shop/list', 'title': '门店管理', id: 'shop/list', nocache: '1' });
+                    }
+                    else {
+                        $.fn.menuTab.deleteMenu('shop/list');
+                        $.fn.menuTab.load({ url: '/shop/add', 'title': '注册新门店', id: 'shop/add', nocache: '1' });
+                    }
+                }
+                else {
+                    if ((data.message.toString().indexOf("您还未购买服务信息或购买信息已经失效") >= 0 || data.message.toString().indexOf("已经超过试用期") >= 0 || data.message.toString().indexOf("已经达到购买服务的数量") >= 0) && data.level.toString() == '3' && data.url != '') {
+                        $("#btn-shop-add1", _).button("reset");
+                        $("#btn-shop-add2", _).button("reset");
+                        $.DHB.dialog({ 'title': '购买服务', 'url': $.DHB.U('iframe/ShowA?url=' + data.url + '&msg=' + data.message.toString()), 'id': 'dialog-showa' });
+                    } else {
+                        $.DHB.message({ 'content': data.message, 'time': 4000, 'type': 'e' });
+                        $("#btn-shop-add1", _).button("reset");
+                        $("#btn-shop-add2", _).button("reset");
+                    }
+                }
+
+
+            },
+            complete: function (XHR, TS) {
+                $("#btn-shop-add1", _).button("reset");
+                $("#btn-shop-add2", _).button("reset");
+            }
+        };
+
+        app.httpAjax.post(options);
+
+
+
+
+    }
+
+
+
+
+
+
+    //验证邮箱
+    jQuery.validator.addMethod("check_email",
+            function (value, element) {
+                var filter = /^([a-zA-Z0-9_\.\-])+@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if (value) {
+                    if (filter.test(value)) return true;
+                    return false;
+                }
+                return true;
+            }, "邮箱格式不正确！"
+        );
+
+
+    app.shop.add_kh_callback = function (selectVal) {
+
+        debugger;
+        selectVal = selectVal || '';
+        var selectValTem = selectVal.split('|');
+        if (selectValTem[0] != 'undefined' && selectValTem[0] != '') {
+            $('#kh_id', _).val(selectValTem[0]);
+        }
+        if (selectValTem[1] != 'undefined' && selectValTem[1] != '') {
+            $('#kh_name', _).val(selectValTem[1]);
+        }
+    }
+
+
+    app.shop.kh_onclick = function (e) {
+        var flag_type = $("#flag_type", _).val();
+        if (flag_type == "@((int)Enums.FlagShopType.配送中心)") {
+            $.DHB.message({ content: "配送中心不允许绑定客户！", type: 'i' });
+            return;
+        }
+        else {
+            $.DHB.client.select_kh({ 'kh_name': 'kh_name', 'kh_id': 'kh_id', 'kh_callback': 'app.shop.add_kh_callback', 'kh_type': 'shop_bd' });
+        }
+    }
+
+
+
+    //当选择门店类型改变时
+    app.shop.flag_type_onchange = function (e) {
+        @*var flag_type = $("#flag_type", _).val();
+        if (flag_type == "@((int)Enums.FlagShopType.配送中心)") {
+            $('#kh_id', _).val('');
+            $('#kh_name', _).val('');
+      }*@
+};
+
+</script>

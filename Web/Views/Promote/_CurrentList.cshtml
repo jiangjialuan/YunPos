@@ -1,0 +1,106 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Td
+@using CySoft.Model.Ts
+@{
+    var pageList = ViewData["List"] as PageList<Tb_Promote_Query>;
+    pageList = pageList ?? new PageList<Tb_Promote_Query>(10);
+    var cxlist = ViewData["cxlist"] as List<Ts_Flag>;
+    cxlist = cxlist ?? new List<Ts_Flag>();
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isDel = actionlist.Any(l => l.ToLower() == "delete");
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    var func = ViewData["GetBackViewName"] as Func<string, string>;
+    var datafunc = new Func<DateTime, DateTime, string>((date_b, date_e) =>
+    {
+        var date = DateTime.Now;
+        if (date < date_b)
+        {
+            return "未开始";
+        }
+        if (date > date_e)
+        {
+            return "已过期";
+        }
+        return "进行中";
+    });
+}
+<table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+    <thead>
+        <tr>
+            <th width="40" class="table-p-l-sm table-p-r-xsm-fixed">
+                序号
+            </th>
+            <th width="120">商品条码</th>
+            <th width="120">编码</th>
+            <th width="200">商品名称</th>
+            <th width="40">单位</th>
+            <th width="150">促销单号</th>
+            <th width="200">促销名称</th>
+            <th width="100">促销类型</th>
+            <th width="120">促销门店</th>
+            <th width="80">开始日期</th>
+            <th width="80">结束日期</th>
+            <th width="110" class="text-center">操作</th>
+        </tr>
+    </thead>
+    <tbody id="promotelist-main-tbody">
+        @{
+            if (pageList == null || pageList.Count == 0)
+            {
+                <tr>
+                    <td colspan="12" align="center">
+                        <img src="~/static/images/nodata.png" class="table_nodata">
+                    </td>
+                </tr>
+            }
+            else
+            {
+                var list = pageList.Items;
+                if (list != null && list.Any())
+                {
+                    int index = pageList.PageIndex * pageList.PageSize + 1;
+                    var mindate = new DateTime(2000, 01, 01);
+                    foreach (var item in list)
+                    {
+                        <tr id="row-promote-id-@item.id" class="tr-status-finished">
+                            <td class="text-center">
+                                @(index++)
+                            </td>
+                            <td><a class="list-link">@item.barcode</a></td>
+                            <td><a class="list-link">@item.bm</a></td>
+                            <td><a class="list-link">@item.sp_mc</a></td>
+                            <td class="align_center">@item.dw</td>
+                            <td class="align_center">@item.dh</td>
+                            <td><a onclick="app.promote.detial_current('@item.id_bill', '@item.bm_djlx', '@func(item.bm_djlx).ToLower()', this)" class="list-link">@item.rule_name</a></td>
+                            <td>@(cxlist.FirstOrDefault(a => a.listcode == item.bm_djlx).listdisplay)</td>
+                            <td><a class="list-link">@item.shop_mc</a></td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.day_b)</td>
+                            <td class="text-center">@string.Format("{0:yyyy-MM-dd}", item.day_e)</td>
+                            <td class="list-operate align_center">
+                                <div class="look-out1">
+                                    <div class="second-height-operate">
+                                        @if (true && item.flag_stop == 0)
+                                        {
+                                            <a class="bg-state bg-state-info fa fa-ban" href="javascript:;" onclick="app.promote.stop('@item.id',this)" title="终止"></a>
+                                        }
+                                        <a class="bg-state bg-state-info fa fa-eye" title="查看" onclick="app.promote.detial_current('@item.id_bill', '@item.bm_djlx', '@func(item.bm_djlx).ToLower()', this)" style="margin-top: 5px;"></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript">
+    app.c.public_data['promote/currentlist'] = app.c.public_data['promote/currentlist'] || {};
+    app.c.public_data['promote/currentlist']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['promote/currentlist']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['promote/currentlist']['_current_page_'] = '@(pageList.PageIndex)';
+</script>

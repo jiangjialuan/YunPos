@@ -1,0 +1,71 @@
+﻿@using CySoft.Model.Tb
+@using CySoft.Model.Ts
+@{
+    var pageList = ViewData["List"] as PageList<Tb_Promote_Sort>;
+    var actionlist = ViewData["actionlist"] as List<string>;
+    actionlist = actionlist ?? new List<string>();
+    var isEdit = actionlist.Any(l => l.ToLower() == "edit");
+    string sort = ViewData["sort"].ToString();
+    var promote_sort_names = ViewData["promote_sort_name"] as List<Ts_Flag>;
+    promote_sort_names = promote_sort_names ?? new List<Ts_Flag>();
+}
+<div id="promotesort-list-list-fresh-box" class="table_list table_max_h">
+    <table class="table m-b-none row1 selectAll-table status-box one-line" onmouseover="$.DHB.func.listOperate(this);" style="table-layout: fixed">
+        <thead>
+            <tr>
+                <th width="55" class="table-p-l-sm table-p-r-xsm-fixed">序号</th>
+                <th>促销类型</th>
+                <th>排序号</th>
+                <th width="110" class="text-center">操作</th>
+            </tr>
+        </thead>
+        <tbody id="promotesortlist-main-tbody">
+            @{
+                if (pageList == null || pageList.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5" align="center">
+                            <img src="~/static/images/nodata.png" class="table_nodata">
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    var list = pageList.Items;
+                    if (list != null && list.Any())
+                    {
+                        int index = pageList.PageIndex * pageList.PageSize + 1;
+                        foreach (var item in list)
+                        {
+                            <tr id="row-promotesort-id-@item.id" class="tr-status-finished">
+                                <td class="text-center">
+                                    @(index++)
+                                </td>
+                                <td><a class="list-link">@(promote_sort_names.FirstOrDefault(p => p.listcode == item.style).listdisplay)</a></td>
+                                <td class="sort_id"><input style='width:80px;' class='form-control' value='@item.sort_id' /></td>
+                                <td class="list-operate">
+                                    <div class="look-out1 supernatant">
+                                        <div class="second-height-operate">
+                                            @if (isEdit)
+                                            {
+                                                <a class="bg-state bg-state-info" href="javascript:;" onclick="app.promotesort.save('@item.id',this)" title="保存">保存</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<script type="text/javascript">
+    app.c.public_data['promotesort/list'] = app.c.public_data['promotesort/list'] || {};
+    app.c.public_data['promotesort/list']['_row_total_'] = '@pageList.ItemCount',
+    app.c.public_data['promotesort/list']['_page_size_'] = '@pageList.PageSize',
+    app.c.public_data['promotesort/list']['_current_page_'] = '@(pageList.PageIndex)';
+</script>
